@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-SNAPSHOT">
+<meta name="author" content="Aditya Mangal">
+<meta name="keywords" content="tech">
+<meta name="description" content="Goal of this Visualization task is to create a visualization for the Drug and Medicine Exports data for different countries.
+In this blog post, I’m trying to find the leading countries in Export across these 5 years.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(&quot;httr&quot;) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization  Obtaining Data Reading and viewing the dataset
+GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.">
+
+
+<meta property="og:description" content="Goal of this Visualization task is to create a visualization for the Drug and Medicine Exports data for different countries.
+In this blog post, I’m trying to find the leading countries in Export across these 5 years.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(&quot;httr&quot;) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization  Obtaining Data Reading and viewing the dataset
+GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8">
+<meta name="twitter:title" content="Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8">
+<meta property="og:url" content="https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+<meta property="twitter:url" content="https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+<meta property="og:site_name" content="Aditya Mangal&#39;s Blog">
+<meta property="og:description" content="Goal of this Visualization task is to create a visualization for the Drug and Medicine Exports data for different countries.
+In this blog post, I’m trying to find the leading countries in Export across these 5 years.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(&quot;httr&quot;) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization  Obtaining Data Reading and viewing the dataset
+GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.">
+<meta name="twitter:description" content="Goal of this Visualization task is to create a visualization for the Drug and Medicine Exports data for different countries.
+In this blog post, I’m trying to find the leading countries in Export across these 5 years.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(&quot;httr&quot;) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization  Obtaining Data Reading and viewing the dataset
+GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2018-02-18T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2018-02-18T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="MakeOverMonday">
+    
+  
+  
+    
+      <meta property="article:tag" content="DataAnalysis">
+    
+      <meta property="article:tag" content="DataScience">
+    
+      <meta property="article:tag" content="MakeOverMonday">
+    
+      <meta property="article:tag" content="Visualizations">
+    
+      <meta property="article:tag" content="Medicine">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+  <meta name="twitter:site" content="@adityamangal410">
+
+
+  <meta name="twitter:creator" content="@adityamangal410">
+
+
+
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://www.gravatar.com/avatar/72cd8ee733e6360cf3a692f12c34d22b?s=640">
+  <meta property="twitter:image" content="https://www.gravatar.com/avatar/72cd8ee733e6360cf3a692f12c34d22b?s=640">
+
+
+    <title>Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8</title>
+
+    <link rel="icon" href="https://upbeat-knuth-c15bbd.netlify.com/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://upbeat-knuth-c15bbd.netlify.com/css/style-nnm2spxvve8onlujjlegkkytaehyadd4ksxc1hyzzq9a2wvtrgbljqyulomn.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://upbeat-knuth-c15bbd.netlify.com/">Aditya Mangal&#39;s Blog</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://upbeat-knuth-c15bbd.netlify.com/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://www.gravatar.com/avatar/72cd8ee733e6360cf3a692f12c34d22b?s=90" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://upbeat-knuth-c15bbd.netlify.com/#about">
+          <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/72cd8ee733e6360cf3a692f12c34d22b?s=110" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Aditya Mangal</h4>
+        
+          <h5 class="sidebar-profile-bio">Working in the Location Center of Excellence at Yahoo building the richest Geolocation platform</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/adityamangal410" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/adityamangal410" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://www.linkedin.com/in/adityamangal410/" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+      
+      <span class="sidebar-button-desc">Linkedin</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-02-18T00:00:00Z">
+        
+  February 18, 2018
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://upbeat-knuth-c15bbd.netlify.com/categories/makeovermonday">MakeOverMonday</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+
+<p>Goal of this Visualization task is to create a visualization for the <a href="https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1" target="_blank">Drug and Medicine Exports data for different countries.</a></p>
+<p>In this blog post, I’m trying to find the leading countries in Export across these 5 years.</p>
+<div id="cleaning-up-workspace-and-loading-required-libraries" class="section level2">
+<h2>Cleaning up workspace and loading required libraries</h2>
+<pre class="r"><code>rm(list = ls())</code></pre>
+<pre class="r"><code>library(tidyverse) #Data Wrangling
+library(&quot;httr&quot;)
+library(readxl) #Data Ingestion
+library(ggplot2) #Data Visualization</code></pre>
+</div>
+<div id="obtaining-data" class="section level2">
+<h2>Obtaining Data</h2>
+<p>Reading and viewing the dataset</p>
+<pre class="r"><code>GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
+<pre class="r"><code>drugs &lt;- read_excel(tf)</code></pre>
+<pre class="r"><code>drugs</code></pre>
+<pre><code>## # A tibble: 1,100 x 3
+##    Exporter                  Year `Exports (USD)`
+##    &lt;chr&gt;                    &lt;dbl&gt;           &lt;dbl&gt;
+##  1 World                     2013    326445385000
+##  2 Germany                   2013     48493611000
+##  3 Switzerland               2013     32337891000
+##  4 Belgium                   2013     33329615000
+##  5 France                    2013     27848920000
+##  6 United States of America  2013     23098676000
+##  7 United Kingdom            2013     20885936000
+##  8 Ireland                   2013     18152573000
+##  9 Italy                     2013     20898532000
+## 10 Netherlands               2013     13480651000
+## # … with 1,090 more rows</code></pre>
+<p>Summarizing and getting stats to better understand the dataset</p>
+<pre class="r"><code>drugs %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 1,100
+## Variables: 3
+## $ Exporter        &lt;chr&gt; &quot;World&quot;, &quot;Germany&quot;, &quot;Switzerland&quot;, &quot;Belgium&quot;, &quot;F…
+## $ Year            &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, …
+## $ `Exports (USD)` &lt;dbl&gt; 326445385000, 48493611000, 32337891000, 33329615…</code></pre>
+<pre class="r"><code>drugs %&gt;% 
+  summary()</code></pre>
+<pre><code>##    Exporter              Year      Exports (USD)      
+##  Length:1100        Min.   :2013   Min.   :0.000e+00  
+##  Class :character   1st Qu.:2014   1st Qu.:1.212e+05  
+##  Mode  :character   Median :2015   Median :7.393e+06  
+##                     Mean   :2015   Mean   :3.315e+09  
+##                     3rd Qu.:2016   3rd Qu.:3.293e+08  
+##                     Max.   :2017   Max.   :3.405e+11  
+##                                    NA&#39;s   :266</code></pre>
+</div>
+<div id="scrubbing-data" class="section level2">
+<h2>Scrubbing data</h2>
+<p>Removing rows with NA for the purposes of this visualization</p>
+<pre class="r"><code>drugs = drugs %&gt;% 
+  filter(!is.na(`Exports (USD)`))</code></pre>
+<p>Let’s see overall which are the Countries with highest export over these 5 years.</p>
+<pre class="r"><code>drugs %&gt;% 
+  group_by(Exporter) %&gt;% 
+  summarise(TotalExport = sum(`Exports (USD)`)) %&gt;% 
+  arrange(desc(TotalExport))</code></pre>
+<pre><code>## # A tibble: 220 x 2
+##    Exporter                   TotalExport
+##    &lt;chr&gt;                            &lt;dbl&gt;
+##  1 World                    1309425248000
+##  2 Germany                   197463838000
+##  3 Switzerland               183296295000
+##  4 France                    123482590000
+##  5 Belgium                   117396245000
+##  6 United States of America  114868001000
+##  7 United Kingdom            110713945000
+##  8 Ireland                    96686923000
+##  9 Italy                      76012918000
+## 10 Netherlands                59659401000
+## # … with 210 more rows</code></pre>
+</div>
+<div id="exploring-data" class="section level2">
+<h2>Exploring Data</h2>
+<p>Lets plot the countries which were among the top 5 exporters each year and each of their performance over these 5 years.</p>
+<pre class="r"><code>top5ExportersByYear = drugs %&gt;% 
+  filter(Exporter!=&quot;World&quot;) %&gt;% 
+  group_by(Year) %&gt;% 
+  top_n(5, `Exports (USD)`) %&gt;% 
+  ungroup()</code></pre>
+<pre class="r"><code>g = ggplot(data = top5ExportersByYear, aes(x = Year, y = `Exports (USD)`))
+g + geom_line(aes(color = Exporter)) + labs(title = &#39;Trend for top 5 exporters in the world over the years&#39;)</code></pre>
+<p><img src="https://upbeat-knuth-c15bbd.netlify.com/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Evaluating Top 10 exporters per Year. Excluding 2017 since we do not have numbers for total export in the world.</p>
+<pre class="r"><code>getTop10ForYear = function(df){
+  top10ForYear = df %&gt;% 
+    filter(Exporter!=&quot;World&quot;) %&gt;% 
+    top_n(10, `Exports (USD)`)
+  
+  othersExports = (df %&gt;% filter(Exporter==&quot;World&quot;) %&gt;% select(`Exports (USD)`)) - (top10ForYear %&gt;% summarise(Total = sum(`Exports (USD)`)))
+  
+  YEAR = df %&gt;% select(Year) %&gt;% unique() %&gt;% .$Year
+  top10ForYear = top10ForYear %&gt;% 
+    add_row(Exporter = &quot;Others&quot;, Year = YEAR, `Exports (USD)` = othersExports %&gt;% .$`Exports (USD)`)
+  return(top10ForYear)
+}
+yearlyTop10s = drugs %&gt;% 
+  filter(Year != 2017) %&gt;% 
+  group_by(Year) %&gt;% 
+  do(getTop10ForYear(.))
+yearlyTop10s</code></pre>
+<pre><code>## # A tibble: 44 x 3
+## # Groups:   Year [4]
+##    Exporter                  Year `Exports (USD)`
+##    &lt;chr&gt;                    &lt;dbl&gt;           &lt;dbl&gt;
+##  1 Germany                   2013     48493611000
+##  2 Switzerland               2013     32337891000
+##  3 Belgium                   2013     33329615000
+##  4 France                    2013     27848920000
+##  5 United States of America  2013     23098676000
+##  6 United Kingdom            2013     20885936000
+##  7 Ireland                   2013     18152573000
+##  8 Italy                     2013     20898532000
+##  9 Netherlands               2013     13480651000
+## 10 India                     2013     10313989000
+## # … with 34 more rows</code></pre>
+<p>Writing function to plot a Donut Chart for each year showing percentage export contribution for top 10 exporters of that year as compared to all others.</p>
+<pre class="r"><code>plotTop10 = function(df){
+  YEAR = df %&gt;% select(Year) %&gt;% unique() %&gt;% .$Year
+  plotTitle = paste(&quot;World Medicine Export in&quot;, YEAR, sep = &quot; &quot;)
+  
+  df = df %&gt;% 
+    mutate(tot = sum(`Exports (USD)`),
+           prop = round(100*`Exports (USD)`/tot,2))
+  
+  p = ggplot(df, aes(x=2, y=prop, fill=Exporter)) + 
+    geom_bar(stat=&quot;identity&quot;) + 
+    geom_text( aes(label = prop), position = position_stack(vjust = 0.5)) + 
+    xlim(0.5, 2.5) +
+    coord_polar(theta = &quot;y&quot;) +
+    labs(x=NULL, y=NULL) + 
+    labs(fill=&quot;&quot;) + 
+    ggtitle(plotTitle) + 
+    theme_bw() + 
+    theme(plot.title = element_text(face=&quot;bold&quot;,family=c(&quot;sans&quot;),size=15),
+          legend.text=element_text(size=10),
+          axis.ticks=element_blank(),
+          axis.text=element_blank(),
+          axis.title=element_blank(),
+          panel.grid=element_blank(),
+          panel.border=element_blank())
+  return(p)
+}</code></pre>
+<p>Plotting the donuts for each year</p>
+<pre class="r"><code>plotTop10(yearlyTop10s %&gt;% filter(Year==2013))</code></pre>
+<p><img src="https://upbeat-knuth-c15bbd.netlify.com/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>plotTop10(yearlyTop10s %&gt;% filter(Year==2014))</code></pre>
+<p><img src="https://upbeat-knuth-c15bbd.netlify.com/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<pre class="r"><code>plotTop10(yearlyTop10s %&gt;% filter(Year==2015))</code></pre>
+<p><img src="https://upbeat-knuth-c15bbd.netlify.com/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
+<pre class="r"><code>plotTop10(yearlyTop10s %&gt;% filter(Year==2016))</code></pre>
+<p><img src="https://upbeat-knuth-c15bbd.netlify.com/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
+<p>As can be seen Germany remains the biggest exporter of Drugs and Medicines over the past 5 years.</p>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://upbeat-knuth-c15bbd.netlify.com/tags/dataanalysis/">DataAnalysis</a>
+
+  <a class="tag tag--primary tag--small" href="https://upbeat-knuth-c15bbd.netlify.com/tags/datascience/">DataScience</a>
+
+  <a class="tag tag--primary tag--small" href="https://upbeat-knuth-c15bbd.netlify.com/tags/makeovermonday/">MakeOverMonday</a>
+
+  <a class="tag tag--primary tag--small" href="https://upbeat-knuth-c15bbd.netlify.com/tags/visualizations/">Visualizations</a>
+
+  <a class="tag tag--primary tag--small" href="https://upbeat-knuth-c15bbd.netlify.com/tags/medicine/">Medicine</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/" data-tooltip="The Winter Olympics: MakeOverMonday 2018 Week7">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Aditya Mangal. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/" data-tooltip="The Winter Olympics: MakeOverMonday 2018 Week7">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fupbeat-knuth-c15bbd.netlify.com%2F2018%2F02%2Fwhere-does-your-medicine-come-from-makeovermonday-2018-week-8%2F">
+          <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fupbeat-knuth-c15bbd.netlify.com%2F2018%2F02%2Fwhere-does-your-medicine-come-from-makeovermonday-2018-week-8%2F">
+          <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Fupbeat-knuth-c15bbd.netlify.com%2F2018%2F02%2Fwhere-does-your-medicine-come-from-makeovermonday-2018-week-8%2F">
+          <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://www.gravatar.com/avatar/72cd8ee733e6360cf3a692f12c34d22b?s=110" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Aditya Mangal</h4>
+    
+      <div id="about-card-bio">Working in the Location Center of Excellence at Yahoo building the richest Geolocation platform</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Senior Data Engineer
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Sunnyvale, CA
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Search" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no post found</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+                <h3 class="media-heading">Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Feb 2, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Goal of this Visualization task is to create a visualization for the Drug and Medicine Exports data for different countries.
+In this blog post, I’m trying to find the leading countries in Export across these 5 years.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(&quot;httr&quot;) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization  Obtaining Data Reading and viewing the dataset
+GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+                <h3 class="media-heading">The Winter Olympics: MakeOverMonday 2018 Week7</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Feb 2, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Goal of this Visualization task is to create an alternative visualization to the Tableau’s visualization for Winter Olympics data for different countries
+In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(httr) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization library(leaflet) library(rgeos) library(rgdal) library(stringr)  Obtaining Data Reading and viewing the dataset</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://upbeat-knuth-c15bbd.netlify.com/2017/09/india-transportation-accidents-exploration-project/">
+                <h3 class="media-heading">India Transportation Accidents Exploration Project</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2017
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Project Summary With this project I will try to visualize and understand the traffic accident data for India as publicly accessible here.
+Project Goals Visualize traffic information and find trends
+ Find outliers and see if any valuable info can be dugout for each state or overall.
+ Try to predict number of accidents or other useful information.
+  I’ll put out notebooks related to the work as separate articles.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no post found"
+         data-message-one="1 post found"
+         data-message-other="{n} posts found">
+         3 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('https://upbeat-knuth-c15bbd.netlify.com/images/cover.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://upbeat-knuth-c15bbd.netlify.com/js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = 'https:\/\/upbeat-knuth-c15bbd.netlify.com\/2018\/02\/where-does-your-medicine-come-from-makeovermonday-2018-week-8\/';
+          
+            this.page.identifier = '\/2018\/02\/where-does-your-medicine-come-from-makeovermonday-2018-week-8\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'hugo-tranquilpeak-theme';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

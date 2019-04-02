@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-SNAPSHOT">
+<meta name="author" content="Aditya Mangal">
+<meta name="keywords" content="tech">
+<meta name="description" content="Goal of this Visualization task is to create an alternative visualization to the Tableau’s visualization for Winter Olympics data for different countries
+In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(httr) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization library(leaflet) library(rgeos) library(rgdal) library(stringr)  Obtaining Data Reading and viewing the dataset">
+
+
+<meta property="og:description" content="Goal of this Visualization task is to create an alternative visualization to the Tableau’s visualization for Winter Olympics data for different countries
+In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(httr) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization library(leaflet) library(rgeos) library(rgdal) library(stringr)  Obtaining Data Reading and viewing the dataset">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Winter Olympics: MakeOverMonday 2018 Week7">
+<meta name="twitter:title" content="The Winter Olympics: MakeOverMonday 2018 Week7">
+<meta property="og:url" content="https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+<meta property="twitter:url" content="https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+<meta property="og:site_name" content="Aditya Mangal&#39;s Blog">
+<meta property="og:description" content="Goal of this Visualization task is to create an alternative visualization to the Tableau’s visualization for Winter Olympics data for different countries
+In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(httr) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization library(leaflet) library(rgeos) library(rgdal) library(stringr)  Obtaining Data Reading and viewing the dataset">
+<meta name="twitter:description" content="Goal of this Visualization task is to create an alternative visualization to the Tableau’s visualization for Winter Olympics data for different countries
+In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(httr) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization library(leaflet) library(rgeos) library(rgdal) library(stringr)  Obtaining Data Reading and viewing the dataset">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2018-02-15T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2018-02-15T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="MakeOverMonday">
+    
+  
+  
+    
+      <meta property="article:tag" content="Visualizations">
+    
+      <meta property="article:tag" content="MakeOverMonday">
+    
+      <meta property="article:tag" content="DataAnalysis">
+    
+      <meta property="article:tag" content="DataScience">
+    
+      <meta property="article:tag" content="Olympics">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+  <meta name="twitter:site" content="@adityamangal410">
+
+
+  <meta name="twitter:creator" content="@adityamangal410">
+
+
+
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://www.gravatar.com/avatar/72cd8ee733e6360cf3a692f12c34d22b?s=640">
+  <meta property="twitter:image" content="https://www.gravatar.com/avatar/72cd8ee733e6360cf3a692f12c34d22b?s=640">
+
+
+    <title>The Winter Olympics: MakeOverMonday 2018 Week7</title>
+
+    <link rel="icon" href="https://upbeat-knuth-c15bbd.netlify.com/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://upbeat-knuth-c15bbd.netlify.com/css/style-nnm2spxvve8onlujjlegkkytaehyadd4ksxc1hyzzq9a2wvtrgbljqyulomn.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://upbeat-knuth-c15bbd.netlify.com/">Aditya Mangal&#39;s Blog</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://upbeat-knuth-c15bbd.netlify.com/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://www.gravatar.com/avatar/72cd8ee733e6360cf3a692f12c34d22b?s=90" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://upbeat-knuth-c15bbd.netlify.com/#about">
+          <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/72cd8ee733e6360cf3a692f12c34d22b?s=110" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Aditya Mangal</h4>
+        
+          <h5 class="sidebar-profile-bio">Working in the Location Center of Excellence at Yahoo building the richest Geolocation platform</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/adityamangal410" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/adityamangal410" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://www.linkedin.com/in/adityamangal410/" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+      
+      <span class="sidebar-button-desc">Linkedin</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://upbeat-knuth-c15bbd.netlify.com/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      The Winter Olympics: MakeOverMonday 2018 Week7
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-02-15T00:00:00Z">
+        
+  February 15, 2018
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://upbeat-knuth-c15bbd.netlify.com/categories/makeovermonday">MakeOverMonday</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<script src="https://upbeat-knuth-c15bbd.netlify.com/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="https://upbeat-knuth-c15bbd.netlify.com/rmarkdown-libs/jquery/jquery.min.js"></script>
+<link href="https://upbeat-knuth-c15bbd.netlify.com/rmarkdown-libs/leaflet/leaflet.css" rel="stylesheet" />
+<script src="https://upbeat-knuth-c15bbd.netlify.com/rmarkdown-libs/leaflet/leaflet.js"></script>
+<link href="https://upbeat-knuth-c15bbd.netlify.com/rmarkdown-libs/leafletfix/leafletfix.css" rel="stylesheet" />
+<script src="https://upbeat-knuth-c15bbd.netlify.com/rmarkdown-libs/Proj4Leaflet/proj4-compressed.js"></script>
+<script src="https://upbeat-knuth-c15bbd.netlify.com/rmarkdown-libs/Proj4Leaflet/proj4leaflet.js"></script>
+<link href="https://upbeat-knuth-c15bbd.netlify.com/rmarkdown-libs/rstudio_leaflet/rstudio_leaflet.css" rel="stylesheet" />
+<script src="https://upbeat-knuth-c15bbd.netlify.com/rmarkdown-libs/leaflet-binding/leaflet.js"></script>
+
+
+<p>Goal of this Visualization task is to create an alternative visualization to the <a href="https://public.tableau.com/views/TheWinterOlympics/TheWinterOlympics?:embed=y&:showVizHome=no" target="_blank">Tableau’s visualization for Winter Olympics data for different countries</a></p>
+<p>In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.</p>
+<div id="cleaning-up-workspace-and-loading-required-libraries" class="section level2">
+<h2>Cleaning up workspace and loading required libraries</h2>
+<pre class="r"><code>rm(list = ls())</code></pre>
+<pre class="r"><code>library(tidyverse) #Data Wrangling
+library(httr)
+library(readxl) #Data Ingestion
+library(ggplot2) #Data Visualization
+library(leaflet)
+library(rgeos)
+library(rgdal)
+library(stringr)</code></pre>
+</div>
+<div id="obtaining-data" class="section level2">
+<h2>Obtaining Data</h2>
+<p>Reading and viewing the dataset</p>
+<pre class="r"><code>GET(&quot;https://query.data.world/s/n5nc32oqhtb25hdt3vsa24rd4scs2w&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
+<pre class="r"><code>olympics = read_excel(tf)</code></pre>
+<pre class="r"><code>olympics</code></pre>
+<pre><code>## # A tibble: 2,865 x 9
+##     Year Sport Event Country Gender `Medal Rank` Medal `Name of Athlet…
+##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;           
+##  1  1924 Bobs… Men&#39;… Switze… Men               1 gold  Switzerland-1   
+##  2  1924 Bobs… Men&#39;… Britain Men               2 silv… Britain-1       
+##  3  1924 Bobs… Men&#39;… Belgium Men               3 bron… Belgium-1       
+##  4  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug   
+##  5  1924 Cros… Men&#39;… Norway  Men               2 silv… Johan GrÃ¸ttums…
+##  6  1924 Cros… Men&#39;… Finland Men               3 bron… Tapani Niku     
+##  7  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug   
+##  8  1924 Cros… Men&#39;… Norway  Men               2 silv… Thoralf StrÃ¸ms…
+##  9  1924 Cros… Men&#39;… Norway  Men               3 bron… Johan GrÃ¸ttums…
+## 10  1924 Curl… Men&#39;… Britain Men               1 gold  Britain         
+## # … with 2,855 more rows, and 1 more variable: `Age of Athlete` &lt;dbl&gt;</code></pre>
+<p>Summarizing and getting stats to better understand the dataset</p>
+<pre class="r"><code>olympics %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 2,865
+## Variables: 9
+## $ Year                      &lt;dbl&gt; 1924, 1924, 1924, 1924, 1924, 1924, 19…
+## $ Sport                     &lt;chr&gt; &quot;Bobsled&quot;, &quot;Bobsled&quot;, &quot;Bobsled&quot;, &quot;Cros…
+## $ Event                     &lt;chr&gt; &quot;Men&#39;s Four/Five&quot;, &quot;Men&#39;s Four/Five&quot;, …
+## $ Country                   &lt;chr&gt; &quot;Switzerland&quot;, &quot;Britain&quot;, &quot;Belgium&quot;, &quot;…
+## $ Gender                    &lt;chr&gt; &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Me…
+## $ `Medal Rank`              &lt;dbl&gt; 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1,…
+## $ Medal                     &lt;chr&gt; &quot;gold&quot;, &quot;silver&quot;, &quot;bronze&quot;, &quot;gold&quot;, &quot;s…
+## $ `Name of Athlete or Team` &lt;chr&gt; &quot;Switzerland-1&quot;, &quot;Britain-1&quot;, &quot;Belgium…
+## $ `Age of Athlete`          &lt;dbl&gt; NA, NA, NA, 29, 24, 28, 29, 27, 24, NA…</code></pre>
+<pre class="r"><code>olympics %&gt;% 
+  summary()</code></pre>
+<pre><code>##       Year         Sport              Event             Country         
+##  Min.   :1924   Length:2865        Length:2865        Length:2865       
+##  1st Qu.:1972   Class :character   Class :character   Class :character  
+##  Median :1992   Mode  :character   Mode  :character   Mode  :character  
+##  Mean   :1986                                                           
+##  3rd Qu.:2006                                                           
+##  Max.   :2014                                                           
+##                                                                         
+##     Gender            Medal Rank       Medal          
+##  Length:2865        Min.   :1.000   Length:2865       
+##  Class :character   1st Qu.:1.000   Class :character  
+##  Mode  :character   Median :2.000   Mode  :character  
+##                     Mean   :1.996                     
+##                     3rd Qu.:3.000                     
+##                     Max.   :3.000                     
+##                                                       
+##  Name of Athlete or Team Age of Athlete 
+##  Length:2865             Min.   :14.00  
+##  Class :character        1st Qu.:22.00  
+##  Mode  :character        Median :25.00  
+##                          Mean   :25.15  
+##                          3rd Qu.:28.00  
+##                          Max.   :42.00  
+##                          NA&#39;s   :692</code></pre>
+</div>
+<div id="scrubbing-data" class="section level2">
+<h2>Scrubbing data</h2>
+<p>As per the dataset requirement, East and West Germany are to be grouped with Germany and Soviet Union and the 1992 Unified Team needs to be combined with Russia</p>
+<pre class="r"><code>olympics = olympics %&gt;% 
+  mutate(Country = recode(Country, &quot;Soviet Union&quot; = &quot;Russia&quot;, &quot;Unified Team&quot; = &quot;Russia&quot;,
+                          &quot;East Germany&quot; = &quot;Germany&quot;, &quot;West Germany&quot; = &quot;Germany&quot;))</code></pre>
+<p>Reading in the ISO-3166 country codes dataset in order to generate the choropleth</p>
+<pre class="r"><code>countryCodes = read_csv(&quot;https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv&quot;)</code></pre>
+<pre class="r"><code>countryCodes</code></pre>
+<pre><code>## # A tibble: 249 x 11
+##    name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region
+##    &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt; 
+##  1 Afgh… AF        AFG       004            ISO 3166-2:… Asia  
+##  2 Ålan… AX        ALA       248            ISO 3166-2:… Europe
+##  3 Alba… AL        ALB       008            ISO 3166-2:… Europe
+##  4 Alge… DZ        DZA       012            ISO 3166-2:… Africa
+##  5 Amer… AS        ASM       016            ISO 3166-2:… Ocean…
+##  6 Ando… AD        AND       020            ISO 3166-2:… Europe
+##  7 Ango… AO        AGO       024            ISO 3166-2:… Africa
+##  8 Angu… AI        AIA       660            ISO 3166-2:… Ameri…
+##  9 Anta… AQ        ATA       010            ISO 3166-2:… &lt;NA&gt;  
+## 10 Anti… AG        ATG       028            ISO 3166-2:… Ameri…
+## # … with 239 more rows, and 5 more variables: `sub-region` &lt;chr&gt;,
+## #   `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
+## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;</code></pre>
+<p>Joining the 2 datasets and verifying if any country name mismatch happening in the 2.</p>
+<pre class="r"><code>olympics %&gt;% 
+  left_join(countryCodes, by=c(&quot;Country&quot; = &quot;name&quot;)) %&gt;% 
+  filter(is.na(`alpha-3`)) %&gt;% 
+  select(Country) %&gt;% 
+  unique()</code></pre>
+<pre><code>## # A tibble: 8 x 1
+##   Country       
+##   &lt;chr&gt;         
+## 1 Britain       
+## 2 United States 
+## 3 Czechoslovakia
+## 4 Russia        
+## 5 North Korea   
+## 6 Yugoslavia    
+## 7 South Korea   
+## 8 Czech Republic</code></pre>
+<p>Looks like above 7 countries do not have a corresponding entry in the countryCodes dataset.
+Lets try to find out the corresponding names for each of the 7 in the countryCodes dataset.</p>
+<pre class="r"><code>countryCodes %&gt;% 
+  filter(str_detect(str_to_lower(name), &quot;britain&quot;)) #United Kingdom of Great Britain and Northern Ireland</code></pre>
+<pre><code>## # A tibble: 1 x 11
+##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
+##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
+## 1 Unit… GB        GBR       826            ISO 3166-2:… Europe Northern Eu…
+## # … with 4 more variables: `intermediate-region` &lt;chr&gt;,
+## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
+## #   `intermediate-region-code` &lt;chr&gt;</code></pre>
+<pre class="r"><code>countryCodes %&gt;% 
+  filter(str_detect(str_to_lower(name), &quot;states&quot;)) #United States of America</code></pre>
+<pre><code>## # A tibble: 3 x 11
+##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
+##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
+## 1 Micr… FM        FSM       583            ISO 3166-2:… Ocean… Micronesia  
+## 2 Unit… US        USA       840            ISO 3166-2:… Ameri… Northern Am…
+## 3 Unit… UM        UMI       581            ISO 3166-2:… Ocean… Micronesia  
+## # … with 4 more variables: `intermediate-region` &lt;chr&gt;,
+## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
+## #   `intermediate-region-code` &lt;chr&gt;</code></pre>
+<pre class="r"><code>countryCodes %&gt;% 
+  filter(str_detect(str_to_lower(name), &quot;czech&quot;)) #Czech Republic</code></pre>
+<pre><code>## # A tibble: 1 x 11
+##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
+##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
+## 1 Czec… CZ        CZE       203            ISO 3166-2:… Europe Eastern Eur…
+## # … with 4 more variables: `intermediate-region` &lt;chr&gt;,
+## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
+## #   `intermediate-region-code` &lt;chr&gt;</code></pre>
+<pre class="r"><code>countryCodes %&gt;% 
+  filter(str_detect(str_to_lower(name), &quot;russia&quot;)) #Russian Federation</code></pre>
+<pre><code>## # A tibble: 1 x 11
+##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
+##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
+## 1 Russ… RU        RUS       643            ISO 3166-2:… Europe Eastern Eur…
+## # … with 4 more variables: `intermediate-region` &lt;chr&gt;,
+## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
+## #   `intermediate-region-code` &lt;chr&gt;</code></pre>
+<pre class="r"><code>countryCodes %&gt;% 
+  filter(str_detect(str_to_lower(name), &quot;korea&quot;)) #Korea (Democratic People&#39;s Republic of) = North Korea, Korea (Republic of) = South Korea</code></pre>
+<pre><code>## # A tibble: 2 x 11
+##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
+##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
+## 1 Kore… KP        PRK       408            ISO 3166-2:… Asia   Eastern Asia
+## 2 Kore… KR        KOR       410            ISO 3166-2:… Asia   Eastern Asia
+## # … with 4 more variables: `intermediate-region` &lt;chr&gt;,
+## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
+## #   `intermediate-region-code` &lt;chr&gt;</code></pre>
+<pre class="r"><code>countryCodes %&gt;% 
+  filter(str_detect(str_to_lower(name), &quot;yugo&quot;)) #Macedonia (the former Yugoslav Republic of)</code></pre>
+<pre><code>## # A tibble: 0 x 11
+## # … with 11 variables: name &lt;chr&gt;, `alpha-2` &lt;chr&gt;, `alpha-3` &lt;chr&gt;,
+## #   `country-code` &lt;chr&gt;, `iso_3166-2` &lt;chr&gt;, region &lt;chr&gt;,
+## #   `sub-region` &lt;chr&gt;, `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
+## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;</code></pre>
+<p>Renaming mismatched countries in olympic dataset based on countryCodes dataset.</p>
+<pre class="r"><code>olympics = olympics %&gt;% 
+  mutate(Country = recode(Country,
+                          &quot;Britain&quot; = &quot;United Kingdom of Great Britain and Northern Ireland&quot;,
+                          &quot;United States&quot; = &quot;United States of America&quot;,
+                          &quot;Czechoslovakia&quot; = &quot;Czech Republic&quot;,
+                          &quot;Russia&quot; = &quot;Russian Federation&quot;,
+                          &quot;North Korea&quot; = &quot;Korea (Democratic People&#39;s Republic of)&quot;,
+                          &quot;South Korea&quot; = &quot;Korea (Republic of)&quot;,
+                          &quot;Yugoslavia&quot; = &quot;Macedonia (the former Yugoslav Republic of)&quot;))</code></pre>
+<p>Joining and viewing the 2 datasets</p>
+<pre class="r"><code>olympics = olympics %&gt;% 
+  left_join(countryCodes, by=c(&quot;Country&quot; = &quot;name&quot;))
+olympics</code></pre>
+<pre><code>## # A tibble: 2,865 x 19
+##     Year Sport Event Country Gender `Medal Rank` Medal `Name of Athlet…
+##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;           
+##  1  1924 Bobs… Men&#39;… Switze… Men               1 gold  Switzerland-1   
+##  2  1924 Bobs… Men&#39;… United… Men               2 silv… Britain-1       
+##  3  1924 Bobs… Men&#39;… Belgium Men               3 bron… Belgium-1       
+##  4  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug   
+##  5  1924 Cros… Men&#39;… Norway  Men               2 silv… Johan GrÃ¸ttums…
+##  6  1924 Cros… Men&#39;… Finland Men               3 bron… Tapani Niku     
+##  7  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug   
+##  8  1924 Cros… Men&#39;… Norway  Men               2 silv… Thoralf StrÃ¸ms…
+##  9  1924 Cros… Men&#39;… Norway  Men               3 bron… Johan GrÃ¸ttums…
+## 10  1924 Curl… Men&#39;… United… Men               1 gold  Britain         
+## # … with 2,855 more rows, and 11 more variables: `Age of Athlete` &lt;dbl&gt;,
+## #   `alpha-2` &lt;chr&gt;, `alpha-3` &lt;chr&gt;, `country-code` &lt;chr&gt;,
+## #   `iso_3166-2` &lt;chr&gt;, region &lt;chr&gt;, `sub-region` &lt;chr&gt;,
+## #   `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
+## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;</code></pre>
+<p>Aggregating per country to find the total number of medals for each country and its corresponding alpha-3 code.</p>
+<pre class="r"><code>TotalMedalsPerCountry = olympics %&gt;% 
+  group_by(Country, `alpha-3`) %&gt;% 
+  summarise(TotalMedals = n()) %&gt;% 
+  rename(Code = `alpha-3`)
+TotalMedalsPerCountry</code></pre>
+<pre><code>## # A tibble: 39 x 3
+## # Groups:   Country [39]
+##    Country        Code  TotalMedals
+##    &lt;chr&gt;          &lt;chr&gt;       &lt;int&gt;
+##  1 Australia      AUS            12
+##  2 Austria        AUT           218
+##  3 Belarus        BLR            15
+##  4 Belgium        BEL             5
+##  5 Bulgaria       BGR             6
+##  6 Canada         CAN           170
+##  7 China          CHN            53
+##  8 Croatia        HRV            11
+##  9 Czech Republic &lt;NA&gt;           49
+## 10 Denmark        DNK             1
+## # … with 29 more rows</code></pre>
+<p>Lets see the top countries based on total number of medals</p>
+<pre class="r"><code>TotalMedalsPerCountry %&gt;% 
+  arrange(desc(TotalMedals))</code></pre>
+<pre><code>## # A tibble: 39 x 3
+## # Groups:   Country [39]
+##    Country                  Code  TotalMedals
+##    &lt;chr&gt;                    &lt;chr&gt;       &lt;int&gt;
+##  1 Germany                  DEU           377
+##  2 Russian Federation       RUS           341
+##  3 Norway                   NOR           329
+##  4 United States of America USA           282
+##  5 Austria                  AUT           218
+##  6 Canada                   CAN           170
+##  7 Finland                  FIN           161
+##  8 Sweden                   SWE           144
+##  9 Switzerland              CHE           138
+## 10 Italy                    ITA           114
+## # … with 29 more rows</code></pre>
+<p>Germany obtained the most number of medals (377) closely followed by Russia with (341)</p>
+</div>
+<div id="exploring-data" class="section level2">
+<h2>Exploring Data</h2>
+<p>Lets plot the above data on a map using leaflet.</p>
+<p>Loading shape file data set from <a href="http://thematicmapping.org/downloads/world_borders.php">World Borders Dataset</a>.</p>
+<pre class="r"><code>shape = readOGR(&quot;~/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp&quot;)</code></pre>
+<pre><code>## OGR data source with driver: ESRI Shapefile 
+## Source: &quot;/Users/amangal/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp&quot;, layer: &quot;TM_WORLD_BORDERS_SIMPL-0.3&quot;
+## with 246 features
+## It has 11 fields
+## Integer64 fields read as strings:  POP2005</code></pre>
+<pre class="r"><code>names(shape)</code></pre>
+<pre><code>##  [1] &quot;FIPS&quot;      &quot;ISO2&quot;      &quot;ISO3&quot;      &quot;UN&quot;        &quot;NAME&quot;     
+##  [6] &quot;AREA&quot;      &quot;POP2005&quot;   &quot;REGION&quot;    &quot;SUBREGION&quot; &quot;LON&quot;      
+## [11] &quot;LAT&quot;</code></pre>
+<pre class="r"><code>TotalMedalsPerCountry = TotalMedalsPerCountry %&gt;% 
+  left_join(tbl_df(shape@data), by = c(&quot;Code&quot;=&quot;ISO3&quot;)) %&gt;% 
+  na.omit()
+
+TotalMedalsPerCountry = TotalMedalsPerCountry %&gt;% 
+  mutate(label = str_c(sep = &quot; - &quot;, NAME, &quot;TotalMedals&quot;, TotalMedals))</code></pre>
+<pre class="r"><code>bins = c(0, 10, 20, 30, 50, 100, 150, 200, 300, Inf)
+pal = colorBin(&quot;RdYlGn&quot;, domain = TotalMedalsPerCountry$TotalMedals, bins = bins)
+
+TotalMedalsPerCountry %&gt;% 
+  leaflet() %&gt;% 
+  addTiles() %&gt;% 
+  setView(53.019815, 1.369002, zoom = 1) %&gt;% 
+  addCircles(~LON, ~LAT, label = ~label, color = ~pal(TotalMedals), weight = 10)</code></pre>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addCircles","args":[[-24.973,47.683,53.54,50.643,42.761,59.081,33.42,45.723,56.058,58.674,64.504,46.565,51.11,47.07,42.7,36.491,48.16,39.778,56.858,47.153,49.771,52.077,-42.634,61.152,52.125,45.844,61.988,48.707,46.124,40.227,62.011,46.861,49.016,53,39.622,41.75],[136.189,14.912,28.047,4.664,25.231,-109.433,106.514,16.693,9.264,25.793,26.272,2.55,9.851,19.134,12.8,139.068,67.301,126.451,25.641,9.555,6.088,5.389,172.235,8.74,19.401,24.969,96.689,19.491,14.827,-3.649,15.27,7.908,31.388,-1.6,-98.606,63.17],10,null,null,{"interactive":true,"className":"","stroke":true,"color":["#F46D43","#66BD63","#F46D43","#D73027","#D73027","#A6D96A","#FFFFBF","#F46D43","#D73027","#D73027","#A6D96A","#D9EF8B","#1A9850","#D73027","#D9EF8B","#FEE08B","#D73027","#D73027","#D73027","#D73027","#D73027","#D9EF8B","#D73027","#1A9850","#FDAE61","#D73027","#1A9850","#D73027","#F46D43","#D73027","#D9EF8B","#D9EF8B","#D73027","#FDAE61","#66BD63","#D73027"],"weight":10,"opacity":0.5,"fill":true,"fillColor":["#F46D43","#66BD63","#F46D43","#D73027","#D73027","#A6D96A","#FFFFBF","#F46D43","#D73027","#D73027","#A6D96A","#D9EF8B","#1A9850","#D73027","#D9EF8B","#FEE08B","#D73027","#D73027","#D73027","#D73027","#D73027","#D9EF8B","#D73027","#1A9850","#FDAE61","#D73027","#1A9850","#D73027","#F46D43","#D73027","#D9EF8B","#D9EF8B","#D73027","#FDAE61","#66BD63","#D73027"],"fillOpacity":0.2},null,null,["Australia - TotalMedals - 12","Austria - TotalMedals - 218","Belarus - TotalMedals - 15","Belgium - TotalMedals - 5","Bulgaria - TotalMedals - 6","Canada - TotalMedals - 170","China - TotalMedals - 53","Croatia - TotalMedals - 11","Denmark - TotalMedals - 1","Estonia - TotalMedals - 7","Finland - TotalMedals - 161","France - TotalMedals - 109","Germany - TotalMedals - 377","Hungary - TotalMedals - 6","Italy - TotalMedals - 114","Japan - TotalMedals - 45","Kazakhstan - TotalMedals - 7","Korea, Democratic People's Republic of - TotalMedals - 2","Latvia - TotalMedals - 7","Liechtenstein - TotalMedals - 9","Luxembourg - TotalMedals - 2","Netherlands - TotalMedals - 110","New Zealand - TotalMedals - 1","Norway - TotalMedals - 329","Poland - TotalMedals - 20","Romania - TotalMedals - 1","Russia - TotalMedals - 341","Slovakia - TotalMedals - 5","Slovenia - TotalMedals - 15","Spain - TotalMedals - 2","Sweden - TotalMedals - 144","Switzerland - TotalMedals - 138","Ukraine - TotalMedals - 7","United Kingdom - TotalMedals - 26","United States - TotalMedals - 282","Uzbekistan - TotalMedals - 1"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null,null]}],"setView":[[1.369002,53.019815],1,[]],"limits":{"lat":[-42.634,64.504],"lng":[-109.433,172.235]}},"evals":[],"jsHooks":[]}</script>
+<p>As can be clearly seen above, Norway and USA closely followed in the total medals ranking.
+Visualizing data on a map can provide a clear view of the overall data.</p>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://upbeat-knuth-c15bbd.netlify.com/tags/visualizations/">Visualizations</a>
+
+  <a class="tag tag--primary tag--small" href="https://upbeat-knuth-c15bbd.netlify.com/tags/makeovermonday/">MakeOverMonday</a>
+
+  <a class="tag tag--primary tag--small" href="https://upbeat-knuth-c15bbd.netlify.com/tags/dataanalysis/">DataAnalysis</a>
+
+  <a class="tag tag--primary tag--small" href="https://upbeat-knuth-c15bbd.netlify.com/tags/datascience/">DataScience</a>
+
+  <a class="tag tag--primary tag--small" href="https://upbeat-knuth-c15bbd.netlify.com/tags/olympics/">Olympics</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://upbeat-knuth-c15bbd.netlify.com/2017/09/india-transportation-accidents-exploration-project/" data-tooltip="India Transportation Accidents Exploration Project">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/" data-tooltip="Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Aditya Mangal. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://upbeat-knuth-c15bbd.netlify.com/2017/09/india-transportation-accidents-exploration-project/" data-tooltip="India Transportation Accidents Exploration Project">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/" data-tooltip="Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fupbeat-knuth-c15bbd.netlify.com%2F2018%2F02%2Fthe-winter-olympics-makeovermonday-2018-week7%2F">
+          <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fupbeat-knuth-c15bbd.netlify.com%2F2018%2F02%2Fthe-winter-olympics-makeovermonday-2018-week7%2F">
+          <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Fupbeat-knuth-c15bbd.netlify.com%2F2018%2F02%2Fthe-winter-olympics-makeovermonday-2018-week7%2F">
+          <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://www.gravatar.com/avatar/72cd8ee733e6360cf3a692f12c34d22b?s=110" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Aditya Mangal</h4>
+    
+      <div id="about-card-bio">Working in the Location Center of Excellence at Yahoo building the richest Geolocation platform</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Senior Data Engineer
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Sunnyvale, CA
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Search" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no post found</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/">
+                <h3 class="media-heading">Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Feb 2, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Goal of this Visualization task is to create a visualization for the Drug and Medicine Exports data for different countries.
+In this blog post, I’m trying to find the leading countries in Export across these 5 years.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(&quot;httr&quot;) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization  Obtaining Data Reading and viewing the dataset
+GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/">
+                <h3 class="media-heading">The Winter Olympics: MakeOverMonday 2018 Week7</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Feb 2, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Goal of this Visualization task is to create an alternative visualization to the Tableau’s visualization for Winter Olympics data for different countries
+In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(httr) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization library(leaflet) library(rgeos) library(rgdal) library(stringr)  Obtaining Data Reading and viewing the dataset</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://upbeat-knuth-c15bbd.netlify.com/2017/09/india-transportation-accidents-exploration-project/">
+                <h3 class="media-heading">India Transportation Accidents Exploration Project</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2017
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Project Summary With this project I will try to visualize and understand the traffic accident data for India as publicly accessible here.
+Project Goals Visualize traffic information and find trends
+ Find outliers and see if any valuable info can be dugout for each state or overall.
+ Try to predict number of accidents or other useful information.
+  I’ll put out notebooks related to the work as separate articles.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no post found"
+         data-message-one="1 post found"
+         data-message-other="{n} posts found">
+         3 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('https://upbeat-knuth-c15bbd.netlify.com/images/cover.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://upbeat-knuth-c15bbd.netlify.com/js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = 'https:\/\/upbeat-knuth-c15bbd.netlify.com\/2018\/02\/the-winter-olympics-makeovermonday-2018-week7\/';
+          
+            this.page.identifier = '\/2018\/02\/the-winter-olympics-makeovermonday-2018-week7\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'hugo-tranquilpeak-theme';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

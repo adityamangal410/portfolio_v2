@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Makeovermonday on Aditya Mangal&#39;s Blog</title>
+    <link>https://upbeat-knuth-c15bbd.netlify.com/categories/makeovermonday/</link>
+    <description>Recent content in Makeovermonday on Aditya Mangal&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 18 Feb 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://upbeat-knuth-c15bbd.netlify.com/categories/makeovermonday/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8</title>
+      <link>https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/</link>
+      <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://upbeat-knuth-c15bbd.netlify.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/</guid>
+      <description>Goal of this Visualization task is to create a visualization for the Drug and Medicine Exports data for different countries.
+In this blog post, I’m trying to find the leading countries in Export across these 5 years.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(&amp;quot;httr&amp;quot;) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization  Obtaining Data Reading and viewing the dataset
+GET(&amp;quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&amp;quot;, write_disk(tf &amp;lt;- tempfile(fileext = &amp;quot;.</description>
+    </item>
+    
+    <item>
+      <title>The Winter Olympics: MakeOverMonday 2018 Week7</title>
+      <link>https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/</link>
+      <pubDate>Thu, 15 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/</guid>
+      <description>Goal of this Visualization task is to create an alternative visualization to the Tableau’s visualization for Winter Olympics data for different countries
+In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(httr) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization library(leaflet) library(rgeos) library(rgdal) library(stringr)  Obtaining Data Reading and viewing the dataset</description>
+    </item>
+    
+  </channel>
+</rss>

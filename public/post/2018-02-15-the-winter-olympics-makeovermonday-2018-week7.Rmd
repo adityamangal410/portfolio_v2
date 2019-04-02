@@ -1,0 +1,183 @@
+---
+title: 'The Winter Olympics: MakeOverMonday 2018 Week7'
+author: Aditya Mangal
+date: '2018-02-15'
+slug: the-winter-olympics-makeovermonday-2018-week7
+categories:
+  - MakeOverMonday
+tags:
+  - Visualizations
+  - MakeOverMonday
+  - DataAnalysis
+  - DataScience
+  - Olympics
+keywords:
+  - tech
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALSE)
+```
+Goal of this Visualization task is to create an alternative visualization to the <a href="https://public.tableau.com/views/TheWinterOlympics/TheWinterOlympics?:embed=y&:showVizHome=no" target="_blank">Tableau's visualization for Winter Olympics data for different countries</a>
+
+In this blog post, I'm trying to generate a World Choropleth Map showing the total counts of medals for each country.
+
+## Cleaning up workspace and loading required libraries
+
+```{r Cleanup, results='hide'}
+rm(list = ls())
+```
+
+```{r Load Libraries, results='hide'}
+library(tidyverse) #Data Wrangling
+library(httr)
+library(readxl) #Data Ingestion
+library(ggplot2) #Data Visualization
+library(leaflet)
+library(rgeos)
+library(rgdal)
+library(stringr)
+```
+## Obtaining Data
+
+Reading and viewing the dataset
+```{r Reading Data, results='hide'}
+GET("https://query.data.world/s/n5nc32oqhtb25hdt3vsa24rd4scs2w", write_disk(tf <- tempfile(fileext = ".xlsx")))
+olympics = read_excel(tf)
+```
+```{r Viewing Data}
+olympics
+```
+
+Summarizing and getting stats to better understand the dataset
+
+```{r Data Stats}
+olympics %>% 
+  glimpse()
+olympics %>% 
+  summary()
+```
+
+## Scrubbing data
+
+As per the dataset requirement, East and West Germany are to be grouped with Germany and Soviet Union and the 1992 Unified Team needs to be combined with Russia
+
+```{r Combine countries}
+olympics = olympics %>% 
+  mutate(Country = recode(Country, "Soviet Union" = "Russia", "Unified Team" = "Russia",
+                          "East Germany" = "Germany", "West Germany" = "Germany"))
+```
+
+Reading in the ISO-3166 country codes dataset in order to generate the choropleth
+
+```{r Read ISO-3166 country codes dataset, results='hide'}
+countryCodes = read_csv("https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv")
+```
+```{r View ISO-3166 country codes dataset}
+countryCodes
+```
+
+Joining the 2 datasets and verifying if any country name mismatch happening in the 2.
+
+```{r Check if country names mismatch}
+olympics %>% 
+  left_join(countryCodes, by=c("Country" = "name")) %>% 
+  filter(is.na(`alpha-3`)) %>% 
+  select(Country) %>% 
+  unique()
+```
+
+Looks like above 7 countries do not have a corresponding entry in the countryCodes dataset.
+Lets try to find out the corresponding names for each of the 7 in the countryCodes dataset.
+
+```{r Find mismatch names in countryCodes}
+countryCodes %>% 
+  filter(str_detect(str_to_lower(name), "britain")) #United Kingdom of Great Britain and Northern Ireland
+countryCodes %>% 
+  filter(str_detect(str_to_lower(name), "states")) #United States of America
+countryCodes %>% 
+  filter(str_detect(str_to_lower(name), "czech")) #Czech Republic
+countryCodes %>% 
+  filter(str_detect(str_to_lower(name), "russia")) #Russian Federation
+countryCodes %>% 
+  filter(str_detect(str_to_lower(name), "korea")) #Korea (Democratic People's Republic of) = North Korea, Korea (Republic of) = South Korea
+countryCodes %>% 
+  filter(str_detect(str_to_lower(name), "yugo")) #Macedonia (the former Yugoslav Republic of)
+```
+
+Renaming mismatched countries in olympic dataset based on countryCodes dataset.
+
+```{r Rename mismatches}
+olympics = olympics %>% 
+  mutate(Country = recode(Country,
+                          "Britain" = "United Kingdom of Great Britain and Northern Ireland",
+                          "United States" = "United States of America",
+                          "Czechoslovakia" = "Czech Republic",
+                          "Russia" = "Russian Federation",
+                          "North Korea" = "Korea (Democratic People's Republic of)",
+                          "South Korea" = "Korea (Republic of)",
+                          "Yugoslavia" = "Macedonia (the former Yugoslav Republic of)"))
+```
+
+Joining and viewing the 2 datasets
+
+```{r Join Data}
+olympics = olympics %>% 
+  left_join(countryCodes, by=c("Country" = "name"))
+olympics
+```
+
+Aggregating per country to find the total number of medals for each country and its corresponding alpha-3 code.
+
+```{r Aggregating per country for Total Medals}
+TotalMedalsPerCountry = olympics %>% 
+  group_by(Country, `alpha-3`) %>% 
+  summarise(TotalMedals = n()) %>% 
+  rename(Code = `alpha-3`)
+TotalMedalsPerCountry
+```
+
+Lets see the top countries based on total number of medals
+
+```{r Top Countries}
+TotalMedalsPerCountry %>% 
+  arrange(desc(TotalMedals))
+```
+
+Germany obtained the most number of medals (377) closely followed by Russia with (341)
+
+## Exploring Data
+
+Lets plot the above data on a map using leaflet.
+
+Loading shape file data set from [World Borders Dataset](http://thematicmapping.org/downloads/world_borders.php). 
+
+```{r}
+shape = readOGR("~/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp")
+names(shape)
+```
+
+```{r}
+TotalMedalsPerCountry = TotalMedalsPerCountry %>% 
+  left_join(tbl_df(shape@data), by = c("Code"="ISO3")) %>% 
+  na.omit()
+
+TotalMedalsPerCountry = TotalMedalsPerCountry %>% 
+  mutate(label = str_c(sep = " - ", NAME, "TotalMedals", TotalMedals))
+```
+```{r}
+bins = c(0, 10, 20, 30, 50, 100, 150, 200, 300, Inf)
+pal = colorBin("RdYlGn", domain = TotalMedalsPerCountry$TotalMedals, bins = bins)
+
+TotalMedalsPerCountry %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  setView(53.019815, 1.369002, zoom = 1) %>% 
+  addCircles(~LON, ~LAT, label = ~label, color = ~pal(TotalMedals), weight = 10)
+```
+
+
+As can be clearly seen above, Norway and USA closely followed in the total medals ranking. 
+Visualizing data on a map can provide a clear view of the overall data.
+
+

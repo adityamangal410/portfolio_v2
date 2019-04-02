@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Olympics on Aditya Mangal&#39;s Blog</title>
+    <link>https://upbeat-knuth-c15bbd.netlify.com/tags/olympics/</link>
+    <description>Recent content in Olympics on Aditya Mangal&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 15 Feb 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://upbeat-knuth-c15bbd.netlify.com/tags/olympics/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>The Winter Olympics: MakeOverMonday 2018 Week7</title>
+      <link>https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/</link>
+      <pubDate>Thu, 15 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://upbeat-knuth-c15bbd.netlify.com/2018/02/the-winter-olympics-makeovermonday-2018-week7/</guid>
+      <description>Goal of this Visualization task is to create an alternative visualization to the Tableau’s visualization for Winter Olympics data for different countries
+In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
+Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(httr) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization library(leaflet) library(rgeos) library(rgdal) library(stringr)  Obtaining Data Reading and viewing the dataset</description>
+    </item>
+    
+  </channel>
+</rss>
