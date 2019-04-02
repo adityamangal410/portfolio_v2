@@ -32,7 +32,7 @@ canonifyurls = true
 
 [author]
   name = "Aditya Mangal"
-  bio = "Super bio with markdown support **COOL**"
+  bio = "Working in the Location Center of Excellence at Yahoo building the richest Geolocation platform"
   job = "Senior Data Engineer"
   location = "Sunnyvale, CA"
   # Your Gravatar email. Overwrite `author.picture` everywhere in the blog
@@ -41,7 +41,7 @@ canonifyurls = true
   # Overwritten by your gravatar image if `author.gravatarEmail` is filled
   picture = "https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png"
   # Your Twitter username without the @. E.g : thibaudlepretre
-  # twitter = "thibaudlepretre"
+  twitter = "adityamangal410"
   # Your google plus profile id. E.g : +ThibaudLepretre or 114625208755123718311
   # googlePlus = "+ThibaudLepretre"
 
@@ -85,10 +85,16 @@ canonifyurls = true
   url = "https://github.com/adityamangal410"
 [[menu.links]]
   weight = 2
-  identifier = "stackoverflow"
-  name = "Stack Overflow"
-  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-stack-overflow\"></i>"
-  url = "https://stackoverflow.com/users/636472/kakawait"
+  identifier = "twitter"
+  name = "Twitter"
+  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-twitter\"></i>"
+  url = "https://twitter.com/adityamangal410"
+[[menu.links]]
+  weight = 3
+  identifier = "linkedin"
+  name = "Linkedin"
+  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-linkedin\"></i>"
+  url = "https://www.linkedin.com/in/adityamangal410/"
 
 [[menu.misc]]
   weight = 1
@@ -118,7 +124,7 @@ canonifyurls = true
   # If false it will flat categories.
   hierarchicalCategories = true
 
-  description = "Hugo tranquilpeak theme demo"
+  description = "The goal of this blog is to talk about things I'm working on, discuss some of the personal projects I'm spending time on and some random thoughts and musings."
 
   # Customization
   # Define the behavior of the sidebar
@@ -158,7 +164,7 @@ canonifyurls = true
   autoThumbnailImage = true
 
   # Your favicon path, default is "/favicon.png"
-  # favicon = "/favicon.png"
+  favicon = "/favicon.png"
 
   # Header configuration
   # The link at the right of the header is customizable
@@ -170,7 +176,7 @@ canonifyurls = true
 
   # Display `Next` on left side of the pagination, and `Prev` on right side one.
   # If you set this value to `true`, these positions swap.
-  # swapPaginator = true
+  swapPaginator = true
 
   # Custom CSS. Put here your custom CSS files. They are loaded after the theme CSS;
   # they have to be referred from static root. Example
