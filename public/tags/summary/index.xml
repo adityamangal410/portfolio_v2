@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Summary on Aditya Mangal&#39;s Blog</title>
-    <link>https://upbeat-knuth-c15bbd.netlify.com/tags/summary/</link>
+    <link>https://adityamangal.com/tags/summary/</link>
     <description>Recent content in Summary on Aditya Mangal&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 28 Sep 2017 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://upbeat-knuth-c15bbd.netlify.com/tags/summary/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://adityamangal.com/tags/summary/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>India Transportation Accidents Exploration Project</title>
-      <link>https://upbeat-knuth-c15bbd.netlify.com/2017/09/india-transportation-accidents-exploration-project/</link>
+      <link>https://adityamangal.com/2017/09/india-transportation-accidents-exploration-project/</link>
       <pubDate>Thu, 28 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://upbeat-knuth-c15bbd.netlify.com/2017/09/india-transportation-accidents-exploration-project/</guid>
+      <guid>https://adityamangal.com/2017/09/india-transportation-accidents-exploration-project/</guid>
       <description>Project Summary With this project I will try to visualize and understand the traffic accident data for India as publicly accessible here.
 Project Goals Visualize traffic information and find trends
  Find outliers and see if any valuable info can be dugout for each state or overall.

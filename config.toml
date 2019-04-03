@@ -12,13 +12,13 @@
 # For developpers, if you modify this theme, put your images in `source/images` folder and
 # use grunt task `build` to synchronize assets
 
-baseURL = "https://upbeat-knuth-c15bbd.netlify.com/"
+baseURL = "https://adityamangal.com/"
 languageCode = "en-us"
 defaultContentLanguage = "en-us"
 title = "Aditya Mangal's Blog"
 theme = "hugo-tranquilpeak-theme"
-disqusShortname = "hugo-tranquilpeak-theme"
-# googleAnalytics = "UA-123-45"
+disqusShortname = "adityamangal"
+googleAnalytics = "UA-78062737-2"
 paginate = 7
 canonifyurls = true
 
