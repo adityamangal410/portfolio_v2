@@ -2,93 +2,93 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Aditya Mangal&#39;s Blog</title>
-    <link>https://adityamangal.com/tags/</link>
+    <link>/tags/</link>
     <description>Recent content in Tags on Aditya Mangal&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 18 Feb 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://adityamangal.com/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Dataanalysis</title>
-      <link>https://adityamangal.com/tags/dataanalysis/</link>
+      <link>/tags/dataanalysis/</link>
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://adityamangal.com/tags/dataanalysis/</guid>
+      <guid>/tags/dataanalysis/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Datascience</title>
-      <link>https://adityamangal.com/tags/datascience/</link>
+      <link>/tags/datascience/</link>
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://adityamangal.com/tags/datascience/</guid>
+      <guid>/tags/datascience/</guid>
       <description></description>
     </item>
     
     <item>
       <title>India</title>
-      <link>https://adityamangal.com/tags/india/</link>
+      <link>/tags/india/</link>
       <pubDate>Thu, 28 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://adityamangal.com/tags/india/</guid>
+      <guid>/tags/india/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Makeovermonday</title>
-      <link>https://adityamangal.com/tags/makeovermonday/</link>
+      <link>/tags/makeovermonday/</link>
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://adityamangal.com/tags/makeovermonday/</guid>
+      <guid>/tags/makeovermonday/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Medicine</title>
-      <link>https://adityamangal.com/tags/medicine/</link>
+      <link>/tags/medicine/</link>
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://adityamangal.com/tags/medicine/</guid>
+      <guid>/tags/medicine/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Olympics</title>
-      <link>https://adityamangal.com/tags/olympics/</link>
+      <link>/tags/olympics/</link>
       <pubDate>Thu, 15 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://adityamangal.com/tags/olympics/</guid>
+      <guid>/tags/olympics/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Summary</title>
-      <link>https://adityamangal.com/tags/summary/</link>
+      <link>/tags/summary/</link>
       <pubDate>Thu, 28 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://adityamangal.com/tags/summary/</guid>
+      <guid>/tags/summary/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Transportation</title>
-      <link>https://adityamangal.com/tags/transportation/</link>
+      <link>/tags/transportation/</link>
       <pubDate>Thu, 28 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://adityamangal.com/tags/transportation/</guid>
+      <guid>/tags/transportation/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Visualizations</title>
-      <link>https://adityamangal.com/tags/visualizations/</link>
+      <link>/tags/visualizations/</link>
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://adityamangal.com/tags/visualizations/</guid>
+      <guid>/tags/visualizations/</guid>
       <description></description>
     </item>
     

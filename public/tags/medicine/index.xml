@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Medicine on Aditya Mangal&#39;s Blog</title>
-    <link>https://adityamangal.com/tags/medicine/</link>
+    <link>/tags/medicine/</link>
     <description>Recent content in Medicine on Aditya Mangal&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 18 Feb 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://adityamangal.com/tags/medicine/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/medicine/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8</title>
-      <link>https://adityamangal.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/</link>
+      <link>/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/</link>
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://adityamangal.com/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/</guid>
+      <guid>/2018/02/where-does-your-medicine-come-from-makeovermonday-2018-week-8/</guid>
       <description>Goal of this Visualization task is to create a visualization for the Drug and Medicine Exports data for different countries.
 In this blog post, I’m trying to find the leading countries in Export across these 5 years.
 Cleaning up workspace and loading required libraries rm(list = ls()) library(tidyverse) #Data Wrangling library(&amp;quot;httr&amp;quot;) library(readxl) #Data Ingestion library(ggplot2) #Data Visualization  Obtaining Data Reading and viewing the dataset

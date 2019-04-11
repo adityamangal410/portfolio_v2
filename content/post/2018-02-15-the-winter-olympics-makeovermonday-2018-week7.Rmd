@@ -13,7 +13,8 @@ tags:
   - Olympics
 keywords:
   - tech
-summary: "Goal of this Visualization task is to create an alternative visualization to the Tableau's visualization for Winter Olympics data for different countries."
+summary: "Goal of this Visualization task is to create an alternative visualization to the [Tableau's visualization for Winter Olympics data for different countries.](https://public.tableau.com/views/TheWinterOlympics/TheWinterOlympics?:embed=y&:showVizHome=no)"
+readingtime: "5"
 ---
 
 ```{r setup, include=FALSE}

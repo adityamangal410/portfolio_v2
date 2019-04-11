@@ -13,7 +13,8 @@ tags:
   - Medicine
 keywords:
   - tech
-summary: "Goal of this Visualization task is to create a visualization for the Drug and Medicine Exports data for different countries."
+summary: "Goal of this Visualization task is to create a visualization for the [Drug and Medicine Exports data for different countries.](https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1)"
+readingtime: "5"
 ---
 
 ```{r setup, include=FALSE}
