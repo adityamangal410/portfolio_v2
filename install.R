@@ -1,7 +1,0 @@
-install.packages("tidyverse") 
-install.packages("httr")
-install.packages("rmarkdown")
-install.packages("readxl") 
-install.packages("leaflet")
-install.packages("rgeos")
-install.packages("rgdal")
