@@ -1,0 +1,145 @@
+---
+title: Economist's Visualization Mistakes
+author: Aditya Mangal
+date: '2019-04-16'
+slug: economist-s-visualization-mistakes
+categories:
+  - TidyTuesday
+tags:
+  - DataAnalysis
+  - Visualizations
+  - TidyTuesday
+summary: "Learning from the Economist's errors in data visualization as described here - [Mistakes, we’ve drawn a few](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368)"
+readingtime: "10"
+draft: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALSE)
+```
+
+
+## Introduction
+
+From the article on [Mistakes, we’ve drawn a few](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368) - 
+
+"At The Economist, we take data visualisation seriously. Every week we publish around 40 charts across print, the website and our apps. With every single one, we try our best to visualise the numbers accurately and in a way that best supports the story. But sometimes we get it wrong. We can do better in future if we learn from our mistakes — and other people may be able to learn from them, too."
+
+## Analysis  
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(gridExtra)
+library(scales)
+theme_set(theme_light())
+```
+
+### Analyzing Britain's Political Left 
+
+```{r}
+corbyn <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/corbyn.csv")
+
+corbyn
+```
+
+
+```{r}
+corbyn %>% 
+  mutate(pct_likes = avg_facebook_likes/sum(avg_facebook_likes)) %>% 
+  ggplot(aes(political_group, pct_likes, fill = "red")) + 
+  geom_col(show.legend = FALSE) +
+  scale_y_continuous(labels = percent_format()) + 
+  coord_flip() + 
+  labs(y = "% of likes over the political groups",
+       x = "Political Group",
+       title = "Percentage of Average Facebook likes for different political groups",
+       subtitle = "Based on data from Economist about political left in Britain")
+```
+
+### Analyzing decline of dog weights
+
+```{r}
+dogs <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/dogs.csv")
+
+dogs
+```
+
+```{r}
+dogs %>% 
+  mutate(year = as.factor(year),
+         weight_to_neck = avg_weight/avg_neck) %>% 
+  ggplot(aes(x = year, y = weight_to_neck)) + 
+  geom_line(aes(group = 1)) +
+  geom_point() +
+  labs(x = "Year",
+       y = "Average Weight to Average Neck Ratio",
+       title = "Average Weight to Neck Ratio over Years",
+       subtitle = "Based on data from Economist")
+```
+
+### Analyzing Brexit data
+
+```{r}
+brexit <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/brexit.csv")
+
+brexit
+```
+
+```{r}
+brexit %>% 
+  mutate(date = dmy(date)) %>% 
+  ggplot(aes(x = date)) + 
+  geom_smooth(aes(y = percent_responding_right, colour = "percent_responding_right"), se = FALSE) + 
+  geom_point(aes(y = percent_responding_right, colour = "percent_responding_right")) +
+  geom_smooth(aes(y = percent_responding_wrong, colour = "percent_responding_wrong"), se = FALSE) +
+  geom_point(aes(y = percent_responding_wrong, colour = "percent_responding_wrong")) + 
+  scale_color_manual(labels = c("Right", "Wrong"), values = c("blue", "red")) + 
+  labs(x = "Date",
+       y = "Response Percentage",
+       title = "Response behaviour of people about Brexit over time on the question",
+       subtitle = "In hindsight, do you think Britain was right or wrong to vote to leave the EU?",
+       color = "Response")
+```
+
+### Analyzing US trade deficit
+
+```{r}
+trade <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/trade.csv")
+
+trade
+```
+
+
+```{r}
+trade %>% 
+  mutate(year = as.factor(year),
+         trade_deficit = trade_deficit/1000000000,
+         manufacture_employment = manufacture_employment/1000000) -> trade
+```
+
+```{r}
+trade %>% 
+  ggplot(aes(x = year, y = trade_deficit, fill = "trade_deficit")) + 
+  geom_col(show.legend = FALSE) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  labs(x = "Year",
+       y = "Trade Deficit in billions",
+       title = "US Trade Deficit over years",
+       subtitle = "Based on data from Economist") -> p1
+
+trade %>% 
+  ggplot(aes(x = year, y = manufacture_employment, color = "manufacture_employment")) + 
+  geom_line(aes(group = 1), show.legend = FALSE) + 
+  geom_point(show.legend = FALSE) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  labs(x = "Year",
+       y = "Manufacturing Employment in millions",
+       title = "Manufacturing Employment over years",
+       subtitle = "Based on data from Economist") -> p2
+
+grid.arrange(p1, p2, nrow = 1)
+```
+
