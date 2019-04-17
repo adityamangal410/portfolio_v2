@@ -1,17 +1,18 @@
 ---
-title: Economist's Visualization Mistakes
+title: 'Economist''s Visualization Mistakes: TidyTuesday Apr 16 2019'
 author: Aditya Mangal
 date: '2019-04-16'
-slug: economist-s-visualization-mistakes
 categories:
   - TidyTuesday
 tags:
   - DataAnalysis
-  - Visualizations
   - TidyTuesday
-summary: "Learning from the Economist's errors in data visualization as described here - [Mistakes, we’ve drawn a few](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368)"
-readingtime: "10"
-draft: true
+  - Visualizations
+slug: economist-s-visualization-mistakes
+summary: Redrawing Economist's erroneous visualizations as described here
+  - [Mistakes, we’ve drawn a few](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368)
+readingtime: '10'
+draft: no
 ---
 
 
@@ -19,21 +20,29 @@ draft: true
 <ul>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#analysis">Analysis</a><ul>
+<li><a href="#load-libraries">Load libraries</a></li>
 <li><a href="#analyzing-britains-political-left">Analyzing Britain’s Political Left</a></li>
 <li><a href="#analyzing-decline-of-dog-weights">Analyzing decline of dog weights</a></li>
 <li><a href="#analyzing-brexit-data">Analyzing Brexit data</a></li>
 <li><a href="#analyzing-us-trade-deficit">Analyzing US trade deficit</a></li>
+<li><a href="#analyzing-pension-benefits">Analyzing pension benefits</a></li>
+<li><a href="#analyzing-eu-balance">Analyzing EU balance</a></li>
+<li><a href="#analyzing-papers-published">Analyzing papers published</a></li>
 </ul></li>
 </ul>
 </div>
 
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
 <p>From the article on <a href="https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368">Mistakes, we’ve drawn a few</a> -</p>
 <p>“At The Economist, we take data visualisation seriously. Every week we publish around 40 charts across print, the website and our apps. With every single one, we try our best to visualise the numbers accurately and in a way that best supports the story. But sometimes we get it wrong. We can do better in future if we learn from our mistakes — and other people may be able to learn from them, too.”</p>
+<p>Here I will try and draw the improved plots as suggested by the article on economist or make a version I think is best.
+All this done towards the weekly social data project <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-04-16">Tidy Tuesday</a>.</p>
 </div>
-<div id="analysis" class="section level2">
-<h2>Analysis</h2>
+<div id="analysis" class="section level1">
+<h1>Analysis</h1>
+<div id="load-libraries" class="section level2">
+<h2>Load libraries</h2>
 <pre class="r"><code>rm(list = ls())
 library(tidyverse)
 library(lubridate)
@@ -41,14 +50,15 @@ library(ggplot2)
 library(gridExtra)
 library(scales)
 theme_set(theme_light())</code></pre>
-<div id="analyzing-britains-political-left" class="section level3">
-<h3>Analyzing Britain’s Political Left</h3>
+</div>
+<div id="analyzing-britains-political-left" class="section level2">
+<h2>Analyzing Britain’s Political Left</h2>
 <pre class="r"><code>corbyn &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/corbyn.csv&quot;)
 
 corbyn</code></pre>
 <pre><code>## # A tibble: 6 x 2
 ##   political_group avg_facebook_likes
-##   &lt;chr&gt;                        &lt;int&gt;
+##   &lt;chr&gt;                        &lt;dbl&gt;
 ## 1 Jeremy Corbyn                 5210
 ## 2 Labour Party                   845
 ## 3 Momentum                       229
@@ -64,17 +74,17 @@ corbyn</code></pre>
   labs(y = &quot;% of likes over the political groups&quot;,
        x = &quot;Political Group&quot;,
        title = &quot;Percentage of Average Facebook likes for different political groups&quot;,
-       subtitle = &quot;Based on data from Economist about political left in Britain&quot;)</code></pre>
+       caption = &quot;Based on data from Economist about political left in Britain&quot;)</code></pre>
 <p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
-<div id="analyzing-decline-of-dog-weights" class="section level3">
-<h3>Analyzing decline of dog weights</h3>
+<div id="analyzing-decline-of-dog-weights" class="section level2">
+<h2>Analyzing decline of dog weights</h2>
 <pre class="r"><code>dogs &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/dogs.csv&quot;)
 
 dogs</code></pre>
 <pre><code>## # A tibble: 10 x 3
 ##     year avg_weight avg_neck
-##    &lt;int&gt;      &lt;dbl&gt;    &lt;dbl&gt;
+##    &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;
 ##  1  2006       20.5     44.3
 ##  2  2007       20.0     43.8
 ##  3  2008       19.4     43.4
@@ -94,17 +104,17 @@ dogs</code></pre>
   labs(x = &quot;Year&quot;,
        y = &quot;Average Weight to Average Neck Ratio&quot;,
        title = &quot;Average Weight to Neck Ratio over Years&quot;,
-       subtitle = &quot;Based on data from Economist&quot;)</code></pre>
+       caption = &quot;Based on data from Economist&quot;)</code></pre>
 <p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
-<div id="analyzing-brexit-data" class="section level3">
-<h3>Analyzing Brexit data</h3>
+<div id="analyzing-brexit-data" class="section level2">
+<h2>Analyzing Brexit data</h2>
 <pre class="r"><code>brexit &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/brexit.csv&quot;)
 
 brexit</code></pre>
 <pre><code>## # A tibble: 85 x 3
 ##    date     percent_responding_right percent_responding_wrong
-##    &lt;chr&gt;                       &lt;int&gt;                    &lt;int&gt;
+##    &lt;chr&gt;                       &lt;dbl&gt;                    &lt;dbl&gt;
 ##  1 02/08/16                       46                       42
 ##  2 09/08/16                       45                       44
 ##  3 17/08/16                       46                       43
@@ -115,7 +125,7 @@ brexit</code></pre>
 ##  8 20/10/16                       45                       44
 ##  9 15/11/16                       46                       43
 ## 10 29/11/16                       44                       45
-## # ... with 75 more rows</code></pre>
+## # … with 75 more rows</code></pre>
 <pre class="r"><code>brexit %&gt;% 
   mutate(date = dmy(date)) %&gt;% 
   ggplot(aes(x = date)) + 
@@ -128,17 +138,18 @@ brexit</code></pre>
        y = &quot;Response Percentage&quot;,
        title = &quot;Response behaviour of people about Brexit over time on the question&quot;,
        subtitle = &quot;In hindsight, do you think Britain was right or wrong to vote to leave the EU?&quot;,
+       caption = &quot;Based on data from Economist&quot;,
        color = &quot;Response&quot;)</code></pre>
 <p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
-<div id="analyzing-us-trade-deficit" class="section level3">
-<h3>Analyzing US trade deficit</h3>
+<div id="analyzing-us-trade-deficit" class="section level2">
+<h2>Analyzing US trade deficit</h2>
 <pre class="r"><code>trade &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/trade.csv&quot;)
 
 trade</code></pre>
 <pre><code>## # A tibble: 22 x 3
 ##     year trade_deficit manufacture_employment
-##    &lt;int&gt;         &lt;dbl&gt;                  &lt;dbl&gt;
+##    &lt;dbl&gt;         &lt;dbl&gt;                  &lt;dbl&gt;
 ##  1  1995      -3.38e10              17244583.
 ##  2  1996      -3.95e10              17236750 
 ##  3  1997      -4.97e10              17417833.
@@ -149,19 +160,20 @@ trade</code></pre>
 ##  8  2002      -1.03e11              15256833.
 ##  9  2003      -1.24e11              14508500 
 ## 10  2004      -1.62e11              14314750 
-## # ... with 12 more rows</code></pre>
+## # … with 12 more rows</code></pre>
 <pre class="r"><code>trade %&gt;% 
   mutate(year = as.factor(year),
          trade_deficit = trade_deficit/1000000000,
-         manufacture_employment = manufacture_employment/1000000) -&gt; trade</code></pre>
-<pre class="r"><code>trade %&gt;% 
+         manufacture_employment = manufacture_employment/1000000) -&gt; trade
+
+trade %&gt;% 
   ggplot(aes(x = year, y = trade_deficit, fill = &quot;trade_deficit&quot;)) + 
   geom_col(show.legend = FALSE) + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
   labs(x = &quot;Year&quot;,
        y = &quot;Trade Deficit in billions&quot;,
        title = &quot;US Trade Deficit over years&quot;,
-       subtitle = &quot;Based on data from Economist&quot;) -&gt; p1
+       caption = &quot;Based on data from Economist&quot;) -&gt; p1
 
 trade %&gt;% 
   ggplot(aes(x = year, y = manufacture_employment, color = &quot;manufacture_employment&quot;)) + 
@@ -171,9 +183,109 @@ trade %&gt;%
   labs(x = &quot;Year&quot;,
        y = &quot;Manufacturing Employment in millions&quot;,
        title = &quot;Manufacturing Employment over years&quot;,
-       subtitle = &quot;Based on data from Economist&quot;) -&gt; p2
+       caption = &quot;Based on data from Economist&quot;) -&gt; p2
 
 grid.arrange(p1, p2, nrow = 1)</code></pre>
-<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="analyzing-pension-benefits" class="section level2">
+<h2>Analyzing pension benefits</h2>
+<pre class="r"><code>pensions &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/pensions.csv&quot;)
+
+pensions</code></pre>
+<pre><code>## # A tibble: 35 x 3
+##    country        pop_65_percent gov_spend_percent_gdp
+##    &lt;chr&gt;                   &lt;dbl&gt;                 &lt;dbl&gt;
+##  1 Australia               15.0                   5.2 
+##  2 Austria                 18.8                  13.9 
+##  3 Belgium                 18.2                  10.4 
+##  4 Brazil                   7.84                 12   
+##  5 Canada                  16.1                   4.31
+##  6 Chile                   11                     3.25
+##  7 Czech Republic          18.1                   9.09
+##  8 Denmark                 19.0                   8.45
+##  9 Estonia                 18.8                   6.99
+## 10 Finland                 20.5                  11.4 
+## # … with 25 more rows</code></pre>
+<pre class="r"><code>pensions %&gt;% 
+  mutate(spend_per_head = gov_spend_percent_gdp/pop_65_percent) %&gt;% 
+  ggplot(aes(x = pop_65_percent, y = gov_spend_percent_gdp, color = country, size = spend_per_head)) + 
+  geom_point(show.legend = FALSE) + 
+  geom_text(aes(label = country), hjust = -0.15, vjust = 0, show.legend = FALSE) + 
+  labs(x = &quot;Percent of population aged 65 or older&quot;,
+       y = &quot;Percent of government spending on pension benefits as percent of GDP&quot;,
+       title = &quot;Government Spend vs. Population over 65&quot;,
+       subtitle = &quot;Size of point represents the spend per head&quot;,
+       caption = &quot;Based on data from Economist&quot;)</code></pre>
+<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="analyzing-eu-balance" class="section level2">
+<h2>Analyzing EU balance</h2>
+<pre class="r"><code>eu_balance &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/eu_balance.csv&quot;)
+
+eu_balance</code></pre>
+<pre><code>## # A tibble: 266 x 4
+##    country account_type  year    value
+##    &lt;chr&gt;   &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;
+##  1 Belgium current       2009   -3755 
+##  2 Germany current       2009  141234 
+##  3 Estonia current       2009     360 
+##  4 Ireland current       2009   -7912.
+##  5 Greece  current       2009  -29323 
+##  6 Spain   current       2009  -46191 
+##  7 France  current       2009  -10652 
+##  8 Italy   current       2009  -29717 
+##  9 Cyprus  current       2009   -1431 
+## 10 Latvia  current       2009    1463 
+## # … with 256 more rows</code></pre>
+<pre class="r"><code>eu_balance %&gt;% 
+  mutate(year = as.factor(year),
+         account_type = as.factor(account_type),
+         country = as.factor(country)) %&gt;% 
+  group_by(year, account_type) %&gt;% 
+  mutate(perc = value/sum(value)) %&gt;% 
+  top_n(5, perc) %&gt;% 
+  ungroup() %&gt;% 
+  ggplot(aes(x = year, y = value, fill = country)) +
+  geom_col() + 
+  facet_wrap(~account_type) +
+  labs(x = &quot;Year&quot;,
+       y = &quot;Value in billions of euros&quot;,
+       title = &quot;Top 5 countries per year and account type&quot;,
+       subtitle = &quot;Based on percentage of balances&quot;,
+       caption = &quot;Based on data from Economist&quot;)</code></pre>
+<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="analyzing-papers-published" class="section level2">
+<h2>Analyzing papers published</h2>
+<pre class="r"><code>women_research &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/women_research.csv&quot;)
+
+women_research</code></pre>
+<pre><code>## # A tibble: 60 x 3
+##    country        field           percent_women
+##    &lt;chr&gt;          &lt;chr&gt;                   &lt;dbl&gt;
+##  1 Japan          Health sciences          0.24
+##  2 Chile          Health sciences          0.43
+##  3 United Kingdom Health sciences          0.45
+##  4 United States  Health sciences          0.46
+##  5 Mexico         Health sciences          0.46
+##  6 Denmark        Health sciences          0.47
+##  7 EU28           Health sciences          0.48
+##  8 France         Health sciences          0.48
+##  9 Canada         Health sciences          0.49
+## 10 Australia      Health sciences          0.5 
+## # … with 50 more rows</code></pre>
+<pre class="r"><code>women_research %&gt;% 
+  ggplot(aes(x = field, y = percent_women, color = country, size = percent_women)) + 
+  geom_point() + 
+  scale_size(guide = &quot;none&quot;) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  labs(x = &quot;Field of study&quot;,
+       y = &quot;Percentage of Women&quot;,
+       title = &quot;Women among researchers with papers published 2011-15 as % of total by field of study for 12 countries&quot;,
+       subtitle = &quot;Size of point also represents percentage of women&quot;,
+       color = &quot;Country&quot;,
+       caption = &quot;Based on data from Economist&quot;)</code></pre>
+<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-15-1.png" width="960" /></p>
 </div>
 </div>
