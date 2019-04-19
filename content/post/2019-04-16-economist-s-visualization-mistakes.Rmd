@@ -13,6 +13,9 @@ summary: Redrawing Economist's erroneous visualizations as described here
   - [Mistakes, we’ve drawn a few](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368)
 readingtime: '10'
 draft: no
+coverImage: https://lh3.googleusercontent.com/Nnsks9p9otB3GGDll3ev2m7Zc550pH-QXz8eQ0bE8U5vh_6ZSLw2Oi3aSKQn95dHFSE9Xc6xO6CqhqO0GAoUn8sytGpBJGyM_L_ZINThjlzoA4bB4yDheV1j71qkZ3IhHcfOcfVgda8tlKHpBHUFK5m_lNxlnb97be4Qke_RCeo5Yu2w6oYzTPHHzwQh12NwqqNM0EELeT5quc9HVVmb-IUSl_Hd-E2ZOGQ8W2xs9jI_zMxRAaiK2EFK8yBrnHs076WYijD07GQDjckF_cQGAljlY4TT8-bWEH-rw_GQFhJ6pPY7vH5pzgeKWsBpdTuOonK1BbjszPXK1-IFYNV9rIi8LhSwbsZYn1ZaYWG0kvRoXiOw1h7KVC46IjX4qQumoJIGCs7jxxtteHgUJk52IDgSRMDww0_GJV-wroczl-m0DOaQC_VELVGEJZ4TtWRpCm5Q5an11b5I-lFx72FeLnEBfvfVRt1kjHVsi6paHW5Bl8Oqcfrp7k2LuM_bkvCZH088tJOFZf52NX4Uwq-4eSPzo6jknQXUs3JWiaCcizBuSqWjO0Z0UPcyiLZoXw0Bu3LseuaW9gi4i22G1vUOpJKm3-Ni__PJesevyZY7G6TJEjykS9a77n8RnGaZppaAgyNPGcfZPOTfN2JwVRhZc4WtgJXFJi6lyjibVyskhYh_V-bekLURJI8KWXF90BaeATuwsKfTkuVFPLLpKEx61PbubA=w2640-h1762-no
+thumbnailImage: https://lh3.googleusercontent.com/UK8aW3FNXtiT75J3-YEDGrALZ1OEcSCcWFiHOwHglbShGJN42SjpozKaGZMU3u1-OO50b2rVka3LDq16LRS0gLIfBWH6fsMQkfH2pdXxG7F4IDR5jlmGwzmhqXK27EigV6B-1uRBc3qJsEfNh_5vmoim744ZzSlFQ9unm2cUCeW2--EALOgvfZsSscq4Y98L8beCQD1CYHGwA8jEIoYe152vlyH2F6HfDCGM4DKqn3Vf68leki4y48C3gh5ijIaNfZXh-rzhyLd174jYS8vN9GhSq61vhaKd7BLsGriz-qptgcdhqNpe6icQkv_Sl-uxhvMPpLuu7Z4sDZ0172Lzps5l70dkm3obk55-WW4h2gdXpDCVekZn1SJTc0vOJaEFwFOs0pPa_qeqtIsbfoczfwTpglQEUXcI6SJX_czim4SZT9WMPKxQ0ldfcceq26sH1cyoeD2X2XiSeJaSCY666h56xnCZ5Qk55D7TpV8ZTha09xO-RLiJ59ZhttZYjJ3DxJVErbioNV8Srr8rCFbAg7_SrLNRP2QJEKfphC-vrwx6uXeu-rNeudyeG2thlOQlRY_E8XZIh_1QwA6UedLQWo6dxAlRVqEH_H_t7VyGzCemVD0XYfgsel1GUsL43FDZr-TaG0Ei2VO-MGGZRxxmbTgUqOS01uqA=w750-h500-no
+thumbnailImagePosition: top
 ---
 
 ```{r setup, include=FALSE}
@@ -62,7 +65,7 @@ corbyn %>%
   labs(y = "% of likes over the political groups",
        x = "Political Group",
        title = "Percentage of Average Facebook likes for different political groups",
-       caption = "Based on data from Economist about political left in Britain")
+       caption = "Based on data from The Economist about political left in Britain")
 ```
 
 ## Analyzing decline of dog weights
@@ -83,7 +86,7 @@ dogs %>%
   labs(x = "Year",
        y = "Average Weight to Average Neck Ratio",
        title = "Average Weight to Neck Ratio over Years",
-       caption = "Based on data from Economist")
+       caption = "Based on data from The Economist")
 ```
 
 ## Analyzing Brexit data
@@ -107,7 +110,7 @@ brexit %>%
        y = "Response Percentage",
        title = "Response behaviour of people about Brexit over time on the question",
        subtitle = "In hindsight, do you think Britain was right or wrong to vote to leave the EU?",
-       caption = "Based on data from Economist",
+       caption = "Based on data from The Economist",
        color = "Response")
 ```
 
@@ -133,7 +136,7 @@ trade %>%
   labs(x = "Year",
        y = "Trade Deficit in billions",
        title = "US Trade Deficit over years",
-       caption = "Based on data from Economist") -> p1
+       caption = "Based on data from The Economist") -> p1
 
 trade %>% 
   ggplot(aes(x = year, y = manufacture_employment, color = "manufacture_employment")) + 
@@ -143,7 +146,7 @@ trade %>%
   labs(x = "Year",
        y = "Manufacturing Employment in millions",
        title = "Manufacturing Employment over years",
-       caption = "Based on data from Economist") -> p2
+       caption = "Based on data from The Economist") -> p2
 
 grid.arrange(p1, p2, nrow = 1)
 ```
@@ -166,7 +169,7 @@ pensions %>%
        y = "Percent of government spending on pension benefits as percent of GDP",
        title = "Government Spend vs. Population over 65",
        subtitle = "Size of point represents the spend per head",
-       caption = "Based on data from Economist")
+       caption = "Based on data from The Economist")
 ```
 
 ## Analyzing EU balance
@@ -193,7 +196,7 @@ eu_balance %>%
        y = "Value in billions of euros",
        title = "Top 5 countries per year and account type",
        subtitle = "Based on percentage of balances",
-       caption = "Based on data from Economist")
+       caption = "Based on data from The Economist")
 ```
 
 ## Analyzing papers published
@@ -215,6 +218,8 @@ women_research %>%
        title = "Women among researchers with papers published 2011-15 as % of total by field of study for 12 countries",
        subtitle = "Size of point also represents percentage of women",
        color = "Country",
-       caption = "Based on data from Economist")
+       caption = "Based on data from The Economist")
 ```
 
+
+<sub><i>Cover Photo by Sara Kurfeß on Unsplash</i></sub>
