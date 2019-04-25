@@ -1,0 +1,349 @@
+---
+title: The Mueller Report
+author: Aditya Mangal
+date: '2019-04-22'
+slug: the-mueller-report
+categories:
+  - Projects
+tags:
+  - DataScience
+  - DataAnalysis
+  - Visualizations
+  - TextMining
+  - SentimentAnalysis
+keywords:
+  - tech
+summary: Analyzing the Special Counsel's "Report On The Investigation Into Russian Interference In The 2016 Presidential Election" from - [justice.gov](https://www.justice.gov/storage/report.pdf)
+readingtime: '15'
+draft: no
+coverImage: https://lh3.googleusercontent.com/rCAvA7NkPNFuMZTZJZ1oL3sOBAXHVlxE0Dq13qPSkJpomxLYx9O-Zx2vd7OMaPA4d_izBW34ggHtoJOBXFa4DXEWqv-lBS7ZpC-7jAtO1E-JQWRwjpz2qCVmCBrR348x-GlP6ENWhykU-pWkZp-ogDLhiqbiZemhFjJk_YN7tI68aMR_KaUGYTg9fcqL7nXfbakHqMpe-Px2ITB44gfDCIYyYACFCDQR0DYRMDuOVPzvlqE_H-xvTkd7vvl8iBVrpUcJUiG0ugTYP8N5laj6RLLvMVQzUkclldd1eqnLnxfDFKiXb63WxXmV2WndZN8E90fx3wArK-uzVGBucLpbCgI7_deAx6-FZGz9mypKuRk3lWk8nCrL-o7BqfF2L7fLvKFHfjGyXg3NBj0443YyYTwYXy3KyTlCYPbuIQwhCkQtaYwSneHLIOSeapIY8GDIcbe0M3wVItyQkMq9xw2dkkB98G_5yr6ksVBHThQEQUG1MZz5jGGQXQcNxNt_ANnMxQ6cj80ArTv60MPpyh52PODotREvzR0LUOuobAx4qk2EhoErlnMKYvPWd0foC1NyJ0Q39Eebh-gSxWS83_hee7LW5m-ebTPUUS8GQy0e5eKIngbHd3e7sNbIgsMtUUBY1DO0ScZlpJw3bieQ5mTragOe9Kn3Jyjk7hEt0xbsr3GIt3hTT4qMypbNS9QFxR2IlVrAxaHFH-0YLrk3cbjd_5-F2g=w3258-h1832-no
+thumbnailImage: https://lh3.googleusercontent.com/xAuRPz7Ak_we8eZ8ImIUuLSKATVeeAOWlXUIYg89TrSMZ_eKS8eGQCHqXKGJytF8k5ABvHMD_PjN0ZK9yOPa0MGSWqeoZlIXdLWu73-L_JHCji1Ah_sQUwDpOj6osmS00AIMnGk897Y9HAIWQXjdFAlwJ4_rxVOiGtD-oh4En-48ZRDGJmKOqRtlHt9RBhTJ1ZzawqYwZzPZc629QILuatgMj9blSsASPxZTxUtMf9hP6LoOSlK2X1pbYi5jxAEQ33tRG4FgvnQJtcjYtqvE0HDoIrcSneKSyPaY0o3fkda6tX07wMW8nxHSq4UgraY_A2xQndtGmsBVMdrL9j6OnYdPNiv6uyW3DEquMAVt9EKGRUtDJNSYXjyDffQfhI6v7nirLBbEBlrVJ0xSkju-Skxu4jbTEHzpp0rZW73xyBfIjzwIww6VJzOnFmJOjt6E_eZZHY3W39sW4m5W9uLYGxozhE_mf_IaFLE6UbW7klsmGEkRgzB0h6vwx6FB6nSMyXSG7telr-Zy1p_L_GBdL3VJmJJccNH5Sms2RBt7G_dYMeofwEy1qqyP49wFEgaNTGtUKa2aK4tYlNGpa6MuRxYVXBrSY5SgtBtmjudxi6EuSVMhqJ1T6TV_RK4ppTTjo6sGwmaIcuIwP2tN-lRP9-YZz_cjN-4gc89Jm1spz_jghH9h7_LQUqW1S9iXfQuR-Otj3s8lQn5wEmtnOyDUkdwCaQ=w750-h422-no
+thumbnailImagePosition: top
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALSE)
+```
+
+
+# Introduction
+
+Analyzing the Special Counsel's "Report On The Investigation Into Russian Interference In The 2016 Presidential Election" from - [justice.gov](https://www.justice.gov/storage/report.pdf).
+
+# Analysis  
+
+## Load libraries
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(pdftools)
+library(tidylog)
+library(hunspell)
+library(tidytext)
+library(ggplot2)
+library(gridExtra)
+library(scales)
+library(reticulate)
+library(widyr)
+library(igraph)
+library(ggraph)
+
+theme_set(theme_light())
+use_python("~/anaconda3/bin/python")
+```
+
+## Downloading Report
+
+If we want to download and parse the report ourselves we can do so as follows - 
+
+```{r eval=FALSE}
+download.file("https://www.justice.gov/storage/report.pdf", "~/Downloads/mueller-report.pdf")
+
+report <- pdf_text("~/Downloads/mueller-report.pdf")
+```
+
+I will use the preconverted CSV format of the report present [here](https://github.com/gadenbuie/mueller-report/blob/36fbb136a2a508c812db8773e9342b7a55204b20/mueller_report.csv).
+
+```{r}
+report <- read_csv("https://raw.githubusercontent.com/gadenbuie/mueller-report/master/mueller_report.csv")
+report %>% 
+  glimpse()
+```
+
+## Cleaning 
+
+### Page range
+
+As we see from the pdf, first few pages contain Title and Index of the report, and the actual report text starts from page 9. Filtering out all the other pages for exploration
+
+```{r}
+report %>% 
+  filter(page >= 9) -> content
+```
+
+### Text NA
+
+There are about 386 rows with NA as text, these maybe because of parsing failures over redactions, among other things. Dropping them for now. 
+
+```{r}
+content %>% 
+  filter(!is.na(text)) -> content
+```
+
+
+### Misspelled Words
+
+```{r}
+content %>% 
+  rowwise() %>% 
+  mutate(num_misspelled_words = length(hunspell(text)[[1]]),
+         num_words = length(str_split(text, " ")[[1]]),
+         perc_misspelled = num_misspelled_words/num_words) %>% 
+  select(-num_misspelled_words, -num_words) -> content
+```
+
+Dropping all rows (around 400 rows) where percentage of misspelled words is more than 50%. Assuming these are introduced because of pdf parsing errors over redactions.
+
+```{r}
+content %>% 
+  filter(perc_misspelled <= 0.5) -> content
+```
+
+### Normalize
+
+```{r}
+content %>% 
+  unnest_tokens(text, text, token = "lines") -> content
+```
+
+## Most popular words
+
+```{r}
+tidy_content <- content %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words)
+```
+
+```{r}
+tidy_content %>% 
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  filter(!is.na(word)) %>% 
+  count(word, sort = TRUE) %>% 
+  filter(str_length(word) > 1,
+         n > 400) %>% 
+  mutate(word = reorder(word, n)) %>%
+  ggplot( aes(x=word, y=n)) +
+  geom_segment( aes(x=word, xend=word, y=0, yend=n), color="skyblue", size=1) +
+  geom_point( color="blue", size=4, alpha=0.6) +
+  coord_flip() + 
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        legend.position="none") +
+  labs(x = "",
+       y = "Number of Occurences",
+       title = "Most popular words from the Mueller Report",
+       subtitle = "Words occurring more than 400 times",
+       caption = "Based on data from the Mueller Report")
+```
+
+## Most dramatic pages
+
+Using python's NLTK's Vader Lexicon to generate sentiments for each line.
+
+```{python}
+import pandas as pd
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+sid = SentimentIntensityAnalyzer()
+text = pd.Series(r["content$text"])
+sentiments = text.apply(sid.polarity_scores).apply(pd.Series)
+```
+
+
+```{r}
+content <- bind_cols(content, py$sentiments)
+
+content %>%
+  group_by(index = as.integer(page/2)) %>% 
+  summarise(total_sentiment = sum(compound)) %>% 
+  mutate(sentiment_color=ifelse(total_sentiment>0, "yes", "no")) %>%
+  ggplot(aes(x=index, y=total_sentiment)) +
+  geom_ribbon(aes(ymin=0, ymax=total_sentiment, fill=sentiment_color), color="black", alpha=0.5, show.legend = FALSE) +
+  scale_fill_manual(values=c("#271569","#69b3a2")) +
+  labs(x = "Page Index",
+       y = "Total Polarity",
+       title = "Text sentiment variance over pages",
+       subtitle = "PageIndex = PageNumber/2, Compound polarity calculated using NLTK",
+       caption = "Based on data from the Mueller Report")
+```
+
+While the above plot shows the general interesting areas of the report, lets see which are some of the most polarized lines in the document, in either direction.
+
+```{r}
+content %>% 
+  arrange(desc(compound)) %>% 
+  head(10) %>% 
+  select(text, page)
+```
+
+```{r}
+content %>% 
+  arrange(compound) %>% 
+  head(10) %>% 
+  select(text, page)
+```
+
+## Most Common Correlated Words
+
+```{r}
+word_cors <- tidy_content %>% 
+  add_count(word, name = "counts") %>% 
+  filter(counts > stats::quantile(counts, 0.7)) %>% 
+  pairwise_cor(word, page, sort = TRUE)
+```
+```{r}
+set.seed(123)
+
+word_cors %>%
+  filter(correlation > 0.25,
+         !str_detect(item1, "\\d"),
+         !str_detect(item2, "\\d")) %>% 
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void() + 
+  labs(x = "",
+       y = "",
+       title = "Commonly Occuring Correlated Words",
+       subtitle = "Per page correlation higher than 0.25",
+       caption = "Based on data from the Mueller Report")
+```
+
+Words like "mcgahn" and "comey" show up as centers of correlation network. 
+
+## Search Engine
+
+Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make this document more easily searchable and gain context using most related lines in the report for a given query. 
+Using python's scikit-learn for this.
+
+```{python}
+from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
+from sklearn.metrics.pairwise import linear_kernel
+
+stopwords = ENGLISH_STOP_WORDS
+vectorizer = TfidfVectorizer(analyzer='word', stop_words=stopwords, max_df=0.3, min_df=2)
+vector_train = vectorizer.fit_transform(r["content$text"])
+
+def get_related_lines(query):
+  vector_query = vectorizer.transform([query])
+  cosine_sim = linear_kernel(vector_query, vector_train).flatten()
+  return cosine_sim.argsort()[:-10:-1]
+```
+
+```{r}
+get_related_lines <- py_to_r(py$get_related_lines)
+```
+
+### Search Query - Michael Cohen
+
+```{r}
+content %>% 
+  slice(get_related_lines("michael cohen")) %>% 
+  select(text, page, line)
+```
+
+One of the interesting results from above (page 357) -  
+"Toll records show that Cohen was connected to a White House phone number for approximately five minutes on January 19, 2018, and for approximately seven minutes on January 30, 2018, and that Cohen called Melania Trump's cell phone several times between January 26, 2018, and January 30, 2018. Call Records of Michael Cohen."
+
+### Search Query - Vladimir Putin
+
+```{r}
+content %>% 
+  slice(get_related_lines("vladimir putin")) %>% 
+  select(text, page, line)
+```
+
+One of the interesting results from above (page 92) -  
+"On March 24, 2016, Papadopoulos met with Mifsud in London. Mifsud was accompanied by a russian female named olga polonskaya. Mifsud introduced Polonskaya as a former student of his who had connections to Vladimir Putin"
+
+## Late Night Hosts' Jokes
+
+Lets see if we can catch (or fact check, if you will), any of the late night hosts' jokes about the Mueller Report.
+
+### Trevor Noah
+
+```{r echo=FALSE}
+blogdown::shortcode("youtube", id="pVbwZg8rM2c")
+```
+
+```{r}
+content %>% 
+  arrange(compound) %>% 
+  head(10) %>% 
+  select(text, page, line)
+```
+
+The joke at around 34secs into the video can be clearly seen above as the 2nd highest polarized line in the report (page 290, line 20).
+
+### Stephen Colbert
+
+```{r echo=FALSE}
+blogdown::shortcode("youtube", id="7MursWMNONo")
+```
+
+```{r}
+content %>% 
+  slice(get_related_lines("olc")) %>% 
+  select(text, page, line)
+```
+
+The discussion about OLC from the video above at around 9min48secs can be seen in multiple instances as per our search engine, notably here (page 390) - 
+"Impeachment is also a drastic and rarely invoked remedy, and Congress is not restricted to relying only on impeachment, rather than making criminal law applicable to a former President, as OLC has recognized."
+
+### Jimmy Fallon
+
+```{r echo=FALSE}
+blogdown::shortcode("youtube", id="TJZf0JIdqqU")
+```
+
+```{r}
+content %>% 
+  slice(get_related_lines("crazy")) %>% 
+  select(text, page, line)
+```
+
+The joke in the video around 3mins can be seen by the search query which leads to one of these interesting results on page 299 of the report - 
+"That evening, McGahn called both Priebus and Bannon and told them that he intended to
+resign. McGahn recalled that, after speaking with his attorney and given the nature of the
+President's request, he decided not to share details of the President's request with other White
+House staff."
+
+### Jimmy Kimmel
+
+```{r echo=FALSE}
+blogdown::shortcode("youtube", id="NB7ZMczCXEM")
+```
+
+```{r}
+content %>% 
+  slice(get_related_lines("election interference")) %>% 
+  select(text, page, line)
+```
+
+The discussion at around 50secs into the video can be obtained from the above search query, from page 13 - 
+"Although the investigation established that the Russian government perceived it would benefit from a Trump presidency and worked to secure that outcome, and that the Campaign expected it would benefit electorally from information stolen and released through Russian efforts, the investigation did not establish that members of the Trump Campaign conspired or coordinated with the Russian government in its election interference activities."
+
+## Summary 
+
+Looks like all the above tools can be pretty handy in doing a quick and thorough investigation of a large document in a very small amount of time (and its pretty fun too!)
+
+## References
+
+1. [Kaggle data reference](https://www.kaggle.com/paultimothymooney/mueller-report)
+2. [Visualization Help](https://www.data-to-viz.com/)
+3. [Enron Email Analysis by Anthony Dm.](https://towardsdatascience.com/how-i-used-machine-learning-to-classify-emails-and-turn-them-into-insights-efed37c1e66)
+
+<sub><i>Cover Photo by Srikanta H. U on Unsplash</i></sub>

@@ -1,0 +1,52 @@
+---
+title: India News Headlines EDA
+author: Aditya Mangal
+date: '2019-04-20'
+slug: india-news-headlines-eda
+categories:
+  - Projects
+tags:
+  - DataAnalysis
+  - DataScience
+  - India
+  - SentimentAnalysis
+keywords:
+  - tech
+summary: Redrawing Economist's erroneous visualizations as described here
+  - [Mistakes, we’ve drawn a few](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368)
+readingtime: '10'
+draft: yes
+coverImage: https://lh3.googleusercontent.com/ZQrIa0Kj3JKBAlVNOmHpw5-6eZhyD0cmPqsdKDkMs-FWrNTLdVu5tHL9nH1DZZlRwHl6j8_Mdc7IGHh7H4HB-2CN7fdUxQNjYdJ3_5ETK1jeztm0ZADT2270Nd0nSmib5bZN0AxV8oyODzoYvcHGVDuSwJzlPkbbhk30NdCpte5raPhR4dd8OFOWa9pHvC1LsAMIbt1QJylIrgDytCi1Fain-OiTQ_8LBa2z66lLr-C0p4e2fjv-hJ6sSg7WEW-EFOy1_q6Mo833CVcTD-lER9e6GWUCB8JL6_-gbu_Z9i0A-ZQM-3LtxiB959q7_xn4_yQL_DH0qaSVixdD2asd08GKXm0PSiX5ccQ8_xH1tpt-kitym0FlZgpsdaRmweRso344qiDPGRNOQqWSy3GYwR-mIpslJF-iMJ6B5OwqKFJ644FPml7NS61QGJkNdoKf1DTcn0ARw9uhTW2QTZvRHaM9AOkWrp2mgTrpH6mRMBIWPVv7jpk3SZpZVX5VDt7vts37-hxZgFyWb3FuvV26Kc1Yyz5T9u9UctmwV8Z5vFtld_UIsvOCuqMIUuM_5T_DG4BeVMMY3PeBJ5J7bM6FhR8CxCriRqaHKJ9Xkv-IdxacWdiMVZng7mwDQ9laAAM4anxiEt5uvVydhDp0Fh-5Tk3MBtDG5r8ilYWfSuvw3zQiZgUS-TTfmeULzuqxnTuG3boH4YmqFUG-uSHoTnIalt5oYg=w2602-h1734-no
+thumbnailImage: https://lh3.googleusercontent.com/xNXkTy47bwg_XWNQbbqdO5Bk0hoOKmNZua683-YifaJSJaOFN-zsHi5yX-8LkJ4WAZJkhTGCv-kVyYJ8d0RdNXqfDODt3kypwC_nz3lfpNuuzo6m_CjOZhw0AGiHYbvqY8awympo929GydgtY0awlwqIHTtPlqFXj75IzOuR-vpbCtNgK_byginv9D34m7coAQGpdlHDQWUBo2dmaJSDKjvmGn5v4JxViYb6JYYmJDtMAn0SCEmMuz_HN50L_eW9oSXZEDH-Te-4boyPqAZFaor0DmzpxKpWtJsW0ewSqg3Ur6cj9p1VEi_Y9ur_i9fkOvE8WqyspLFG4fHRg2PcLIyAcx3P4l6NrRSiylKYO_1AJ3aXeQdSRmQZ4NRZoD26a2GxOAHi2OXUZScOOFHmC9PwsJ9ESMax8B6R7-CLwUJjvslxoCzYZfRypW7PEZpD-fAKO0hVk6EAyyDkWhFK9QJSHQc3-P6CVYJTzlyVao3iuqM0P7DTtP8WpL7mjYnmdSCV4fbviWZk_NGqnZPNVatM4bXZ1GVeiKlKbEr22HDBqkB0TQVKzWUp0Yp4ZY9XwqUJu_UnIZ8rbEeg88zsxRFGiG-NBkeBzBsThIIsz2Zn2Jv_qpadmxeLHOT5TRkgswOTF1TGTUw1v3v9xYZHTg8S0l4EkZELxNPeTU_kvYjV692_YqIvEn-GC2baEJj5y6kyCR1Od34zIpe6LysY9wDv-w=w750-h500-no
+thumbnailImagePosition: top
+---
+
+# Introduction
+
+Data Source - Rohit Kulkarni (2017), News Headlines of India 2001-2018 [CSV data file], doi:10.7910/DVN/J7BYRX, Retrieved from: [https://www.kaggle.com/therohk/india-headlines-news-dataset]
+
+# Analysis
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(lubridate)
+```
+
+```{r}
+news <- read_csv("~/Downloads/india-news-headlines.csv",
+                 col_types = cols(publish_date = col_character()))
+news %>% 
+  mutate(publish_date = ymd(publish_date)) -> news
+```
+
+```{r}
+news %>% 
+  count(headline_category, sort = TRUE)
+```
+
+```{r}
+news %>% 
+  filter(headline_category == "city.indore")
+```
+
