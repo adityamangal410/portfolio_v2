@@ -344,7 +344,8 @@ Looks like all the above tools can be pretty handy in doing a quick and thorough
 ## References
 
 1. [Kaggle data reference](https://www.kaggle.com/paultimothymooney/mueller-report)
-2. [Visualization Help](https://www.data-to-viz.com/)
-3. [Enron Email Analysis by Anthony Dm.](https://towardsdatascience.com/how-i-used-machine-learning-to-classify-emails-and-turn-them-into-insights-efed37c1e66)
+2. [Text Mining with R by Julia Silge & David Robinson](https://www.tidytextmining.com/)
+3. [Visualization reference](https://www.data-to-viz.com/)
+4. [Enron Email Analysis by Anthony Dm.](https://towardsdatascience.com/how-i-used-machine-learning-to-classify-emails-and-turn-them-into-insights-efed37c1e66)
 
 <sub><i>Cover Photo by Srikanta H. U on Unsplash</i></sub>
