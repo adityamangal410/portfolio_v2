@@ -48,20 +48,20 @@ library(janitor)
 theme_set(theme_light())</code></pre>
 <pre class="r"><code>df &lt;- read_csv(&quot;~/Downloads/House buying options - Sheet1.csv&quot;)
 df</code></pre>
-<pre><code>## # A tibble: 34 x 20
+<pre><code>## # A tibble: 33 x 20
 ##    `Cost factors` `Aparna Serene … `Prestige Ivy l… `Criteria for I…
 ##    &lt;chr&gt;          &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;           
-##  1 Cost factors   &lt;NA&gt;             &lt;NA&gt;             &lt;NA&gt;            
-##  2 Rate per sft.  6,700.00         7,500.00         6,000.00        
-##  3 All in rate    8,025.00         8,575.95         7,000.00        
-##  4 Total cost     1,28,00,000.00   1,49,05,000.00   1,20,00,000.00  
-##  5 Floor          18               4                8               
-##  6 Disctance To … 8.7 KM           4.2 KM           5               
-##  7 Number of par… two              one              &lt;NA&gt;            
-##  8 Future mainte… 5,646.30         8,203.36         5,000.00        
-##  9 Occupancy      End of the year  Ready            Ready           
-## 10 Construction … &lt;NA&gt;             &lt;NA&gt;             &lt;NA&gt;            
-## # … with 24 more rows, and 16 more variables: `Aparna score` &lt;dbl&gt;,
+##  1 Rate per sft.  6,700.00         7,500.00         6,000.00        
+##  2 All in rate    8,025.00         8,575.95         7,000.00        
+##  3 Total cost     1,28,00,000.00   1,49,05,000.00   1,20,00,000.00  
+##  4 Floor          18               4                8               
+##  5 Disctance To … 8.7 KM           4.2 KM           5               
+##  6 Number of par… two              one              &lt;NA&gt;            
+##  7 Future mainte… 5,646.30         8,203.36         5,000.00        
+##  8 Occupancy      End of the year  Ready            Ready           
+##  9 Construction … &lt;NA&gt;             &lt;NA&gt;             &lt;NA&gt;            
+## 10 - Flooring     High             Very high        High            
+## # … with 23 more rows, and 16 more variables: `Aparna score` &lt;dbl&gt;,
 ## #   `Prestige score` &lt;chr&gt;, `Weight/Importance` &lt;chr&gt;, `Final score
 ## #   Aparna` &lt;chr&gt;, `Final score Prestige` &lt;chr&gt;, X10 &lt;lgl&gt;, X11 &lt;lgl&gt;,
 ## #   X12 &lt;lgl&gt;, X13 &lt;lgl&gt;, X14 &lt;lgl&gt;, X15 &lt;lgl&gt;, X16 &lt;lgl&gt;, `Lansum
@@ -133,16 +133,15 @@ df %&gt;%
   gather(key = &quot;prop&quot;, value = &quot;value&quot;, -cost_factors) %&gt;% 
   spread(key = cost_factors, value = value) %&gt;% 
   clean_names()</code></pre>
-<pre><code>## # A tibble: 5 x 25
-##   prop  rate_per_sft all_in_rate total_cost floor disctance_to_of…
-##   &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;            &lt;dbl&gt;
-## 1 apar…         8.8         8.5        9.2   4.5              6   
-## 2 fina…         0.18        0.85       1.84  0.09             0.3 
-## 3 fina…         0.15        0.78       1.5   0.14             0.45
-## 4 pres…         7.5         7.8        7.5   7                9   
-## 5 weig…         0.02        0.1        0.2   0.02             0.05
-## # … with 19 more variables: future_maintenance_charges &lt;dbl&gt;,
-## #   occupancy &lt;dbl&gt;, flooring &lt;dbl&gt;, bath_fittings &lt;dbl&gt;,
+<pre><code>## # A tibble: 5 x 23
+##   prop  total_cost floor disctance_to_of… future_maintena… occupancy
+##   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;
+## 1 apar…       9.2   4.5              6                7.8       5   
+## 2 fina…       2.3   0.09             0.3              0.78      0.15
+## 3 fina…       1.88  0.14             0.45             0.36      0.24
+## 4 pres…       7.5   7                9                3.6       8   
+## 5 weig…       0.25  0.02             0.05             0.1       0.03
+## # … with 17 more variables: flooring &lt;dbl&gt;, bath_fittings &lt;dbl&gt;,
 ## #   glass_work &lt;dbl&gt;, size &lt;dbl&gt;, super_built_up_percent &lt;dbl&gt;,
 ## #   kitchen_wash_area &lt;dbl&gt;, hall &lt;dbl&gt;, washroom &lt;dbl&gt;, rooms &lt;dbl&gt;,
 ## #   pool_cricket_court_tennis_court &lt;dbl&gt;,
