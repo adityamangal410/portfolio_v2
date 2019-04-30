@@ -13,7 +13,7 @@ keywords:
   - tech
 summary: House Buying Analysis in Hyd
 readingtime: '15'
-draft: no
+draft: yes
 coverImage: https://lh3.googleusercontent.com/4lxMnTuwIwwJCORPTyGw2OuPUXpm5_2rCbHbvEdBw6GI0sc9JrOpgz0zSqDxOHiZM1yimQ4-EvfqcOmb866R3CXvkXC02zg1nQHGdaWD5JhU3smOkbrQKuGVwYQNR5jztwIXlhRfhicm6Agz7LvkMGmwxuDD6rdqHyDU9UXbNQRmqi0e4YQgECJuhj3JCrzqWcCQzxcMzeH2ph7tJe__Lbcv8HxZbW_XamTu7vns6RR-1GDw1-A9Jo6fFm1lvFmgEwjR425Tor7ZdZREOVFEoVhYTEVKUSX6cmpSnPVX7Z6pd25b0I2cnSpulJiw8022S4GqnKnsBHp5U8v_nUfpxHfR7f90yfaY5q0dMFUYovzmwdJO4iIWpcjQhkMwQwg0mwfvtY88Fw4lWbBbynN3RHfClbvwyAhwzcMWdqryCV2OchAbefSDIGnxUztvylrlJbK7m_L0e9zJIzF4f9zHqXTOkTl8-HWixn6-r6QgX2npbeadT1bkB97fx49MuBDu8ak5jOQRDmBDSGvdGVsYl5dexT9KMJI2aZw7N9GeSJpBEusWrTbrp-MCcN3nCnk0w2RtPO0VZumvoGZM5ALXn2qXxsyrqHUdtou-uvXpYFMgZvn8ZLtQsa0FJ5eahW0WH75mHIB0VnvCI2Px2C13fxYzLWMDsZVrgAzJ3_A6vOb0_QX5aOHtA5_VtWSgotNmyTq4rYyfhExlSJrYPHb8tvWrlQ=w2738-h1832-no
 thumbnailImage: https://lh3.googleusercontent.com/IB30VrBzYpj_-HwXB366FBGwIi0l6a5yB-itcaSTWxn2AWfP37yvyOqb-DPC9euQy7iKDJTEOmOaJOCCuB8MD_fKgkevlyD6jgDidpjEP_0JyMwKi9C-N-ZdSa8qxEun8eaPG5ONcKImDoR95u9oqA1HGo2d2zWvqtPRr3CGQMR8qu0r9Ag-K8GKAHNw99JiwzbjSCwiOeQccF5xgg9NK_6V8Ot3mGhpDP86J2sIgUE5Q5Nfg8adWDpzKrGC3IHvNlOWEN6YKjEj1uKqBWSg0C_csN_BXYOZNcOxjyJn6fhNTf7iLOBToOB994gMYJ7382pIIhN1vs7bKljOJWTjhs1Gh2ks6k95iF7jSkYwARo7ONcYJbxy0kQ5F_YRiVNqi61lAYs4wbLb-6Bu9tPGoK7NtY_ALZ99cWVdWDmWdg6Hd64fyYkwNUUt3doYgApco6Tf1b2Qj9md6rp7avCsC_4hgs2iLncGpowFreXfP5i3M9w6AStWLPp4N14Oc5IA9GFLm4ohLn1ljRwMsk28R5_C8KgVp3Ur4ZViR6zePkybFNb_2GMkcbFTYPEs4kASlhCh2BTPOMLYT_KyeuFxD9OtAR5mWWsqzEq6JTw1TT1ZLA6qZ6hWlm52AF65AmCj4YEoEXCa7Qpst-39HrV22bqMTmL0bR4Du9_iDummpZ9Sh72yr-pjDeYOeKnpMwICIu7WDgI_A0R2S4Dt_AyGNks7Vw=w750-h502-no
 thumbnailImagePosition: top
@@ -94,7 +94,8 @@ df %&gt;%
        y = &quot;Weight Importance&quot;,
        title = &quot;Cost Factor vs. Weight Importance&quot;,
        subtitle = &quot;All cost factors&quot;,
-       caption = &quot;Based on data from House Buying Sheet&quot;)</code></pre>
+       caption = &quot;Based on data from House Buying Sheet&quot;) -&gt; p1
+p1</code></pre>
 <p><img src="/post/2019-04-30-arpit-house-buying_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code>df %&gt;% 
   mutate(aparna_better_than_prestige = aparna_score/prestige_score,
@@ -110,7 +111,8 @@ df %&gt;%
        y = &quot;Aparna Score / Prestige Score&quot;,
        title = &quot;Aparna Vs. Prestige Score&quot;,
        subtitle = &quot;All cost factors&quot;,
-       caption = &quot;Based on data from House Buying Sheet&quot;)</code></pre>
+       caption = &quot;Based on data from House Buying Sheet&quot;) -&gt; p2
+p2</code></pre>
 <p><img src="/post/2019-04-30-arpit-house-buying_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code>df %&gt;% 
   mutate(aparna_better_than_prestige = final_score_aparna/final_score_prestige,
@@ -126,8 +128,10 @@ df %&gt;%
        y = &quot;Aparna Final Score / Prestige Final Score&quot;,
        title = &quot;Aparna Vs. Prestige Final Score order by Weight Importance&quot;,
        subtitle = &quot;All cost factors&quot;,
-       caption = &quot;Based on data from House Buying Sheet&quot;)</code></pre>
-<p><img src="/post/2019-04-30-arpit-house-buying_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+       caption = &quot;Based on data from House Buying Sheet&quot;) -&gt; p3
+
+grid.arrange(p1, p3, ncol = 2)</code></pre>
+<p><img src="/post/2019-04-30-arpit-house-buying_files/figure-html/unnamed-chunk-7-1.png" width="1344" /></p>
 <pre class="r"><code>df %&gt;% 
   select(-aparna_serene_park, -prestige_ivy_league, -criteria_for_idle_score) %&gt;% 
   gather(key = &quot;prop&quot;, value = &quot;value&quot;, -cost_factors) %&gt;% 
