@@ -13,7 +13,7 @@ You can get most of the information about me on the blog. Some more things about
 3. I like to blog about technical stuff mostly related to Data Science and Machine Learning. 
 4. Java is my first love and R/Python are competing for a close second. 
 4. In an ideal world, this blog would also contain my writings about travel, random musings and photography among other things. One day, some day. 
-5. If you have any questions or suggestions or feedback, you're always welcome to connect with me at adityamangal410 [at] yahoo [dot] co [in].
+5. If you have any questions or suggestions or feedback, you're always welcome to connect with me at adityamangal410 [at] yahoo [dot] co [dot] in.
 
 Here are the technologies/tools and their references that I'm mostly using to run this blog -   
 
