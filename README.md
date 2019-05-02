@@ -1,6 +1,7 @@
 # https://adityamangal.com
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/adityamangal410/portfolio_v2/binder?urlpath=rstudio)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/43286211-047d-417f-b96d-680530d38597/deploy-status)](https://app.netlify.com/sites/upbeat-knuth-c15bbd/deploys)
 
 Hello visitor!
 
