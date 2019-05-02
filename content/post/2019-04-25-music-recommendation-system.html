@@ -29,6 +29,8 @@ comments: no
 <li><a href="#obtain-data">Obtain Data</a></li>
 <li><a href="#scrub-and-explore">Scrub and Explore</a><ul>
 <li><a href="#ratings">Ratings</a></li>
+<li><a href="#friends">Friends</a></li>
+<li><a href="#metadata">Metadata</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -106,6 +108,10 @@ user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_tagge
 ## 4      2       54  10300
 ## 5      2       55   8983
 ## 6      2       56   6152</code></pre>
+<pre class="r"><code>ratings %&gt;% 
+  select_if(function(x) any(is.na(x))) %&gt;% 
+  summarise_each(funs(sum(is.na(.))))</code></pre>
+<pre><code>## # A tibble: 1 x 0</code></pre>
 <p>Lets first make userID and artistID as factors.</p>
 <pre class="r"><code>ratings %&gt;% 
   mutate(userID = as.factor(userID),
@@ -138,7 +144,7 @@ grid.arrange(p +
                geom_density(aes(x = z_score_weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7)+
                scale_x_log10() + 
                labs(x = &quot;z-score(log(weight))&quot;, y = &quot;density&quot;, title = &quot;z-score(log(Weight)) Density Distribution&quot;))</code></pre>
-<p><img src="/post/2019-04-25-music-recommendation-system_files/figure-html/unnamed-chunk-11-1.png" width="768" /></p>
+<p><img src="/post/2019-04-25-music-recommendation-system_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
 <pre class="r"><code>ratings %&gt;% 
   mutate(log_weight = log10(weight),
          z_score_log_weight = scale(log_weight)) %&gt;% 
@@ -162,6 +168,202 @@ grid.arrange(p +
 <p>Using scaled (i.e. z-score) of log10 of weight field as the rating.</p>
 <pre class="r"><code>ratings %&gt;% 
   mutate(rating = scale(log10(weight))) -&gt; ratings</code></pre>
+<pre class="r"><code>ratings %&gt;% 
+  count(userID, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 1,892 x 2
+##    userID     n
+##    &lt;fct&gt;  &lt;int&gt;
+##  1 2         50
+##  2 3         50
+##  3 4         50
+##  4 5         50
+##  5 6         50
+##  6 7         50
+##  7 8         50
+##  8 9         50
+##  9 10        50
+## 10 11        50
+## # … with 1,882 more rows</code></pre>
+<p>Looks like a highly cleaned dataset, where every user has exactly 50 ratings (or user’s play counts of exactly 50 artists).</p>
+<pre class="r"><code>ratings %&gt;% 
+  count(artistID, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 17,632 x 2
+##    artistID     n
+##    &lt;fct&gt;    &lt;int&gt;
+##  1 89         611
+##  2 289        522
+##  3 288        484
+##  4 227        480
+##  5 300        473
+##  6 67         429
+##  7 333        417
+##  8 292        407
+##  9 190        400
+## 10 498        399
+## # … with 17,622 more rows</code></pre>
+</div>
+<div id="friends" class="section level3">
+<h3>Friends</h3>
+<pre class="r"><code>friends %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 25,434
+## Variables: 2
+## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3…
+## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1…</code></pre>
+<pre class="r"><code>friends %&gt;% 
+  select_if(function(x) any(is.na(x))) %&gt;% 
+  summarise_each(funs(sum(is.na(.))))</code></pre>
+<pre><code>## # A tibble: 1 x 0</code></pre>
+<pre class="r"><code>friends %&gt;% 
+  mutate(userID = as.factor(userID),
+         friendID = as.factor(friendID)) -&gt; friends</code></pre>
+<pre class="r"><code>friends %&gt;% 
+  count(userID, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 1,892 x 2
+##    userID     n
+##    &lt;fct&gt;  &lt;int&gt;
+##  1 1543     119
+##  2 1281     110
+##  3 831      106
+##  4 179       97
+##  5 1503      95
+##  6 1023      91
+##  7 405       90
+##  8 1895      90
+##  9 1300      89
+## 10 390       88
+## # … with 1,882 more rows</code></pre>
+</div>
+<div id="metadata" class="section level3">
+<h3>Metadata</h3>
+<pre class="r"><code>metadata %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 186,479
+## Variables: 10
+## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,…
+## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 7…
+## $ tagID      &lt;dbl&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 2…
+## $ day        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,…
+## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009,…
+## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;f…
+## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;…
+## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.las…
+## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;,…</code></pre>
+<pre class="r"><code>metadata %&gt;% 
+  select_if(function(x) any(is.na(x))) %&gt;% 
+  summarise_each(funs(sum(is.na(.))))</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##    name   url pictureURL
+##   &lt;int&gt; &lt;int&gt;      &lt;int&gt;
+## 1 22951 22951      23024</code></pre>
+<p>I’ll skip worrying about NA urls and pictureURLs for now. Lets explore the rows where name is NA.</p>
+<pre class="r"><code>metadata %&gt;% 
+  filter(is.na(name))</code></pre>
+<pre><code>## # A tibble: 22,951 x 10
+##    userID artistID tagID   day month  year tagValue  name  url   pictureURL
+##     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     
+##  1      4     1713    18     1    11  2007 electron… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  2      4     1745    18     1    10  2007 electron… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  3      4     1810    72     1    12  2007 hard rock &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  4      4     1824    15     1     6  2007 downtempo &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  5      4     1870    92     1     3  2007 dope      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  6      4     1873    78     1     3  2007 alternat… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  7      4     1917     7     1     8  2007 gothic m… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  8      4     2370    76     1     9  2007 progress… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  9      5     2786    96     1     4  2008 spring    &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+## 10      8    14103    24     1    11  2006 pop       &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+## # … with 22,941 more rows</code></pre>
+<pre class="r"><code>ratings %&gt;% 
+  filter(artistID == 1713)</code></pre>
+<pre><code>## # A tibble: 58 x 4
+##    userID artistID weight rating[,1]
+##    &lt;fct&gt;  &lt;fct&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1 59     1713        610     0.617 
+##  2 62     1713        214    -0.0671
+##  3 99     1713        561     0.563 
+##  4 103    1713         23    -1.52  
+##  5 124    1713       1080     0.991 
+##  6 183    1713        161    -0.253 
+##  7 191    1713        107    -0.520 
+##  8 210    1713       7898     2.29  
+##  9 211    1713        709     0.716 
+## 10 216    1713        174    -0.202 
+## # … with 48 more rows</code></pre>
+<p>Looks like even though we dont have the name of these artists, we have ratings for them in the ratings dataframe, so we’ll keep them.</p>
+<pre class="r"><code>metadata %&gt;% 
+  mutate(userID = as.factor(userID),
+         artistID = as.factor(artistID),
+         tagID = as.factor(tagID),
+         tagValue = as.factor(tagValue),
+         name = as.factor(name)) %&gt;% 
+  rename(artistName = name) -&gt; metadata</code></pre>
+<p>I dont think we will need the 2 URL columns for this study, dropping them for now.</p>
+<pre class="r"><code>metadata %&gt;% 
+  select(-url, -pictureURL) -&gt; metadata</code></pre>
+<pre class="r"><code>metadata %&gt;% 
+  filter(!is.na(artistName)) %&gt;% 
+  count(artistName, sort = TRUE) %&gt;% 
+  top_n(20, n) %&gt;% 
+  mutate(artistName = reorder(artistName, n)) %&gt;%
+  ggplot( aes(x=artistName, y=n)) +
+  geom_segment( aes(x=artistName, xend=artistName, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
+  geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
+  coord_flip() + 
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        legend.position=&quot;none&quot;) +
+  labs(x = &quot;&quot;,
+       y = &quot;Number of Occurences&quot;,
+       title = &quot;Most popular Artists&quot;,
+       subtitle = &quot;Top 20 artists&quot;,
+       caption = &quot;Based on data from the Last.fm dataset&quot;)</code></pre>
+<p><img src="/post/2019-04-25-music-recommendation-system_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<pre class="r"><code>metadata %&gt;% 
+  count(tagValue, sort = TRUE) %&gt;% 
+  top_n(20, n) %&gt;% 
+  mutate(tagValue = reorder(tagValue, n)) %&gt;%
+  ggplot( aes(x=tagValue, y=n)) +
+  geom_segment( aes(x=tagValue, xend=tagValue, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
+  geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
+  coord_flip() + 
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        legend.position=&quot;none&quot;) +
+  labs(x = &quot;&quot;,
+       y = &quot;Number of Occurences&quot;,
+       title = &quot;Most popular Tags&quot;,
+       subtitle = &quot;Top 20 Tags&quot;,
+       caption = &quot;Based on data from the Last.fm dataset&quot;)</code></pre>
+<p><img src="/post/2019-04-25-music-recommendation-system_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p>Looks like few of the most popular Artists in this dataset are Britney Spears, Lady Gaga and Christina Aguilera and as expected, Rock and Pop are the most popular tags. Lets see which are the most popular tags that are assigned to the artists by the users.</p>
+<pre class="r"><code>metadata %&gt;% 
+  filter(!is.na(artistName)) %&gt;% 
+  count(artistName, tagValue, sort = TRUE) %&gt;% 
+  top_n(20, n)</code></pre>
+<pre><code>## # A tibble: 20 x 3
+##    artistName         tagValue             n
+##    &lt;fct&gt;              &lt;fct&gt;            &lt;int&gt;
+##  1 Britney Spears     pop                108
+##  2 Lady Gaga          pop                 99
+##  3 Lady Gaga          dance               87
+##  4 The Beatles        classic rock        85
+##  5 Christina Aguilera pop                 83
+##  6 Madonna            pop                 78
+##  7 Muse               alternative rock    73
+##  8 Depeche Mode       electronic          68
+##  9 Katy Perry         pop                 68
+## 10 Michael Jackson    pop                 67
+## 11 Nirvana            grunge              67
+## 12 The Beatles        rock                67
+## 13 Muse               rock                65
+## 14 Rihanna            pop                 65
+## 15 Britney Spears     dance               64
+## 16 Radiohead          alternative         64
+## 17 Madonna            dance               63
+## 18 Muse               alternative         62
+## 19 Led Zeppelin       classic rock        60
+## 20 The Beatles        british             59</code></pre>
 <p><sub><i>Cover Photo by Malte Wingen on Unsplash</i></sub></p>
 </div>
 </div>

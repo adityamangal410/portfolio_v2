@@ -90,6 +90,12 @@ ratings %>%
   head()
 ```
 
+```{r}
+ratings %>% 
+  select_if(function(x) any(is.na(x))) %>% 
+  summarise_each(funs(sum(is.na(.))))
+```
+
 
 Lets first make userID and artistID as factors.
 
@@ -137,6 +143,136 @@ Using scaled (i.e. z-score) of log10 of weight field as the rating.
 ```{r}
 ratings %>% 
   mutate(rating = scale(log10(weight))) -> ratings
+```
+
+```{r}
+ratings %>% 
+  count(userID, sort = TRUE)
+```
+
+Looks like a highly cleaned dataset, where every user has exactly 50 ratings (or user's play counts of exactly 50 artists).
+
+```{r}
+ratings %>% 
+  count(artistID, sort = TRUE)
+```
+
+### Friends
+
+```{r}
+friends %>% 
+  glimpse()
+```
+
+```{r}
+friends %>% 
+  select_if(function(x) any(is.na(x))) %>% 
+  summarise_each(funs(sum(is.na(.))))
+```
+
+```{r}
+friends %>% 
+  mutate(userID = as.factor(userID),
+         friendID = as.factor(friendID)) -> friends
+```
+
+
+```{r}
+friends %>% 
+  count(userID, sort = TRUE)
+```
+
+### Metadata
+
+```{r}
+metadata %>% 
+  glimpse()
+```
+
+```{r}
+metadata %>% 
+  select_if(function(x) any(is.na(x))) %>% 
+  summarise_each(funs(sum(is.na(.))))
+```
+
+I'll skip worrying about NA urls and pictureURLs for now. Lets explore the rows where name is NA.
+
+```{r}
+metadata %>% 
+  filter(is.na(name))
+```
+
+```{r}
+ratings %>% 
+  filter(artistID == 1713)
+```
+
+Looks like even though we dont have the name of these artists, we have ratings for them in the ratings dataframe, so we'll keep them. 
+
+```{r}
+metadata %>% 
+  mutate(userID = as.factor(userID),
+         artistID = as.factor(artistID),
+         tagID = as.factor(tagID),
+         tagValue = as.factor(tagValue),
+         name = as.factor(name)) %>% 
+  rename(artistName = name) -> metadata
+```
+
+I dont think we will need the 2 URL columns for this study, dropping them for now. 
+
+```{r}
+metadata %>% 
+  select(-url, -pictureURL) -> metadata
+```
+
+
+```{r}
+metadata %>% 
+  filter(!is.na(artistName)) %>% 
+  count(artistName, sort = TRUE) %>% 
+  top_n(20, n) %>% 
+  mutate(artistName = reorder(artistName, n)) %>%
+  ggplot( aes(x=artistName, y=n)) +
+  geom_segment( aes(x=artistName, xend=artistName, y=0, yend=n), color="skyblue", size=1) +
+  geom_point( color="blue", size=4, alpha=0.6) +
+  coord_flip() + 
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        legend.position="none") +
+  labs(x = "",
+       y = "Number of Occurences",
+       title = "Most popular Artists",
+       subtitle = "Top 20 artists",
+       caption = "Based on data from the Last.fm dataset")
+```
+
+```{r}
+metadata %>% 
+  count(tagValue, sort = TRUE) %>% 
+  top_n(20, n) %>% 
+  mutate(tagValue = reorder(tagValue, n)) %>%
+  ggplot( aes(x=tagValue, y=n)) +
+  geom_segment( aes(x=tagValue, xend=tagValue, y=0, yend=n), color="skyblue", size=1) +
+  geom_point( color="blue", size=4, alpha=0.6) +
+  coord_flip() + 
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        legend.position="none") +
+  labs(x = "",
+       y = "Number of Occurences",
+       title = "Most popular Tags",
+       subtitle = "Top 20 Tags",
+       caption = "Based on data from the Last.fm dataset")
+```
+
+Looks like few of the most popular Artists in this dataset are Britney Spears, Lady Gaga and Christina Aguilera and as expected, Rock and Pop are the most popular tags. Lets see which are the most popular tags that are assigned to the artists by the users.
+
+```{r}
+metadata %>% 
+  filter(!is.na(artistName)) %>% 
+  count(artistName, tagValue, sort = TRUE) %>% 
+  top_n(20, n)
 ```
 
 
