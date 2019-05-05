@@ -21,8 +21,9 @@ readingtime: '15'
 draft: no
 coverImage: https://lh3.googleusercontent.com/rCAvA7NkPNFuMZTZJZ1oL3sOBAXHVlxE0Dq13qPSkJpomxLYx9O-Zx2vd7OMaPA4d_izBW34ggHtoJOBXFa4DXEWqv-lBS7ZpC-7jAtO1E-JQWRwjpz2qCVmCBrR348x-GlP6ENWhykU-pWkZp-ogDLhiqbiZemhFjJk_YN7tI68aMR_KaUGYTg9fcqL7nXfbakHqMpe-Px2ITB44gfDCIYyYACFCDQR0DYRMDuOVPzvlqE_H-xvTkd7vvl8iBVrpUcJUiG0ugTYP8N5laj6RLLvMVQzUkclldd1eqnLnxfDFKiXb63WxXmV2WndZN8E90fx3wArK-uzVGBucLpbCgI7_deAx6-FZGz9mypKuRk3lWk8nCrL-o7BqfF2L7fLvKFHfjGyXg3NBj0443YyYTwYXy3KyTlCYPbuIQwhCkQtaYwSneHLIOSeapIY8GDIcbe0M3wVItyQkMq9xw2dkkB98G_5yr6ksVBHThQEQUG1MZz5jGGQXQcNxNt_ANnMxQ6cj80ArTv60MPpyh52PODotREvzR0LUOuobAx4qk2EhoErlnMKYvPWd0foC1NyJ0Q39Eebh-gSxWS83_hee7LW5m-ebTPUUS8GQy0e5eKIngbHd3e7sNbIgsMtUUBY1DO0ScZlpJw3bieQ5mTragOe9Kn3Jyjk7hEt0xbsr3GIt3hTT4qMypbNS9QFxR2IlVrAxaHFH-0YLrk3cbjd_5-F2g=w3258-h1832-no
 thumbnailImage: https://lh3.googleusercontent.com/xAuRPz7Ak_we8eZ8ImIUuLSKATVeeAOWlXUIYg89TrSMZ_eKS8eGQCHqXKGJytF8k5ABvHMD_PjN0ZK9yOPa0MGSWqeoZlIXdLWu73-L_JHCji1Ah_sQUwDpOj6osmS00AIMnGk897Y9HAIWQXjdFAlwJ4_rxVOiGtD-oh4En-48ZRDGJmKOqRtlHt9RBhTJ1ZzawqYwZzPZc629QILuatgMj9blSsASPxZTxUtMf9hP6LoOSlK2X1pbYi5jxAEQ33tRG4FgvnQJtcjYtqvE0HDoIrcSneKSyPaY0o3fkda6tX07wMW8nxHSq4UgraY_A2xQndtGmsBVMdrL9j6OnYdPNiv6uyW3DEquMAVt9EKGRUtDJNSYXjyDffQfhI6v7nirLBbEBlrVJ0xSkju-Skxu4jbTEHzpp0rZW73xyBfIjzwIww6VJzOnFmJOjt6E_eZZHY3W39sW4m5W9uLYGxozhE_mf_IaFLE6UbW7klsmGEkRgzB0h6vwx6FB6nSMyXSG7telr-Zy1p_L_GBdL3VJmJJccNH5Sms2RBt7G_dYMeofwEy1qqyP49wFEgaNTGtUKa2aK4tYlNGpa6MuRxYVXBrSY5SgtBtmjudxi6EuSVMhqJ1T6TV_RK4ppTTjo6sGwmaIcuIwP2tN-lRP9-YZz_cjN-4gc89Jm1spz_jghH9h7_LQUqW1S9iXfQuR-Otj3s8lQn5wEmtnOyDUkdwCaQ=w750-h422-no
-thumbnailImagePosition: top
+thumbnailImagePosition: left
 comments: no
+coverCaption: Photo by Srikanta H. U on Unsplash
 ---
 
 
@@ -51,9 +52,9 @@ comments: no
 <li><a href="#jimmy-fallon">Jimmy Fallon</a></li>
 <li><a href="#jimmy-kimmel">Jimmy Kimmel</a></li>
 </ul></li>
+</ul></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#references">References</a></li>
-</ul></li>
 </ul>
 </div>
 
@@ -94,9 +95,9 @@ report %&gt;%
   glimpse()</code></pre>
 <pre><code>## Observations: 19,195
 ## Variables: 3
-## $ page &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3,…
-## $ line &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 1, 2, 3, 4,…
-## $ text &lt;chr&gt; &quot;U.S. Department of Justice&quot;, &quot;AttarAe:,c\\\\&#39;erlc Predtiet…</code></pre>
+## $ page &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, ...
+## $ line &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 1, 2, 3, ...
+## $ text &lt;chr&gt; &quot;U.S. Department of Justice&quot;, &quot;AttarAe:,c\\\\&#39;erlc Predti...</code></pre>
 </div>
 <div id="cleaning" class="section level2">
 <h2>Cleaning</h2>
@@ -161,7 +162,6 @@ report %&gt;%
 <p>Using python’s NLTK’s Vader Lexicon to generate sentiments for each line.</p>
 <pre class="python"><code>import pandas as pd
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-
 sid = SentimentIntensityAnalyzer()
 text = pd.Series(r[&quot;content$text&quot;])
 sentiments = text.apply(sid.polarity_scores).apply(pd.Series)</code></pre>
@@ -186,41 +186,41 @@ content %&gt;%
   head(10) %&gt;% 
   select(text, page)</code></pre>
 <pre><code>## # A tibble: 10 x 2
-##    text                                                                page
-##    &lt;chr&gt;                                                              &lt;dbl&gt;
-##  1 &quot;crime\&quot;). obstruction of justice can be motivated by a desire to…   369
-##  2 justice statutes to protect, among other things, the integrity of…   388
-##  3 wealth fund and was interested in improving relations between the…   163
-##  4 &quot;protected the president. and (have great respect for that, i&#39;ll …   322
-##  5 the same thing , but co-opt the liberal opposition and the gop op…    52
-##  6 &quot;go. he is a good guy. i hope you can let this go.\&quot; 238 comey ag…   252
-##  7 &quot;\&quot;not based on a legal issue, but based on a trust issue, [where…   250
-##  8 &quot;success would require u.s. support to succeed: \&quot;all that is req…   138
-##  9 &quot;friends. please share with them - we believe this is a good foun…   166
-## 10 that the president still cared about him and encouraging him to s…   333</code></pre>
+##    text                                                               page
+##    &lt;chr&gt;                                                             &lt;int&gt;
+##  1 &quot;crime\&quot;). obstruction of justice can be motivated by a desire t…   369
+##  2 justice statutes to protect, among other things, the integrity o…   388
+##  3 wealth fund and was interested in improving relations between th…   163
+##  4 &quot;protected the president. and (have great respect for that, i&#39;ll…   322
+##  5 the same thing , but co-opt the liberal opposition and the gop o…    52
+##  6 &quot;go. he is a good guy. i hope you can let this go.\&quot; 238 comey a…   252
+##  7 &quot;\&quot;not based on a legal issue, but based on a trust issue, [wher…   250
+##  8 &quot;success would require u.s. support to succeed: \&quot;all that is re…   138
+##  9 &quot;friends. please share with them - we believe this is a good fou…   166
+## 10 that the president still cared about him and encouraging him to …   333</code></pre>
 <pre class="r"><code>content %&gt;% 
   arrange(compound) %&gt;% 
   head(10) %&gt;% 
   select(text, page)</code></pre>
 <pre><code>## # A tibble: 10 x 2
-##    text                                                                page
-##    &lt;chr&gt;                                                              &lt;dbl&gt;
-##  1 &quot;specialist who exposed a fraud and later died in a russian priso…   120
-##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked .\&quot; 5…   290
-##  3 be no serious argument against the president&#39;s potential criminal…   392
-##  4 worse , alfonse capone , legendary mob boss, killer and &#39;public e…   337
-##  5 foreign contributions ban, in violation of 18 u.s.c. § 371 ; the …   193
-##  6 horrible witch hunt and the dishonest media! 1025                    359
-##  7 &quot;had \&quot;never been directed to do anything [he] believe[d] to be i…   269
-##  8 one), three defendants with conspiracy to commit wire fraud and •…   182
-##  9 guilty, pursuant to a single-count information , to identity frau…   183
-## 10 difficult to argue that hacked emails in electronic form, which a…   184</code></pre>
+##    text                                                               page
+##    &lt;chr&gt;                                                             &lt;int&gt;
+##  1 &quot;specialist who exposed a fraud and later died in a russian pris…   120
+##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked .\&quot; …   290
+##  3 be no serious argument against the president&#39;s potential crimina…   392
+##  4 worse , alfonse capone , legendary mob boss, killer and &#39;public …   337
+##  5 foreign contributions ban, in violation of 18 u.s.c. § 371 ; the…   193
+##  6 horrible witch hunt and the dishonest media! 1025                   359
+##  7 &quot;had \&quot;never been directed to do anything [he] believe[d] to be …   269
+##  8 one), three defendants with conspiracy to commit wire fraud and …   182
+##  9 guilty, pursuant to a single-count information , to identity fra…   183
+## 10 difficult to argue that hacked emails in electronic form, which …   184</code></pre>
 </div>
 <div id="most-common-correlated-words" class="section level2">
 <h2>Most Common Correlated Words</h2>
 <pre class="r"><code>word_cors &lt;- tidy_content %&gt;% 
-  add_count(word, name = &quot;counts&quot;) %&gt;% 
-  filter(counts &gt; stats::quantile(counts, 0.7)) %&gt;% 
+  add_count(word) %&gt;% 
+  filter(n &gt; stats::quantile(n, 0.7)) %&gt;% 
   pairwise_cor(word, page, sort = TRUE)</code></pre>
 <pre class="r"><code>set.seed(123)
 
@@ -248,11 +248,9 @@ word_cors %&gt;%
 Using python’s scikit-learn for this.</p>
 <pre class="python"><code>from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
-
 stopwords = ENGLISH_STOP_WORDS
 vectorizer = TfidfVectorizer(analyzer=&#39;word&#39;, stop_words=stopwords, max_df=0.3, min_df=2)
 vector_train = vectorizer.fit_transform(r[&quot;content$text&quot;])
-
 def get_related_lines(query):
   vector_query = vectorizer.transform([query])
   cosine_sim = linear_kernel(vector_query, vector_train).flatten()
@@ -263,18 +261,21 @@ def get_related_lines(query):
 <pre class="r"><code>content %&gt;% 
   slice(get_related_lines(&quot;michael cohen&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 alphabetically by subject, are summarized below.                446     3
-## 2 flynn is awaiting sentencing .                                  203    25
-## 3 called melania trump&#39;s cell phone several times between janu…   357    39
-## 4 &quot;manafort \&quot;a brave man\&quot; for refusin to \&quot;break\&quot; and said …   218    23
-## 5 (bob)                     spring 2016 to discuss russian for…   404    17
-## 6 p-sco-000000328 (5/9/17 letter, hpsci to cohen); p-sco-00000…   351    31
-## 7 u.s. department of justice                                      346     1
-## 8 988                                                             354    48
-## 9 organization before the house oversight and ref orm committe…   348    50</code></pre>
+<pre><code>## Source: local data frame [9 x 3]
+## Groups: &lt;by row&gt;
+## 
+## # A tibble: 9 x 3
+##   text                                                          page  line
+##   &lt;chr&gt;                                                        &lt;int&gt; &lt;int&gt;
+## 1 alphabetically by subject, are summarized below.               446     3
+## 2 flynn is awaiting sentencing .                                 203    25
+## 3 called melania trump&#39;s cell phone several times between jan…   357    39
+## 4 &quot;manafort \&quot;a brave man\&quot; for refusin to \&quot;break\&quot; and said…   218    23
+## 5 (bob)                     spring 2016 to discuss russian fo…   404    17
+## 6 p-sco-000000328 (5/9/17 letter, hpsci to cohen); p-sco-0000…   351    31
+## 7 u.s. department of justice                                     346     1
+## 8 988                                                            354    48
+## 9 organization before the house oversight and ref orm committ…   348    50</code></pre>
 <p>One of the interesting results from above (page 357) -<br />
 “Toll records show that Cohen was connected to a White House phone number for approximately five minutes on January 19, 2018, and for approximately seven minutes on January 30, 2018, and that Cohen called Melania Trump’s cell phone several times between January 26, 2018, and January 30, 2018. Call Records of Michael Cohen.”</p>
 </div>
@@ -283,18 +284,21 @@ def get_related_lines(query):
 <pre class="r"><code>content %&gt;% 
   slice(get_related_lines(&quot;vladimir putin&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 response to question i, part (h)                                431    18
-## 2 polon skaya, olga        russian national introduced to geor…   408    30
-## 3 &quot;fine.\&quot;); andrew rafferty, trump says he would \&quot;get along …   228    26
-## 4 and former aide to russia&#39;s mini ster of energy . he communi…   406     6
-## 5 2016?                                                           420    32
-## 6 accompanied by a russian female named olga polonskaya. mifsu…    92     9
-## 7 vt.     why did you ultimately not give the speech you refer…   428    32
-## 8 candidates by speaking of closer ties with russia, 10 saying…   228     6
-## 9 kuznetsov, sergey        russian government official at the …   406    18</code></pre>
+<pre><code>## Source: local data frame [9 x 3]
+## Groups: &lt;by row&gt;
+## 
+## # A tibble: 9 x 3
+##   text                                                          page  line
+##   &lt;chr&gt;                                                        &lt;int&gt; &lt;int&gt;
+## 1 response to question i, part (h)                               431    18
+## 2 polon skaya, olga        russian national introduced to geo…   408    30
+## 3 &quot;fine.\&quot;); andrew rafferty, trump says he would \&quot;get along…   228    26
+## 4 and former aide to russia&#39;s mini ster of energy . he commun…   406     6
+## 5 2016?                                                          420    32
+## 6 accompanied by a russian female named olga polonskaya. mifs…    92     9
+## 7 vt.     why did you ultimately not give the speech you refe…   428    32
+## 8 candidates by speaking of closer ties with russia, 10 sayin…   228     6
+## 9 kuznetsov, sergey        russian government official at the…   406    18</code></pre>
 <p>One of the interesting results from above (page 92) -<br />
 “On March 24, 2016, Papadopoulos met with Mifsud in London. Mifsud was accompanied by a russian female named olga polonskaya. Mifsud introduced Polonskaya as a former student of his who had connections to Vladimir Putin”</p>
 </div>
@@ -310,18 +314,18 @@ def get_related_lines(query):
   head(10) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 10 x 3
-##    text                                                          page  line
-##    &lt;chr&gt;                                                        &lt;dbl&gt; &lt;dbl&gt;
-##  1 &quot;specialist who exposed a fraud and later died in a russian…   120    11
-##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked…   290    20
-##  3 be no serious argument against the president&#39;s potential cr…   392    26
-##  4 worse , alfonse capone , legendary mob boss, killer and &#39;pu…   337    14
-##  5 foreign contributions ban, in violation of 18 u.s.c. § 371 …   193    41
-##  6 horrible witch hunt and the dishonest media! 1025              359     4
-##  7 &quot;had \&quot;never been directed to do anything [he] believe[d] t…   269     4
-##  8 one), three defendants with conspiracy to commit wire fraud…   182    28
-##  9 guilty, pursuant to a single-count information , to identit…   183    15
-## 10 difficult to argue that hacked emails in electronic form, w…   184    27</code></pre>
+##    text                                                         page  line
+##    &lt;chr&gt;                                                       &lt;int&gt; &lt;int&gt;
+##  1 &quot;specialist who exposed a fraud and later died in a russia…   120    11
+##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucke…   290    20
+##  3 be no serious argument against the president&#39;s potential c…   392    26
+##  4 worse , alfonse capone , legendary mob boss, killer and &#39;p…   337    14
+##  5 foreign contributions ban, in violation of 18 u.s.c. § 371…   193    41
+##  6 horrible witch hunt and the dishonest media! 1025             359     4
+##  7 &quot;had \&quot;never been directed to do anything [he] believe[d] …   269     4
+##  8 one), three defendants with conspiracy to commit wire frau…   182    28
+##  9 guilty, pursuant to a single-count information , to identi…   183    15
+## 10 difficult to argue that hacked emails in electronic form, …   184    27</code></pre>
 <p>The joke at around 34secs into the video can be clearly seen above as the 2nd highest polarized line in the report (page 290, line 20).</p>
 </div>
 <div id="stephen-colbert" class="section level3">
@@ -330,18 +334,21 @@ def get_related_lines(query):
 <pre class="r"><code>content %&gt;% 
   slice(get_related_lines(&quot;olc&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 concerns about sealed indictments. even if an indictment wer…   214    20
-## 2 &quot;alia, bribery,\&quot; id. (citing u.s. const.artii,§ 4).&quot;           382    28
-## 3 &quot;constitution confers no power in the president to receive b…   382    24
-## 4 second, while the olc opinion concludes that a sitting presi…   213    29
-## 5 a sitting president &#39;s amenability to indictment and crimina…   213    35
-## 6 l, § 3, cl. 7. impeachment is also a drastic and rarely invo…   390    40
-## 7 department of justice and the framework of the special couns…   213    24
-## 8 govern and potentially preempt constitutional processes for …   213    28
-## 9 executive officials).                                           382    18</code></pre>
+<pre><code>## Source: local data frame [9 x 3]
+## Groups: &lt;by row&gt;
+## 
+## # A tibble: 9 x 3
+##   text                                                          page  line
+##   &lt;chr&gt;                                                        &lt;int&gt; &lt;int&gt;
+## 1 concerns about sealed indictments. even if an indictment we…   214    20
+## 2 &quot;alia, bribery,\&quot; id. (citing u.s. const.artii,§ 4).&quot;          382    28
+## 3 &quot;constitution confers no power in the president to receive …   382    24
+## 4 second, while the olc opinion concludes that a sitting pres…   213    29
+## 5 a sitting president &#39;s amenability to indictment and crimin…   213    35
+## 6 l, § 3, cl. 7. impeachment is also a drastic and rarely inv…   390    40
+## 7 department of justice and the framework of the special coun…   213    24
+## 8 govern and potentially preempt constitutional processes for…   213    28
+## 9 executive officials).                                          382    18</code></pre>
 <p>The discussion about OLC from the video above at around 9min48secs can be seen in multiple instances as per our search engine, notably here (page 390) -
 “Impeachment is also a drastic and rarely invoked remedy, and Congress is not restricted to relying only on impeachment, rather than making criminal law applicable to a former President, as OLC has recognized.”</p>
 </div>
@@ -351,18 +358,21 @@ def get_related_lines(query):
 <pre class="r"><code>content %&gt;% 
   slice(get_related_lines(&quot;crazy&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 president had said similar things about comey in an off-the-…   283    43
-## 2 ukraine to support the plan. 925 manafort also initially tol…   148     8
-## 3 president &#39; s request, he decided not to share details of th…   299     7
-## 4 office, prepared to submit a resignation letter with his chi…   300    23
-## 5 &quot;information.\&quot; 470 hicks said that when she told the presid…   283    16
-## 6 &quot;prior day to terminate comey, telling lavrov and kislyak: \…   283     8
-## 7 &quot;the president also told the russian foreign minister , \&quot;i …   274    21
-## 8 &quot;serious concerns about obstruction\&quot; may have referred to c…   262    38
-## 9 • &#39; investigative technique                                     157    20</code></pre>
+<pre><code>## Source: local data frame [9 x 3]
+## Groups: &lt;by row&gt;
+## 
+## # A tibble: 9 x 3
+##   text                                                          page  line
+##   &lt;chr&gt;                                                        &lt;int&gt; &lt;int&gt;
+## 1 president had said similar things about comey in an off-the…   283    43
+## 2 ukraine to support the plan. 925 manafort also initially to…   148     8
+## 3 president &#39; s request, he decided not to share details of t…   299     7
+## 4 office, prepared to submit a resignation letter with his ch…   300    23
+## 5 &quot;information.\&quot; 470 hicks said that when she told the presi…   283    16
+## 6 &quot;prior day to terminate comey, telling lavrov and kislyak: …   283     8
+## 7 &quot;the president also told the russian foreign minister , \&quot;i…   274    21
+## 8 &quot;serious concerns about obstruction\&quot; may have referred to …   262    38
+## 9 • &#39; investigative technique                                    157    20</code></pre>
 <p>The joke in the video around 3mins can be seen by the search query which leads to one of these interesting results on page 299 of the report -
 “That evening, McGahn called both Priebus and Bannon and told them that he intended to
 resign. McGahn recalled that, after speaking with his attorney and given the nature of the
@@ -375,34 +385,36 @@ House staff.”</p>
 <pre class="r"><code>content %&gt;% 
   slice(get_related_lines(&quot;election interference&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 notwithstanding his recusal , he was going to confine the sp…   310    28
-## 2 members of the trump campaign conspired or coordinated with …    13    23
-## 3 establish that members of the trump campaign conspired or co…    10     4
-## 4 2. president-elect trump is briefed on the intelligence comm…   239     3
-## 5 (e.g., florida and pennsylvania) that were perceived as comp…    51    11
-## 6 is a good guy to negotiate ....                                  80     5
-## 7 papadopoulos &#39;s false statements in january 2017 impeded the…   201    27
-## 8 for having interfered in the election. by early 2017, severa…     9    27
-## 9 rosenstein, rod         deput y attorney general (apr. 20 17…   409    13</code></pre>
+<pre><code>## Source: local data frame [9 x 3]
+## Groups: &lt;by row&gt;
+## 
+## # A tibble: 9 x 3
+##   text                                                          page  line
+##   &lt;chr&gt;                                                        &lt;int&gt; &lt;int&gt;
+## 1 notwithstanding his recusal , he was going to confine the s…   310    28
+## 2 members of the trump campaign conspired or coordinated with…    13    23
+## 3 establish that members of the trump campaign conspired or c…    10     4
+## 4 2. president-elect trump is briefed on the intelligence com…   239     3
+## 5 (e.g., florida and pennsylvania) that were perceived as com…    51    11
+## 6 is a good guy to negotiate ....                                 80     5
+## 7 papadopoulos &#39;s false statements in january 2017 impeded th…   201    27
+## 8 for having interfered in the election. by early 2017, sever…     9    27
+## 9 rosenstein, rod         deput y attorney general (apr. 20 1…   409    13</code></pre>
 <p>The discussion at around 50secs into the video can be obtained from the above search query, from page 13 -
 “Although the investigation established that the Russian government perceived it would benefit from a Trump presidency and worked to secure that outcome, and that the Campaign expected it would benefit electorally from information stolen and released through Russian efforts, the investigation did not establish that members of the Trump Campaign conspired or coordinated with the Russian government in its election interference activities.”</p>
 </div>
 </div>
-<div id="summary" class="section level2">
-<h2>Summary</h2>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
 <p>Looks like all the above tools can be pretty handy in doing a quick and thorough investigation of a large document in a very small amount of time (and its pretty fun too!)</p>
 </div>
-<div id="references" class="section level2">
-<h2>References</h2>
+<div id="references" class="section level1">
+<h1>References</h1>
 <ol style="list-style-type: decimal">
 <li><a href="https://www.kaggle.com/paultimothymooney/mueller-report">Kaggle data reference</a></li>
 <li><a href="https://www.tidytextmining.com/">Text Mining with R by Julia Silge &amp; David Robinson</a></li>
 <li><a href="https://www.data-to-viz.com/">Visualization reference</a></li>
 <li><a href="https://towardsdatascience.com/how-i-used-machine-learning-to-classify-emails-and-turn-them-into-insights-efed37c1e66">Enron Email Analysis by Anthony Dm.</a></li>
 </ol>
-<p><sub><i>Cover Photo by Srikanta H. U on Unsplash</i></sub></p>
-</div>
 </div>

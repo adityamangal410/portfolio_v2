@@ -20,6 +20,7 @@ readingtime: '5'
 coverImage: https://lh3.googleusercontent.com/Q2HXmhvfyNs3DnEd5u1q9CYHiOB9l-fX4XBzBuBYNKRipmFzpoM8s-vcRuJAw3Tm_sXpH_xOIgJI4vjiXkOxDZmiWmM1Du9XOLIsoEtPUWXovhBmVXEIZI7yn_j3GLMwoBOQ_pzSpe5mxkfK6FxtIr6OGLAkOAHU9dUpz2jyUfCU-J9CiiJYC5m_OpyeVaujFyq8J2FreRRH9vbrHcKIj7K1nVKk5Ud_t9P8DtB_DffFMXKlr-UaphCGba3RA4rPovIVYJGxFZjEMCuDETSlE64bRY-PSGpvnvWA_op8k07tk_SbWaoQC53PMSGtCe5Gv1-INBYeXOF3_ULYj755xnfRm4UWjScEr0oNgDKHQyYLrf81lZF2yhXSdTt3UrBMZPh4sfsPLrsK5UzG8SwI15Nq6yLal16Egk5ZMW_bow8PjvuBvZbgoZmVrlU4EqOoEdbdRyxlii20Ku-veLhexOrrVL-SADDIYsfUM4dbIiaxF0ZNQewrThrPXcppsKulZTBnVYde1f7hVmxT0OYxw9Q5y00VXeVziwM5J-_I0wOTcNfTXb2g8k7_wrY9-GgrwUIGPSXZkdVYUJhqMrxKPalFOCbeoE7VbiobaJALA6qWD8lxey-uesWq9_6hetauVAk_W8ameuW4u8kWdJpLbciOfc_3joMs=w2750-h1832-no
 thumbnailImage: https://lh3.googleusercontent.com/5wIFfhutkaFsqnv2M72bnV_hFyJ_0d6y_Lu11O3U9Kx9XCD_WIGpMZCBl1iXJWzt63JsquXvi7TwNcNy6FGd_v5zq8PH2o7UhTqVIraM8Re5UGWb0myvjgzwsl080wnIXAwCx6s8oRkxXgIE5OzIar_Fw6kPcXJLIaTho3Q2lSWVac9p_U1vxNlbgWsf16aKc2lKWjkwHTaE6Hj2NnchUAXJ_6TpnoUiran--qVOKgkwQcCtEqo7DulTQxEuBZaQV9yoGTt6jbrgmwcquzR1OqTezSyLCzp_D6hK-GSkRYyvxAmRg2PvB1HedzzmiQ67y-32Z0bctMcUBigffgX3P_H9hO5v-K--dyDM-mBDHByiBkJ-ltrm0GdoMEARmE6E0kC4oy2afPX9_-PzDFhnK7_I-TXLt-1yO63abxRM2weynQ9qJHka6tyOiom3xTl1B8nkpwo1UfHkbF9MGOBER32zb86JVLmR9fJJZvLAMNjyYefxLb7BdP1CHeSvAK7CZMOkgdLJ3BQ7a4PAbKLUJTXPGiFaMRwmzbrx6OrUNNQnA3qF_bfW7ALEs3PnwDlXPJ3GBOnH8KOqfAU_ChQSW4rwlaqKa4d8O5mc_RMUNgSuTXYe6Q3TsXW7c_VPz7QLcC5spGONtyJQ9T6CRvAxXq2mtI5zRUdu=w750-h500-no
 thumbnailImagePosition: left
+coverCaption: Photo by Simone van der Koelen on Unsplash
 ---
 
 
@@ -69,15 +70,15 @@ library(ggplot2) #Data Visualization</code></pre>
 ##  8 Ireland                   2013     18152573000
 ##  9 Italy                     2013     20898532000
 ## 10 Netherlands               2013     13480651000
-## # … with 1,090 more rows</code></pre>
+## # ... with 1,090 more rows</code></pre>
 <p>Summarizing and getting stats to better understand the dataset</p>
 <pre class="r"><code>drugs %&gt;% 
   glimpse()</code></pre>
 <pre><code>## Observations: 1,100
 ## Variables: 3
-## $ Exporter        &lt;chr&gt; &quot;World&quot;, &quot;Germany&quot;, &quot;Switzerland&quot;, &quot;Belgium&quot;, &quot;F…
-## $ Year            &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, …
-## $ `Exports (USD)` &lt;dbl&gt; 326445385000, 48493611000, 32337891000, 33329615…</code></pre>
+## $ Exporter        &lt;chr&gt; &quot;World&quot;, &quot;Germany&quot;, &quot;Switzerland&quot;, &quot;Belgium&quot;, ...
+## $ Year            &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013...
+## $ `Exports (USD)` &lt;dbl&gt; 326445385000, 48493611000, 32337891000, 333296...</code></pre>
 <pre class="r"><code>drugs %&gt;% 
   summary()</code></pre>
 <pre><code>##    Exporter              Year      Exports (USD)      
@@ -112,7 +113,7 @@ library(ggplot2) #Data Visualization</code></pre>
 ##  8 Ireland                    96686923000
 ##  9 Italy                      76012918000
 ## 10 Netherlands                59659401000
-## # … with 210 more rows</code></pre>
+## # ... with 210 more rows</code></pre>
 </div>
 <div id="exploring-data" class="section level2">
 <h2>Exploring Data</h2>
@@ -144,6 +145,7 @@ yearlyTop10s = drugs %&gt;%
   do(getTop10ForYear(.))
 yearlyTop10s</code></pre>
 <pre><code>## # A tibble: 44 x 3
+## # Groups:   Year [4]
 ##    Exporter                  Year `Exports (USD)`
 ##    &lt;chr&gt;                    &lt;dbl&gt;           &lt;dbl&gt;
 ##  1 Germany                   2013     48493611000
@@ -156,7 +158,7 @@ yearlyTop10s</code></pre>
 ##  8 Italy                     2013     20898532000
 ##  9 Netherlands               2013     13480651000
 ## 10 India                     2013     10313989000
-## # … with 34 more rows</code></pre>
+## # ... with 34 more rows</code></pre>
 <p>Writing function to plot a Donut Chart for each year showing percentage export contribution for top 10 exporters of that year as compared to all others.</p>
 <pre class="r"><code>plotTop10 = function(df){
   YEAR = df %&gt;% select(Year) %&gt;% unique() %&gt;% .$Year
@@ -194,6 +196,5 @@ yearlyTop10s</code></pre>
 <pre class="r"><code>plotTop10(yearlyTop10s %&gt;% filter(Year==2016))</code></pre>
 <p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
 <p>As can be seen Germany remains the biggest exporter of Drugs and Medicines over the past 5 years.</p>
-<p><sub><i>Cover Photo by Simone van der Koelen on Unsplash</i></sub></p>
 </div>
 </div>

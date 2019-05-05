@@ -20,6 +20,7 @@ readingtime: '5'
 coverImage: https://lh3.googleusercontent.com/JsmscZd_PHexzN7qIiIyGKMwqBV0KzMlx5LoQv1p_FE__Me-L20m3JoaJaJeN01JElIYeXdwLcogFKAHPUhFOlXDcjJQpFT7ulAIP7uFgwJ5vczVsLKcxednTuisE3WYDM_V-WGR63huo4HWr9t8-N2_ayXcFAJ5OD4N70XTV983rsxs-PUryxCDmHjFQpGDlkIBF9w_maXIis-HYnxFxJDl7BU2f6h_UOJguug3kwlkkc0DHsTXtG1eQU8z6yuWl1KU1N9Y79MDif2LHE32dk2efds5L6IICOMEbCIX789knem_T6MiKtatUL4GwZvE2yygRQunMlMjHBiKcZibkV6xFwUEty1x5_98gS1yQmg312wLNas6E_CO1F-0uI3dR_UleklXIzJwIAh_4vje1_1TrQsmTcjSk1ioYB1xqg3vQiwI25TaQeth6y64OytrJkliJxJIYM_vXhsk9NAzrSqfpjMb_9mC_R9bE3NuIJpNTKqQ_JShr3Z-u3Zxbc8ySlJttp9ewZ9jbG9jHvib4FEP0y67LK45p-rlwslXCOlDwzV__9rjz-VcN3_Kx0vmh0gaORjiTClg4WO7zjhPBo0kCtzHlJmtmWTHZPPdFlTRKJg8BCDdvGWgmh8m0EiVqekNEUZ7U98Zwalzr8s97Mf8cPYcT3E1=w3270-h1834-no
 thumbnailImage: https://lh3.googleusercontent.com/rH18DMGKl5FY_Oh9o6WIoCTt7bDkkwghTNZGDjX6WhqkiUkm8ZWDg5ZvbkQLmNVjPZwZ2ksaKnjAYR2bPiWkLkdhLTN5dLsKfoHNr4Qf6HhDGhVey6eb2hCCiipxs_IUyBewU4QudW7mtj8iNIiYWzp0L_My0ZfgFBAnV1dU5vKVVMm8JEZDzncNX_xuijhjc54OHlvJT7TOZ8Qkh-aG95OPVCWG2vCYN2HaSCC8jUXJ9iYvYam3GmFQ8fQs7kKRLCpRkQgNAvb0STu-5J1KVC3EIrrSIZEkwGCzlQb5E4ZbT2d3mEw8Mo921nq9CG6TvvFMQpKHdXbszn9tBFv25CjnPLwLJ_G1DNc_CbCcbNslhcJSnAvbJKGUPSTu8JHTBpx1NY25I-p5UcA-3pXl50vM4f2Jggcih-Urtr2DXOjpMqWIlwEHcETQ6VbUAQY4aIE71O-WWkJhxekBvIbc28dLE8NP7o7QwnPho6SVdwNuy7milDhI8mL_6FlQ0lDFrEHGdnK03vayfMsv3PWRrsondkCsyHYpW1a5ER9_3MdHTIn57ZdkpNY0eXYICp-3sg_-BSlZSYnWzVdJys7LXMcu4P5zAJXkKQzgEg17Byr_6gyJYDYbb4S1lnoZB4xAKkDxwV_-CWBCc3M6NV1i8MwWEJeS_GCR=w750-h420-no
 thumbnailImagePosition: left
+coverCaption: Photo by Willem De Meyer on Unsplash
 ---
 
 <script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
@@ -82,21 +83,21 @@ library(stringr)</code></pre>
 ##  8  1924 Cros… Men&#39;… Norway  Men               2 silv… Thoralf StrÃ¸ms…
 ##  9  1924 Cros… Men&#39;… Norway  Men               3 bron… Johan GrÃ¸ttums…
 ## 10  1924 Curl… Men&#39;… Britain Men               1 gold  Britain         
-## # … with 2,855 more rows, and 1 more variable: `Age of Athlete` &lt;dbl&gt;</code></pre>
+## # ... with 2,855 more rows, and 1 more variable: `Age of Athlete` &lt;dbl&gt;</code></pre>
 <p>Summarizing and getting stats to better understand the dataset</p>
 <pre class="r"><code>olympics %&gt;% 
   glimpse()</code></pre>
 <pre><code>## Observations: 2,865
 ## Variables: 9
-## $ Year                      &lt;dbl&gt; 1924, 1924, 1924, 1924, 1924, 1924, 19…
-## $ Sport                     &lt;chr&gt; &quot;Bobsled&quot;, &quot;Bobsled&quot;, &quot;Bobsled&quot;, &quot;Cros…
-## $ Event                     &lt;chr&gt; &quot;Men&#39;s Four/Five&quot;, &quot;Men&#39;s Four/Five&quot;, …
-## $ Country                   &lt;chr&gt; &quot;Switzerland&quot;, &quot;Britain&quot;, &quot;Belgium&quot;, &quot;…
-## $ Gender                    &lt;chr&gt; &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Me…
-## $ `Medal Rank`              &lt;dbl&gt; 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1,…
-## $ Medal                     &lt;chr&gt; &quot;gold&quot;, &quot;silver&quot;, &quot;bronze&quot;, &quot;gold&quot;, &quot;s…
-## $ `Name of Athlete or Team` &lt;chr&gt; &quot;Switzerland-1&quot;, &quot;Britain-1&quot;, &quot;Belgium…
-## $ `Age of Athlete`          &lt;dbl&gt; NA, NA, NA, 29, 24, 28, 29, 27, 24, NA…</code></pre>
+## $ Year                      &lt;dbl&gt; 1924, 1924, 1924, 1924, 1924, 1924, ...
+## $ Sport                     &lt;chr&gt; &quot;Bobsled&quot;, &quot;Bobsled&quot;, &quot;Bobsled&quot;, &quot;Cr...
+## $ Event                     &lt;chr&gt; &quot;Men&#39;s Four/Five&quot;, &quot;Men&#39;s Four/Five&quot;...
+## $ Country                   &lt;chr&gt; &quot;Switzerland&quot;, &quot;Britain&quot;, &quot;Belgium&quot;,...
+## $ Gender                    &lt;chr&gt; &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;...
+## $ `Medal Rank`              &lt;dbl&gt; 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, ...
+## $ Medal                     &lt;chr&gt; &quot;gold&quot;, &quot;silver&quot;, &quot;bronze&quot;, &quot;gold&quot;, ...
+## $ `Name of Athlete or Team` &lt;chr&gt; &quot;Switzerland-1&quot;, &quot;Britain-1&quot;, &quot;Belgi...
+## $ `Age of Athlete`          &lt;dbl&gt; NA, NA, NA, 29, 24, 28, 29, 27, 24, ...</code></pre>
 <pre class="r"><code>olympics %&gt;% 
   summary()</code></pre>
 <pre><code>##       Year         Sport              Event             Country         
@@ -146,7 +147,7 @@ library(stringr)</code></pre>
 ##  8 Angu… AI        AIA       660            ISO 3166-2:… Ameri…
 ##  9 Anta… AQ        ATA       010            ISO 3166-2:… &lt;NA&gt;  
 ## 10 Anti… AG        ATG       028            ISO 3166-2:… Ameri…
-## # … with 239 more rows, and 5 more variables: `sub-region` &lt;chr&gt;,
+## # ... with 239 more rows, and 5 more variables: `sub-region` &lt;chr&gt;,
 ## #   `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
 ## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;</code></pre>
 <p>Joining the 2 datasets and verifying if any country name mismatch happening in the 2.</p>
@@ -174,7 +175,7 @@ Lets try to find out the corresponding names for each of the 7 in the countryCod
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
 ##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
 ## 1 Unit… GB        GBR       826            ISO 3166-2:… Europe Northern Eu…
-## # … with 4 more variables: `intermediate-region` &lt;chr&gt;,
+## # ... with 4 more variables: `intermediate-region` &lt;chr&gt;,
 ## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
 ## #   `intermediate-region-code` &lt;chr&gt;</code></pre>
 <pre class="r"><code>countryCodes %&gt;% 
@@ -185,7 +186,7 @@ Lets try to find out the corresponding names for each of the 7 in the countryCod
 ## 1 Micr… FM        FSM       583            ISO 3166-2:… Ocean… Micronesia  
 ## 2 Unit… US        USA       840            ISO 3166-2:… Ameri… Northern Am…
 ## 3 Unit… UM        UMI       581            ISO 3166-2:… Ocean… Micronesia  
-## # … with 4 more variables: `intermediate-region` &lt;chr&gt;,
+## # ... with 4 more variables: `intermediate-region` &lt;chr&gt;,
 ## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
 ## #   `intermediate-region-code` &lt;chr&gt;</code></pre>
 <pre class="r"><code>countryCodes %&gt;% 
@@ -194,7 +195,7 @@ Lets try to find out the corresponding names for each of the 7 in the countryCod
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
 ##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
 ## 1 Czec… CZ        CZE       203            ISO 3166-2:… Europe Eastern Eur…
-## # … with 4 more variables: `intermediate-region` &lt;chr&gt;,
+## # ... with 4 more variables: `intermediate-region` &lt;chr&gt;,
 ## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
 ## #   `intermediate-region-code` &lt;chr&gt;</code></pre>
 <pre class="r"><code>countryCodes %&gt;% 
@@ -203,7 +204,7 @@ Lets try to find out the corresponding names for each of the 7 in the countryCod
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
 ##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
 ## 1 Russ… RU        RUS       643            ISO 3166-2:… Europe Eastern Eur…
-## # … with 4 more variables: `intermediate-region` &lt;chr&gt;,
+## # ... with 4 more variables: `intermediate-region` &lt;chr&gt;,
 ## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
 ## #   `intermediate-region-code` &lt;chr&gt;</code></pre>
 <pre class="r"><code>countryCodes %&gt;% 
@@ -213,13 +214,13 @@ Lets try to find out the corresponding names for each of the 7 in the countryCod
 ##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
 ## 1 Kore… KP        PRK       408            ISO 3166-2:… Asia   Eastern Asia
 ## 2 Kore… KR        KOR       410            ISO 3166-2:… Asia   Eastern Asia
-## # … with 4 more variables: `intermediate-region` &lt;chr&gt;,
+## # ... with 4 more variables: `intermediate-region` &lt;chr&gt;,
 ## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
 ## #   `intermediate-region-code` &lt;chr&gt;</code></pre>
 <pre class="r"><code>countryCodes %&gt;% 
   filter(str_detect(str_to_lower(name), &quot;yugo&quot;)) #Macedonia (the former Yugoslav Republic of)</code></pre>
 <pre><code>## # A tibble: 0 x 11
-## # … with 11 variables: name &lt;chr&gt;, `alpha-2` &lt;chr&gt;, `alpha-3` &lt;chr&gt;,
+## # ... with 11 variables: name &lt;chr&gt;, `alpha-2` &lt;chr&gt;, `alpha-3` &lt;chr&gt;,
 ## #   `country-code` &lt;chr&gt;, `iso_3166-2` &lt;chr&gt;, region &lt;chr&gt;,
 ## #   `sub-region` &lt;chr&gt;, `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
 ## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;</code></pre>
@@ -250,7 +251,7 @@ olympics</code></pre>
 ##  8  1924 Cros… Men&#39;… Norway  Men               2 silv… Thoralf StrÃ¸ms…
 ##  9  1924 Cros… Men&#39;… Norway  Men               3 bron… Johan GrÃ¸ttums…
 ## 10  1924 Curl… Men&#39;… United… Men               1 gold  Britain         
-## # … with 2,855 more rows, and 11 more variables: `Age of Athlete` &lt;dbl&gt;,
+## # ... with 2,855 more rows, and 11 more variables: `Age of Athlete` &lt;dbl&gt;,
 ## #   `alpha-2` &lt;chr&gt;, `alpha-3` &lt;chr&gt;, `country-code` &lt;chr&gt;,
 ## #   `iso_3166-2` &lt;chr&gt;, region &lt;chr&gt;, `sub-region` &lt;chr&gt;,
 ## #   `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
@@ -262,6 +263,7 @@ olympics</code></pre>
   rename(Code = `alpha-3`)
 TotalMedalsPerCountry</code></pre>
 <pre><code>## # A tibble: 39 x 3
+## # Groups:   Country [39]
 ##    Country        Code  TotalMedals
 ##    &lt;chr&gt;          &lt;chr&gt;       &lt;int&gt;
 ##  1 Australia      AUS            12
@@ -274,11 +276,12 @@ TotalMedalsPerCountry</code></pre>
 ##  8 Croatia        HRV            11
 ##  9 Czech Republic &lt;NA&gt;           49
 ## 10 Denmark        DNK             1
-## # … with 29 more rows</code></pre>
+## # ... with 29 more rows</code></pre>
 <p>Lets see the top countries based on total number of medals</p>
 <pre class="r"><code>TotalMedalsPerCountry %&gt;% 
   arrange(desc(TotalMedals))</code></pre>
 <pre><code>## # A tibble: 39 x 3
+## # Groups:   Country [39]
 ##    Country                  Code  TotalMedals
 ##    &lt;chr&gt;                    &lt;chr&gt;       &lt;int&gt;
 ##  1 Germany                  DEU           377
@@ -291,7 +294,7 @@ TotalMedalsPerCountry</code></pre>
 ##  8 Sweden                   SWE           144
 ##  9 Switzerland              CHE           138
 ## 10 Italy                    ITA           114
-## # … with 29 more rows</code></pre>
+## # ... with 29 more rows</code></pre>
 <p>Germany obtained the most number of medals (377) closely followed by Russia with (341)</p>
 </div>
 <div id="exploring-data" class="section level2">
@@ -300,7 +303,7 @@ TotalMedalsPerCountry</code></pre>
 <p>Loading shape file data set from <a href="http://thematicmapping.org/downloads/world_borders.php">World Borders Dataset</a>.</p>
 <pre class="r"><code>shape = readOGR(&quot;~/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp&quot;)</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/Users/amangal/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp&quot;, layer: &quot;TM_WORLD_BORDERS_SIMPL-0.3&quot;
+## Source: &quot;/Users/aditya/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp&quot;, layer: &quot;TM_WORLD_BORDERS_SIMPL-0.3&quot;
 ## with 246 features
 ## It has 11 fields
 ## Integer64 fields read as strings:  POP2005</code></pre>
@@ -326,6 +329,5 @@ TotalMedalsPerCountry %&gt;%
 <script type="application/json" data-for="htmlwidget-1">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addCircles","args":[[-24.973,47.683,53.54,50.643,42.761,59.081,33.42,45.723,56.058,58.674,64.504,46.565,51.11,47.07,42.7,36.491,48.16,39.778,56.858,47.153,49.771,52.077,-42.634,61.152,52.125,45.844,61.988,48.707,46.124,40.227,62.011,46.861,49.016,53,39.622,41.75],[136.189,14.912,28.047,4.664,25.231,-109.433,106.514,16.693,9.264,25.793,26.272,2.55,9.851,19.134,12.8,139.068,67.301,126.451,25.641,9.555,6.088,5.389,172.235,8.74,19.401,24.969,96.689,19.491,14.827,-3.649,15.27,7.908,31.388,-1.6,-98.606,63.17],10,null,null,{"interactive":true,"className":"","stroke":true,"color":["#F46D43","#66BD63","#F46D43","#D73027","#D73027","#A6D96A","#FFFFBF","#F46D43","#D73027","#D73027","#A6D96A","#D9EF8B","#1A9850","#D73027","#D9EF8B","#FEE08B","#D73027","#D73027","#D73027","#D73027","#D73027","#D9EF8B","#D73027","#1A9850","#FDAE61","#D73027","#1A9850","#D73027","#F46D43","#D73027","#D9EF8B","#D9EF8B","#D73027","#FDAE61","#66BD63","#D73027"],"weight":10,"opacity":0.5,"fill":true,"fillColor":["#F46D43","#66BD63","#F46D43","#D73027","#D73027","#A6D96A","#FFFFBF","#F46D43","#D73027","#D73027","#A6D96A","#D9EF8B","#1A9850","#D73027","#D9EF8B","#FEE08B","#D73027","#D73027","#D73027","#D73027","#D73027","#D9EF8B","#D73027","#1A9850","#FDAE61","#D73027","#1A9850","#D73027","#F46D43","#D73027","#D9EF8B","#D9EF8B","#D73027","#FDAE61","#66BD63","#D73027"],"fillOpacity":0.2},null,null,["Australia - TotalMedals - 12","Austria - TotalMedals - 218","Belarus - TotalMedals - 15","Belgium - TotalMedals - 5","Bulgaria - TotalMedals - 6","Canada - TotalMedals - 170","China - TotalMedals - 53","Croatia - TotalMedals - 11","Denmark - TotalMedals - 1","Estonia - TotalMedals - 7","Finland - TotalMedals - 161","France - TotalMedals - 109","Germany - TotalMedals - 377","Hungary - TotalMedals - 6","Italy - TotalMedals - 114","Japan - TotalMedals - 45","Kazakhstan - TotalMedals - 7","Korea, Democratic People's Republic of - TotalMedals - 2","Latvia - TotalMedals - 7","Liechtenstein - TotalMedals - 9","Luxembourg - TotalMedals - 2","Netherlands - TotalMedals - 110","New Zealand - TotalMedals - 1","Norway - TotalMedals - 329","Poland - TotalMedals - 20","Romania - TotalMedals - 1","Russia - TotalMedals - 341","Slovakia - TotalMedals - 5","Slovenia - TotalMedals - 15","Spain - TotalMedals - 2","Sweden - TotalMedals - 144","Switzerland - TotalMedals - 138","Ukraine - TotalMedals - 7","United Kingdom - TotalMedals - 26","United States - TotalMedals - 282","Uzbekistan - TotalMedals - 1"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null,null]}],"setView":[[1.369002,53.019815],1,[]],"limits":{"lat":[-42.634,64.504],"lng":[-109.433,172.235]}},"evals":[],"jsHooks":[]}</script>
 <p>As can be clearly seen above, Norway and USA closely followed in the total medals ranking.
 Visualizing data on a map can provide a clear view of the overall data.</p>
-<p><sub><i>Cover Photo by Willem De Meyer on Unsplash</i></sub></p>
 </div>
 </div>
