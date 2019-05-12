@@ -78,29 +78,29 @@ user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_tagge
   glimpse()</code></pre>
 <pre><code>## Observations: 186,479
 ## Variables: 10
-## $ userID     &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, ...
-## $ artistID   &lt;int&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73,...
-## $ tagID      &lt;int&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18,...
-## $ day        &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
-## $ month      &lt;int&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ...
-## $ year       &lt;int&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 200...
-## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, ...
-## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;,...
-## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.l...
-## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png...</code></pre>
+## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,…
+## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 7…
+## $ tagID      &lt;dbl&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 2…
+## $ day        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,…
+## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009,…
+## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;f…
+## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;…
+## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.las…
+## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;,…</code></pre>
 <pre class="r"><code>friends %&gt;% 
   glimpse()</code></pre>
 <pre><code>## Observations: 25,434
 ## Variables: 2
-## $ userID   &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3,...
-## $ friendID &lt;int&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327,...</code></pre>
+## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3…
+## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1…</code></pre>
 <pre class="r"><code>ratings %&gt;% 
   glimpse()</code></pre>
 <pre><code>## Observations: 92,834
 ## Variables: 3
-## $ userID   &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,...
-## $ artistID &lt;int&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 6...
-## $ weight   &lt;int&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 4...</code></pre>
+## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,…
+## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 433…</code></pre>
 </div>
 <div id="scrub-and-explore" class="section level2">
 <h2>Scrub and Explore</h2>
@@ -110,7 +110,7 @@ user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_tagge
   head()</code></pre>
 <pre><code>## # A tibble: 6 x 3
 ##   userID artistID weight
-##    &lt;int&gt;    &lt;int&gt;  &lt;int&gt;
+##    &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
 ## 1      2       51  13883
 ## 2      2       52  11690
 ## 3      2       53  11351
@@ -120,7 +120,7 @@ user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_tagge
 <pre class="r"><code>ratings %&gt;% 
   select_if(function(x) any(is.na(x))) %&gt;% 
   summarise_all(funs(sum(is.na(.))))</code></pre>
-<pre><code>## # A tibble: 0 x 0</code></pre>
+<pre><code>## # A tibble: 1 x 0</code></pre>
 <p>Lets first make userID and artistID as factors.</p>
 <pre class="r"><code>ratings %&gt;% 
   mutate(userID = as.factor(userID),
@@ -192,7 +192,7 @@ grid.arrange(p +
 ##  8 9         50
 ##  9 10        50
 ## 10 11        50
-## # ... with 1,882 more rows</code></pre>
+## # … with 1,882 more rows</code></pre>
 <p>Looks like a highly cleaned dataset, where every user has exactly 50 ratings (or user’s play counts of exactly 50 artists).</p>
 <pre class="r"><code>ratings %&gt;% 
   count(artistID, sort = TRUE)</code></pre>
@@ -209,7 +209,7 @@ grid.arrange(p +
 ##  8 292        407
 ##  9 190        400
 ## 10 498        399
-## # ... with 17,622 more rows</code></pre>
+## # … with 17,622 more rows</code></pre>
 </div>
 <div id="friends" class="section level3">
 <h3>Friends</h3>
@@ -217,12 +217,12 @@ grid.arrange(p +
   glimpse()</code></pre>
 <pre><code>## Observations: 25,434
 ## Variables: 2
-## $ userID   &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3,...
-## $ friendID &lt;int&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327,...</code></pre>
+## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3…
+## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1…</code></pre>
 <pre class="r"><code>friends %&gt;% 
   select_if(function(x) any(is.na(x))) %&gt;% 
   summarise_all(funs(sum(is.na(.))))</code></pre>
-<pre><code>## # A tibble: 0 x 0</code></pre>
+<pre><code>## # A tibble: 1 x 0</code></pre>
 <pre class="r"><code>friends %&gt;% 
   mutate(userID = as.factor(userID),
          friendID = as.factor(friendID)) -&gt; friends</code></pre>
@@ -241,7 +241,7 @@ grid.arrange(p +
 ##  8 1895      90
 ##  9 1300      89
 ## 10 390       88
-## # ... with 1,882 more rows</code></pre>
+## # … with 1,882 more rows</code></pre>
 </div>
 <div id="metadata" class="section level3">
 <h3>Metadata</h3>
@@ -249,16 +249,16 @@ grid.arrange(p +
   glimpse()</code></pre>
 <pre><code>## Observations: 186,479
 ## Variables: 10
-## $ userID     &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, ...
-## $ artistID   &lt;int&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73,...
-## $ tagID      &lt;int&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18,...
-## $ day        &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
-## $ month      &lt;int&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ...
-## $ year       &lt;int&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 200...
-## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, ...
-## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;,...
-## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.l...
-## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png...</code></pre>
+## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,…
+## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 7…
+## $ tagID      &lt;dbl&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 2…
+## $ day        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,…
+## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009,…
+## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;f…
+## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;…
+## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.las…
+## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;,…</code></pre>
 <pre class="r"><code>metadata %&gt;% 
   select_if(function(x) any(is.na(x))) %&gt;% 
   summarise_all(funs(sum(is.na(.))))</code></pre>
@@ -270,35 +270,35 @@ grid.arrange(p +
 <pre class="r"><code>metadata %&gt;% 
   filter(is.na(name))</code></pre>
 <pre><code>## # A tibble: 22,951 x 10
-##    userID artistID tagID   day month  year tagValue name  url   pictureURL
-##     &lt;int&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     
-##  1      4     1713    18     1    11  2007 electro… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  2      4     1745    18     1    10  2007 electro… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  3      4     1810    72     1    12  2007 hard ro… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  4      4     1824    15     1     6  2007 downtem… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  5      4     1870    92     1     3  2007 dope     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  6      4     1873    78     1     3  2007 alterna… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  7      4     1917     7     1     8  2007 gothic … &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  8      4     2370    76     1     9  2007 progres… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  9      5     2786    96     1     4  2008 spring   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-## 10      8    14103    24     1    11  2006 pop      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-## # ... with 22,941 more rows</code></pre>
+##    userID artistID tagID   day month  year tagValue  name  url   pictureURL
+##     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     
+##  1      4     1713    18     1    11  2007 electron… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  2      4     1745    18     1    10  2007 electron… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  3      4     1810    72     1    12  2007 hard rock &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  4      4     1824    15     1     6  2007 downtempo &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  5      4     1870    92     1     3  2007 dope      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  6      4     1873    78     1     3  2007 alternat… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  7      4     1917     7     1     8  2007 gothic m… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  8      4     2370    76     1     9  2007 progress… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  9      5     2786    96     1     4  2008 spring    &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+## 10      8    14103    24     1    11  2006 pop       &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+## # … with 22,941 more rows</code></pre>
 <pre class="r"><code>ratings %&gt;% 
   filter(artistID == 1713)</code></pre>
 <pre><code>## # A tibble: 58 x 4
-##    userID artistID weight  rating
-##    &lt;fct&gt;  &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;
-##  1 59     1713        610  0.617 
-##  2 62     1713        214 -0.0671
-##  3 99     1713        561  0.563 
-##  4 103    1713         23 -1.52  
-##  5 124    1713       1080  0.991 
-##  6 183    1713        161 -0.253 
-##  7 191    1713        107 -0.520 
-##  8 210    1713       7898  2.29  
-##  9 211    1713        709  0.716 
-## 10 216    1713        174 -0.202 
-## # ... with 48 more rows</code></pre>
+##    userID artistID weight rating[,1]
+##    &lt;fct&gt;  &lt;fct&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1 59     1713        610     0.617 
+##  2 62     1713        214    -0.0671
+##  3 99     1713        561     0.563 
+##  4 103    1713         23    -1.52  
+##  5 124    1713       1080     0.991 
+##  6 183    1713        161    -0.253 
+##  7 191    1713        107    -0.520 
+##  8 210    1713       7898     2.29  
+##  9 211    1713        709     0.716 
+## 10 216    1713        174    -0.202 
+## # … with 48 more rows</code></pre>
 <p>Looks like even though we dont have the name of these artists, we have ratings for them in the ratings dataframe, so we’ll keep them.</p>
 <pre class="r"><code>metadata %&gt;% 
   mutate(userID = as.factor(userID),

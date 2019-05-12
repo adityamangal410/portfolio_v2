@@ -1,0 +1,162 @@
+---
+title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 1 Data Cleaning'
+author: Aditya Mangal
+date: '2019-05-08'
+categories:
+  - Projects
+tags:
+  - DataAnalysis
+  - DataScience
+  - India
+  - Python
+  - R
+  - TextMining
+  - Visualizations
+slug: india-elections-2019-bjp-vs-congress-manifestos-analysis
+keywords:
+  - tech
+summary: With India's 2019 General Elections around the corner, I thought it'd be
+  a good idea to analyse the election manifestos of its 2 biggest political parties,
+  BJP and Congress. In this part 1, I'll collect and clean data and setup the ground
+  work for the project.
+readingtime: '5'
+draft: no
+coverImage: https://lh3.googleusercontent.com/6CZaM8l5GYkmYiKKAQYnu0sbarilrwyz6EfPgWBXjP5O6zIKGlDiwvM95rVhoUWmjoZ_XTcwSBKzML2KvxPQogPSns4I3kgwJvFClsWXMKYbrus-MKfs-WBuGS5L2dTDfPfs3FCWxIg_KsNGzOy3o2L2CvYm5V9febf1sE7zuFAOQnw_opKwPD_eZt9HXngnekY8lUPDBS29RRvHy-owtj1B6nmNwDl2UmtxnOc5SHyr1uvi_vrU7p6sFv408ukkObRysUcT6_jnCvnS_ANLC5CQhg2MULdr-6zclDLRR68xF6UrCeSZv-8O7QFdLySsDhhxDgaHdRi5pH1h0ZoOBFuajcK-7-2nfz6i9tJKnWtXCEZFm_LKOFDNalGmffEesVa_L41I06DbGLQK5Hpl7QCTW6V5FVq8RdF8Kdmy0ozsgnBqQhRkA61JmPXDjnPqWBwiy_3rS0VLo_hsZNj0T2ASsptKcmNgn9900kSj1snl442UTzlQebGwvhiaEdv2En-y3L-Fhe_Fcb0y16rHqf0FGVroQ5MRxkffdjCDt8sLqNMBQ_5g6tgclokYxF0G6RGgNuTt2PzHVK4zvQLp9RQFUReX7I5Vva4R_cOXWCxM0u95rhDiwSAeE-bNyPE5ygiD1OmhaD8IAH2t6uM2X_OHUJZEGrBfaPbQtoZaNwiSQqljzdBpK7bq5Y3lRE3p1ve9iHioa48ZGufs1Aa3Qbkdog=w2748-h1832-no
+thumbnailImage: https://lh3.googleusercontent.com/63rXibBvOYO9QbyKunEkNnDmFBAJm_mdO8KtRiWBC6klkT9IvurEugPhRzlFqd0nU8sSUjGkCXLPUqd3g0gJD5CnpxEj4oA_uEg9XrA575XYA05SvUU3zsLGV6jDIi5q7bFjv7br8mTn177YXJgQHrfq7pQqcJ9iOk1QkaSs_rXYTsxEQXVran2HzAavxJ9gYtzCJCM97-ZTXtqVjVCWwY5p4cMwzO_yfogmEJiUJiYc57sAetbM-ntNwksiVO8som6LvJBe7iaAzm21tLBs-z26MtB2epR8sWoHe7RdGw3Yf61vbVHkyxhb36e1CKSzvhj8OQ6oZo_cJcxs3MZKuIZGS8V198G88qfXq0miNpQv2prgqDtgC6cBTQ3fLBfEl2vhYbgmzBZIRMgzaLBgNn1YhAQiWI9pTjEUfD_TQ0bFkmMQQxyc3n5bUphMdlFKR18bGIPnUnXgwqwOwgkX2hJoy-9bm6XcSQ27tUSdL4iQh6-vOo1KV_YVIDhpKbbmBuBT_jH4QPaFspjMq2Dop4qu9m9ytDZMkH4jeN_bYN9JwD-sjovcGPIQFQ4UvkS7JJ6ON24Kmtp9SLCzflCDA9mtMFv2DZx2Myfl0s5eMyuZ3XE0TjgSF67vgAoTD5FmoTrgezkVOSj5diilxesRmbqexIhUUrvMbSRwSjMTpZAh2RiEVQuAqQkUBLAesBCwV4LMyn-HCPfXqf5VF9cXnBzXlA=w750-h500-no
+thumbnailImagePosition: left
+comments: yes
+coverCaption: Photo by Annie Spratt on Unsplash
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALSE)
+```
+
+
+# Introduction
+
+With India's 2019 General Elections around the corner, I thought it'd be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let's use text mining to understand what each party promises and prioritizes.   
+In this part 1, I'll collect and clean data and setup the ground work for the project.
+
+
+# Analysis  
+
+## Load libraries
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(pdftools)
+library(tidylog)
+library(hunspell)
+library(tidytext)
+library(ggplot2)
+library(gridExtra)
+library(scales)
+library(reticulate)
+library(widyr)
+library(igraph)
+library(ggraph)
+
+theme_set(theme_light())
+use_python("~/anaconda3/bin/python")
+```
+
+## Downloading Manifestos
+
+BJP's Manifesto available at their website - [bjp.org](https://www.bjp.org/manifestoPDF/BJP-Election-english-2019.pdf)
+
+```{r}
+bjp_txt <- pdf_text("~/Downloads/BJP-Election-english-2019.pdf")
+
+tibble(
+  page = 1:length(bjp_txt),
+  text = bjp_txt
+  ) %>% 
+  separate_rows(text, sep = "\n") %>% 
+  group_by(page) %>% 
+  mutate(line = row_number()) %>% 
+  ungroup() %>% 
+  select(page, line, text) -> bjp
+bjp %>% 
+  glimpse()
+```
+
+Congress' manifesto available at their website - [inc.in](https://manifesto.inc.in/pdf/english.pdf)
+
+```{r eval=FALSE}
+download.file("https://manifesto.inc.in/pdf/english.pdf", "~/Downloads/congress.pdf")
+```
+```{r}
+congress_txt <- pdf_text("~/Downloads/congress.pdf")
+```
+
+```{r}
+tibble(
+  page = 1:length(congress_txt),
+  text = congress_txt
+  ) %>% 
+  separate_rows(text, sep = "\n") %>% 
+  group_by(page) %>% 
+  mutate(line = row_number()) %>% 
+  ungroup() %>% 
+  select(page, line, text) -> congress
+congress %>% 
+  glimpse()
+```
+
+## Cleaning 
+
+### Page range
+
+As we see from the 2 documents, first few pages contain Title and Index of the manifestos, and then moves on to the notes from the Party Leaders. The actual plans for development and work starts from page 11 in BJP's manifesto and page 7 in Congress'. Filtering out all the other pages for exploration
+
+```{r}
+bjp %>% 
+  filter(page >= 11) -> bjp_content
+```
+```{r}
+congress %>% 
+  filter(page >= 7) -> congress_content
+```
+
+### Text NA
+
+Dropping all the rows where we dont have any text.
+
+```{r}
+bjp_content %>% 
+  filter(!is.na(text)) -> bjp_content
+congress_content %>% 
+  filter(!is.na(text)) -> congress_content
+```
+
+
+### Normalize
+
+Normalizing text lines. 
+
+```{r}
+bjp_content %>% 
+  unnest_tokens(text, text, token = "lines") -> bjp_content
+congress_content %>% 
+  unnest_tokens(text, text, token = "lines") -> congress_content
+```
+
+I'll take a deep dive into individual topics of the manifestos in separate blog posts. For now, I will export our cleaned and normalized data for future analysis. 
+
+## Export Data
+
+```{r}
+bjp_content %>% 
+  write_csv("../data/indian_election_2019/bjp_manifesto_clean.csv")
+congress_content %>% 
+  write_csv("../data/indian_election_2019/congress_manifesto_clean.csv")
+```
+
+Stay Tuned!
+
+# References
+
+ - [Part 2 Economic Growth](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/)
+ - For all the parts go to Project Summary Page - [India General Elections 2019 Analysis ](/2019/05/india-general-elections-2019-analysis/)
