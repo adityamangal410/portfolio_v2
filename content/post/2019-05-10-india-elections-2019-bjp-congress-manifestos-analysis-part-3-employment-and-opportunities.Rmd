@@ -1,8 +1,9 @@
 ---
-title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 2 Economic
-  Growth'
+title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 3 Employment
+  and Opportunities'
 author: Aditya Mangal
-date: '2019-05-09'
+date: '2019-05-10'
+slug: india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities
 categories:
   - Projects
 tags:
@@ -11,14 +12,14 @@ tags:
   - India
   - Python
   - R
+  - SentimentAnalysis
   - TextMining
   - Visualizations
-slug: india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth
 keywords:
   - tech
 summary: With India's 2019 General Elections around the corner, I thought it'd be
   a good idea to analyse the election manifestos of its 2 biggest political parties,
-  BJP and Congress. In this part 2, I'll explore the Economic Growth discussions in
+  BJP and Congress. In this part 3, I'll explore the Employment and opportunities discussions in
   both manifestos.
 readingtime: '10'
 draft: no
@@ -37,7 +38,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALS
 # Introduction
 
 With India's 2019 General Elections around the corner, I thought it'd be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let's use text mining to understand what each party promises and prioritizes.  
-In this part 2, I'll explore the Economic Growth discussions in both manifestos.
+In this part 3, I'll explore the Employment and opportunities discussions in both manifestos.
 
 # Analysis  
 
@@ -70,18 +71,16 @@ congress_content <- read_csv("../data/indian_election_2019/congress_manifesto_cl
 ```
 
 
-## Economic Growth
+## Employment and Opportunities
 
-This topic is covered in congress' manifesto from Pages 9 to 13 of the pdf and in that of bjp's from pages 13 to 20.
+This topic is covered congress' manifesto from Pages 6 to 8 of the pdf and in that of bjp's from pages 20 to 22 and 27 to 28. 
 
 ```{r}
 bjp_content %>% 
-  filter(page >=13,
-         page <= 20) -> bjp_content
+  filter(between(page, 20, 22) | between(page, 27, 28)) -> bjp_content
 
 congress_content %>% 
-  filter(page >=9,
-         page <= 13) -> congress_content
+  filter(between(page, 6, 8)) -> congress_content
 ```
 
 ## Most Popular Words
@@ -120,21 +119,21 @@ custom_stop_words <- bind_rows(tibble(word = c("india", "country", "bjp", "congr
 
 ```{r fig.width=14}
 bjp_content %>% 
-  plot_most_popular_words(min_count = 8,
+  plot_most_popular_words(min_count = 6,
                           stop_words_list = custom_stop_words) + 
   labs(x = "",
        y = "Number of Occurences",
-       title = "Most popular words related to Economy Growth in BJP's Manifesto",
-       subtitle = "Words occurring more than 8 times",
+       title = "Most popular words related to Employment and Opportunities in BJP's Manifesto",
+       subtitle = "Words occurring more than 6 times",
        caption = "Based on election 2019 manifesto from bjp.org") -> p_bjp
 
 congress_content %>% 
-  plot_most_popular_words(min_count = 10,
+  plot_most_popular_words(min_count = 7,
                           stop_words_list = custom_stop_words) + 
   labs(x = "",
        y = "Number of Occurences",
-       title = "Most popular words related to Economy Growth in Congress' Manifesto",
-       subtitle = "Words occurring more than 10 times",
+       title = "Most popular words related to Employment and Opportunities in Congress' Manifesto",
+       subtitle = "Words occurring more than 7 times",
        caption = "Based on election 2019 manifesto from inc.in") -> p_congress
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
@@ -180,7 +179,7 @@ bjp_content %>%
 
 congress_content %>% 
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.85) + 
+                               counts_quantile = 0.7) + 
   labs(x = "",
        y = "",
        title = "Commonly Occurring Correlated Words in Congress's Manifesto",
@@ -225,68 +224,65 @@ get_related_lines <- py_to_r(py$get_related_lines)
 
 ### Common Popular Words with both BJP & Congress
 
-As we see from the plot above, one of the most popular words in both BJP and Congress' manifesto for economy growth is "farmers". Lets see, what each of them have planned for our farmers. First, BJP.
+As we see from the plot above, one of the most popular words in both BJP and Congress' manifesto for Employment and Opportunities is "electricity". Lets see, what each of them have planned for that. First, BJP.
 
 ```{r}
 bjp_content %>% 
-  slice(get_related_lines("farmer", party = "bjp")) %>% 
+  slice(get_related_lines("electricity", party = "bjp")) %>% 
   select(text, page, line)
 ```
 
-This is the excerpt that we find from page 13, as we dug up based on above results - 
+This is the excerpt that we find from page 22, as we dug up based on above results - 
 
-> Warehouse Network across the Country - We will build an efficient storage and transport mechanism for agricultural produce.  
- - Our Pradhan Mantri Krishi SAMPADA Yojana highlights our focus on warehousing as a means of increasing farmers’ income. To further expand the warehousing infrastructure in the country, we will establish a National Warehousing Grid along National Highways to ensure necessary logistical linkages for warehousing of agricultural produce.  
- - To enable the farmer to store the agri-produce near his village and sell at a remunerative price at an appropriate time, we will roll out a new Village Storage Scheme of agri-produce. We will provide farmers with loans at cheaper rates on the basis of storage receipt of the agri-produce.
+> Now, we will work towards:  
+ - Ensuring a right mix of energy which leads towards a cleaner environment.  
+ - Supplying quality electricity to all consumers.  
+ - Making the state electricity entities financially sound and administratively more efficient.  
 
 Now, Congress.
 
 ```{r}
 congress_content %>% 
-  slice(get_related_lines("farmer", party = "congress")) %>% 
+  slice(get_related_lines("electricity", party = "congress")) %>% 
   select(text, page, line)
 ```
 
-One of the full excerpts from page 9 related to above results - 
+One of the full excerpts from page 8 related to above results - 
 
-> Congress promises to establish a permanent National Commission on Agricultural Devel- opment and Planning consisting of farmers, agricultural scientists and agricultural economists to examine and advise the government on how to make agriculture viable, competitive and remuner- ative. The recommendations of the Commission shall be ordinarily binding on the government. The Commission will subsume the existing Commission for Agricultural Costs and Prices and recommend appropriate minimum support prices.
+> Congress promises to enhance availability of, and access to, electricity in rural areas by encour- aging investment in off-grid renewable power generation with ownership and revenues vesting in local bodies. Every village and every home will be electrified in the true sense. In the long term, we aim to substitute LPG used in homes by electricity and solar energy.
 
 ### Unique popular words with BJP & Congress
 
-One of the popular words that seems curious from BJP's manifesto is "technology". Let's see what BJP has planned for the use of technology for economic growth.
+One of the popular words that seems curious from BJP's manifesto is "youth". Let's see what BJP has planned for the youth employment opportunities.
 
 ```{r}
 bjp_content %>% 
-  slice(get_related_lines("technology", party = "bjp")) %>% 
+  slice(get_related_lines("youth", party = "bjp")) %>% 
   select(text, page, line)
 ```
 
-An excerpt from BJP's manifesto about use of technology as identified from above -  
+An excerpt from BJP's manifesto about youth employment opportunities as identified from above -  
 
-> We will enable development of young agri-scientists to take advantage of Artificial Intelligence, Machine Learning, Blockchain Technology, Big Data Analytics etc. for more predictive and profitable precision agriculture.
+> We will incentivise and reward self-organized groups of youth who adopt social assets like schools, hospitals, lakes, public gardens etc. and ensure their maintenance and cleanliness to encourage greater civic engagement of the youth.
 
-Suprising to see mention of plans for usage of Machine Learning and Blockchain in BJP's manifesto.  
-
-Now, one of the popular words that seems curious from Congress' manifesto is "gst". 
+Now, one of the popular words that seems curious from Congress' manifesto is "tourism". 
 
 ```{r}
 congress_content %>% 
-  slice(get_related_lines("gst", party = "congress")) %>% 
+  slice(get_related_lines("tourism", party = "congress")) %>% 
   select(text, page, line)
 ```
 
-> MSMEs were badly hit by demonetisation and a flawed GST. Congress promises to devise a rehabilitation plan for MSMEs that were severely affected and help them revive and grow.
+> Tourism creates jobs. Congress promises an ade- quately capitalised Tourism Development Bank to provide low-cost, long-term funds for invest- ment in tourism-related businesses. We will also offer lower rates of corporate and personal income tax on tourism-related business income.
 
-Congress is planning for a rehabilitation program for the Micro Small & Medium Enterprises. They also have a plan to redefine MSMEs -  
+A surprisingly large amount of mention of the word "business"/"businesses" in this section of Congress' manifesto.
 
-> MSMEs account for 90 per cent of all employment outside agriculture. The definition of MSMEs based on capital employed is biased against labour. Congress will link the definition of MSME to employment. A business employing 10 persons or less will be ‘micro;’ between 11 and 100 will be ‘small;’ and between 101 and 500 will be ‘medium.’
-
-With all the above analysis, we have developed some idea about the economic growth plans of the 2 parties. In the next post, I'll do a similar analysis for employment and opportunites proposals of them.  
+With all the above analysis, we have developed some idea about the Employment and Opportunities plans of the 2 parties. In the next post, I'll do a similar analysis for Anti-Corruption and Good Governance proposals by them.  
 
 Stay Tuned!
 
 # References  
 
- - [Part 1 - Data Collection and Cleaning](/2019/05/india-elections-2019-bjp-vs-congress-manifestos-analysis/)  
- - [Part 3 - Employment and Opportunities](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/)
+ - [Part 2 - Economic Growth](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/)  
+ - [Part 4 - Anti-Corruption and Good Governance](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance/)
  - For all the parts go to Project Summary Page - [India General Elections 2019 Analysis ](/2019/05/india-general-elections-2019-analysis/)

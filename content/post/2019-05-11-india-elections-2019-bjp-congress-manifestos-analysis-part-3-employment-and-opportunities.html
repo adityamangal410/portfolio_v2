@@ -1,8 +1,8 @@
 ---
-title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 2 Economic
-  Growth'
+title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 4 Anti-Corruption
+  & Good Governance'
 author: Aditya Mangal
-date: '2019-05-09'
+date: '2019-05-11'
 categories:
   - Projects
 tags:
@@ -11,15 +11,16 @@ tags:
   - India
   - Python
   - R
+  - SentimentAnalysis
   - TextMining
   - Visualizations
-slug: india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth
+slug: india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance
 keywords:
   - tech
 summary: With India's 2019 General Elections around the corner, I thought it'd be
   a good idea to analyse the election manifestos of its 2 biggest political parties,
-  BJP and Congress. In this part 2, I'll explore the Economic Growth discussions in
-  both manifestos.
+  BJP and Congress. In this part 4, I'll explore the Anti-corruption and Good Governance
+  discussions in both manifestos.
 readingtime: '10'
 draft: no
 coverImage: https://lh3.googleusercontent.com/6CZaM8l5GYkmYiKKAQYnu0sbarilrwyz6EfPgWBXjP5O6zIKGlDiwvM95rVhoUWmjoZ_XTcwSBKzML2KvxPQogPSns4I3kgwJvFClsWXMKYbrus-MKfs-WBuGS5L2dTDfPfs3FCWxIg_KsNGzOy3o2L2CvYm5V9febf1sE7zuFAOQnw_opKwPD_eZt9HXngnekY8lUPDBS29RRvHy-owtj1B6nmNwDl2UmtxnOc5SHyr1uvi_vrU7p6sFv408ukkObRysUcT6_jnCvnS_ANLC5CQhg2MULdr-6zclDLRR68xF6UrCeSZv-8O7QFdLySsDhhxDgaHdRi5pH1h0ZoOBFuajcK-7-2nfz6i9tJKnWtXCEZFm_LKOFDNalGmffEesVa_L41I06DbGLQK5Hpl7QCTW6V5FVq8RdF8Kdmy0ozsgnBqQhRkA61JmPXDjnPqWBwiy_3rS0VLo_hsZNj0T2ASsptKcmNgn9900kSj1snl442UTzlQebGwvhiaEdv2En-y3L-Fhe_Fcb0y16rHqf0FGVroQ5MRxkffdjCDt8sLqNMBQ_5g6tgclokYxF0G6RGgNuTt2PzHVK4zvQLp9RQFUReX7I5Vva4R_cOXWCxM0u95rhDiwSAeE-bNyPE5ygiD1OmhaD8IAH2t6uM2X_OHUJZEGrBfaPbQtoZaNwiSQqljzdBpK7bq5Y3lRE3p1ve9iHioa48ZGufs1Aa3Qbkdog=w2748-h1832-no
@@ -36,7 +37,7 @@ coverCaption: Photo by Annie Spratt on Unsplash
 <li><a href="#analysis">Analysis</a><ul>
 <li><a href="#load-libraries">Load libraries</a></li>
 <li><a href="#read-cleaned-data">Read cleaned data</a></li>
-<li><a href="#economic-growth">Economic Growth</a></li>
+<li><a href="#anti-corruption-and-good-governance">Anti-Corruption and Good Governance</a></li>
 <li><a href="#most-popular-words">Most Popular Words</a></li>
 <li><a href="#common-correlated-words">Common correlated words</a></li>
 <li><a href="#basic-search-engine">Basic Search Engine</a><ul>
@@ -51,7 +52,7 @@ coverCaption: Photo by Annie Spratt on Unsplash
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.<br />
-In this part 2, I’ll explore the Economic Growth discussions in both manifestos.</p>
+In this part 4, I’ll explore the Anti-corruption and Good Governance discussions in both manifestos.</p>
 </div>
 <div id="analysis" class="section level1">
 <h1>Analysis</h1>
@@ -79,16 +80,14 @@ use_python(&quot;~/anaconda3/bin/python&quot;)</code></pre>
 <pre class="r"><code>bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clean.csv&quot;)
 congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)</code></pre>
 </div>
-<div id="economic-growth" class="section level2">
-<h2>Economic Growth</h2>
-<p>This topic is covered in congress’ manifesto from Pages 9 to 13 of the pdf and in that of bjp’s from pages 13 to 20.</p>
+<div id="anti-corruption-and-good-governance" class="section level2">
+<h2>Anti-Corruption and Good Governance</h2>
+<p>This topic is covered congress’ manifesto from Pages 17 to 19 of the pdf and in that of bjp’s from pages 24 to 26.</p>
 <pre class="r"><code>bjp_content %&gt;% 
-  filter(page &gt;=13,
-         page &lt;= 20) -&gt; bjp_content
+  filter(between(page, 24, 26)) -&gt; bjp_content
 
 congress_content %&gt;% 
-  filter(page &gt;=9,
-         page &lt;= 13) -&gt; congress_content</code></pre>
+  filter(between(page, 17, 19)) -&gt; congress_content</code></pre>
 </div>
 <div id="most-popular-words" class="section level2">
 <h2>Most Popular Words</h2>
@@ -118,25 +117,25 @@ congress_content %&gt;%
                                           lexicon = rep(&quot;custom&quot;, 5)), 
                                stop_words)</code></pre>
 <pre class="r"><code>bjp_content %&gt;% 
+  plot_most_popular_words(min_count = 6,
+                          stop_words_list = custom_stop_words) + 
+  labs(x = &quot;&quot;,
+       y = &quot;Number of Occurences&quot;,
+       title = &quot;Most popular words related to Anti-Corrution and Good Governance in BJP&#39;s Manifesto&quot;,
+       subtitle = &quot;Words occurring more than 6 times&quot;,
+       caption = &quot;Based on election 2019 manifesto from bjp.org&quot;) -&gt; p_bjp
+
+congress_content %&gt;% 
   plot_most_popular_words(min_count = 8,
                           stop_words_list = custom_stop_words) + 
   labs(x = &quot;&quot;,
        y = &quot;Number of Occurences&quot;,
-       title = &quot;Most popular words related to Economy Growth in BJP&#39;s Manifesto&quot;,
+       title = &quot;Most popular words related to Anti-Corrution and Good Governance in Congress&#39; Manifesto&quot;,
        subtitle = &quot;Words occurring more than 8 times&quot;,
-       caption = &quot;Based on election 2019 manifesto from bjp.org&quot;) -&gt; p_bjp
-
-congress_content %&gt;% 
-  plot_most_popular_words(min_count = 10,
-                          stop_words_list = custom_stop_words) + 
-  labs(x = &quot;&quot;,
-       y = &quot;Number of Occurences&quot;,
-       title = &quot;Most popular words related to Economy Growth in Congress&#39; Manifesto&quot;,
-       subtitle = &quot;Words occurring more than 10 times&quot;,
        caption = &quot;Based on election 2019 manifesto from inc.in&quot;) -&gt; p_congress
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))</code></pre>
-<p><img src="/post/2019-05-09-india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth_files/figure-html/unnamed-chunk-6-1.png" width="1344" /></p>
+<p><img src="/post/2019-05-11-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-6-1.png" width="1344" /></p>
 </div>
 <div id="common-correlated-words" class="section level2">
 <h2>Common correlated words</h2>
@@ -165,7 +164,7 @@ grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))</code></pre>
 }</code></pre>
 <pre class="r"><code>bjp_content %&gt;% 
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.85) + 
+                               counts_quantile = 0.75) + 
   labs(x = &quot;&quot;,
        y = &quot;&quot;,
        title = &quot;Commonly Occurring Correlated Words in BJP&#39;s Manifesto&quot;,
@@ -174,7 +173,7 @@ grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))</code></pre>
 
 congress_content %&gt;% 
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.85) + 
+                               counts_quantile = 0.75) + 
   labs(x = &quot;&quot;,
        y = &quot;&quot;,
        title = &quot;Commonly Occurring Correlated Words in Congress&#39;s Manifesto&quot;,
@@ -182,7 +181,7 @@ congress_content %&gt;%
        caption = &quot;Based on election 2019 manifesto from inc.in&quot;) -&gt; p_congress
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))</code></pre>
-<p><img src="/post/2019-05-09-india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
+<p><img src="/post/2019-05-11-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
 </div>
 <div id="basic-search-engine" class="section level2">
 <h2>Basic Search Engine</h2>
@@ -212,96 +211,93 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 <pre class="r"><code>get_related_lines &lt;- py_to_r(py$get_related_lines)</code></pre>
 <div id="common-popular-words-with-both-bjp-congress" class="section level3">
 <h3>Common Popular Words with both BJP &amp; Congress</h3>
-<p>As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto for economy growth is “farmers”. Lets see, what each of them have planned for our farmers. First, BJP.</p>
+<p>As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto is “police”. Lets see, what each of them have planned for our police force. First, BJP.</p>
 <pre class="r"><code>bjp_content %&gt;% 
-  slice(get_related_lines(&quot;farmer&quot;, party = &quot;bjp&quot;)) %&gt;% 
+  slice(get_related_lines(&quot;police&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
 ##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 linkages for warehousing of agricultural produce.                13    30
-## 2 cooperatives                                                     14    14
-## 3 and strengthen them.                                             14    17
-## 4 status sustain the behavioural change.                           20    43
-## 5 15                                                               15    18
-## 6 27 we will promote aquaculture through easy access to credit.    15    13
-## 7 28 we will facilitate farming of sea-weed, pearl as well as …    15    14
-## 8 shermen.                                                         15    15
-## 9 29 we will bring all shermen under the ambit of all welfare …    15    16</code></pre>
-<p>This is the excerpt that we find from page 13, as we dug up based on above results -</p>
+## 1 upon the colonial police force and there is a need to change…    24    31
+## 2 peaceful law and order is the key to growth and development.…    24    30
+## 3 grassroots.                                                      24    27
+## 4 challenges of the 21st century. therefore, we will bring pol…    24    32
+## 5 06 police is the most basic and key functionary a ecting the…    24    29
+## 6 police reforms                                                   24    28
+## 7 science and technology                                           25    21
+## 8 09 in order to establish india as a hub of nancial services,…    25     5
+## 9 act’ in consultation with the states to have a pro-people ci…    24    33</code></pre>
+<p>This is the excerpt that we find from page 24, as we dug up based on above results -</p>
 <blockquote>
-<p>Warehouse Network across the Country - We will build an efficient storage and transport mechanism for agricultural produce.<br />
-- Our Pradhan Mantri Krishi SAMPADA Yojana highlights our focus on warehousing as a means of increasing farmers’ income. To further expand the warehousing infrastructure in the country, we will establish a National Warehousing Grid along National Highways to ensure necessary logistical linkages for warehousing of agricultural produce.<br />
-- To enable the farmer to store the agri-produce near his village and sell at a remunerative price at an appropriate time, we will roll out a new Village Storage Scheme of agri-produce. We will provide farmers with loans at cheaper rates on the basis of storage receipt of the agri-produce.</p>
+<p>Police is the most basic and key functionary affecting the people’s life. An effective policing and peaceful law and order is the key to growth and development. Our present police and policing is based upon the colonial police force and there is a need to change and transform the police according to the challenges of the 21st century.Therefore, we will bring Police Reform. We will formulate a ‘Model Police Act’ in consultation with the States to have a pro-people citizen friendly police. This will take the Indian policing at par with its contemporaries anywhere in the world.</p>
 </blockquote>
 <p>Now, Congress.</p>
 <pre class="r"><code>congress_content %&gt;% 
-  slice(get_related_lines(&quot;farmer&quot;, party = &quot;congress&quot;)) %&gt;% 
+  slice(get_related_lines(&quot;police&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
 ##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 and apex co-operative banks were denied the right to convert…     9     8
-## 2 criminal proceedings to be instituted against          11. c…     9    26
-## 3 05. congress promises to establish a permanent              …     9    31
-## 4 02. we will not stop with just providing “karz maafi”       …     9    19
-## 5 to examine and advise the government on how to             i…     9    35
-## 6 co-operative credit to the farmer; the terms of trade moved …     9     9
-## 7 economy, creation of wealth, sustainable development, reduct…    10    50
-## 8 congress economic philosophy is based on embracing the idea …    10    49
-## 9 animal spirits of our entrepreneurs.                   will …    10    48</code></pre>
-<p>One of the full excerpts from page 9 related to above results -</p>
+## 1 of the state police under the direct command                     19    41
+## 2 ots, lynchings and gang rapes by a special wing                  19    40
+## 3 tion agency that has the power to search, seize,                 19    18
+## 4 civil penalties;                                            …    19    20
+## 5 06. amend the armed forces (special powers)                 …    19    35
+## 6 the powers of security forces and the human rights          …    19    37
+## 7 been misused and, in any event, has become                  …    19    25
+## 8 during custody or interrogation and punish cases            …    19    33
+## 9 (that defines the offence of ‘sedition’) that has       08. …    19    24</code></pre>
+<p>One of the excerpts from page 19 related to above results -</p>
 <blockquote>
-<p>Congress promises to establish a permanent National Commission on Agricultural Devel- opment and Planning consisting of farmers, agricultural scientists and agricultural economists to examine and advise the government on how to make agriculture viable, competitive and remuner- ative. The recommendations of the Commission shall be ordinarily binding on the government. The Commission will subsume the existing Commission for Agricultural Costs and Prices and recommend appropriate minimum support prices.</p>
+<p>Provisions will be made in the Model Police Act to:
+a. Make the State police force accountable to an independent Police Accountability Commission as well as to give an annual report to the State Legislature.
+b. Decentralise the police force in the State and to involve the community in the oversight of the
+police force.
+c. Cause investigations into cases of communal riots, lynchings and gang rapes by a special wing of the State police under the direct command of the State Headquarters of the police.</p>
 </blockquote>
 </div>
 <div id="unique-popular-words-with-bjp-congress" class="section level3">
 <h3>Unique popular words with BJP &amp; Congress</h3>
-<p>One of the popular words that seems curious from BJP’s manifesto is “technology”. Let’s see what BJP has planned for the use of technology for economic growth.</p>
+<p>One of the popular words that seems curious from BJP’s manifesto is “forest”.</p>
 <pre class="r"><code>bjp_content %&gt;% 
-  slice(get_related_lines(&quot;technology&quot;, party = &quot;bjp&quot;)) %&gt;% 
+  slice(get_related_lines(&quot;forest&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
 ##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 return to the farmers.                                           14    22
-## 2 typing of msmes. they will expose msmes to a i cial intellig…    18    32
-## 3 22 we will ensure faster customs clearance of international …    19    41
-## 4 19 we will enable development of young agri-scientists to ta…    14    28
-## 5 ve years. this includes massive budgetary allocation for rai…    20    12
-## 6 a major step in expanding of ‘technology centres’ and we wou…    18    30
-## 7 aim to take this gure to rs.1,00,000 crore by 2024.              18    28
-## 8 rental/custom hiring basis.                                      14    25
-## 9 10 technology access and upgradation are key elements in the…    18    29</code></pre>
-<p>An excerpt from BJP’s manifesto about use of technology as identified from above -</p>
+## 1 coordination with the private sector.                            26     5
+## 2 forest and environment                                           26     6
+## 3 20 we have ensured speed and e ectiveness in issuing forest …    26     7
+## 4 the mission cities by at least 35% over the next ve years.       26    15
+## 5 and cooking gas connection in addition to houses and toilets…    26    18
+## 6 states is adequately protected and take steps to ensure the …    26    43
+## 7 international financial services centre authority                25     4
+## 8 act’ in consultation with the states to have a pro-people ci…    24    33
+## 9 policing at par with its contemporaries anywhere in the worl…    24    34</code></pre>
+<p>An excerpt from BJP’s manifesto about forests as identified from above -</p>
 <blockquote>
-<p>We will enable development of young agri-scientists to take advantage of Artificial Intelligence, Machine Learning, Blockchain Technology, Big Data Analytics etc. for more predictive and profitable precision agriculture.</p>
+<p>We have ensured speed and effectiveness in issuing forest and environmental clearances for eligible projects due to which we have added around 9000 Sq. Kms to the forest cover of the country. We are committed to maintaining this pace through adoption of cleaner practises to make our nation a greener country.</p>
 </blockquote>
-<p>Suprising to see mention of plans for usage of Machine Learning and Blockchain in BJP’s manifesto.</p>
-<p>Now, one of the popular words that seems curious from Congress’ manifesto is “gst”.</p>
+<p>Now, one of the popular words that seems curious from Congress’ manifesto is “panchayat”.</p>
 <pre class="r"><code>congress_content %&gt;% 
-  slice(get_related_lines(&quot;gst&quot;, party = &quot;congress&quot;)) %&gt;% 
+  slice(get_related_lines(&quot;panchayat&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
 ##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 15. msmes were badly hit by demonetisation and                   11    45
-## 2 fessionals. its minutes will be put in the public           …    12    49
-## 3 food grains, lifesaving drugs, vaccines, etc.) and               12    54
-## 4 07. all goods and services that are exported will                12    59
-## 5 growth, new businesses and employment. the             her b…    12    39
-## 6 and will be served by a permanent secretariat of            …    12    45
-## 7 01. congress promises to review and replace the        08. c…    12    24
-## 8 2.0 will be only in cases of criminal conspiracy or         …    12    61
-## 9 petroleum products, tobacco and liquor will be                   12    43</code></pre>
+## 1 freedoms of the people.                                          19    47
+## 2 institutions                                                     17    40
+## 3 commissioners qualified persons drawn from dif-             …    17    58
+## 4 protect the freedom of journalists, uphold editorial indepen…    17    57
+## 5 act. in accordance with the letter and spirit of the    07. …    17    56
+## 6 council of india act, 1978 to strengthen the system of self-…    17    55
+## 7 best way to correct the abuse of media freedom. we will amen…    17    54
+## 8 act, 2005 in the light of its working in the last       06. …    17    53
+## 9 them accountable to parliament. we believe that self-regulat…    17    52</code></pre>
 <blockquote>
-<p>MSMEs were badly hit by demonetisation and a flawed GST. Congress promises to devise a rehabilitation plan for MSMEs that were severely affected and help them revive and grow.</p>
+<p>Congress was the proponent and author of the Constitution 73rd and 74th Amendments. Panchayati Raj lies at the core of good governance in our country, where the majority of citizens live outside metropolitan cities. Congress promises to take further measures to strengthen the concept of Local Government—Panchayats and Municipalities.</p>
 </blockquote>
-<p>Congress is planning for a rehabilitation program for the Micro Small &amp; Medium Enterprises. They also have a plan to redefine MSMEs -</p>
-<blockquote>
-<p>MSMEs account for 90 per cent of all employment outside agriculture. The definition of MSMEs based on capital employed is biased against labour. Congress will link the definition of MSME to employment. A business employing 10 persons or less will be ‘micro;’ between 11 and 100 will be ‘small;’ and between 101 and 500 will be ‘medium.’</p>
-</blockquote>
-<p>With all the above analysis, we have developed some idea about the economic growth plans of the 2 parties. In the next post, I’ll do a similar analysis for employment and opportunites proposals of them.</p>
+<p>With all the above analysis, we have developed some idea about the Anti-corruption and Good Governance ideologies of the 2 parties. In the next post, I’ll do a similar analysis for Inclusion and Diversity proposals by them.</p>
 <p>Stay Tuned!</p>
 </div>
 </div>
@@ -309,9 +305,9 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 <div id="references" class="section level1">
 <h1>References</h1>
 <ul>
-<li><a href="/2019/05/india-elections-2019-bjp-vs-congress-manifestos-analysis/">Part 1 - Data Collection and Cleaning</a><br />
+<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/">Part 3 - Employment and Opportunities</a><br />
 </li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/">Part 3 - Employment and Opportunities</a></li>
+<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity/">Part 5 - Inclusion and Diversity</a></li>
 <li>For all the parts go to Project Summary Page - <a href="/2019/05/india-general-elections-2019-analysis/">India General Elections 2019 Analysis</a></li>
 </ul>
 </div>

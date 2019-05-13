@@ -42,3 +42,8 @@ In the next series of posts I'll roughly follow the above steps and link them he
 
 1. [Part 1 - Data Collection and Cleaning](/2019/05/india-elections-2019-bjp-vs-congress-manifestos-analysis/)
 2. [Part 2 - Economic Growth](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/)
+3. [Part 3 - Employment and Opportunities](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/)
+4. [Part 4 - Anti-Corruption and Good Governance](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance/)
+5. [Part 5 - Inclusion and Diversity](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity/)
+6. [Part 6 - National Security](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security/)
+7. [Part 7 - Education, Healthcare and Miscellaneous](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc/)
