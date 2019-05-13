@@ -2,7 +2,7 @@
 title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 7 Education
   Healthcare & Miscellaneous'
 author: Aditya Mangal
-date: '2019-05-14'
+date: '2019-05-13'
 categories:
   - Projects
 tags:
