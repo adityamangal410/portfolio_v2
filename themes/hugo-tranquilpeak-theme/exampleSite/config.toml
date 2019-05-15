@@ -213,3 +213,8 @@ canonifyurls = true
   # Customize copyright value "© 2017 <CUSTOMIZATION>. All Rights Reserved"
   # [params.footer]
   #   copyright = "<a href=\"https://github.com/kakawait\">kakawait</a>"
+
+# Set to true to disable code folding
+    disable_codefolding = false
+# Set to "hide" or "show" all codes by default
+    codefolding_show = "hide"
