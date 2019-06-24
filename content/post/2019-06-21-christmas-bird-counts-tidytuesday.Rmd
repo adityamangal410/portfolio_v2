@@ -86,7 +86,9 @@ bird_counts %>%
   scale_x_reverse() + 
   guides(color = FALSE,
          fill = FALSE) + 
-  labs(title = '{closest_state}', 
+  labs(title = "Which are the 5 most common birds over years?",
+       subtitle = "Birds seen in the Hamilton area of Ontario during Christmas since 1921",
+       caption = "Based on data from @BirdsCanada",
        x = "",
        y = "Sights per year") + 
   theme(plot.title = element_text(hjust = 0, size = 22),
