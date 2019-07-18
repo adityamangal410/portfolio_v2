@@ -189,15 +189,11 @@ grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))</code></pre>
 Using python’s scikit-learn for this.</p>
 <pre class="python"><code>from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
-
 stopwords = ENGLISH_STOP_WORDS
-
 vectorizer_bjp = TfidfVectorizer(analyzer=&#39;word&#39;, stop_words=stopwords, max_df=0.3, min_df=2)
 vector_train_bjp = vectorizer_bjp.fit_transform(r[&quot;bjp_content$text&quot;])
-
 vectorizer_congress = TfidfVectorizer(analyzer=&#39;word&#39;, stop_words=stopwords, max_df=0.3, min_df=2)
 vector_train_congress = vectorizer_congress.fit_transform(r[&quot;congress_content$text&quot;])
-
 def get_related_lines(query, party=&quot;bjp&quot;):
   if (party == &quot;bjp&quot;):
     vectorizer = vectorizer_bjp
@@ -217,7 +213,7 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
+##   &lt;chr&gt;                                                         &lt;int&gt; &lt;int&gt;
 ## 1 promise in a record time. we will fu her work towards comple…    22    19
 ## 2 ÿ   ensuring a right mix of energy which leads towards a cle…    22    24
 ## 3 a ained the goal. all remaining villages have been electri e…    22    17
@@ -240,7 +236,7 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
+##   &lt;chr&gt;                                                         &lt;int&gt; &lt;int&gt;
 ## 1 implement the policy on spectrum and on ex-                 …     8    29
 ## 2 congress promises to enhance infrastructure in rural areas a…     8    14
 ## 3 council and a separate administrative structure             …     8    53
@@ -263,7 +259,7 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
+##   &lt;chr&gt;                                                         &lt;int&gt; &lt;int&gt;
 ## 1 a country with such a major                                      28    13
 ## 2 youth in governance                                              27    20
 ## 3 ₹20,000 crore.                                                   27    19
@@ -283,7 +279,7 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
+##   &lt;chr&gt;                                                         &lt;int&gt; &lt;int&gt;
 ## 1 and appoint a second asha worker in all villages        16. …     7    55
 ## 2 08. we will trigger rapid growth of the manufac-            …     7    57
 ## 3 provision of world-class infrastructure in industrial       …     7    59
