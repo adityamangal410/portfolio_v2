@@ -1,7 +1,7 @@
 ---
 title: Music Artist Recommendation System - EDA
 author: Aditya Mangal
-date: '2019-04-25'
+date: '2019-07-18'
 categories:
   - Projects
 tags:
@@ -155,7 +155,7 @@ grid.arrange(p +
                geom_density(aes(x = z_score_weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7)+
                scale_x_log10() + 
                labs(x = &quot;z-score(log(weight))&quot;, y = &quot;density&quot;, title = &quot;z-score(log(Weight)) Density Distribution&quot;))</code></pre>
-<p><img src="/post/2019-04-25-music-recommendation-system_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
+<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
 <pre class="r"><code>ratings %&gt;% 
   mutate(log_weight = log10(weight),
          z_score_log_weight = scale(log_weight)) %&gt;% 
@@ -329,7 +329,7 @@ grid.arrange(p +
        title = &quot;Most popular Artists&quot;,
        subtitle = &quot;Top 20 artists&quot;,
        caption = &quot;Based on data from the Last.fm dataset&quot;)</code></pre>
-<p><img src="/post/2019-04-25-music-recommendation-system_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
 <pre class="r"><code>metadata %&gt;% 
   count(tagValue, sort = TRUE) %&gt;% 
   top_n(20, n) %&gt;% 
@@ -346,7 +346,7 @@ grid.arrange(p +
        title = &quot;Most popular Tags&quot;,
        subtitle = &quot;Top 20 Tags&quot;,
        caption = &quot;Based on data from the Last.fm dataset&quot;)</code></pre>
-<p><img src="/post/2019-04-25-music-recommendation-system_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 <p>Looks like few of the most popular Artists in this dataset are Britney Spears, Lady Gaga and Christina Aguilera and as expected, Rock and Pop are the most popular tags. Lets see which are the most popular artists in the top most popular tags.</p>
 <pre class="r"><code>topTags &lt;- metadata %&gt;% 
   count(tagValue) %&gt;% 
