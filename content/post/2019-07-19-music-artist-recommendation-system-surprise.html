@@ -44,7 +44,8 @@ library(gridExtra)
 library(reticulate)
 
 theme_set(theme_light())
-use_condaenv(&quot;py-portfolioV2&quot;)</code></pre>
+# use_condaenv(&quot;py-portfolioV2&quot;)
+use_python(&quot;~/anaconda3/bin/python&quot;)</code></pre>
 </div>
 <div id="obtain-data" class="section level2">
 <h2>Obtain Data</h2>
@@ -53,9 +54,9 @@ ratings %&gt;%
   glimpse()</code></pre>
 <pre><code>## Observations: 92,834
 ## Variables: 4
-## $ userID   &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
-## $ artistID &lt;int&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,…
-## $ weight   &lt;int&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 433…
+## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,…
+## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 433…
 ## $ rating   &lt;dbl&gt; 2.659038, 2.546706, 2.527479, 2.463997, 2.374611, 2.127…</code></pre>
 <pre class="r"><code>ratings %&gt;% 
   select(-weight) %&gt;% 

@@ -38,7 +38,8 @@ library(gridExtra)
 library(reticulate)
 
 theme_set(theme_light())
-use_condaenv("py-portfolioV2")
+# use_condaenv("py-portfolioV2")
+use_python("~/anaconda3/bin/python")
 ```
 
 ## Obtain Data

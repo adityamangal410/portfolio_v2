@@ -95,8 +95,8 @@ report %&gt;%
   glimpse()</code></pre>
 <pre><code>## Observations: 19,195
 ## Variables: 3
-## $ page &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3,…
-## $ line &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 1, 2, 3, 4,…
+## $ page &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3,…
+## $ line &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 1, 2, 3, 4,…
 ## $ text &lt;chr&gt; &quot;U.S. Department of Justice&quot;, &quot;AttarAe:,c\\\\&#39;erlc Predtiet…</code></pre>
 </div>
 <div id="cleaning" class="section level2">
@@ -162,6 +162,7 @@ report %&gt;%
 <p>Using python’s NLTK’s Vader Lexicon to generate sentiments for each line.</p>
 <pre class="python"><code>import pandas as pd
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 sid = SentimentIntensityAnalyzer()
 text = pd.Series(r[&quot;content$text&quot;])
 sentiments = text.apply(sid.polarity_scores).apply(pd.Series)</code></pre>
@@ -187,7 +188,7 @@ content %&gt;%
   select(text, page)</code></pre>
 <pre><code>## # A tibble: 10 x 2
 ##    text                                                                page
-##    &lt;chr&gt;                                                              &lt;int&gt;
+##    &lt;chr&gt;                                                              &lt;dbl&gt;
 ##  1 &quot;crime\&quot;). obstruction of justice can be motivated by a desire to…   369
 ##  2 justice statutes to protect, among other things, the integrity of…   388
 ##  3 wealth fund and was interested in improving relations between the…   163
@@ -204,7 +205,7 @@ content %&gt;%
   select(text, page)</code></pre>
 <pre><code>## # A tibble: 10 x 2
 ##    text                                                                page
-##    &lt;chr&gt;                                                              &lt;int&gt;
+##    &lt;chr&gt;                                                              &lt;dbl&gt;
 ##  1 &quot;specialist who exposed a fraud and later died in a russian priso…   120
 ##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked .\&quot; 5…   290
 ##  3 be no serious argument against the president&#39;s potential criminal…   392
@@ -248,9 +249,11 @@ word_cors %&gt;%
 Using python’s scikit-learn for this.</p>
 <pre class="python"><code>from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
+
 stopwords = ENGLISH_STOP_WORDS
 vectorizer = TfidfVectorizer(analyzer=&#39;word&#39;, stop_words=stopwords, max_df=0.3, min_df=2)
 vector_train = vectorizer.fit_transform(r[&quot;content$text&quot;])
+
 def get_related_lines(query):
   vector_query = vectorizer.transform([query])
   cosine_sim = linear_kernel(vector_query, vector_train).flatten()
@@ -263,7 +266,7 @@ def get_related_lines(query):
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;int&gt; &lt;int&gt;
+##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
 ## 1 alphabetically by subject, are summarized below.                446     3
 ## 2 flynn is awaiting sentencing .                                  203    25
 ## 3 called melania trump&#39;s cell phone several times between janu…   357    39
@@ -283,7 +286,7 @@ def get_related_lines(query):
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;int&gt; &lt;int&gt;
+##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
 ## 1 response to question i, part (h)                                431    18
 ## 2 polon skaya, olga        russian national introduced to geor…   408    30
 ## 3 &quot;fine.\&quot;); andrew rafferty, trump says he would \&quot;get along …   228    26
@@ -309,7 +312,7 @@ def get_related_lines(query):
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 10 x 3
 ##    text                                                          page  line
-##    &lt;chr&gt;                                                        &lt;int&gt; &lt;int&gt;
+##    &lt;chr&gt;                                                        &lt;dbl&gt; &lt;dbl&gt;
 ##  1 &quot;specialist who exposed a fraud and later died in a russian…   120    11
 ##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked…   290    20
 ##  3 be no serious argument against the president&#39;s potential cr…   392    26
@@ -330,7 +333,7 @@ def get_related_lines(query):
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;int&gt; &lt;int&gt;
+##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
 ## 1 concerns about sealed indictments. even if an indictment wer…   214    20
 ## 2 &quot;alia, bribery,\&quot; id. (citing u.s. const.artii,§ 4).&quot;           382    28
 ## 3 &quot;constitution confers no power in the president to receive b…   382    24
@@ -351,7 +354,7 @@ def get_related_lines(query):
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;int&gt; &lt;int&gt;
+##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
 ## 1 president had said similar things about comey in an off-the-…   283    43
 ## 2 ukraine to support the plan. 925 manafort also initially tol…   148     8
 ## 3 president &#39; s request, he decided not to share details of th…   299     7
@@ -375,7 +378,7 @@ House staff.”</p>
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
 ##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;int&gt; &lt;int&gt;
+##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
 ## 1 notwithstanding his recusal , he was going to confine the sp…   310    28
 ## 2 members of the trump campaign conspired or coordinated with …    13    23
 ## 3 establish that members of the trump campaign conspired or co…    10     4
