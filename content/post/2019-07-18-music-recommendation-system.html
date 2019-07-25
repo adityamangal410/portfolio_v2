@@ -1,0 +1,414 @@
+---
+title: Music Artist Recommendation System - EDA
+author: Aditya Mangal
+date: '2019-07-18'
+categories:
+  - Projects
+tags:
+  - DataAnalysis
+  - DataScience
+  - Visualizations
+slug: music-recommendation-system
+keywords:
+  - tech
+summary: Music Artist Recommendation System using the [Last.fm Dataset](https://grouplens.org/datasets/hetrec-2011/).
+  Exploratory data analysis.
+readingtime: '15'
+draft: yes
+coverImage: https://lh3.googleusercontent.com/PM_9k2f_aBF6_x5etgQpZzGNcQ6s8YgPVuFiVXqwcKZU3pmy9xsxvZcpb-NFZA7g9xFr38jJSwtiB_AMApLB7YHvK-imvjD31zSAGmRHB5Wk7h593uyZ48OD6suGUhG5B8Mi_hwqw-DLauTIaLSctW5JK9X4-rw2m0WOVf8kQRxG7GggWvyuD8gg0Dyy-AtER3AdMn2jG7upYXYs63MT940AHq826hq36vz2_c99_gUrFGDnnjsN4YnlpDFTYwzyjvglGJjtWzrGYnEZbLNvG9ifYxtzELvXhTtTYKwVAufOi-88g1OtLrddcBgN_izobnCesRnANY4abdcSNs5rkb9_BpYMJGA6_yPAkd1Bte7yDFeMzQ0myZW5MhW9tx5ZXyX5c59nqRpVwRbrrfkQxg2HxhZPjRNeirCe7oWsvcqJnp3rXIIkv74EaD2Hm37A55A1Orj8TXWyfPAA3Ixo-HOiU-uLt2EWQKCWRX6kia8457VlE_OHmnfIBdD7smvL5OVvZv0BNoTmnamiLJL7WvyZftfanwUQmfjiaXyvgBnk3RbROuBsFh6Ep4sVIza18RV_Ftc2EGIlxYH2wxUndUTvGMrnjC-hfIK_sEgCbvQup6-SSYe0iC7w5BvT5IXvmg2eFd99fiRxlVTqr1qfSWpp6AxmcbIEjQHRVaBvqeVn05XcCFO22ZYoFienq6JhyXu5X6TmoI1HA_PXPsDY4iCXfg=w2602-h1734-no
+thumbnailImage: https://lh3.googleusercontent.com/4YYTtIHwN3Fo0ZO64A3_vTJd9sPnN-Gt4aC6Ae6D-4Ll3pUIkPy6L_0kzA_b1snFGWvOqlijjnB7q9VhkGsytIHtZquOl9iGZcNizV46_o4p7xUl_wvFT8wW4LAAf6TzkHD_lklURhCujLczN6VZgwtfLmPJgV4AARu-jv3uDAm2lOL1wJLx1fizS_D6Ta7L3dQTUBM5hS6zu5xNrXNTQC1oTNnFhoYSsKkoVmtiZQB-CblkHxWdWk1C7iT80u8GfWpGv91EszIErFxR7_reyzc5ATE3PYcXo_IND77hu8HfVShEDo6zLTknQwZ4sf8QvPcIRWAnd3skB0bXliz-ktFhrxzwJvmf92cmUgGCEVCh6bCF35ABoi5kZv3DXXwFDGVQp_LHzx1bbLRj1o22EeJKCry03tJx8gMB9mP2XBhpnMW9rA0UhneMXweqqUwh7R2JFJhI8C8MmgwMiatV_cxQeZhYvKOFqd9ALGuo9mhdCCdYhXfiYP-DthpwTS427F6LutIap8Ky_yUqy66Anm6x4xOG4pSrKSYMoIF-V9Hbg02clR7DrZrPatY0iNvsiFboP7pw-njBqv_lXMXS_9ca33IiuJ1ZcrHJeA8wLzjh_R9uuoWJjRp8XIoGNEapyLbLLITc9bYChyNiP9bPNldpD2tqMXNC6mY2i2_oe_NsRCoZvr1C_ZVgYCHTH6ufc-e2PcKVHsEYdF2uOKw4F95-VQ=w750-h500-no
+thumbnailImagePosition: top
+comments: no
+coverCaption: Photo by Malte Wingen on Unsplash
+---
+
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<link href="/rmarkdown-libs/sequences/sequences.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/sunburst-binding/sunburst.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#analysis">Analysis</a><ul>
+<li><a href="#load-libraries">Load Libraries</a></li>
+<li><a href="#obtain-data">Obtain Data</a></li>
+<li><a href="#scrub-and-explore">Scrub and Explore</a><ul>
+<li><a href="#ratings">Ratings</a></li>
+<li><a href="#friends">Friends</a></li>
+<li><a href="#metadata">Metadata</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Music Artist Recommendation System using the <a href="https://grouplens.org/datasets/hetrec-2011/">Last.fm Dataset</a>. Exploratory data analysis.</p>
+</div>
+<div id="analysis" class="section level1">
+<h1>Analysis</h1>
+<div id="load-libraries" class="section level2">
+<h2>Load Libraries</h2>
+<pre class="r"><code>rm(list = ls())
+library(tidyverse)
+library(tidylog)
+library(lubridate)
+library(ggplot2)
+library(gridExtra)
+library(sunburstR)
+library(htmltools)
+library(htmlwidgets)
+
+theme_set(theme_light())</code></pre>
+</div>
+<div id="obtain-data" class="section level2">
+<h2>Obtain Data</h2>
+<pre class="r"><code>artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/artists.dat&quot;)
+tags &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/tags.dat&quot;)
+ratings &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_artists.dat&quot;)
+friends &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_friends.dat&quot;)
+user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_taggedartists.dat&quot;)</code></pre>
+<p>Lets try and join all the data tables, into logical condensed tables.</p>
+<pre class="r"><code>user_tagged_artists %&gt;% 
+  left_join(tags, by = c(&quot;tagID&quot;)) %&gt;% 
+  left_join(artists, by = c(&quot;artistID&quot; = &quot;id&quot;)) -&gt; metadata</code></pre>
+<p>We will work with the final above 3 dataframes, metadata, ratings and friends. Lets drop the rest of them.</p>
+<pre class="r"><code>rm(artists, tags, user_tagged_artists)</code></pre>
+<pre class="r"><code>metadata %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 186,479
+## Variables: 10
+## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,…
+## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 7…
+## $ tagID      &lt;dbl&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 2…
+## $ day        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,…
+## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009,…
+## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;f…
+## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;…
+## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.las…
+## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;,…</code></pre>
+<pre class="r"><code>friends %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 25,434
+## Variables: 2
+## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3…
+## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1…</code></pre>
+<pre class="r"><code>ratings %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 92,834
+## Variables: 3
+## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,…
+## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 433…</code></pre>
+</div>
+<div id="scrub-and-explore" class="section level2">
+<h2>Scrub and Explore</h2>
+<div id="ratings" class="section level3">
+<h3>Ratings</h3>
+<pre class="r"><code>ratings %&gt;% 
+  head()</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   userID artistID weight
+##    &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+## 1      2       51  13883
+## 2      2       52  11690
+## 3      2       53  11351
+## 4      2       54  10300
+## 5      2       55   8983
+## 6      2       56   6152</code></pre>
+<pre class="r"><code>ratings %&gt;% 
+  select_if(function(x) any(is.na(x))) %&gt;% 
+  summarise_all(funs(sum(is.na(.))))</code></pre>
+<pre><code>## # A tibble: 1 x 0</code></pre>
+<p>Lets first make userID and artistID as factors.</p>
+<pre class="r"><code>ratings %&gt;% 
+  mutate(userID = as.factor(userID),
+         artistID = as.factor(artistID)) -&gt; ratings</code></pre>
+<pre class="r"><code>ratings %&gt;% 
+  summary()</code></pre>
+<pre><code>##      userID         artistID         weight        
+##  2      :   50   89     :  611   Min.   :     1.0  
+##  3      :   50   289    :  522   1st Qu.:   107.0  
+##  4      :   50   288    :  484   Median :   260.0  
+##  5      :   50   227    :  480   Mean   :   745.2  
+##  6      :   50   300    :  473   3rd Qu.:   614.0  
+##  7      :   50   67     :  429   Max.   :352698.0  
+##  (Other):92534   (Other):89835</code></pre>
+<pre class="r"><code>ratings %&gt;% 
+  mutate(z_score_weight = scale(weight)) %&gt;% 
+  ggplot() -&gt; p
+
+grid.arrange(p + 
+               geom_density(aes(x = weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7) +
+               labs(x = &quot;weight&quot;, y = &quot;density&quot;, title = &quot;Weight Density Distribution&quot;), 
+             p + 
+               geom_density(aes(x = weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7)+
+               scale_x_log10() + 
+               labs(x = &quot;log(weight)&quot;, y = &quot;density&quot;, title = &quot;log(Weight) Density Distribution&quot;),
+             p + 
+               geom_density(aes(x = z_score_weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7)+
+               labs(x = &quot;z-score(weight)&quot;, y = &quot;density&quot;, title = &quot;z-score(Weight) Density Distribution&quot;),
+             p + 
+               geom_density(aes(x = z_score_weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7)+
+               scale_x_log10() + 
+               labs(x = &quot;z-score(log(weight))&quot;, y = &quot;density&quot;, title = &quot;z-score(log(Weight)) Density Distribution&quot;))</code></pre>
+<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
+<pre class="r"><code>ratings %&gt;% 
+  mutate(log_weight = log10(weight),
+         z_score_log_weight = scale(log_weight)) %&gt;% 
+  summary()</code></pre>
+<pre><code>##      userID         artistID         weight           log_weight   
+##  2      :   50   89     :  611   Min.   :     1.0   Min.   :0.000  
+##  3      :   50   289    :  522   1st Qu.:   107.0   1st Qu.:2.029  
+##  4      :   50   288    :  484   Median :   260.0   Median :2.415  
+##  5      :   50   227    :  480   Mean   :   745.2   Mean   :2.375  
+##  6      :   50   300    :  473   3rd Qu.:   614.0   3rd Qu.:2.788  
+##  7      :   50   67     :  429   Max.   :352698.0   Max.   :5.547  
+##  (Other):92534   (Other):89835                                     
+##  z_score_log_weight.V1
+##  Min.   :-3.572957    
+##  1st Qu.:-0.519931    
+##  Median : 0.060154    
+##  Mean   : 0.000000    
+##  3rd Qu.: 0.621593    
+##  Max.   : 4.772614    
+## </code></pre>
+<p>Using scaled (i.e. z-score) of log10 of weight field as the rating.</p>
+<pre class="r"><code>ratings %&gt;% 
+  mutate(rating = scale(log10(weight))) -&gt; ratings</code></pre>
+<pre class="r"><code>ratings %&gt;% 
+  count(userID, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 1,892 x 2
+##    userID     n
+##    &lt;fct&gt;  &lt;int&gt;
+##  1 2         50
+##  2 3         50
+##  3 4         50
+##  4 5         50
+##  5 6         50
+##  6 7         50
+##  7 8         50
+##  8 9         50
+##  9 10        50
+## 10 11        50
+## # … with 1,882 more rows</code></pre>
+<p>Looks like a highly cleaned dataset, where every user has exactly 50 ratings (or user’s play counts of exactly 50 artists).</p>
+<pre class="r"><code>ratings %&gt;% 
+  count(artistID, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 17,632 x 2
+##    artistID     n
+##    &lt;fct&gt;    &lt;int&gt;
+##  1 89         611
+##  2 289        522
+##  3 288        484
+##  4 227        480
+##  5 300        473
+##  6 67         429
+##  7 333        417
+##  8 292        407
+##  9 190        400
+## 10 498        399
+## # … with 17,622 more rows</code></pre>
+</div>
+<div id="friends" class="section level3">
+<h3>Friends</h3>
+<pre class="r"><code>friends %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 25,434
+## Variables: 2
+## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3…
+## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1…</code></pre>
+<pre class="r"><code>friends %&gt;% 
+  select_if(function(x) any(is.na(x))) %&gt;% 
+  summarise_all(funs(sum(is.na(.))))</code></pre>
+<pre><code>## # A tibble: 1 x 0</code></pre>
+<pre class="r"><code>friends %&gt;% 
+  mutate(userID = as.factor(userID),
+         friendID = as.factor(friendID)) -&gt; friends</code></pre>
+<pre class="r"><code>friends %&gt;% 
+  count(userID, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 1,892 x 2
+##    userID     n
+##    &lt;fct&gt;  &lt;int&gt;
+##  1 1543     119
+##  2 1281     110
+##  3 831      106
+##  4 179       97
+##  5 1503      95
+##  6 1023      91
+##  7 405       90
+##  8 1895      90
+##  9 1300      89
+## 10 390       88
+## # … with 1,882 more rows</code></pre>
+</div>
+<div id="metadata" class="section level3">
+<h3>Metadata</h3>
+<pre class="r"><code>metadata %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 186,479
+## Variables: 10
+## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,…
+## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 7…
+## $ tagID      &lt;dbl&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 2…
+## $ day        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,…
+## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009,…
+## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;f…
+## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;…
+## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.las…
+## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;,…</code></pre>
+<pre class="r"><code>metadata %&gt;% 
+  select_if(function(x) any(is.na(x))) %&gt;% 
+  summarise_all(funs(sum(is.na(.))))</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##    name   url pictureURL
+##   &lt;int&gt; &lt;int&gt;      &lt;int&gt;
+## 1 22951 22951      23024</code></pre>
+<p>I’ll skip worrying about NA urls and pictureURLs for now. Lets explore the rows where name is NA.</p>
+<pre class="r"><code>metadata %&gt;% 
+  filter(is.na(name))</code></pre>
+<pre><code>## # A tibble: 22,951 x 10
+##    userID artistID tagID   day month  year tagValue  name  url   pictureURL
+##     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     
+##  1      4     1713    18     1    11  2007 electron… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  2      4     1745    18     1    10  2007 electron… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  3      4     1810    72     1    12  2007 hard rock &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  4      4     1824    15     1     6  2007 downtempo &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  5      4     1870    92     1     3  2007 dope      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  6      4     1873    78     1     3  2007 alternat… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  7      4     1917     7     1     8  2007 gothic m… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  8      4     2370    76     1     9  2007 progress… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##  9      5     2786    96     1     4  2008 spring    &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+## 10      8    14103    24     1    11  2006 pop       &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+## # … with 22,941 more rows</code></pre>
+<pre class="r"><code>ratings %&gt;% 
+  filter(artistID == 1713)</code></pre>
+<pre><code>## # A tibble: 58 x 4
+##    userID artistID weight rating[,1]
+##    &lt;fct&gt;  &lt;fct&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1 59     1713        610     0.617 
+##  2 62     1713        214    -0.0671
+##  3 99     1713        561     0.563 
+##  4 103    1713         23    -1.52  
+##  5 124    1713       1080     0.991 
+##  6 183    1713        161    -0.253 
+##  7 191    1713        107    -0.520 
+##  8 210    1713       7898     2.29  
+##  9 211    1713        709     0.716 
+## 10 216    1713        174    -0.202 
+## # … with 48 more rows</code></pre>
+<p>Looks like even though we dont have the name of these artists, we have ratings for them in the ratings dataframe, so we’ll keep them.</p>
+<pre class="r"><code>metadata %&gt;% 
+  mutate(userID = as.factor(userID),
+         artistID = as.factor(artistID),
+         tagID = as.factor(tagID),
+         tagValue = as.factor(tagValue),
+         name = as.factor(name)) %&gt;% 
+  rename(artistName = name) -&gt; metadata</code></pre>
+<p>I dont think we will need the 2 URL columns for this study, dropping them for now.</p>
+<pre class="r"><code>metadata %&gt;% 
+  select(-url, -pictureURL) -&gt; metadata</code></pre>
+<pre class="r"><code>metadata %&gt;% 
+  filter(!is.na(artistName)) %&gt;% 
+  count(artistName, sort = TRUE) %&gt;% 
+  top_n(20, n) %&gt;% 
+  mutate(artistName = reorder(artistName, n)) %&gt;%
+  ggplot( aes(x=artistName, y=n)) +
+  geom_segment( aes(x=artistName, xend=artistName, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
+  geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
+  coord_flip() + 
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        legend.position=&quot;none&quot;) +
+  labs(x = &quot;&quot;,
+       y = &quot;Number of Occurences&quot;,
+       title = &quot;Most popular Artists&quot;,
+       subtitle = &quot;Top 20 artists&quot;,
+       caption = &quot;Based on data from the Last.fm dataset&quot;)</code></pre>
+<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<pre class="r"><code>metadata %&gt;% 
+  count(tagValue, sort = TRUE) %&gt;% 
+  top_n(20, n) %&gt;% 
+  mutate(tagValue = reorder(tagValue, n)) %&gt;%
+  ggplot( aes(x=tagValue, y=n)) +
+  geom_segment( aes(x=tagValue, xend=tagValue, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
+  geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
+  coord_flip() + 
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        legend.position=&quot;none&quot;) +
+  labs(x = &quot;&quot;,
+       y = &quot;Number of Occurences&quot;,
+       title = &quot;Most popular Tags&quot;,
+       subtitle = &quot;Top 20 Tags&quot;,
+       caption = &quot;Based on data from the Last.fm dataset&quot;)</code></pre>
+<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p>Looks like few of the most popular Artists in this dataset are Britney Spears, Lady Gaga and Christina Aguilera and as expected, Rock and Pop are the most popular tags. Lets see which are the most popular artists in the top most popular tags.</p>
+<pre class="r"><code>topTags &lt;- metadata %&gt;% 
+  count(tagValue) %&gt;% 
+  top_n(5, n) %&gt;% 
+  select(tagValue) %&gt;% 
+  pull()
+
+metadata %&gt;% 
+  filter(tagValue %in% topTags,
+         !is.na(artistName)) %&gt;% 
+  count(tagValue, artistName, sort = TRUE) %&gt;% 
+  group_by(tagValue) %&gt;% 
+  top_n(5, n) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(path = paste(tagValue, artistName, sep = &quot;-&quot;)) %&gt;% 
+  select(path, n) %&gt;% 
+  sunburst(legend = FALSE) -&gt; snb
+
+snb &lt;- htmlwidgets::prependContent(snb, htmltools::h2(&quot;Sunburst of most popular artists in 5 most popular tags&quot;))
+snb &lt;- htmlwidgets::prependContent(snb, htmltools::h5(&quot;Hover over to the see the artists and tags&quot;))
+snb</code></pre>
+<h2>Sunburst of most popular artists in 5 most popular tags</h2>
+<h5>Hover over to the see the artists and tags</h5>
+<div class="sunburst html-widget" id="htmlwidget-1" style="width:672px;height:480px; position:relative;">
+<div>
+<div class="sunburst-main">
+<div class="sunburst-sequence"></div>
+<div class="sunburst-chart">
+<div class="sunburst-explanation" style="visibility:hidden;"></div>
+</div>
+</div>
+<div class="sunburst-sidebar">
+<input type="checkbox" class="sunburst-togglelegend" style="visibility:hidden;">Legend</input>
+<div class="sunburst-legend" style="visibility:hidden;"></div>
+</div>
+</div>
+</div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"data":{"children":[{"name":"pop","children":[{"name":"Britney Spears","size":108,"colname":"X2"},{"name":"Lady Gaga","size":99,"colname":"X2"},{"name":"Christina Aguilera","size":83,"colname":"X2"},{"name":"Madonna","size":78,"colname":"X2"},{"name":"Katy Perry","size":68,"colname":"X2"}],"colname":"X1"},{"name":"electronic","children":[{"name":"Depeche Mode","size":68,"colname":"X2"},{"name":"Björk","size":54,"colname":"X2"},{"name":"Lady Gaga","size":51,"colname":"X2"},{"name":"Daft Punk","size":39,"colname":"X2"},{"name":"Massive Attack","size":37,"colname":"X2"}],"colname":"X1"},{"name":"rock","children":[{"name":"The Beatles","size":67,"colname":"X2"},{"name":"Muse","size":65,"colname":"X2"},{"name":"Paramore","size":58,"colname":"X2"},{"name":"U2","size":52,"colname":"X2"},{"name":"Linkin Park","size":48,"colname":"X2"},{"name":"Radiohead","size":48,"colname":"X2"}],"colname":"X1"},{"name":"alternative","children":[{"name":"Radiohead","size":64,"colname":"X2"},{"name":"Muse","size":62,"colname":"X2"},{"name":"Placebo","size":48,"colname":"X2"},{"name":"Björk","size":46,"colname":"X2"},{"name":"Paramore","size":46,"colname":"X2"}],"colname":"X1"},{"name":"indie","children":[{"name":"The Killers","size":49,"colname":"X2"},{"name":"Franz Ferdinand","size":43,"colname":"X2"},{"name":"Arctic Monkeys","size":41,"colname":"X2"},{"name":"Muse","size":39,"colname":"X2"},{"name":"Radiohead","size":39,"colname":"X2"}],"colname":"X1"}],"name":"root"},"options":{"legendOrder":null,"colors":null,"valueField":"size","percent":true,"count":false,"explanation":null,"breadcrumb":[],"legend":false,"sortFunction":null,"sumNodes":true}},"evals":[],"jsHooks":[]}</script>
+<p>Alright, so we know the most popular artists in each popular tag as provided by the user. Don’t worry, Beatles is right up there in the “rock” tag! :)</p>
+</div>
+</div>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>In this post, we</p>
+<ul>
+<li>Downloaded and merged the dataset</li>
+<li>Analyzed and explored the dataset</li>
+<li>Visualized the most import data points in the dataset.</li>
+</ul>
+<p>I think I will wrap up the exploration phase for now. Lets export the data so we can model it in a later post.</p>
+<pre class="r"><code>ratings %&gt;% 
+  write_csv(&quot;../data/hetrec2011-lastfm-2k/ratings_clean.csv&quot;)
+friends %&gt;% 
+  write_csv(&quot;../data/hetrec2011-lastfm-2k/friends_clean.csv&quot;)
+metadata %&gt;% 
+  write_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)</code></pre>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<ol style="list-style-type: decimal">
+<li><a href="https://grouplens.org/datasets/hetrec-2011/">Data reference</a></li>
+<li><a href="https://www.data-to-viz.com/">Visualization reference</a></li>
+</ol>
+</div>
