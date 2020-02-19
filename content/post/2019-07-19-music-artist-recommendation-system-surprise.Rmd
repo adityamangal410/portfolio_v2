@@ -52,12 +52,48 @@ ratings %>%
 
 ```{r}
 ratings %>% 
-  select(-weight) %>% 
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID)) -> ratings
 ratings %>% 
   summary()
 ```
+
+```{r}
+friends <- read_csv("../data/hetrec2011-lastfm-2k/friends_clean.csv",
+                    col_types = cols("userID" = col_factor(),
+                                  "friendID" = col_factor()))
+friends %>% 
+  glimpse()
+```
+
+```{r}
+metadata <- read_csv("../data/hetrec2011-lastfm-2k/metadata_clean.csv")
+metadata %>% 
+  mutate(userID = as.factor(userID),
+         artistID = as.factor(artistID),
+         tagID = as.factor(tagID),
+         tagValue = as.factor(tagValue),
+         artistName = as.factor(artistName)) -> metadata
+```
+
+```{r}
+metadata %>% 
+  glimpse()
+```
+
+```{r}
+metadata %>% 
+  group_by(artistID) %>% 
+  summarise(num_tags = n_distinct(tagID)) %>% 
+  arrange(desc(num_tags))
+```
+
+```{r}
+
+```
+
+
+# Python Surprise
 
 ```{python}
 import surprise
