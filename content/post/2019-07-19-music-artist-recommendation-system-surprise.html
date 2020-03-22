@@ -24,6 +24,7 @@ coverCaption: Photo by Malte Wingen on Unsplash
 <li><a href="#load-libraries">Load Libraries</a></li>
 <li><a href="#obtain-data">Obtain Data</a></li>
 </ul></li>
+<li><a href="#python-surprise">Python Surprise</a></li>
 </ul>
 </div>
 
@@ -54,26 +55,74 @@ ratings %&gt;%
   glimpse()</code></pre>
 <pre><code>## Observations: 92,834
 ## Variables: 4
-## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
-## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,…
-## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 433…
-## $ rating   &lt;dbl&gt; 2.659038, 2.546706, 2.527479, 2.463997, 2.374611, 2.127…</code></pre>
+## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
+## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, …
+## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 4337, 41…
+## $ rating   &lt;dbl&gt; 2.659038, 2.546706, 2.527479, 2.463997, 2.374611, 2.127279, …</code></pre>
 <pre class="r"><code>ratings %&gt;% 
-  select(-weight) %&gt;% 
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID)) -&gt; ratings
 ratings %&gt;% 
   summary()</code></pre>
-<pre><code>##      userID         artistID         rating        
-##  2      :   50   89     :  611   Min.   :-3.57296  
-##  3      :   50   289    :  522   1st Qu.:-0.51993  
-##  4      :   50   288    :  484   Median : 0.06015  
-##  5      :   50   227    :  480   Mean   : 0.00000  
-##  6      :   50   300    :  473   3rd Qu.: 0.62159  
-##  7      :   50   67     :  429   Max.   : 4.77261  
+<pre><code>##      userID         artistID         weight             rating        
+##  2      :   50   89     :  611   Min.   :     1.0   Min.   :-3.57296  
+##  3      :   50   289    :  522   1st Qu.:   107.0   1st Qu.:-0.51993  
+##  4      :   50   288    :  484   Median :   260.0   Median : 0.06015  
+##  5      :   50   227    :  480   Mean   :   745.2   Mean   : 0.00000  
+##  6      :   50   300    :  473   3rd Qu.:   614.0   3rd Qu.: 0.62159  
+##  7      :   50   67     :  429   Max.   :352698.0   Max.   : 4.77261  
 ##  (Other):92534   (Other):89835</code></pre>
+<pre class="r"><code>friends &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/friends_clean.csv&quot;,
+                    col_types = cols(&quot;userID&quot; = col_factor(),
+                                  &quot;friendID&quot; = col_factor()))
+friends %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 25,434
+## Variables: 2
+## $ userID   &lt;fct&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, …
+## $ friendID &lt;fct&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …</code></pre>
+<pre class="r"><code>metadata &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)
+metadata %&gt;% 
+  mutate(userID = as.factor(userID),
+         artistID = as.factor(artistID),
+         tagID = as.factor(tagID),
+         tagValue = as.factor(tagValue),
+         artistName = as.factor(artistName)) -&gt; metadata</code></pre>
+<pre class="r"><code>metadata %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Observations: 186,479
+## Variables: 8
+## $ userID     &lt;fct&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+## $ artistID   &lt;fct&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 73, 73…
+## $ tagID      &lt;fct&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 20, 21…
+## $ day        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4…
+## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009…
+## $ tagValue   &lt;fct&gt; chillout, downtempo, electronic, trip-hop, female vovalist…
+## $ artistName &lt;fct&gt; Morcheeba, Morcheeba, Morcheeba, Morcheeba, Morcheeba, Eni…</code></pre>
+<pre class="r"><code>metadata %&gt;% 
+  group_by(artistID) %&gt;% 
+  summarise(num_tags = n_distinct(tagID)) %&gt;% 
+  arrange(desc(num_tags))</code></pre>
+<pre><code>## # A tibble: 12,523 x 2
+##    artistID num_tags
+##    &lt;fct&gt;       &lt;int&gt;
+##  1 289           329
+##  2 292           282
+##  3 72            260
+##  4 89            257
+##  5 67            249
+##  6 157           199
+##  7 51            185
+##  8 288           183
+##  9 227           178
+## 10 55            173
+## # … with 12,513 more rows</code></pre>
+</div>
+</div>
+<div id="python-surprise" class="section level1">
+<h1>Python Surprise</h1>
 <pre class="python"><code>import surprise
 from surprise import SVD, Dataset, Reader, accuracy
 from surprise.model_selection import cross_validate, train_test_split</code></pre>
-</div>
 </div>

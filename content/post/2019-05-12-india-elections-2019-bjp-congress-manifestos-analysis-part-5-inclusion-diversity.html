@@ -216,16 +216,16 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;women&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 8 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 e o to ensure access to credit and other resources, capacity…    31    17
-## 2 of &#39;new india&#39; is the                                            32    22
-## 3 strengthen social security mechanism for widows of our ma yr…    32    16
-## 4 women empowerment                                                31     1
-## 5 12 to create a positive atmosphere for women, promote gender…    32    11
-## 6 society and economy.                                             31     7
-## 7 ensure improved health and social suppo system for these fro…    32     6
-## 8 home ministry, and have made strict provisions for transferr…    32     8</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 e o to ensure access to credit and other resources, capacity buil…    31    17
+## 2 of &#39;new india&#39; is the                                                 32    22
+## 3 strengthen social security mechanism for widows of our ma yrs.        32    16
+## 4 women empowerment                                                     31     1
+## 5 12 to create a positive atmosphere for women, promote gender just…    32    11
+## 6 society and economy.                                                  31     7
+## 7 ensure improved health and social suppo system for these frontlin…    32     6
+## 8 home ministry, and have made strict provisions for transferring t…    32     8</code></pre>
 <p>This is the excerpt that we find from page 32, as we dug up based on above results -</p>
 <blockquote>
 <p>Women’s security will be given more priority. We have constituted the Women’s Security Division in the Home Ministry, and have made strict provisions for transferring the laws in order to prevent crimes against women, in particular in a time-bound investigation and trial for rape. In such cases, forensic facilities and fast track courts will be expanded to bring convicts to justice.</p>
@@ -235,17 +235,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;women&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 transport facilities to increase the participation          …    21    24
-## 2 06. sufficient night shelters will be built for migrant     …    21    28
-## 3 07. congress promises a comprehensive review of the              21    34
-## 4 women workers. adequate number of safe and                  …    21    29
-## 5 and empowerment. india’s only woman prime minister, smt. ind…    21     6
-## 6 38                                                          …    20    50
-## 7 between the forest rights act and the compen-                    21     4
-## 8 assemblies in the first session of the 17th lok sabha and in…    20    47
-## 9 05. we will repeal any provision of law that prohibits      …    21    26</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 transport facilities to increase the participation           ment…    21    24
+## 2 06. sufficient night shelters will be built for migrant          …    21    28
+## 3 07. congress promises a comprehensive review of the                   21    34
+## 4 women workers. adequate number of safe and                   as a…    21    29
+## 5 and empowerment. india’s only woman prime minister, smt. indira g…    21     6
+## 6 38                                                               …    20    50
+## 7 between the forest rights act and the compen-                         21     4
+## 8 assemblies in the first session of the 17th lok sabha and in the …    20    47
+## 9 05. we will repeal any provision of law that prohibits           …    21    26</code></pre>
 <p>One of the excerpts from page 21 related to above results -</p>
 <blockquote>
 <p>We will stipulate that every Special Economic Zone shall have working women’s hostels and safe transport facilities to increase the participation of women in the labour force.</p>
@@ -258,17 +258,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;families&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 and the tax bene ts to ensure more cash and greater purchasi…    34     3
-## 2 09 we have been successful in extending the food security co…    33    28
-## 3 digit in the next ve years.                                      33    26
-## 4 ensuring welfare of poor                                         33    24
-## 5 subsidized prices. we will fu her widen this cover to provid…    33    30
-## 6 against women, in pa icular in a time-bound investigation an…    32     9
-## 7 will formulate a dedicated programme for the creation of wor…    32    15
-## 8 13 we are commi ed to ensure the welfare of widows of defenc…    32    14
-## 9 institution’s curriculum and training modules of public o ce…    32    13</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 and the tax bene ts to ensure more cash and greater purchasing po…    34     3
+## 2 09 we have been successful in extending the food security cover t…    33    28
+## 3 digit in the next ve years.                                           33    26
+## 4 ensuring welfare of poor                                              33    24
+## 5 subsidized prices. we will fu her widen this cover to provide sub…    33    30
+## 6 against women, in pa icular in a time-bound investigation and tri…    32     9
+## 7 will formulate a dedicated programme for the creation of work opp…    32    15
+## 8 13 we are commi ed to ensure the welfare of widows of defence per…    32    14
+## 9 institution’s curriculum and training modules of public o ces.        32    13</code></pre>
 <p>An excerpt from BJP’s manifesto about poor families as identified from above -</p>
 <blockquote>
 <p>We have been successful in extending the food security cover to over 80 crore people from poor and lower-middle-income families who are receiving food grains (wheat/rice/coarse grains) at highly subsidized prices. We will further widen this cover to provide subsidized sugar (at Rs. 13 per kg per family per month) to these families in line with our motto ‘Sabka Saath-Sabka Vikas’.</p>
@@ -278,17 +278,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;tribes&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 42                                                          …    22    66
-## 2 tion into the nes through consultation with the             …    22    32
-## 3 enumeration of denotified and semi-nomadic                  …    23    10
-## 4 compartmental reservation for denotified and                     23    14
-## 5 the constitution of india. nothing will be done or allowed t…    21    43
-## 6 01. congress promises a special census and the              …    23     9
-## 7 06. sufficient night shelters will be built for migrant     …    21    28
-## 8 the constitution of india provides for reservation in employ…    21    51
-## 9 social audit of policies and programmes for                      23     4</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 42                                                               …    22    66
+## 2 tion into the nes through consultation with the             touri…    22    32
+## 3 enumeration of denotified and semi-nomadic                   noma…    23    10
+## 4 compartmental reservation for denotified and                          23    14
+## 5 the constitution of india. nothing will be done or allowed to cha…    21    43
+## 6 01. congress promises a special census and the                   …    23     9
+## 7 06. sufficient night shelters will be built for migrant          …    21    28
+## 8 the constitution of india provides for reservation in employment …    21    51
+## 9 social audit of policies and programmes for                           23     4</code></pre>
 <blockquote>
 <p>Congress promises a Special Census and the enumeration of Denotified and Semi-Nomadic Tribes and the integration of the data in the decennial census.</p>
 </blockquote>

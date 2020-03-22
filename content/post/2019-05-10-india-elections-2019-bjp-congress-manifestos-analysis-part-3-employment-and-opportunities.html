@@ -216,17 +216,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;electricity&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 promise in a record time. we will fu her work towards comple…    22    19
-## 2 ÿ   ensuring a right mix of energy which leads towards a cle…    22    24
-## 3 a ained the goal. all remaining villages have been electri e…    22    17
-## 4 energy                                                           22    15
-## 5 transmission lines and in pu ing up the nationwide transmiss…    22    21
-## 6 ÿ   supplying quality electricity to all consumers               22    25
-## 7 achievements, india can now claim that quantum of or access …    22    22
-## 8 speed of constructing rural roads has doubled and 90% of rur…    20     7
-## 9 approach the issue of water management holistically and ensu…    21     4</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 promise in a record time. we will fu her work towards completing …    22    19
+## 2 ÿ   ensuring a right mix of energy which leads towards a cleaner …    22    24
+## 3 a ained the goal. all remaining villages have been electri ed. si…    22    17
+## 4 energy                                                                22    15
+## 5 transmission lines and in pu ing up the nationwide transmission g…    22    21
+## 6 ÿ   supplying quality electricity to all consumers                    22    25
+## 7 achievements, india can now claim that quantum of or access to el…    22    22
+## 8 speed of constructing rural roads has doubled and 90% of rural ro…    20     7
+## 9 approach the issue of water management holistically and ensure be…    21     4</code></pre>
 <p>This is the excerpt that we find from page 22, as we dug up based on above results -</p>
 <blockquote>
 <p>Now, we will work towards:<br />
@@ -239,17 +239,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;electricity&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 implement the policy on spectrum and on ex-                 …     8    29
-## 2 congress promises to enhance infrastructure in rural areas a…     8    14
-## 3 council and a separate administrative structure             …     8    53
-## 4 03. road construction and railways can be built using       …     8    24
-## 5 qualified teachers, doctors, nurses, paramedics,            …     7    41
-## 6 congress will request state governments to fill all         …     7    30
-## 7 vacancies, estimated at 20 lakh, in the 2 sectors           …     7    31
-## 8 and in local bodies.                                    11. …     7    32
-## 9 04. we will work with state governments to create           …     7    33</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 implement the policy on spectrum and on ex-                   ele…     8    29
+## 2 congress promises to enhance infrastructure in rural areas and im…     8    14
+## 3 council and a separate administrative structure               tra…     8    53
+## 4 03. road construction and railways can be built using        06. …     8    24
+## 5 qualified teachers, doctors, nurses, paramedics,            and s…     7    41
+## 6 congress will request state governments to fill all         and e…     7    30
+## 7 vacancies, estimated at 20 lakh, in the 2 sectors           ucts,…     7    31
+## 8 and in local bodies.                                    11. we pr…     7    32
+## 9 04. we will work with state governments to create               a…     7    33</code></pre>
 <p>One of the full excerpts from page 8 related to above results -</p>
 <blockquote>
 <p>Congress promises to enhance availability of, and access to, electricity in rural areas by encour- aging investment in off-grid renewable power generation with ownership and revenues vesting in local bodies. Every village and every home will be electrified in the true sense. In the long term, we aim to substitute LPG used in homes by electricity and solar energy.</p>
@@ -262,17 +262,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;youth&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 a country with such a major                                      28    13
-## 2 youth in governance                                              27    20
-## 3 ₹20,000 crore.                                                   27    19
-## 4 hospitals, lakes, public gardens etc. and ensure their maint…    27    24
-## 5 the following steps :                                            27    22
-## 6 protect them from the harmful e ects of substance abuse and …    27    27
-## 7 more fully in building new india.                                27     3
-## 8 take advantage of the oppo unities available in domestic and…    27     8
-## 9 greater civic engagement of the youth.                           27    25</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 a country with such a major                                           28    13
+## 2 youth in governance                                                   27    20
+## 3 ₹20,000 crore.                                                        27    19
+## 4 hospitals, lakes, public gardens etc. and ensure their maintenanc…    27    24
+## 5 the following steps :                                                 27    22
+## 6 protect them from the harmful e ects of substance abuse and addic…    27    27
+## 7 more fully in building new india.                                     27     3
+## 8 take advantage of the oppo unities available in domestic and fore…    27     8
+## 9 greater civic engagement of the youth.                                27    25</code></pre>
 <p>An excerpt from BJP’s manifesto about youth employment opportunities as identified from above -</p>
 <blockquote>
 <p>We will incentivise and reward self-organized groups of youth who adopt social assets like schools, hospitals, lakes, public gardens etc. and ensure their maintenance and cleanliness to encourage greater civic engagement of the youth.</p>
@@ -282,17 +282,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;tourism&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 and appoint a second asha worker in all villages        16. …     7    55
-## 2 08. we will trigger rapid growth of the manufac-            …     7    57
-## 3 provision of world-class infrastructure in industrial       …     7    59
-## 4 07. para-state workers such as anganwadi workers,           …     7    45
-## 5 in addition, we will expand the asha programme              …     7    54
-## 6 body to ensure the effective delivery of govern-            …     7    36
-## 7 06. congress pledges to create lakhs of new jobs for        …     7    40
-## 8 and government posts will be abolished.                     …     7    39
-## 9 05. application fees for government examinations            …     7    38</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 and appoint a second asha worker in all villages        16. touri…     7    55
+## 2 08. we will trigger rapid growth of the manufac-                t…     7    57
+## 3 provision of world-class infrastructure in industrial       offer…     7    59
+## 4 07. para-state workers such as anganwadi workers,               t…     7    45
+## 5 in addition, we will expand the asha programme              and i…     7    54
+## 6 body to ensure the effective delivery of govern-            of 3 …     7    36
+## 7 06. congress pledges to create lakhs of new jobs for        12. c…     7    40
+## 8 and government posts will be abolished.                     until…     7    39
+## 9 05. application fees for government examinations                b…     7    38</code></pre>
 <blockquote>
 <p>Tourism creates jobs. Congress promises an ade- quately capitalised Tourism Development Bank to provide low-cost, long-term funds for invest- ment in tourism-related businesses. We will also offer lower rates of corporate and personal income tax on tourism-related business income.</p>
 </blockquote>

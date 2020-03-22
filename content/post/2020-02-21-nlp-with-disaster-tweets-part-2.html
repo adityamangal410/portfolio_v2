@@ -1,0 +1,642 @@
+---
+title: 'NLP with Disaster Tweets: Part 2'
+author: Aditya Mangal
+date: '2020-02-21'
+slug: nlp-with-disaster-tweets-part-2
+categories:
+  - Projects
+tags:
+  - DataAnalysis
+  - DataScience
+  - NLP
+  - TextMining
+keywords:
+  - tech
+summary: Working on this NLP project on kaggle [here](https://www.kaggle.com/c/nlp-getting-started)
+readingtime: '15'
+draft: yes
+coverImage: https://lh3.googleusercontent.com/NhQQ6_tTtlSd0SOqdTjXXaaFxEC186pYF68dyx8BJcdeqWUns0kas6nKS7jNUjTorlWCOvYDSXvgTbJSMgHLvc-ViHQkvKe_cGiU4gMP92vb1QSO98BlROygzqVBRO_2pnbPPS3coQVCdbAGJP3PQi0J4hExUkwsxCyPZ7RSOu9kOsIFJ7i7Pi68Ewg8yzEUw7zSb5JyYoDRkunuYedzzrPvS1Z2LWx-T-bVnkedbv72e3fjIfHHpwDf2LM4Tz_orR0lSjyrLt29k8YP2vbGoqRJhOurgj8UxWRC8J1BmDZxaG4fMzF5VfY2QToUTEFUryIzihBzb82z9IBQB7KiBuoKZBvrM03uHBwi_ePO7lt138P5DSufFH3xANhUrY8UPbMIcEKOKaxNXGUhdZG1EDykY6KW5ufjuAgEFoOKUSVp_kHyHmk_qJonukh5zRL07tUhRyXwYNXoP1ixHX-bN8K4yLLobU-Q2kAlrXD89OzMySyD6sm8gu6LcrzwthgEWLwTgRgcpvx0hPncV477w6mZnu1yd8xi8EAE3IVVhWAlQF2oUphPtcWjOBfK-aIocc62MSEFfCPb6DLSBpCWCkFFxydl0KSrbvboXBVX-AM7eVyAnFV3SfSfdQMxtKuLtWbAINTcPhoN05LhQxiOOJtc4KCJFbUOWO29U-rjrunXEbRXPhki1DUCy_KX5phRnwO3hniDAwqubCEZkKU3s6T0yCVT4WARB7E5RcmoVPdLWSRK=w2372-h1832-no
+thumbnailImage: https://lh3.googleusercontent.com/-z0Ja7Q6Sb7BXIno6Ycxun1BRzcJ_en9A9EulOKiXX8QAAx_UWYtH8y04Vqu9-YZF9G1zROwyLXxH77yvOKGqlfcCJPpC5S6_0wAEVc7mNLOCq0bmj2r0iE20NP0P_2jvxfZ3TtHAQHvagPsTbe7lbVxhy3-6yEdsAMn4idYDkIbxtgMj5Elo9SeO991NyEDNyj6a31SVlt1U22HnrFhmJMtYvilT30ZCXq3zaC5y7PKMjb1bA605bTRhc0AiDPCUtD8u2AjyrJ0CwaDQ7dzvW-UpeGx-BoJZvveJIPITw7HiofhcCcYoM69W0CDCwDf106GgH8KDRvlnOdlc9AHgqKdwJ38E1Pbxu9enMofV6WsIdx9-a-P0V8UVltiEKu-Iqq0pfnvEVznP3sQlQw6WV1jG2tWrs78xXM4U4Bu2SqOAjQc8rVJaTVh5uOJfon8zxSJ1opZSnzif364UXlZJpsXxouufy6TDEDUxe5c-jI8wEWPNLEy2JeFwjP9FXxm3EnSbRvIUnjtALh2T-ma0Xyd8d7EJQrsE2vziIAK-ZVY6A6qnv9bptefReAq9p5jmBRABp7wFm8NSuPIXdyYneDch1M4V1SSjf4oz7oaP_AuHMuaAKViG65uuw6QoLCNoDsR4Ifq8g4ADUZxp0naty2ElqCkS0Lj3vND0ZcuUMaMUiqUygAcmmInaZMaCqQa-KWRDwgvxL-NCgV1UzXtE81F8nxhcFW481Bjt7fSDQWz8LNm=w750-h579-no
+thumbnailImagePosition: top
+comments: no
+coverCaption: Photo by Marcus Kauffman on Unsplash
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#load-libraries">Load Libraries</a></li>
+<li><a href="#loading-processed-data-from-previous-part">Loading processed data from previous part</a></li>
+<li><a href="#feature-preprocessing-and-engineering">Feature preprocessing and engineering</a><ul>
+<li><a href="#split-data">Split data</a></li>
+<li><a href="#preparation-recipe">Preparation Recipe</a></li>
+<li><a href="#pca">PCA</a></li>
+</ul></li>
+<li><a href="#modelling">Modelling</a><ul>
+<li><a href="#baseline-model">Baseline model</a></li>
+<li><a href="#logistic-regression-using-glmnet">Logistic Regression using glmnet</a></li>
+<li><a href="#decision-trees-using-rpart">Decision trees using rpart</a></li>
+<li><a href="#gradient-boosted-trees-using-xgboost">Gradient Boosted Trees using xgboost</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="load-libraries" class="section level2">
+<h2>Load Libraries</h2>
+<pre class="r"><code>rm(list = ls())
+library(tidyverse)
+library(ggplot2)
+library(GGally)
+library(skimr)
+library(tidymodels)
+library(keras)
+library(janitor)
+library(glmnet)
+library(rpart)
+library(rpart.plot)
+
+theme_set(theme_light())</code></pre>
+</div>
+<div id="loading-processed-data-from-previous-part" class="section level2">
+<h2>Loading processed data from previous part</h2>
+<pre class="r"><code>tweets &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot;)
+tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)</code></pre>
+<pre class="r"><code>tweets %&gt;% 
+  dim</code></pre>
+<pre><code>## [1] 7613  505</code></pre>
+<pre class="r"><code>tweets_final %&gt;% 
+  dim</code></pre>
+<pre><code>## [1] 3263  504</code></pre>
+</div>
+<div id="feature-preprocessing-and-engineering" class="section level2">
+<h2>Feature preprocessing and engineering</h2>
+<pre class="r"><code>tweets %&gt;% 
+  mutate(target = as.factor(target)) -&gt; tweets</code></pre>
+<pre class="r"><code>tweets %&gt;% 
+  count(target, sort = T)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   target     n
+##   &lt;fct&gt;  &lt;int&gt;
+## 1 0       4342
+## 2 1       3271</code></pre>
+<div id="split-data" class="section level3">
+<h3>Split data</h3>
+<pre class="r"><code>set.seed(42)
+tweets_split &lt;- initial_split(tweets, prop = 0.7, strata = target)
+
+tweets_train &lt;- training(tweets_split)
+tweets_cv &lt;- testing(tweets_split)
+
+set.seed(42)
+tweets_split &lt;- initial_split(tweets_cv, prop = 2/3, strata = target)
+tweets_cv &lt;- training(tweets_split)
+tweets_test &lt;- testing(tweets_split)</code></pre>
+<pre class="r"><code>dim(tweets_train)</code></pre>
+<pre><code>## [1] 5330  505</code></pre>
+<pre class="r"><code>dim(tweets_cv)</code></pre>
+<pre><code>## [1] 1522  505</code></pre>
+<pre class="r"><code>dim(tweets_test)</code></pre>
+<pre><code>## [1] 761 505</code></pre>
+</div>
+<div id="preparation-recipe" class="section level3">
+<h3>Preparation Recipe</h3>
+<pre class="r"><code>tweets_train %&gt;% 
+  count(target)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   target     n
+##   &lt;fct&gt;  &lt;int&gt;
+## 1 0       3040
+## 2 1       2290</code></pre>
+<pre class="r"><code>recipe(target ~ ., data = tweets_train) %&gt;% 
+  step_rm(location, keyword, id) %&gt;% 
+  step_mutate(len = str_length(text),
+              num_hashtags = str_count(text, &quot;#&quot;)) %&gt;% 
+  step_rm(text) %&gt;% 
+  step_zv(all_numeric()) %&gt;% 
+  step_normalize(all_numeric()) -&gt; tweets_recipe</code></pre>
+<pre class="r"><code>tweets_recipe %&gt;% 
+  prep(training = tweets_train) %&gt;% 
+  juice() %&gt;% 
+  count(target)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   target     n
+##   &lt;fct&gt;  &lt;int&gt;
+## 1 0       3040
+## 2 1       2290</code></pre>
+<pre class="r"><code>tweets_recipe_prep &lt;- tweets_recipe %&gt;% 
+  prep(training = tweets_train)
+tweets_train_proc &lt;- tweets_recipe_prep %&gt;% juice()
+tweets_cv_proc &lt;- tweets_recipe_prep %&gt;% bake(new_data = tweets_cv)
+tweets_test_proc &lt;- tweets_recipe_prep %&gt;% bake(new_data = tweets_test)
+
+tweets_final_proc &lt;- tweets_recipe_prep %&gt;% bake(new_data = tweets_final)</code></pre>
+<pre class="r"><code>dim(tweets_train_proc)</code></pre>
+<pre><code>## [1] 5330  503</code></pre>
+<pre class="r"><code>dim(tweets_cv_proc)</code></pre>
+<pre><code>## [1] 1522  503</code></pre>
+<pre class="r"><code>dim(tweets_test_proc)</code></pre>
+<pre><code>## [1] 761 503</code></pre>
+<pre class="r"><code>dim(tweets_final_proc)</code></pre>
+<pre><code>## [1] 3263  502</code></pre>
+<pre class="r"><code>summary(tweets_recipe) %&gt;% 
+  filter(role == &quot;outcome&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   variable type    role    source  
+##   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   
+## 1 target   nominal outcome original</code></pre>
+</div>
+<div id="pca" class="section level3">
+<h3>PCA</h3>
+<pre class="r"><code>tweets_recipe %&gt;% 
+  step_pca(all_predictors(), num_comp = 2) %&gt;% 
+  prep(training = tweets_train) %&gt;% 
+  juice() -&gt; tweets_train_pca</code></pre>
+<pre class="r"><code>tweets_train_pca</code></pre>
+<pre><code>## # A tibble: 5,330 x 3
+##    target    PC1   PC2
+##    &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;
+##  1 1       0.582  6.03
+##  2 1       3.37  -4.35
+##  3 1       0.878  5.44
+##  4 1       0.662  1.96
+##  5 1      -0.583  2.13
+##  6 1       3.57   1.89
+##  7 1       1.48   3.73
+##  8 1       3.28   4.42
+##  9 1       7.52  -5.08
+## 10 1       1.96   3.62
+## # … with 5,320 more rows</code></pre>
+<pre class="r"><code>tweets_train_pca %&gt;% 
+  ggplot(aes(x = PC1, y = PC2, color = target)) + 
+  geom_point()</code></pre>
+<p><img src="/post/2020-02-21-nlp-with-disaster-tweets-part-2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre class="r"><code>tweets_train_pca %&gt;% 
+  ggplot(aes(x = target, y = PC1, fill = target)) + 
+  geom_boxplot() + 
+  geom_jitter(color=&quot;grey&quot;, size=0.7, alpha=0.5)</code></pre>
+<p><img src="/post/2020-02-21-nlp-with-disaster-tweets-part-2_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code>tweets_train_pca %&gt;% 
+  ggplot(aes(x = target, y = PC2, fill = target)) + 
+  geom_boxplot() + 
+  geom_jitter(color=&quot;grey&quot;, size=0.7, alpha=0.5)</code></pre>
+<p><img src="/post/2020-02-21-nlp-with-disaster-tweets-part-2_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+</div>
+<div id="modelling" class="section level2">
+<h2>Modelling</h2>
+<div id="baseline-model" class="section level3">
+<h3>Baseline model</h3>
+<p>Predict randomly in the ratio of counts</p>
+<pre class="r"><code>tweets_train_proc %&gt;% 
+  count(target) %&gt;% 
+  mutate(prob = n/sum(n)) %&gt;% 
+  pull(prob) -&gt; probs</code></pre>
+<pre class="r"><code>tweets_cv_proc_preds &lt;- tweets_cv_proc
+set.seed(42)
+tweets_cv_proc_preds$predicted_target &lt;- as.factor(sample(0:1, 
+                                          size = nrow(tweets_cv_proc), 
+                                          prob = probs, replace = T))</code></pre>
+<pre class="r"><code>tweets_cv_proc_preds %&gt;% 
+  accuracy(target, predicted_target)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.505</code></pre>
+<pre class="r"><code>tweets_cv_proc_preds %&gt;% 
+  f_meas(target, predicted_target)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.574</code></pre>
+<pre class="r"><code>tweets_test_proc_preds &lt;- tweets_test_proc
+set.seed(42)
+tweets_test_proc_preds$predicted_target &lt;- as.factor(sample(0:1, 
+                                          size = nrow(tweets_test_proc_preds), 
+                                          prob = probs, replace = T))</code></pre>
+<pre class="r"><code>tweets_test_proc_preds %&gt;% 
+  accuracy(target, predicted_target)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.547</code></pre>
+<pre class="r"><code>tweets_test_proc_preds %&gt;% 
+  f_meas(target, predicted_target)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.611</code></pre>
+<div id="generating-submission-file" class="section level4">
+<h4>Generating submission file</h4>
+<pre class="r"><code>tweets_final_proc_preds &lt;- tweets_final_proc
+set.seed(42)
+tweets_final_proc_preds$target &lt;- as.factor(sample(0:1, 
+                                          size = nrow(tweets_final_proc_preds), 
+                                          prob = probs, replace = T))
+
+tweets_final_proc_preds$id &lt;- tweets_final$id
+
+tweets_final_proc_preds %&gt;% 
+  select(id, target) %&gt;% 
+  write_csv(&quot;../data/nlp_with_disaster_tweets/submissions/baseline_cvf_57_testf_57.csv&quot;)</code></pre>
+</div>
+</div>
+<div id="logistic-regression-using-glmnet" class="section level3">
+<h3>Logistic Regression using glmnet</h3>
+<div id="basic" class="section level4">
+<h4>Basic</h4>
+<pre class="r"><code>train_and_predict &lt;- function(model_spec, train_data = tweets_train_proc,
+                              cv_data = tweets_cv_proc) {
+  model_fit &lt;- model_spec %&gt;% 
+    fit(target ~ ., data = train_data)
+  
+  cv_data %&gt;% 
+    mutate(predicted_target = model_fit %&gt;% 
+             predict(new_data = cv_data) %&gt;% 
+             pull(.pred_class)) -&gt; cv_data_preds
+  
+  acc &lt;- cv_data_preds %&gt;% 
+    accuracy(target, predicted_target)
+  
+  f1 &lt;- cv_data_preds %&gt;% 
+    f_meas(target, predicted_target)
+  
+  result &lt;- list(
+    model_fit = model_fit,
+    cv_data_preds = cv_data_preds,
+    acc = acc,
+    f1 = f1
+    )
+}</code></pre>
+<pre class="r"><code>model_spec &lt;- logistic_reg() %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;glm&quot;)</code></pre>
+<pre class="r"><code>train_result &lt;- train_and_predict(model_spec)
+train_result$acc</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.757</code></pre>
+<pre class="r"><code>train_result$f1</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.794</code></pre>
+</div>
+<div id="basic-on-pca" class="section level4">
+<h4>Basic on PCA</h4>
+<pre class="r"><code>tweets_recipe %&gt;% 
+  step_pca(all_predictors(), num_comp = 2) %&gt;% 
+  prep(training = tweets_train) %&gt;% 
+  bake(new_data = tweets_cv) -&gt; tweets_cv_pca</code></pre>
+<pre class="r"><code>train_pca_result &lt;- train_and_predict(model_spec,
+                                      train_data = tweets_train_pca,
+                                      cv_data = tweets_cv_pca)
+train_pca_result$acc</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.650</code></pre>
+<pre class="r"><code>train_pca_result$f1</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.701</code></pre>
+</div>
+<div id="tuning" class="section level4">
+<h4>Tuning</h4>
+<pre class="r"><code>train_and_tune &lt;- function(model_spec, params, 
+                           train_data = tweets_train,
+                           recipe = tweets_recipe,
+                           seed = 42) {
+  set.seed(seed)
+  folds &lt;- vfold_cv(train_data, strata = target, v = 10, repeats = 3)
+  
+  doParallel::registerDoParallel(cores = parallel::detectCores(logical = FALSE))
+  train_grid_search &lt;- tune_grid(
+    recipe, 
+    model = model_spec,
+    resamples = folds,
+    param_info = params,
+    metrics = metric_set(accuracy, roc_auc, f_meas),
+    control = control_grid(save_pred = TRUE,
+                           verbose = TRUE),
+    grid = 20
+  )
+}</code></pre>
+<pre class="r"><code>model_spec &lt;- logistic_reg(penalty = tune(), mixture = tune()) %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;glmnet&quot;)
+
+params &lt;- parameters(list(penalty = penalty(), mixture = mixture()))
+
+train_grid_search &lt;- train_and_tune(model_spec, params)</code></pre>
+<pre class="r"><code>saveRDS(train_grid_search, &quot;../data/nlp_with_disaster_tweets/glmnet/train_grid_search.rds&quot;)</code></pre>
+<pre class="r"><code>train_grid_search &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/train_grid_search.rds&quot;)</code></pre>
+<pre class="r"><code>train_grid_search %&gt;% 
+  collect_metrics() %&gt;% 
+  arrange(-mean)</code></pre>
+<pre><code>## # A tibble: 60 x 7
+##     penalty mixture .metric .estimator  mean     n std_err
+##       &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+##  1 9.48e- 2  0.0104 roc_auc binary     0.839    30 0.00248
+##  2 1.11e- 2  0.501  roc_auc binary     0.835    30 0.00259
+##  3 4.19e- 3  0.676  roc_auc binary     0.833    30 0.00257
+##  4 1.65e- 3  0.896  roc_auc binary     0.828    30 0.00257
+##  5 1.65e- 1  0.0762 roc_auc binary     0.827    30 0.00262
+##  6 6.50e- 4  0.172  roc_auc binary     0.819    30 0.00242
+##  7 2.45e- 9  0.108  roc_auc binary     0.818    30 0.00240
+##  8 1.41e-10  0.284  roc_auc binary     0.817    30 0.00240
+##  9 3.79e- 8  0.202  roc_auc binary     0.817    30 0.00241
+## 10 1.70e- 5  0.822  roc_auc binary     0.817    30 0.00240
+## # … with 50 more rows</code></pre>
+<pre class="r"><code>train_grid_search %&gt;% 
+  show_best(metric = &quot;f_meas&quot;)</code></pre>
+<pre><code>## # A tibble: 5 x 7
+##   penalty mixture .metric .estimator  mean     n std_err
+##     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+## 1 0.0948   0.0104 f_meas  binary     0.816    30 0.00235
+## 2 0.0111   0.501  f_meas  binary     0.814    30 0.00264
+## 3 0.00419  0.676  f_meas  binary     0.812    30 0.00266
+## 4 0.165    0.0762 f_meas  binary     0.809    30 0.00201
+## 5 0.00165  0.896  f_meas  binary     0.808    30 0.00278</code></pre>
+</div>
+<div id="training-using-best-params" class="section level4">
+<h4>Training using best params</h4>
+<pre class="r"><code>model_spec %&gt;% 
+  set_args(penalty = train_grid_search %&gt;% 
+             select_best(metric = &quot;f_meas&quot;) %&gt;% 
+             pull(penalty),
+           mixture = train_grid_search %&gt;% 
+             select_best(metric = &quot;f_meas&quot;) %&gt;% 
+             pull(mixture)) -&gt; model_spec</code></pre>
+<pre class="r"><code>train_result &lt;- train_and_predict(model_spec)</code></pre>
+</div>
+<div id="saving-model" class="section level4">
+<h4>Saving model</h4>
+<pre class="r"><code>saveRDS(train_result$model_fit, &quot;../data/nlp_with_disaster_tweets/glmnet/glmnet_model.rds&quot;)</code></pre>
+<pre class="r"><code>model_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/glmnet_model.rds&quot;)</code></pre>
+<pre class="r"><code>train_result$acc</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.757</code></pre>
+<pre class="r"><code>train_result$f1</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.794</code></pre>
+<p><em>Final test pred</em></p>
+<pre class="r"><code>tweets_test_proc %&gt;% 
+  mutate(predicted_target = train_result$model_fit %&gt;% 
+           predict(new_data = tweets_test_proc) %&gt;% 
+           pull(.pred_class)) -&gt; tweets_test_proc_preds</code></pre>
+<pre class="r"><code>tweets_test_proc_preds %&gt;% 
+  accuracy(target, predicted_target)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.756</code></pre>
+<pre class="r"><code>tweets_test_proc_preds %&gt;% 
+  f_meas(target, predicted_target)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.793</code></pre>
+</div>
+<div id="generating-submission-file-1" class="section level4">
+<h4>Generating submission file</h4>
+<pre class="r"><code>tweets_final_proc %&gt;% 
+  mutate(target = train_result$model_fit %&gt;% 
+           predict(new_data = tweets_final_proc) %&gt;% 
+           pull(.pred_class),
+         id = tweets_final$id) -&gt; tweets_final_proc_preds
+
+tweets_final_proc_preds %&gt;% 
+  select(id, target) %&gt;% 
+  write_csv(&quot;../data/nlp_with_disaster_tweets/submissions/tuned_logistic_reg_cvf_81_testf_81.csv&quot;)</code></pre>
+</div>
+</div>
+<div id="decision-trees-using-rpart" class="section level3">
+<h3>Decision trees using rpart</h3>
+<div id="basic-1" class="section level4">
+<h4>Basic</h4>
+<pre class="r"><code>tree_spec &lt;- decision_tree() %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;rpart&quot;)</code></pre>
+<pre class="r"><code>train_result &lt;- train_and_predict(tree_spec)
+rpart.plot(train_result$model_fit$fit)</code></pre>
+<p><img src="/post/2020-02-21-nlp-with-disaster-tweets-part-2_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
+<pre class="r"><code>rsq.rpart(train_result$model_fit$fit)</code></pre>
+<pre><code>## 
+## Classification tree:
+## rpart::rpart(formula = formula, data = data)
+## 
+## Variables actually used in tree construction:
+## [1] v199 v224 v285 v289 v314 v388 v414 v428
+## 
+## Root node error: 2290/5330 = 0.42964
+## 
+## n= 5330 
+## 
+##         CP nsplit rel error  xerror     xstd
+## 1 0.149345      0   1.00000 1.00000 0.015782
+## 2 0.046943      1   0.85066 0.86638 0.015411
+## 3 0.019432      3   0.75677 0.79738 0.015130
+## 4 0.016157      5   0.71790 0.77948 0.015046
+## 5 0.013100      7   0.68559 0.76769 0.014989
+## 6 0.012664      8   0.67249 0.76245 0.014963
+## 7 0.010000      9   0.65983 0.75371 0.014918</code></pre>
+<p><img src="/post/2020-02-21-nlp-with-disaster-tweets-part-2_files/figure-html/unnamed-chunk-50-1.png" width="672" /><img src="/post/2020-02-21-nlp-with-disaster-tweets-part-2_files/figure-html/unnamed-chunk-50-2.png" width="672" /></p>
+<pre class="r"><code>train_result$acc</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.674</code></pre>
+<pre class="r"><code>train_result$f1</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.731</code></pre>
+</div>
+<div id="basic-on-pca-1" class="section level4">
+<h4>Basic on PCA</h4>
+<pre class="r"><code>train_result &lt;- train_and_predict(tree_spec, train_data = tweets_train_pca,
+                                  cv_data = tweets_cv_pca)
+
+rpart.plot(train_result$model_fit$fit)</code></pre>
+<p><img src="/post/2020-02-21-nlp-with-disaster-tweets-part-2_files/figure-html/unnamed-chunk-53-1.png" width="672" /></p>
+<pre class="r"><code>train_result$acc</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.660</code></pre>
+<pre class="r"><code>train_result$f1</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.725</code></pre>
+</div>
+<div id="tuning-1" class="section level4">
+<h4>Tuning</h4>
+<pre class="r"><code>tree_spec &lt;- decision_tree(cost_complexity = tune(), 
+                           tree_depth = tune(),
+                           min_n = tune()) %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;rpart&quot;)
+
+params &lt;- parameters(list(cost_complexity = cost_complexity(), 
+                          tree_depth = tree_depth(),
+                          min_n = min_n()))
+
+train_grid_search &lt;- train_and_tune(model_spec, params)</code></pre>
+<pre class="r"><code>saveRDS(train_grid_search, &quot;../data/nlp_with_disaster_tweets/rpart/train_grid_search.rds&quot;)</code></pre>
+<pre class="r"><code>train_grid_search &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/rpart/train_grid_search.rds&quot;)</code></pre>
+<pre class="r"><code>train_grid_search %&gt;% 
+  collect_metrics() %&gt;% 
+  arrange(-mean)</code></pre>
+<pre><code>## # A tibble: 3 x 5
+##   .metric  .estimator  mean     n std_err
+##   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+## 1 roc_auc  binary     0.839    30 0.00248
+## 2 f_meas   binary     0.816    30 0.00235
+## 3 accuracy binary     0.778    30 0.00269</code></pre>
+<pre class="r"><code>train_grid_search %&gt;% 
+  show_best(metric = &quot;f_meas&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 5
+##   .metric .estimator  mean     n std_err
+##   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+## 1 f_meas  binary     0.816    30 0.00235</code></pre>
+<p>Only 1 tree got trained.</p>
+</div>
+</div>
+<div id="gradient-boosted-trees-using-xgboost" class="section level3">
+<h3>Gradient Boosted Trees using xgboost</h3>
+<div id="basic-2" class="section level4">
+<h4>Basic</h4>
+<pre class="r"><code>gbm_spec &lt;- boost_tree() %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;xgboost&quot;)</code></pre>
+<pre class="r"><code>train_result &lt;- train_and_predict(gbm_spec)
+train_result$acc</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.757</code></pre>
+<pre class="r"><code>train_result$f1</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.799</code></pre>
+</div>
+<div id="basic-on-pca-2" class="section level4">
+<h4>Basic on PCA</h4>
+<pre class="r"><code>train_pca_result &lt;- train_and_predict(gbm_spec,
+                                      train_data = tweets_train_pca,
+                                      cv_data = tweets_cv_pca)
+train_pca_result$acc</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.663</code></pre>
+<pre class="r"><code>train_pca_result$f1</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.715</code></pre>
+</div>
+<div id="tuning-2" class="section level4">
+<h4>Tuning</h4>
+<pre class="r"><code>model_spec &lt;- logistic_reg(penalty = tune(), mixture = tune()) %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;glmnet&quot;)
+
+params &lt;- parameters(list(penalty = penalty(), mixture = mixture()))
+
+train_grid_search &lt;- train_and_tune(model_spec, params)</code></pre>
+<pre class="r"><code>saveRDS(train_grid_search, &quot;../data/nlp_with_disaster_tweets/glmnet/train_grid_search.rds&quot;)</code></pre>
+<pre class="r"><code>train_grid_search &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/train_grid_search.rds&quot;)</code></pre>
+<pre class="r"><code>train_grid_search %&gt;% 
+  collect_metrics() %&gt;% 
+  arrange(-mean)</code></pre>
+<pre><code>## # A tibble: 60 x 7
+##     penalty mixture .metric .estimator  mean     n std_err
+##       &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+##  1 9.48e- 2  0.0104 roc_auc binary     0.839    30 0.00248
+##  2 1.11e- 2  0.501  roc_auc binary     0.835    30 0.00259
+##  3 4.19e- 3  0.676  roc_auc binary     0.833    30 0.00257
+##  4 1.65e- 3  0.896  roc_auc binary     0.828    30 0.00257
+##  5 1.65e- 1  0.0762 roc_auc binary     0.827    30 0.00262
+##  6 6.50e- 4  0.172  roc_auc binary     0.819    30 0.00242
+##  7 2.45e- 9  0.108  roc_auc binary     0.818    30 0.00240
+##  8 1.41e-10  0.284  roc_auc binary     0.817    30 0.00240
+##  9 3.79e- 8  0.202  roc_auc binary     0.817    30 0.00241
+## 10 1.70e- 5  0.822  roc_auc binary     0.817    30 0.00240
+## # … with 50 more rows</code></pre>
+<pre class="r"><code>train_grid_search %&gt;% 
+  show_best(metric = &quot;f_meas&quot;)</code></pre>
+<pre><code>## # A tibble: 5 x 7
+##   penalty mixture .metric .estimator  mean     n std_err
+##     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+## 1 0.0948   0.0104 f_meas  binary     0.816    30 0.00235
+## 2 0.0111   0.501  f_meas  binary     0.814    30 0.00264
+## 3 0.00419  0.676  f_meas  binary     0.812    30 0.00266
+## 4 0.165    0.0762 f_meas  binary     0.809    30 0.00201
+## 5 0.00165  0.896  f_meas  binary     0.808    30 0.00278</code></pre>
+</div>
+<div id="training-using-best-params-1" class="section level4">
+<h4>Training using best params</h4>
+<pre class="r"><code>model_spec %&gt;% 
+  set_args(penalty = train_grid_search %&gt;% 
+             select_best(metric = &quot;f_meas&quot;) %&gt;% 
+             pull(penalty),
+           mixture = train_grid_search %&gt;% 
+             select_best(metric = &quot;f_meas&quot;) %&gt;% 
+             pull(mixture)) -&gt; model_spec</code></pre>
+<pre class="r"><code>train_result &lt;- train_and_predict(model_spec)</code></pre>
+</div>
+<div id="saving-model-1" class="section level4">
+<h4>Saving model</h4>
+<pre class="r"><code>saveRDS(train_result$model_fit, &quot;../data/nlp_with_disaster_tweets/glmnet/glmnet_model.rds&quot;)</code></pre>
+<pre class="r"><code>model_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/glmnet_model.rds&quot;)</code></pre>
+<pre class="r"><code>train_result$acc</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.757</code></pre>
+<pre class="r"><code>train_result$f1</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.794</code></pre>
+<p><em>Final test pred</em></p>
+<pre class="r"><code>tweets_test_proc %&gt;% 
+  mutate(predicted_target = train_result$model_fit %&gt;% 
+           predict(new_data = tweets_test_proc) %&gt;% 
+           pull(.pred_class)) -&gt; tweets_test_proc_preds</code></pre>
+<pre class="r"><code>tweets_test_proc_preds %&gt;% 
+  accuracy(target, predicted_target)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.756</code></pre>
+<pre class="r"><code>tweets_test_proc_preds %&gt;% 
+  f_meas(target, predicted_target)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 f_meas  binary         0.793</code></pre>
+</div>
+<div id="generating-submission-file-2" class="section level4">
+<h4>Generating submission file</h4>
+<pre class="r"><code>tweets_final_proc %&gt;% 
+  mutate(target = train_result$model_fit %&gt;% 
+           predict(new_data = tweets_final_proc) %&gt;% 
+           pull(.pred_class),
+         id = tweets_final$id) -&gt; tweets_final_proc_preds
+
+tweets_final_proc_preds %&gt;% 
+  select(id, target) %&gt;% 
+  write_csv(&quot;../data/nlp_with_disaster_tweets/submissions/tuned_logistic_reg_cvf_81_testf_81.csv&quot;)</code></pre>
+</div>
+</div>
+</div>

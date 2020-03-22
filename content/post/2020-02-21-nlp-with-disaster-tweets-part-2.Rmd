@@ -1,0 +1,636 @@
+---
+title: 'NLP with Disaster Tweets: Part 2'
+author: Aditya Mangal
+date: '2020-02-21'
+slug: nlp-with-disaster-tweets-part-2
+categories:
+  - Projects
+tags:
+  - DataAnalysis
+  - DataScience
+  - NLP
+  - TextMining
+keywords:
+  - tech
+summary: Working on this NLP project on kaggle [here](https://www.kaggle.com/c/nlp-getting-started)
+readingtime: '15'
+draft: yes
+coverImage: https://lh3.googleusercontent.com/NhQQ6_tTtlSd0SOqdTjXXaaFxEC186pYF68dyx8BJcdeqWUns0kas6nKS7jNUjTorlWCOvYDSXvgTbJSMgHLvc-ViHQkvKe_cGiU4gMP92vb1QSO98BlROygzqVBRO_2pnbPPS3coQVCdbAGJP3PQi0J4hExUkwsxCyPZ7RSOu9kOsIFJ7i7Pi68Ewg8yzEUw7zSb5JyYoDRkunuYedzzrPvS1Z2LWx-T-bVnkedbv72e3fjIfHHpwDf2LM4Tz_orR0lSjyrLt29k8YP2vbGoqRJhOurgj8UxWRC8J1BmDZxaG4fMzF5VfY2QToUTEFUryIzihBzb82z9IBQB7KiBuoKZBvrM03uHBwi_ePO7lt138P5DSufFH3xANhUrY8UPbMIcEKOKaxNXGUhdZG1EDykY6KW5ufjuAgEFoOKUSVp_kHyHmk_qJonukh5zRL07tUhRyXwYNXoP1ixHX-bN8K4yLLobU-Q2kAlrXD89OzMySyD6sm8gu6LcrzwthgEWLwTgRgcpvx0hPncV477w6mZnu1yd8xi8EAE3IVVhWAlQF2oUphPtcWjOBfK-aIocc62MSEFfCPb6DLSBpCWCkFFxydl0KSrbvboXBVX-AM7eVyAnFV3SfSfdQMxtKuLtWbAINTcPhoN05LhQxiOOJtc4KCJFbUOWO29U-rjrunXEbRXPhki1DUCy_KX5phRnwO3hniDAwqubCEZkKU3s6T0yCVT4WARB7E5RcmoVPdLWSRK=w2372-h1832-no
+thumbnailImage: https://lh3.googleusercontent.com/-z0Ja7Q6Sb7BXIno6Ycxun1BRzcJ_en9A9EulOKiXX8QAAx_UWYtH8y04Vqu9-YZF9G1zROwyLXxH77yvOKGqlfcCJPpC5S6_0wAEVc7mNLOCq0bmj2r0iE20NP0P_2jvxfZ3TtHAQHvagPsTbe7lbVxhy3-6yEdsAMn4idYDkIbxtgMj5Elo9SeO991NyEDNyj6a31SVlt1U22HnrFhmJMtYvilT30ZCXq3zaC5y7PKMjb1bA605bTRhc0AiDPCUtD8u2AjyrJ0CwaDQ7dzvW-UpeGx-BoJZvveJIPITw7HiofhcCcYoM69W0CDCwDf106GgH8KDRvlnOdlc9AHgqKdwJ38E1Pbxu9enMofV6WsIdx9-a-P0V8UVltiEKu-Iqq0pfnvEVznP3sQlQw6WV1jG2tWrs78xXM4U4Bu2SqOAjQc8rVJaTVh5uOJfon8zxSJ1opZSnzif364UXlZJpsXxouufy6TDEDUxe5c-jI8wEWPNLEy2JeFwjP9FXxm3EnSbRvIUnjtALh2T-ma0Xyd8d7EJQrsE2vziIAK-ZVY6A6qnv9bptefReAq9p5jmBRABp7wFm8NSuPIXdyYneDch1M4V1SSjf4oz7oaP_AuHMuaAKViG65uuw6QoLCNoDsR4Ifq8g4ADUZxp0naty2ElqCkS0Lj3vND0ZcuUMaMUiqUygAcmmInaZMaCqQa-KWRDwgvxL-NCgV1UzXtE81F8nxhcFW481Bjt7fSDQWz8LNm=w750-h579-no
+thumbnailImagePosition: top
+comments: no
+coverCaption: Photo by Marcus Kauffman on Unsplash
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALSE)
+```
+
+## Load Libraries
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(ggplot2)
+library(GGally)
+library(skimr)
+library(tidymodels)
+library(keras)
+library(janitor)
+library(glmnet)
+library(rpart)
+library(rpart.plot)
+
+theme_set(theme_light())
+```
+
+## Loading processed data from previous part
+
+```{r}
+tweets <- readRDS("../data/nlp_with_disaster_tweets/tweets_proc.rds")
+tweets_final <- readRDS("../data/nlp_with_disaster_tweets/tweets_test_proc.rds")
+```
+
+```{r}
+tweets %>% 
+  dim
+
+tweets_final %>% 
+  dim
+```
+
+
+## Feature preprocessing and engineering
+
+```{r}
+tweets %>% 
+  mutate(target = as.factor(target)) -> tweets
+```
+
+
+```{r}
+tweets %>% 
+  count(target, sort = T)
+```
+
+### Split data
+
+```{r}
+set.seed(42)
+tweets_split <- initial_split(tweets, prop = 0.7, strata = target)
+
+tweets_train <- training(tweets_split)
+tweets_cv <- testing(tweets_split)
+
+set.seed(42)
+tweets_split <- initial_split(tweets_cv, prop = 2/3, strata = target)
+tweets_cv <- training(tweets_split)
+tweets_test <- testing(tweets_split)
+```
+
+```{r}
+dim(tweets_train)
+dim(tweets_cv)
+dim(tweets_test)
+```
+
+
+### Preparation Recipe
+
+```{r}
+tweets_train %>% 
+  count(target)
+```
+
+
+```{r}
+recipe(target ~ ., data = tweets_train) %>% 
+  step_rm(location, keyword, id) %>% 
+  step_mutate(len = str_length(text),
+              num_hashtags = str_count(text, "#")) %>% 
+  step_rm(text) %>% 
+  step_zv(all_numeric()) %>% 
+  step_normalize(all_numeric()) -> tweets_recipe
+```
+
+```{r}
+tweets_recipe %>% 
+  prep(training = tweets_train) %>% 
+  juice() %>% 
+  count(target)
+```
+
+```{r}
+tweets_recipe_prep <- tweets_recipe %>% 
+  prep(training = tweets_train)
+tweets_train_proc <- tweets_recipe_prep %>% juice()
+tweets_cv_proc <- tweets_recipe_prep %>% bake(new_data = tweets_cv)
+tweets_test_proc <- tweets_recipe_prep %>% bake(new_data = tweets_test)
+
+tweets_final_proc <- tweets_recipe_prep %>% bake(new_data = tweets_final)
+```
+
+```{r}
+dim(tweets_train_proc)
+dim(tweets_cv_proc)
+dim(tweets_test_proc)
+
+dim(tweets_final_proc)
+```
+
+```{r}
+summary(tweets_recipe) %>% 
+  filter(role == "outcome")
+```
+
+### PCA
+
+```{r}
+tweets_recipe %>% 
+  step_pca(all_predictors(), num_comp = 2) %>% 
+  prep(training = tweets_train) %>% 
+  juice() -> tweets_train_pca
+```
+
+```{r}
+tweets_train_pca
+```
+
+```{r}
+tweets_train_pca %>% 
+  ggplot(aes(x = PC1, y = PC2, color = target)) + 
+  geom_point()
+```
+
+```{r}
+tweets_train_pca %>% 
+  ggplot(aes(x = target, y = PC1, fill = target)) + 
+  geom_boxplot() + 
+  geom_jitter(color="grey", size=0.7, alpha=0.5)
+```
+
+```{r}
+tweets_train_pca %>% 
+  ggplot(aes(x = target, y = PC2, fill = target)) + 
+  geom_boxplot() + 
+  geom_jitter(color="grey", size=0.7, alpha=0.5)
+```
+
+## Modelling
+
+### Baseline model
+
+Predict randomly in the ratio of counts
+
+```{r}
+tweets_train_proc %>% 
+  count(target) %>% 
+  mutate(prob = n/sum(n)) %>% 
+  pull(prob) -> probs
+```
+
+```{r}
+tweets_cv_proc_preds <- tweets_cv_proc
+set.seed(42)
+tweets_cv_proc_preds$predicted_target <- as.factor(sample(0:1, 
+                                          size = nrow(tweets_cv_proc), 
+                                          prob = probs, replace = T))
+```
+
+```{r}
+tweets_cv_proc_preds %>% 
+  accuracy(target, predicted_target)
+```
+
+```{r}
+tweets_cv_proc_preds %>% 
+  f_meas(target, predicted_target)
+```
+
+```{r}
+tweets_test_proc_preds <- tweets_test_proc
+set.seed(42)
+tweets_test_proc_preds$predicted_target <- as.factor(sample(0:1, 
+                                          size = nrow(tweets_test_proc_preds), 
+                                          prob = probs, replace = T))
+```
+
+```{r}
+tweets_test_proc_preds %>% 
+  accuracy(target, predicted_target)
+```
+
+```{r}
+tweets_test_proc_preds %>% 
+  f_meas(target, predicted_target)
+```
+
+#### Generating submission file
+
+```{r eval=FALSE}
+tweets_final_proc_preds <- tweets_final_proc
+set.seed(42)
+tweets_final_proc_preds$target <- as.factor(sample(0:1, 
+                                          size = nrow(tweets_final_proc_preds), 
+                                          prob = probs, replace = T))
+
+tweets_final_proc_preds$id <- tweets_final$id
+
+tweets_final_proc_preds %>% 
+  select(id, target) %>% 
+  write_csv("../data/nlp_with_disaster_tweets/submissions/baseline_cvf_57_testf_57.csv")
+```
+
+### Logistic Regression using glmnet
+
+#### Basic
+
+```{r}
+train_and_predict <- function(model_spec, train_data = tweets_train_proc,
+                              cv_data = tweets_cv_proc) {
+  model_fit <- model_spec %>% 
+    fit(target ~ ., data = train_data)
+  
+  cv_data %>% 
+    mutate(predicted_target = model_fit %>% 
+             predict(new_data = cv_data) %>% 
+             pull(.pred_class)) -> cv_data_preds
+  
+  acc <- cv_data_preds %>% 
+    accuracy(target, predicted_target)
+  
+  f1 <- cv_data_preds %>% 
+    f_meas(target, predicted_target)
+  
+  result <- list(
+    model_fit = model_fit,
+    cv_data_preds = cv_data_preds,
+    acc = acc,
+    f1 = f1
+    )
+}
+```
+
+```{r}
+model_spec <- logistic_reg() %>% 
+  set_mode("classification") %>% 
+  set_engine("glm")
+```
+
+```{r}
+train_result <- train_and_predict(model_spec)
+train_result$acc
+train_result$f1
+```
+
+
+#### Basic on PCA
+```{r}
+tweets_recipe %>% 
+  step_pca(all_predictors(), num_comp = 2) %>% 
+  prep(training = tweets_train) %>% 
+  bake(new_data = tweets_cv) -> tweets_cv_pca
+```
+
+```{r}
+train_pca_result <- train_and_predict(model_spec,
+                                      train_data = tweets_train_pca,
+                                      cv_data = tweets_cv_pca)
+train_pca_result$acc
+train_pca_result$f1
+```
+
+#### Tuning
+
+```{r}
+train_and_tune <- function(model_spec, params, 
+                           train_data = tweets_train,
+                           recipe = tweets_recipe,
+                           seed = 42) {
+  set.seed(seed)
+  folds <- vfold_cv(train_data, strata = target, v = 10, repeats = 3)
+  
+  doParallel::registerDoParallel(cores = parallel::detectCores(logical = FALSE))
+  train_grid_search <- tune_grid(
+    recipe, 
+    model = model_spec,
+    resamples = folds,
+    param_info = params,
+    metrics = metric_set(accuracy, roc_auc, f_meas),
+    control = control_grid(save_pred = TRUE,
+                           verbose = TRUE),
+    grid = 20
+  )
+}
+```
+
+```{r eval=FALSE}
+model_spec <- logistic_reg(penalty = tune(), mixture = tune()) %>% 
+  set_mode("classification") %>% 
+  set_engine("glmnet")
+
+params <- parameters(list(penalty = penalty(), mixture = mixture()))
+
+train_grid_search <- train_and_tune(model_spec, params)
+```
+
+```{r eval=FALSE}
+saveRDS(train_grid_search, "../data/nlp_with_disaster_tweets/glmnet/train_grid_search.rds")
+```
+
+```{r}
+train_grid_search <- readRDS("../data/nlp_with_disaster_tweets/glmnet/train_grid_search.rds")
+```
+
+
+```{r}
+train_grid_search %>% 
+  collect_metrics() %>% 
+  arrange(-mean)
+```
+
+```{r}
+train_grid_search %>% 
+  show_best(metric = "f_meas")
+```
+
+
+#### Training using best params
+
+```{r}
+model_spec %>% 
+  set_args(penalty = train_grid_search %>% 
+             select_best(metric = "f_meas") %>% 
+             pull(penalty),
+           mixture = train_grid_search %>% 
+             select_best(metric = "f_meas") %>% 
+             pull(mixture)) -> model_spec
+```
+
+```{r}
+train_result <- train_and_predict(model_spec)
+```
+
+#### Saving model
+
+```{r eval=FALSE}
+saveRDS(train_result$model_fit, "../data/nlp_with_disaster_tweets/glmnet/glmnet_model.rds")
+```
+
+```{r}
+model_fit <- readRDS("../data/nlp_with_disaster_tweets/glmnet/glmnet_model.rds")
+```
+
+```{r}
+train_result$acc
+```
+
+```{r}
+train_result$f1
+```
+
+
+*Final test pred* 
+
+```{r}
+tweets_test_proc %>% 
+  mutate(predicted_target = train_result$model_fit %>% 
+           predict(new_data = tweets_test_proc) %>% 
+           pull(.pred_class)) -> tweets_test_proc_preds
+```
+
+```{r}
+tweets_test_proc_preds %>% 
+  accuracy(target, predicted_target)
+```
+
+```{r}
+tweets_test_proc_preds %>% 
+  f_meas(target, predicted_target)
+```
+
+
+#### Generating submission file 
+
+```{r eval=FALSE}
+tweets_final_proc %>% 
+  mutate(target = train_result$model_fit %>% 
+           predict(new_data = tweets_final_proc) %>% 
+           pull(.pred_class),
+         id = tweets_final$id) -> tweets_final_proc_preds
+
+tweets_final_proc_preds %>% 
+  select(id, target) %>% 
+  write_csv("../data/nlp_with_disaster_tweets/submissions/tuned_logistic_reg_cvf_81_testf_81.csv")
+```
+
+### Decision trees using rpart
+
+#### Basic
+
+```{r}
+tree_spec <- decision_tree() %>% 
+  set_mode("classification") %>% 
+  set_engine("rpart")
+```
+
+```{r}
+train_result <- train_and_predict(tree_spec)
+rpart.plot(train_result$model_fit$fit)
+```
+
+```{r}
+rsq.rpart(train_result$model_fit$fit)
+```
+
+```{r}
+train_result$acc
+```
+
+```{r}
+train_result$f1
+```
+
+
+#### Basic on PCA
+
+```{r}
+train_result <- train_and_predict(tree_spec, train_data = tweets_train_pca,
+                                  cv_data = tweets_cv_pca)
+
+rpart.plot(train_result$model_fit$fit)
+```
+
+```{r}
+train_result$acc
+```
+
+```{r}
+train_result$f1
+```
+
+#### Tuning
+
+```{r eval=FALSE}
+tree_spec <- decision_tree(cost_complexity = tune(), 
+                           tree_depth = tune(),
+                           min_n = tune()) %>% 
+  set_mode("classification") %>% 
+  set_engine("rpart")
+
+params <- parameters(list(cost_complexity = cost_complexity(), 
+                          tree_depth = tree_depth(),
+                          min_n = min_n()))
+
+train_grid_search <- train_and_tune(model_spec, params)
+```
+```{r eval=FALSE}
+saveRDS(train_grid_search, "../data/nlp_with_disaster_tweets/rpart/train_grid_search.rds")
+```
+
+```{r}
+train_grid_search <- readRDS("../data/nlp_with_disaster_tweets/rpart/train_grid_search.rds")
+```
+
+
+```{r}
+train_grid_search %>% 
+  collect_metrics() %>% 
+  arrange(-mean)
+```
+
+```{r}
+train_grid_search %>% 
+  show_best(metric = "f_meas")
+```
+
+Only 1 tree got trained. 
+
+
+### Gradient Boosted Trees using xgboost
+
+#### Basic
+
+```{r}
+gbm_spec <- boost_tree() %>% 
+  set_mode("classification") %>% 
+  set_engine("xgboost")
+```
+
+```{r}
+train_result <- train_and_predict(gbm_spec)
+train_result$acc
+train_result$f1
+```
+
+
+#### Basic on PCA
+```{r}
+train_pca_result <- train_and_predict(gbm_spec,
+                                      train_data = tweets_train_pca,
+                                      cv_data = tweets_cv_pca)
+train_pca_result$acc
+train_pca_result$f1
+```
+
+#### Tuning
+
+```{r eval=FALSE}
+model_spec <- logistic_reg(penalty = tune(), mixture = tune()) %>% 
+  set_mode("classification") %>% 
+  set_engine("glmnet")
+
+params <- parameters(list(penalty = penalty(), mixture = mixture()))
+
+train_grid_search <- train_and_tune(model_spec, params)
+```
+
+```{r eval=FALSE}
+saveRDS(train_grid_search, "../data/nlp_with_disaster_tweets/glmnet/train_grid_search.rds")
+```
+
+```{r}
+train_grid_search <- readRDS("../data/nlp_with_disaster_tweets/glmnet/train_grid_search.rds")
+```
+
+
+```{r}
+train_grid_search %>% 
+  collect_metrics() %>% 
+  arrange(-mean)
+```
+
+```{r}
+train_grid_search %>% 
+  show_best(metric = "f_meas")
+```
+
+
+#### Training using best params
+
+```{r}
+model_spec %>% 
+  set_args(penalty = train_grid_search %>% 
+             select_best(metric = "f_meas") %>% 
+             pull(penalty),
+           mixture = train_grid_search %>% 
+             select_best(metric = "f_meas") %>% 
+             pull(mixture)) -> model_spec
+```
+
+```{r}
+train_result <- train_and_predict(model_spec)
+```
+
+#### Saving model
+
+```{r eval=FALSE}
+saveRDS(train_result$model_fit, "../data/nlp_with_disaster_tweets/glmnet/glmnet_model.rds")
+```
+
+```{r}
+model_fit <- readRDS("../data/nlp_with_disaster_tweets/glmnet/glmnet_model.rds")
+```
+
+```{r}
+train_result$acc
+```
+
+```{r}
+train_result$f1
+```
+
+
+*Final test pred* 
+
+```{r}
+tweets_test_proc %>% 
+  mutate(predicted_target = train_result$model_fit %>% 
+           predict(new_data = tweets_test_proc) %>% 
+           pull(.pred_class)) -> tweets_test_proc_preds
+```
+
+```{r}
+tweets_test_proc_preds %>% 
+  accuracy(target, predicted_target)
+```
+
+```{r}
+tweets_test_proc_preds %>% 
+  f_meas(target, predicted_target)
+```
+
+
+#### Generating submission file 
+
+```{r eval=FALSE}
+tweets_final_proc %>% 
+  mutate(target = train_result$model_fit %>% 
+           predict(new_data = tweets_final_proc) %>% 
+           pull(.pred_class),
+         id = tweets_final$id) -> tweets_final_proc_preds
+
+tweets_final_proc_preds %>% 
+  select(id, target) %>% 
+  write_csv("../data/nlp_with_disaster_tweets/submissions/tuned_logistic_reg_cvf_81_testf_81.csv")
+```

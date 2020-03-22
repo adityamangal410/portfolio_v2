@@ -216,17 +216,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;police&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 upon the colonial police force and there is a need to change…    24    31
-## 2 peaceful law and order is the key to growth and development.…    24    30
-## 3 grassroots.                                                      24    27
-## 4 challenges of the 21st century. therefore, we will bring pol…    24    32
-## 5 06 police is the most basic and key functionary a ecting the…    24    29
-## 6 police reforms                                                   24    28
-## 7 science and technology                                           25    21
-## 8 09 in order to establish india as a hub of nancial services,…    25     5
-## 9 act’ in consultation with the states to have a pro-people ci…    24    33</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 upon the colonial police force and there is a need to change and …    24    31
+## 2 peaceful law and order is the key to growth and development. our …    24    30
+## 3 grassroots.                                                           24    27
+## 4 challenges of the 21st century. therefore, we will bring police r…    24    32
+## 5 06 police is the most basic and key functionary a ecting the peop…    24    29
+## 6 police reforms                                                        24    28
+## 7 science and technology                                                25    21
+## 8 09 in order to establish india as a hub of nancial services, we w…    25     5
+## 9 act’ in consultation with the states to have a pro-people citizen…    24    33</code></pre>
 <p>This is the excerpt that we find from page 24, as we dug up based on above results -</p>
 <blockquote>
 <p>Police is the most basic and key functionary affecting the people’s life. An effective policing and peaceful law and order is the key to growth and development. Our present police and policing is based upon the colonial police force and there is a need to change and transform the police according to the challenges of the 21st century.Therefore, we will bring Police Reform. We will formulate a ‘Model Police Act’ in consultation with the States to have a pro-people citizen friendly police. This will take the Indian policing at par with its contemporaries anywhere in the world.</p>
@@ -236,17 +236,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;police&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 of the state police under the direct command                     19    41
-## 2 ots, lynchings and gang rapes by a special wing                  19    40
-## 3 tion agency that has the power to search, seize,                 19    18
-## 4 civil penalties;                                            …    19    20
-## 5 06. amend the armed forces (special powers)                 …    19    35
-## 6 the powers of security forces and the human rights          …    19    37
-## 7 been misused and, in any event, has become                  …    19    25
-## 8 during custody or interrogation and punish cases            …    19    33
-## 9 (that defines the offence of ‘sedition’) that has       08. …    19    24</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 of the state police under the direct command                          19    41
+## 2 ots, lynchings and gang rapes by a special wing                       19    40
+## 3 tion agency that has the power to search, seize,                      19    18
+## 4 civil penalties;                                             atta…    19    20
+## 5 06. amend the armed forces (special powers)                      …    19    35
+## 6 the powers of security forces and the human rights              r…    19    37
+## 7 been misused and, in any event, has become                   rela…    19    25
+## 8 during custody or interrogation and punish cases                t…    19    33
+## 9 (that defines the offence of ‘sedition’) that has       08. amend…    19    24</code></pre>
 <p>One of the excerpts from page 19 related to above results -</p>
 <blockquote>
 <p>Provisions will be made in the Model Police Act to:
@@ -263,17 +263,17 @@ c. Cause investigations into cases of communal riots, lynchings and gang rapes 
   slice(get_related_lines(&quot;forest&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 coordination with the private sector.                            26     5
-## 2 forest and environment                                           26     6
-## 3 20 we have ensured speed and e ectiveness in issuing forest …    26     7
-## 4 the mission cities by at least 35% over the next ve years.       26    15
-## 5 and cooking gas connection in addition to houses and toilets…    26    18
-## 6 states is adequately protected and take steps to ensure the …    26    43
-## 7 international financial services centre authority                25     4
-## 8 act’ in consultation with the states to have a pro-people ci…    24    33
-## 9 policing at par with its contemporaries anywhere in the worl…    24    34</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 coordination with the private sector.                                 26     5
+## 2 forest and environment                                                26     6
+## 3 20 we have ensured speed and e ectiveness in issuing forest and e…    26     7
+## 4 the mission cities by at least 35% over the next ve years.            26    15
+## 5 and cooking gas connection in addition to houses and toilets, at …    26    18
+## 6 states is adequately protected and take steps to ensure the same.     26    43
+## 7 international financial services centre authority                     25     4
+## 8 act’ in consultation with the states to have a pro-people citizen…    24    33
+## 9 policing at par with its contemporaries anywhere in the world.        24    34</code></pre>
 <p>An excerpt from BJP’s manifesto about forests as identified from above -</p>
 <blockquote>
 <p>We have ensured speed and effectiveness in issuing forest and environmental clearances for eligible projects due to which we have added around 9000 Sq. Kms to the forest cover of the country. We are committed to maintaining this pace through adoption of cleaner practises to make our nation a greener country.</p>
@@ -283,17 +283,17 @@ c. Cause investigations into cases of communal riots, lynchings and gang rapes 
   slice(get_related_lines(&quot;panchayat&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 freedoms of the people.                                          19    47
-## 2 institutions                                                     17    40
-## 3 commissioners qualified persons drawn from dif-             …    17    58
-## 4 protect the freedom of journalists, uphold editorial indepen…    17    57
-## 5 act. in accordance with the letter and spirit of the    07. …    17    56
-## 6 council of india act, 1978 to strengthen the system of self-…    17    55
-## 7 best way to correct the abuse of media freedom. we will amen…    17    54
-## 8 act, 2005 in the light of its working in the last       06. …    17    53
-## 9 them accountable to parliament. we believe that self-regulat…    17    52</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 freedoms of the people.                                               19    47
+## 2 institutions                                                          17    40
+## 3 commissioners qualified persons drawn from dif-              cong…    17    58
+## 4 protect the freedom of journalists, uphold editorial independence…    17    57
+## 5 act. in accordance with the letter and spirit of the    07. rules…    17    56
+## 6 council of india act, 1978 to strengthen the system of self-regul…    17    55
+## 7 best way to correct the abuse of media freedom. we will amend the…    17    54
+## 8 act, 2005 in the light of its working in the last       06. congr…    17    53
+## 9 them accountable to parliament. we believe that self-regulation i…    17    52</code></pre>
 <blockquote>
 <p>Congress was the proponent and author of the Constitution 73rd and 74th Amendments. Panchayati Raj lies at the core of good governance in our country, where the majority of citizens live outside metropolitan cities. Congress promises to take further measures to strengthen the concept of Local Government—Panchayats and Municipalities.</p>
 </blockquote>

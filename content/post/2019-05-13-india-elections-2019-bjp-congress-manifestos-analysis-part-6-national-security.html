@@ -216,17 +216,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;terrorism&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 of nations against international terrorism’ as a voluntary m…    38    26
-## 2 tolerance’ against terrorism and extremism and will continue…    11     7
-## 3 security paradigm of india in the last ve years. looking ahe…    11     3
-## 4 information and services for indians living abroad.              38    21
-## 5 surgical strikes and the air strikes carried out recently. w…    11     6
-## 6 deeper multilateral co-operation                                 38    28
-## 7 and organizations on the global stage. to ensure the same, w…    38    25
-## 8 04 we are commi ed to taking concrete steps on international…    38    23
-## 9 - shri narendra modi                                             39    13</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 of nations against international terrorism’ as a voluntary multi-…    38    26
+## 2 tolerance’ against terrorism and extremism and will continue to f…    11     7
+## 3 security paradigm of india in the last ve years. looking ahead, w…    11     3
+## 4 information and services for indians living abroad.                   38    21
+## 5 surgical strikes and the air strikes carried out recently. we wil…    11     6
+## 6 deeper multilateral co-operation                                      38    28
+## 7 and organizations on the global stage. to ensure the same, we wil…    38    25
+## 8 04 we are commi ed to taking concrete steps on international foru…    38    23
+## 9 - shri narendra modi                                                  39    13</code></pre>
 <p>This is the excerpt that we find from page 38, as we dug up based on above results -</p>
 <blockquote>
 <p>We are committed to taking concrete steps on international forums against countries and organizations supporting terrorism, and we will take all necessary measures to isolate such countries and organizations on the global stage. To ensure the same, we will work towards establishing a ‘Comity of Nations Against International Terrorism’ as a voluntary multi-lateral forum based on the principles of the draft Comprehensive Convention on International Terrorism.</p>
@@ -236,17 +236,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;terrorism&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 to detect and punish violators and instigators.                  14    53
-## 2 02. the most serious threats to internal security                14    50
-## 3 streets with a sense of impunity.                                14    68
-## 4 a. we promise an uncompromising approach and                     14    65
-## 5 hubs. congress had also proposed to establish               …    14    39
-## 6 citizen and for every visitor to india.                     …    14    34
-## 7 sis and quick response. congress had put in place           …    14    37
-## 8 of india and ensure the safety of our people.               …    14    13
-## 9 03. the concept of national security in the 21st century    …    14    14</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 to detect and punish violators and instigators.                       14    53
+## 2 02. the most serious threats to internal security                     14    50
+## 3 streets with a sense of impunity.                                     14    68
+## 4 a. we promise an uncompromising approach and                          14    65
+## 5 hubs. congress had also proposed to establish                   f…    14    39
+## 6 citizen and for every visitor to india.                          …    14    34
+## 7 sis and quick response. congress had put in place           c. in…    14    37
+## 8 of india and ensure the safety of our people.               statu…    14    13
+## 9 03. the concept of national security in the 21st century        d…    14    14</code></pre>
 <p>One of the excerpts from page 14 related to above results -</p>
 <blockquote>
 <p>The concept of national security in the 21st century has expanded beyond defence of the territory to include data security, cyber security, financial security, communication security and security of trade routes. Congress promises to evolve suitable policies to address each of these subjects.</p>
@@ -259,17 +259,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;police&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 06 we will provide assistance to the states to upgrade their…    11    30
-## 2 nancial suppo for higher education, for housing and for sta …    11    25
-## 3 modernization of police forces’. we will encourage expedited…    11    31
-## 4 modernization of police forces                                   11    26
-## 5 challenges.                                                      11    29
-## 6 11 a er e ectively strengthening coastal security through im…    12    11
-## 7 - shri narendra modi                                             39    13
-## 8 10 we have completed building six integrated check-posts wit…    12     5
-## 9 border areas in the country’s development and progress.          12     4</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 06 we will provide assistance to the states to upgrade their poli…    11    30
+## 2 nancial suppo for higher education, for housing and for sta ing a…    11    25
+## 3 modernization of police forces’. we will encourage expedited poli…    11    31
+## 4 modernization of police forces                                        11    26
+## 5 challenges.                                                           11    29
+## 6 11 a er e ectively strengthening coastal security through impleme…    12    11
+## 7 - shri narendra modi                                                  39    13
+## 8 10 we have completed building six integrated check-posts with ano…    12     5
+## 9 border areas in the country’s development and progress.               12     4</code></pre>
 <p>An excerpt from BJP’s manifesto about police forces as identified from above -</p>
 <blockquote>
 <p>We will provide assistance to the states to upgrade their police forces through the ‘Scheme for Modernization of Police Forces’. We will encourage expedited police reforms in the states so as to enable the State police forces to deal with new types of crimes like cyber crime and help them to be more sensitive to the citizens, especially the weak and vulnerable sections of the society.</p>
@@ -279,17 +279,17 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   slice(get_related_lines(&quot;border&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 26                                                          …    14    75
-## 2 bilities of the force and to improve the welfare of our jawa…    15     6
-## 3 forces—bsf, ssb, itbp and assam rifles—and                 r…    15     8
-## 4 streets with a sense of impunity.                                14    68
-## 5 and bsf. every effort will be made to induct more          0…    15    17
-## 6 post them on or close to the border to prevent             i…    15     9
-## 7 between 2 border outposts will be reduced. the              …    15    14
-## 8 and living conditions for the forces. the distance          …    15    13
-## 9 02. we will construct modern, well-equipped inte-           …    15    11</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 26                                                               …    14    75
+## 2 bilities of the force and to improve the welfare of our jawans.       15     6
+## 3 forces—bsf, ssb, itbp and assam rifles—and                 roads …    15     8
+## 4 streets with a sense of impunity.                                     14    68
+## 5 and bsf. every effort will be made to induct more          06. we…    15    17
+## 6 post them on or close to the border to prevent             india-…    15     9
+## 7 between 2 border outposts will be reduced. the                   …    15    14
+## 8 and living conditions for the forces. the distance               …    15    13
+## 9 02. we will construct modern, well-equipped inte-              di…    15    11</code></pre>
 <blockquote>
 <p>We will accelerate the construction of border roads along all borders of India, especially, the India-China border. We will enhance the capacity of the Border Roads Organisation and create separate divisions to build roads along the India-China and the India-Myanmar borders.</p>
 </blockquote>

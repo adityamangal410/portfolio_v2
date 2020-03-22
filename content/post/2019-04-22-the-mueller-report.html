@@ -95,9 +95,9 @@ report %&gt;%
   glimpse()</code></pre>
 <pre><code>## Observations: 19,195
 ## Variables: 3
-## $ page &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3,…
-## $ line &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 1, 2, 3, 4,…
-## $ text &lt;chr&gt; &quot;U.S. Department of Justice&quot;, &quot;AttarAe:,c\\\\&#39;erlc Predtiet…</code></pre>
+## $ page &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3…
+## $ line &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 1, 2, 3, 4, 5, 6…
+## $ text &lt;chr&gt; &quot;U.S. Department of Justice&quot;, &quot;AttarAe:,c\\\\&#39;erlc Predtiet // M…</code></pre>
 </div>
 <div id="cleaning" class="section level2">
 <h2>Cleaning</h2>
@@ -187,35 +187,35 @@ content %&gt;%
   head(10) %&gt;% 
   select(text, page)</code></pre>
 <pre><code>## # A tibble: 10 x 2
-##    text                                                                page
-##    &lt;chr&gt;                                                              &lt;dbl&gt;
-##  1 &quot;crime\&quot;). obstruction of justice can be motivated by a desire to…   369
-##  2 justice statutes to protect, among other things, the integrity of…   388
-##  3 wealth fund and was interested in improving relations between the…   163
-##  4 &quot;protected the president. and (have great respect for that, i&#39;ll …   322
-##  5 the same thing , but co-opt the liberal opposition and the gop op…    52
-##  6 &quot;go. he is a good guy. i hope you can let this go.\&quot; 238 comey ag…   252
-##  7 &quot;\&quot;not based on a legal issue, but based on a trust issue, [where…   250
-##  8 &quot;success would require u.s. support to succeed: \&quot;all that is req…   138
-##  9 &quot;friends. please share with them - we believe this is a good foun…   166
-## 10 that the president still cared about him and encouraging him to s…   333</code></pre>
+##    text                                                                     page
+##    &lt;chr&gt;                                                                   &lt;dbl&gt;
+##  1 &quot;crime\&quot;). obstruction of justice can be motivated by a desire to prot…   369
+##  2 &quot;justice statutes to protect, among other things, the integrity of its…   388
+##  3 &quot;wealth fund and was interested in improving relations between the uni…   163
+##  4 &quot;protected the president. and (have great respect for that, i&#39;ll be ho…   322
+##  5 &quot;the same thing , but co-opt the liberal opposition and the gop opposi…    52
+##  6 &quot;go. he is a good guy. i hope you can let this go.\&quot; 238 comey agreed …   252
+##  7 &quot;\&quot;not based on a legal issue, but based on a trust issue, [where] a l…   250
+##  8 &quot;success would require u.s. support to succeed: \&quot;all that is required…   138
+##  9 &quot;friends. please share with them - we believe this is a good foundatio…   166
+## 10 &quot;that the president still cared about him and encouraging him to stay …   333</code></pre>
 <pre class="r"><code>content %&gt;% 
   arrange(compound) %&gt;% 
   head(10) %&gt;% 
   select(text, page)</code></pre>
 <pre><code>## # A tibble: 10 x 2
-##    text                                                                page
-##    &lt;chr&gt;                                                              &lt;dbl&gt;
-##  1 &quot;specialist who exposed a fraud and later died in a russian priso…   120
-##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked .\&quot; 5…   290
-##  3 be no serious argument against the president&#39;s potential criminal…   392
-##  4 worse , alfonse capone , legendary mob boss, killer and &#39;public e…   337
-##  5 foreign contributions ban, in violation of 18 u.s.c. § 371 ; the …   193
-##  6 horrible witch hunt and the dishonest media! 1025                    359
-##  7 &quot;had \&quot;never been directed to do anything [he] believe[d] to be i…   269
-##  8 one), three defendants with conspiracy to commit wire fraud and •…   182
-##  9 guilty, pursuant to a single-count information , to identity frau…   183
-## 10 difficult to argue that hacked emails in electronic form, which a…   184</code></pre>
+##    text                                                                     page
+##    &lt;chr&gt;                                                                   &lt;dbl&gt;
+##  1 &quot;specialist who exposed a fraud and later died in a russian prison. 67…   120
+##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked .\&quot; 504 th…   290
+##  3 &quot;be no serious argument against the president&#39;s potential criminal lia…   392
+##  4 &quot;worse , alfonse capone , legendary mob boss, killer and &#39;public enemy…   337
+##  5 &quot;foreign contributions ban, in violation of 18 u.s.c. § 371 ; the soli…   193
+##  6 &quot;horrible witch hunt and the dishonest media! 1025&quot;                       359
+##  7 &quot;had \&quot;never been directed to do anything [he] believe[d] to be illega…   269
+##  8 &quot;one), three defendants with conspiracy to commit wire fraud and •bank…   182
+##  9 &quot;guilty, pursuant to a single-count information , to identity fraud , …   183
+## 10 &quot;difficult to argue that hacked emails in electronic form, which are t…   184</code></pre>
 </div>
 <div id="most-common-correlated-words" class="section level2">
 <h2>Most Common Correlated Words</h2>
@@ -265,17 +265,17 @@ def get_related_lines(query):
   slice(get_related_lines(&quot;michael cohen&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 alphabetically by subject, are summarized below.                446     3
-## 2 flynn is awaiting sentencing .                                  203    25
-## 3 called melania trump&#39;s cell phone several times between janu…   357    39
-## 4 &quot;manafort \&quot;a brave man\&quot; for refusin to \&quot;break\&quot; and said …   218    23
-## 5 (bob)                     spring 2016 to discuss russian for…   404    17
-## 6 p-sco-000000328 (5/9/17 letter, hpsci to cohen); p-sco-00000…   351    31
-## 7 u.s. department of justice                                      346     1
-## 8 988                                                             354    48
-## 9 organization before the house oversight and ref orm committe…   348    50</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;alphabetically by subject, are summarized below.&quot;                   446     3
+## 2 &quot;flynn is awaiting sentencing .&quot;                                     203    25
+## 3 &quot;called melania trump&#39;s cell phone several times between january …   357    39
+## 4 &quot;manafort \&quot;a brave man\&quot; for refusin to \&quot;break\&quot; and said that …   218    23
+## 5 &quot;(bob)                     spring 2016 to discuss russian foreign…   404    17
+## 6 &quot;p-sco-000000328 (5/9/17 letter, hpsci to cohen); p-sco-000000331…   351    31
+## 7 &quot;u.s. department of justice&quot;                                         346     1
+## 8 &quot;988&quot;                                                                354    48
+## 9 &quot;organization before the house oversight and ref orm committee, 1…   348    50</code></pre>
 <p>One of the interesting results from above (page 357) -<br />
 “Toll records show that Cohen was connected to a White House phone number for approximately five minutes on January 19, 2018, and for approximately seven minutes on January 30, 2018, and that Cohen called Melania Trump’s cell phone several times between January 26, 2018, and January 30, 2018. Call Records of Michael Cohen.”</p>
 </div>
@@ -285,17 +285,17 @@ def get_related_lines(query):
   slice(get_related_lines(&quot;vladimir putin&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 response to question i, part (h)                                431    18
-## 2 polon skaya, olga        russian national introduced to geor…   408    30
-## 3 &quot;fine.\&quot;); andrew rafferty, trump says he would \&quot;get along …   228    26
-## 4 and former aide to russia&#39;s mini ster of energy . he communi…   406     6
-## 5 2016?                                                           420    32
-## 6 accompanied by a russian female named olga polonskaya. mifsu…    92     9
-## 7 vt.     why did you ultimately not give the speech you refer…   428    32
-## 8 candidates by speaking of closer ties with russia, 10 saying…   228     6
-## 9 kuznetsov, sergey        russian government official at the …   406    18</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;response to question i, part (h)&quot;                                   431    18
+## 2 &quot;polon skaya, olga        russian national introduced to george p…   408    30
+## 3 &quot;fine.\&quot;); andrew rafferty, trump says he would \&quot;get along very …   228    26
+## 4 &quot;and former aide to russia&#39;s mini ster of energy . he communicate…   406     6
+## 5 &quot;2016?&quot;                                                              420    32
+## 6 &quot;accompanied by a russian female named olga polonskaya. mifsud in…    92     9
+## 7 &quot;vt.     why did you ultimately not give the speech you reference…   428    32
+## 8 &quot;candidates by speaking of closer ties with russia, 10 saying he …   228     6
+## 9 &quot;kuznetsov, sergey        russian government official at the russ…   406    18</code></pre>
 <p>One of the interesting results from above (page 92) -<br />
 “On March 24, 2016, Papadopoulos met with Mifsud in London. Mifsud was accompanied by a russian female named olga polonskaya. Mifsud introduced Polonskaya as a former student of his who had connections to Vladimir Putin”</p>
 </div>
@@ -311,18 +311,18 @@ def get_related_lines(query):
   head(10) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 10 x 3
-##    text                                                          page  line
-##    &lt;chr&gt;                                                        &lt;dbl&gt; &lt;dbl&gt;
-##  1 &quot;specialist who exposed a fraud and later died in a russian…   120    11
-##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked…   290    20
-##  3 be no serious argument against the president&#39;s potential cr…   392    26
-##  4 worse , alfonse capone , legendary mob boss, killer and &#39;pu…   337    14
-##  5 foreign contributions ban, in violation of 18 u.s.c. § 371 …   193    41
-##  6 horrible witch hunt and the dishonest media! 1025              359     4
-##  7 &quot;had \&quot;never been directed to do anything [he] believe[d] t…   269     4
-##  8 one), three defendants with conspiracy to commit wire fraud…   182    28
-##  9 guilty, pursuant to a single-count information , to identit…   183    15
-## 10 difficult to argue that hacked emails in electronic form, w…   184    27</code></pre>
+##    text                                                               page  line
+##    &lt;chr&gt;                                                             &lt;dbl&gt; &lt;dbl&gt;
+##  1 &quot;specialist who exposed a fraud and later died in a russian pris…   120    11
+##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked .\&quot; …   290    20
+##  3 &quot;be no serious argument against the president&#39;s potential crimin…   392    26
+##  4 &quot;worse , alfonse capone , legendary mob boss, killer and &#39;public…   337    14
+##  5 &quot;foreign contributions ban, in violation of 18 u.s.c. § 371 ; th…   193    41
+##  6 &quot;horrible witch hunt and the dishonest media! 1025&quot;                 359     4
+##  7 &quot;had \&quot;never been directed to do anything [he] believe[d] to be …   269     4
+##  8 &quot;one), three defendants with conspiracy to commit wire fraud and…   182    28
+##  9 &quot;guilty, pursuant to a single-count information , to identity fr…   183    15
+## 10 &quot;difficult to argue that hacked emails in electronic form, which…   184    27</code></pre>
 <p>The joke at around 34secs into the video can be clearly seen above as the 2nd highest polarized line in the report (page 290, line 20).</p>
 </div>
 <div id="stephen-colbert" class="section level3">
@@ -332,17 +332,17 @@ def get_related_lines(query):
   slice(get_related_lines(&quot;olc&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 concerns about sealed indictments. even if an indictment wer…   214    20
-## 2 &quot;alia, bribery,\&quot; id. (citing u.s. const.artii,§ 4).&quot;           382    28
-## 3 &quot;constitution confers no power in the president to receive b…   382    24
-## 4 second, while the olc opinion concludes that a sitting presi…   213    29
-## 5 a sitting president &#39;s amenability to indictment and crimina…   213    35
-## 6 l, § 3, cl. 7. impeachment is also a drastic and rarely invo…   390    40
-## 7 department of justice and the framework of the special couns…   213    24
-## 8 govern and potentially preempt constitutional processes for …   213    28
-## 9 executive officials).                                           382    18</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;concerns about sealed indictments. even if an indictment were se…   214    20
+## 2 &quot;alia, bribery,\&quot; id. (citing u.s. const.artii,§ 4).&quot;                382    28
+## 3 &quot;constitution confers no power in the president to receive bribes…   382    24
+## 4 &quot;second, while the olc opinion concludes that a sitting president…   213    29
+## 5 &quot;a sitting president &#39;s amenability to indictment and criminal pr…   213    35
+## 6 &quot;l, § 3, cl. 7. impeachment is also a drastic and rarely invoked …   390    40
+## 7 &quot;department of justice and the framework of the special counsel r…   213    24
+## 8 &quot;govern and potentially preempt constitutional processes for addr…   213    28
+## 9 &quot;executive officials).&quot;                                              382    18</code></pre>
 <p>The discussion about OLC from the video above at around 9min48secs can be seen in multiple instances as per our search engine, notably here (page 390) -
 “Impeachment is also a drastic and rarely invoked remedy, and Congress is not restricted to relying only on impeachment, rather than making criminal law applicable to a former President, as OLC has recognized.”</p>
 </div>
@@ -353,17 +353,17 @@ def get_related_lines(query):
   slice(get_related_lines(&quot;crazy&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 president had said similar things about comey in an off-the-…   283    43
-## 2 ukraine to support the plan. 925 manafort also initially tol…   148     8
-## 3 president &#39; s request, he decided not to share details of th…   299     7
-## 4 office, prepared to submit a resignation letter with his chi…   300    23
-## 5 &quot;information.\&quot; 470 hicks said that when she told the presid…   283    16
-## 6 &quot;prior day to terminate comey, telling lavrov and kislyak: \…   283     8
-## 7 &quot;the president also told the russian foreign minister , \&quot;i …   274    21
-## 8 &quot;serious concerns about obstruction\&quot; may have referred to c…   262    38
-## 9 • &#39; investigative technique                                     157    20</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;president had said similar things about comey in an off-the-reco…   283    43
+## 2 &quot;ukraine to support the plan. 925 manafort also initially told th…   148     8
+## 3 &quot;president &#39; s request, he decided not to share details of the pr…   299     7
+## 4 &quot;office, prepared to submit a resignation letter with his chief o…   300    23
+## 5 &quot;information.\&quot; 470 hicks said that when she told the president a…   283    16
+## 6 &quot;prior day to terminate comey, telling lavrov and kislyak: \&quot;tjus…   283     8
+## 7 &quot;the president also told the russian foreign minister , \&quot;i just …   274    21
+## 8 &quot;serious concerns about obstruction\&quot; may have referred to concer…   262    38
+## 9 &quot;• &#39; investigative technique&quot;                                        157    20</code></pre>
 <p>The joke in the video around 3mins can be seen by the search query which leads to one of these interesting results on page 299 of the report -
 “That evening, McGahn called both Priebus and Bannon and told them that he intended to
 resign. McGahn recalled that, after speaking with his attorney and given the nature of the
@@ -377,17 +377,17 @@ House staff.”</p>
   slice(get_related_lines(&quot;election interference&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
 <pre><code>## # A tibble: 9 x 3
-##   text                                                           page  line
-##   &lt;chr&gt;                                                         &lt;dbl&gt; &lt;dbl&gt;
-## 1 notwithstanding his recusal , he was going to confine the sp…   310    28
-## 2 members of the trump campaign conspired or coordinated with …    13    23
-## 3 establish that members of the trump campaign conspired or co…    10     4
-## 4 2. president-elect trump is briefed on the intelligence comm…   239     3
-## 5 (e.g., florida and pennsylvania) that were perceived as comp…    51    11
-## 6 is a good guy to negotiate ....                                  80     5
-## 7 papadopoulos &#39;s false statements in january 2017 impeded the…   201    27
-## 8 for having interfered in the election. by early 2017, severa…     9    27
-## 9 rosenstein, rod         deput y attorney general (apr. 20 17…   409    13</code></pre>
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 notwithstanding his recusal , he was going to confine the special…   310    28
+## 2 members of the trump campaign conspired or coordinated with the r…    13    23
+## 3 establish that members of the trump campaign conspired or coordin…    10     4
+## 4 2. president-elect trump is briefed on the intelligence community…   239     3
+## 5 (e.g., florida and pennsylvania) that were perceived as competiti…    51    11
+## 6 is a good guy to negotiate ....                                       80     5
+## 7 papadopoulos &#39;s false statements in january 2017 impeded the fbi&#39;…   201    27
+## 8 for having interfered in the election. by early 2017, several con…     9    27
+## 9 rosenstein, rod         deput y attorney general (apr. 20 17 - pr…   409    13</code></pre>
 <p>The discussion at around 50secs into the video can be obtained from the above search query, from page 13 -
 “Although the investigation established that the Russian government perceived it would benefit from a Trump presidency and worked to secure that outcome, and that the Campaign expected it would benefit electorally from information stolen and released through Russian efforts, the investigation did not establish that members of the Trump Campaign conspired or coordinated with the Russian government in its election interference activities.”</p>
 </div>

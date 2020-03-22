@@ -230,18 +230,18 @@ pensions</code></pre>
 
 eu_balance</code></pre>
 <pre><code>## # A tibble: 266 x 4
-##    country account_type  year    value
-##    &lt;chr&gt;   &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;
-##  1 Belgium current       2009   -3755 
-##  2 Germany current       2009  141234 
-##  3 Estonia current       2009     360 
-##  4 Ireland current       2009   -7912.
-##  5 Greece  current       2009  -29323 
-##  6 Spain   current       2009  -46191 
-##  7 France  current       2009  -10652 
-##  8 Italy   current       2009  -29717 
-##  9 Cyprus  current       2009   -1431 
-## 10 Latvia  current       2009    1463 
+##    country account_type  year   value
+##    &lt;chr&gt;   &lt;chr&gt;        &lt;dbl&gt;   &lt;dbl&gt;
+##  1 Belgium current       2009  -3755 
+##  2 Germany current       2009 141234 
+##  3 Estonia current       2009    360 
+##  4 Ireland current       2009  -7912.
+##  5 Greece  current       2009 -29323 
+##  6 Spain   current       2009 -46191 
+##  7 France  current       2009 -10652 
+##  8 Italy   current       2009 -29717 
+##  9 Cyprus  current       2009  -1431 
+## 10 Latvia  current       2009   1463 
 ## # … with 256 more rows</code></pre>
 <pre class="r"><code>eu_balance %&gt;% 
   mutate(year = as.factor(year),
