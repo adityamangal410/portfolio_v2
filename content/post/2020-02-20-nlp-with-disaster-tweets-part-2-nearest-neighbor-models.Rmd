@@ -1,7 +1,8 @@
 ---
-title: 'NLP with Disaster Tweets: Part 2 Linear Models'
+title: 'NLP with Disaster Tweets: Part 2 Nearest Neighbor Models'
 author: Aditya Mangal
-date: '2020-02-21'
+date: '2020-02-20'
+slug: nlp-with-disaster-tweets-part-2-nearest-neighbor-models
 categories:
   - Projects
 tags:
@@ -9,12 +10,11 @@ tags:
   - DataScience
   - NLP
   - TextMining
-slug: nlp-with-disaster-tweets-part-2
 keywords:
   - tech
-summary: Working on this NLP project on kaggle [here](https://www.kaggle.com/c/nlp-getting-started)
+summary: NLP and Tidymodelling in R
 readingtime: '15'
-draft: yes
+draft: no
 coverImage: https://lh3.googleusercontent.com/NhQQ6_tTtlSd0SOqdTjXXaaFxEC186pYF68dyx8BJcdeqWUns0kas6nKS7jNUjTorlWCOvYDSXvgTbJSMgHLvc-ViHQkvKe_cGiU4gMP92vb1QSO98BlROygzqVBRO_2pnbPPS3coQVCdbAGJP3PQi0J4hExUkwsxCyPZ7RSOu9kOsIFJ7i7Pi68Ewg8yzEUw7zSb5JyYoDRkunuYedzzrPvS1Z2LWx-T-bVnkedbv72e3fjIfHHpwDf2LM4Tz_orR0lSjyrLt29k8YP2vbGoqRJhOurgj8UxWRC8J1BmDZxaG4fMzF5VfY2QToUTEFUryIzihBzb82z9IBQB7KiBuoKZBvrM03uHBwi_ePO7lt138P5DSufFH3xANhUrY8UPbMIcEKOKaxNXGUhdZG1EDykY6KW5ufjuAgEFoOKUSVp_kHyHmk_qJonukh5zRL07tUhRyXwYNXoP1ixHX-bN8K4yLLobU-Q2kAlrXD89OzMySyD6sm8gu6LcrzwthgEWLwTgRgcpvx0hPncV477w6mZnu1yd8xi8EAE3IVVhWAlQF2oUphPtcWjOBfK-aIocc62MSEFfCPb6DLSBpCWCkFFxydl0KSrbvboXBVX-AM7eVyAnFV3SfSfdQMxtKuLtWbAINTcPhoN05LhQxiOOJtc4KCJFbUOWO29U-rjrunXEbRXPhki1DUCy_KX5phRnwO3hniDAwqubCEZkKU3s6T0yCVT4WARB7E5RcmoVPdLWSRK=w2372-h1832-no
 thumbnailImage: https://lh3.googleusercontent.com/-z0Ja7Q6Sb7BXIno6Ycxun1BRzcJ_en9A9EulOKiXX8QAAx_UWYtH8y04Vqu9-YZF9G1zROwyLXxH77yvOKGqlfcCJPpC5S6_0wAEVc7mNLOCq0bmj2r0iE20NP0P_2jvxfZ3TtHAQHvagPsTbe7lbVxhy3-6yEdsAMn4idYDkIbxtgMj5Elo9SeO991NyEDNyj6a31SVlt1U22HnrFhmJMtYvilT30ZCXq3zaC5y7PKMjb1bA605bTRhc0AiDPCUtD8u2AjyrJ0CwaDQ7dzvW-UpeGx-BoJZvveJIPITw7HiofhcCcYoM69W0CDCwDf106GgH8KDRvlnOdlc9AHgqKdwJ38E1Pbxu9enMofV6WsIdx9-a-P0V8UVltiEKu-Iqq0pfnvEVznP3sQlQw6WV1jG2tWrs78xXM4U4Bu2SqOAjQc8rVJaTVh5uOJfon8zxSJ1opZSnzif364UXlZJpsXxouufy6TDEDUxe5c-jI8wEWPNLEy2JeFwjP9FXxm3EnSbRvIUnjtALh2T-ma0Xyd8d7EJQrsE2vziIAK-ZVY6A6qnv9bptefReAq9p5jmBRABp7wFm8NSuPIXdyYneDch1M4V1SSjf4oz7oaP_AuHMuaAKViG65uuw6QoLCNoDsR4Ifq8g4ADUZxp0naty2ElqCkS0Lj3vND0ZcuUMaMUiqUygAcmmInaZMaCqQa-KWRDwgvxL-NCgV1UzXtE81F8nxhcFW481Bjt7fSDQWz8LNm=w750-h579-no
 thumbnailImagePosition: top
@@ -27,8 +27,8 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALS
 ```
 # Introduction
 
-In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.   
-In this part 2 for Linear Modelling, I will use the processed data generated in [Part 1](/2020/02/nlp-with-disaster-tweets-part-1/) to train linear models in order to predict if a tweet is about a real disaster or not using the tidymodels framework.
+In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started){target="_blank"} on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.   
+In this part 2 for Nearest Neighbor Modelling, I will use the processed data generated in [Part 1](/2020/02/nlp-with-disaster-tweets-part-1/){target="_blank"} to train nearest neighbor models in order to predict if a tweet is about a real disaster or not using the tidymodels framework.
 
 # Analysis
 
@@ -40,7 +40,6 @@ library(tidyverse)
 library(ggplot2)
 library(tidymodels)
 library(janitor)
-library(glmnet)
 library(vip)
 
 theme_set(theme_light())
@@ -112,17 +111,19 @@ recipe(target ~ ., data = tweets_train) %>%
               num_hashtags = str_count(text, "#")) %>% 
   step_rm(text) %>% 
   step_zv(all_numeric(), -all_outcomes()) %>% 
-  step_normalize(all_numeric(), -all_outcomes()) -> tweets_recipe
+  step_normalize(all_numeric(), -all_outcomes()) -> tweets_recipe 
+  # step_pca(all_predictors(), num_comp = 2)-> tweets_recipe
 ```
 
-Note above -   
- - We use the training dataset to create the recipe
- - We won't use 'id' field as a predictor, only as an identifier.
- - For current analysis, we will drop the location and keyword features. 
- - Creating a length feature to model the tweet length and another feature to store the number of hashtags in the tweet.
- - Getting rid of the text field since we have generated all the features from it that we wanted for now. 
- - Removing all predictors with zero variance. 
- - Normalizing all features i.e. centering and scaling.
+Note above 
+
+ - We use the training dataset to create the recipe  
+ - We won't use 'id' field as a predictor, only as an identifier.  
+ - For current analysis, we will drop the location and keyword features.   
+ - Creating a length feature to model the tweet length and another feature to store the number of hashtags in the tweet.  
+ - Getting rid of the text field since we have generated all the features from it that we wanted for now.   
+ - Removing all predictors with zero variance.   
+ - Normalizing all features i.e. centering and scaling.  
 
 ```{r}
 tweets_prep <- tweets_recipe %>% 
@@ -164,6 +165,8 @@ tweets_prep %>%
   f_meas(target, predicted_target)
 ```
 
+Like, we see above, we have a baseline f1 score of 0.5812. We need to build and train a model that beats this baseline. 
+
 ```{r}
 set.seed(42)
 tweets_prep %>% 
@@ -197,105 +200,133 @@ tweets_prep %>%
   write_csv("../data/nlp_with_disaster_tweets/submissions/baseline_cvf_57_testf_57.csv")
 ```
 
-### Lasso Regression using glmnet
+### K-Nearest Neighbor model
 
-
+Let's build a basic KNN model with some default number of neighbors to see how the modelling is done in this framework and checkout how the modelling output looks like. 
 
 #### Basic
 
 ```{r}
-lasso_spec <- logistic_reg(penalty = 0.1, mixture = 1) %>% 
-  set_engine("glmnet") %>% 
+knn_spec <- nearest_neighbor(neighbors = 3) %>% 
+  set_engine("kknn") %>% 
   set_mode("classification")
 
 wf <- workflow() %>% 
   add_recipe(tweets_recipe)
+```
 
-lasso_fit <- wf %>% 
-  add_model(lasso_spec) %>% 
+
+```{r eval=FALSE}
+knn_fit <- wf %>% 
+  add_model(knn_spec) %>% 
   fit(data = tweets_train)
 
-lasso_fit %>% 
-  pull_workflow_fit() %>% 
-  tidy()
+saveRDS(knn_fit, "../data/nlp_with_disaster_tweets/knn/knn_basic_fit.rds")
 ```
 
-#### Tuning lasso penalty
+```{r}
+knn_fit <- readRDS("../data/nlp_with_disaster_tweets/knn/knn_basic_fit.rds")
+knn_fit %>% 
+  pull_workflow_fit() -> wf_fit
+
+wf_fit$fit$MISCLASS
+```
+
+The above shows a simple K-nearest neighbors model using the "kknn" engine. Gives about 0.34 of minimal misclassification. 
+Let's try and tune the number of neighbors (k) and see if we can interpret the underlying problem space. 
+
+#### Tuning number of neighbors
+
+Using 5-fold cross validation and values of K going from 1 to 100. 
 
 ```{r}
 set.seed(1234)
-folds <- vfold_cv(tweets_train, strata = target, v = 10, repeats = 3)
+folds <- vfold_cv(tweets_train, strata = target, v = 5, repeats = 1)
 
-tune_spec <- logistic_reg(penalty = tune(), mixture = 1) %>% 
+tune_spec <- nearest_neighbor(neighbors = tune()) %>% 
   set_mode("classification") %>% 
-  set_engine("glmnet")
+  set_engine("kknn")
 
-lambda_grid <- grid_regular(penalty(), levels = 75)
+neighbor_grid <- expand.grid(neighbors = seq(1,100, by = 1))
 ```
 
-```{r}
+```{r eval=FALSE}
+set.seed(1234)
 doParallel::registerDoParallel(cores = parallel::detectCores(logical = FALSE))
 
-set.seed(1234)
-lasso_grid <- tune_grid(
+
+knn_grid <- tune_grid(
   wf %>% add_model(tune_spec),
   resamples = folds,
-  grid = lambda_grid,
-  metrics = metric_set(accuracy, roc_auc, f_meas)
+  grid = neighbor_grid,
+  metrics = metric_set(accuracy, roc_auc, f_meas),
+  control = control_grid(save_pred = TRUE,
+                           verbose = TRUE)
 )
+
+saveRDS(knn_grid, "../data/nlp_with_disaster_tweets/knn/knn_grid.rds")
 ```
 
 ```{r}
-lasso_grid %>% 
+knn_grid <- readRDS("../data/nlp_with_disaster_tweets/knn/knn_grid.rds")
+
+knn_grid %>% 
   collect_metrics()
 ```
 
 ```{r}
-lasso_grid %>% 
+knn_grid %>% 
   collect_metrics() %>% 
-  ggplot(aes(penalty, mean, color = .metric)) + 
+  mutate(flexibility = 1/neighbors) %>% 
+  ggplot(aes(flexibility, mean, color = .metric)) + 
   geom_errorbar(aes(ymin = mean - std_err,
                     ymax = mean + std_err), alpha = 0.5) + 
   geom_line(size = 1.5) + 
   facet_wrap(~.metric, scales = "free", nrow = 3) + 
   scale_x_log10() + 
-  theme(legend.position = "none")
+  theme(legend.position = "none") + 
+  labs(title = "Model performance against model flexibility",
+       x = "Model flexibility (1/NumberOfNeighbors)",
+       y = "Mean metric value")
 ```
 
-```{r}
-lasso_grid %>% 
-  select_best("f_meas") -> lowest_f_meas
+As we see in the plot above, the f1-score increases on the evaluation set until around K=20 and then starts falling down. We plot the flexibility (i.e. 1/NumberOfNeighbors) to visualize how the model performance varies as the model flexibility increases. The KNN model with K=1 will be highly flexible and thus have high variance, whereas K=100 would lead to a much stricter model which is less flexible and might suffer from bias.  
+Looks like our underlying problem stays much closer to being flexible than strict (since optimal K looks to be around 20). We should remember this fact for picking further models for experimentation. 
 
-final_lasso <- finalize_workflow(
+
+Let's pickout the best parameter K based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset. 
+
+```{r}
+knn_grid %>% 
+  select_best("f_meas") -> highest_f_meas
+
+final_knn <- finalize_workflow(
   wf %>% add_model(tune_spec),
-  lowest_f_meas
+  highest_f_meas
 )
 ```
 
-```{r}
-final_lasso %>% 
-  fit(tweets_train) %>% 
-  pull_workflow_fit() %>% 
-  vi(lambda = lowest_f_meas$penalty) %>% 
-  mutate(Importance = abs(Importance),
-         Variable = fct_reorder(Variable, Importance)) %>% 
-  top_n(30, Importance) %>% 
-  ggplot(aes(x = Importance, y = Variable, fill = Sign)) + 
-  geom_col() + 
-  scale_x_continuous(expand = c(0,0)) + 
-  labs(y = NULL)
-```
-
-```{r}
-last_fit(final_lasso, 
+```{r eval=FALSE}
+last_fit(final_knn, 
          tweets_split,
-         metrics = metric_set(accuracy, roc_auc, f_meas)) %>% 
+         metrics = metric_set(accuracy, roc_auc, f_meas)) -> knn_last_fit
+
+saveRDS(knn_last_fit, "../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds")
+```
+```{r}
+knn_last_fit <- readRDS("../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds")
+knn_last_fit %>% 
   collect_metrics()
 ```
 
+Our final fit knn model with K=20 gives an f1-score of 0.7610, which is much higher than our baseline model on the same CV dataset.   
+
+We can hence learn quite a few things about our underlying problem space by using this basic modelling algorithm K-nearest neighbors and use our learning in further model selection and tuning and also generate a fairly robust model that predicts quite effectively as compared to the baseline model.   
+Also, this tidymodels framework provides a good modelling structure which can be easily reproduced and used to train a variety of models. In the next part of this series, I will work on another classic modelling algorithm, Lasso Regression, where we will also see if we can identify if there any of these features are much more important than the others and if our 2 custom features are useful.  
 
 # References
 
- - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
- - Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/)
- - Lasso Regression using [Tidymodels](https://juliasilge.com/blog/lasso-the-office/) by Julia Silge.
+ - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/){target="_blank"}
+ - Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/){target="_blank"}
+ - Lasso Regression using [Tidymodels by Julia Silge](https://juliasilge.com/blog/lasso-the-office/){target="_blank"}.
+ - Introduction to Statistical Learning - [Book](https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370){target="_blank"} 

@@ -28,8 +28,8 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALS
 
 # Introduction
 
-In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.   
-In this part 1 for data preparation, I will do some basic exploration and vectorize the given tweet text into [glove](https://nlp.stanford.edu/projects/glove/) embedding vectors. 
+In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started){target="_blank"} on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.   
+In this part 1 for data preparation, I will do some basic exploration and vectorize the given tweet text into [glove](https://nlp.stanford.edu/projects/glove/){target="_blank"} embedding vectors. 
 
 # Analysis
 
@@ -221,8 +221,8 @@ Exporting the appended feature set will help us work on this dataset for modelli
 
 # References
 
- - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
- - GloVe: Global Vectors for Word Representation - [Stanford NLP Glove Project](https://nlp.stanford.edu/projects/glove/)
- - DeepSentimentR package - [deepSentimentR](https://adityamangal410.github.io/deepSentimentR/index.html)
+ - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/){target="_blank"}
+ - GloVe: Global Vectors for Word Representation - [Stanford NLP Glove Project](https://nlp.stanford.edu/projects/glove/){target="_blank"}
+ - DeepSentimentR package - [deepSentimentR](https://adityamangal410.github.io/deepSentimentR/index.html){target="_blank"}
  
  

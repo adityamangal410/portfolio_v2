@@ -24,8 +24,8 @@ coverCaption: Photo by Marcus Kauffman on Unsplash
 
 # Project Summary
 
-With this project, I'll apply and practice various NLP techniques, along with trying my hands on the [tidymodels framework](https://github.com/tidymodels/tidymodels). 
-I will use the [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle for its dataset and also evaluating model performance using submissions. 
+With this project, I'll apply and practice various NLP techniques, along with trying my hands on the [tidymodels framework](https://github.com/tidymodels/tidymodels){target="_blank"}. 
+I will use the [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started){target="_blank"} on kaggle for its dataset and also evaluating model performance using submissions. 
 
 # Project Goals
 
@@ -34,3 +34,10 @@ I will use the [NLP getting started challenge](https://www.kaggle.com/c/nlp-gett
 2. Learn and apply tidymodels modelling framework to do reproducible and effective science. 
 
 3. Focus more on model explainability and relative comparison of different algorithms. 
+
+# Series
+
+The following series of posts tackle the above project goals sequentially 
+
+ - Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/){target="_blank"}  
+ - Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}
