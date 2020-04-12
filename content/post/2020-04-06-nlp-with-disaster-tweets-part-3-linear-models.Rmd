@@ -44,8 +44,8 @@ library(glmnet)
 library(vip)
 library(ggthemes)
 
-theme_set(theme_fivethirtyeight() + 
-            theme(axis.title = element_text()) )
+source("../data/ggtheme_cb.R")
+theme_set(theme_cb())
 ```
 
 ## Loading processed data from previous part
