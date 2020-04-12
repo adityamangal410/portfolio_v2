@@ -41,3 +41,4 @@ The following series of posts tackle the above project goals sequentially
 
  - Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/){target="_blank"}  
  - Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}
+ - Project Part 3 - [NLP with Disaster Tweets: Part 3 Linear Models](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/){target="_blank"}

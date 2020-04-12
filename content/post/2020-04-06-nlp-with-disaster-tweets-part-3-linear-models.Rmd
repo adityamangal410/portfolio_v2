@@ -132,11 +132,11 @@ lasso_fit %>%
   tidy() 
 ```
 
-Let's try and tune the regularization penalty and visualize the results. 
+Above we see the familiar output of glmnet. Now, Let's try and tune the regularization penalty and visualize the results. 
 
 #### Tuning lasso penalty
 
-Using 10-fold cross validation and values of K going from 1 to 100. 
+Using 10-fold cross validation and a few different values of regularization penalty. 
 
 ```{r}
 set.seed(1234)
@@ -190,7 +190,6 @@ lasso_grid %>%
        y = "Mean metric value")
 ```
 As we see in the plot above, the f1-score increases on the evaluation set until around penalty=0.005 and then starts falling down. We plot the flexibility (i.e. 1/penalty) to visualize how the model performance varies as the model flexibility increases. The Lasso Regression model with a lower penalty value will be highly flexible since it will not penalize the features weights by a lot and thus have high variance, whereas a higher penalty would lead to a much stricter model which is less flexible since a lot of feature weights will be moved to zero due to high penalty and therefore the model might suffer from bias.  
-Above plot again shows that we are dealing with a less flexible problem space.
 
 Let's pickout the best parameter penalty based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset. 
 
@@ -217,7 +216,7 @@ lasso_last_fit %>%
   collect_metrics()
 ```
 
-The f1-score metric comes out to be 0.81 which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}. Lets try and visualize the variable importance for different features that we used to train our model. 
+The f1-score metric on the validation set comes out to be 0.81 which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}. Lets try and visualize the variable importance for different features that we used to train our model. 
 
 ```{r}
 lasso_last_fit$.workflow[[1]] %>% 
@@ -314,11 +313,13 @@ The KNN model calibration plot shows that the curve is above the diagonal, i.e. 
 However, the lasso regression seems to be well calibrated out of the box. That's a sign of good stable algorithm and training procedure.   
 Note that all the predicted probabilities here are calculated on the cross validation set.    
 
-In the next part of this series, I will start building more non-parametric models like tree-based models and see if we can get better scoring models. 
+In the next part of this series, I will start building models with a different class of function space, like piece-wise constant functions and linear combination of piece-wise constant functions classes i.e. simple decision trees and gradient boosted trees respectively. As we see in this blog post that the class of linear functions do give better performing models and we learnt our problem space to be leaning towards flexible models in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}, I expect to see better results for different, more flexible modelling approaches.   
 
 
 # References
 
- - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
- - Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/)
- - Lasso Regression using [Tidymodels](https://juliasilge.com/blog/lasso-the-office/) by Julia Silge.
+ - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/){target="_blank"}
+ - Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/){target="_blank"}
+ - Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}
+ - Lasso Regression using [Tidymodels by Julia Silge](https://juliasilge.com/blog/lasso-the-office/){target="_blank"}.
+ - Introduction to Statistical Learning - [Book](https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370){target="_blank"} 
