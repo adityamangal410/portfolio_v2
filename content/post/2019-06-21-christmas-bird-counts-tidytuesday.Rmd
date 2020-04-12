@@ -106,6 +106,6 @@ p %>%
           duration = 30,
           width = 800,
           height = 600,
-          renderer = gifski_renderer("most_common.gif"))
+          renderer = gifski_renderer("../data/christmas_bird_counts/most_common.gif"))
 ```
 
