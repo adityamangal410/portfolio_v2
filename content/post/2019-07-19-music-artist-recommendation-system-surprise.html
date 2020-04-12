@@ -53,8 +53,8 @@ use_python(&quot;~/anaconda3/bin/python&quot;)</code></pre>
 <pre class="r"><code>ratings &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/ratings_clean.csv&quot;)
 ratings %&gt;% 
   glimpse()</code></pre>
-<pre><code>## Observations: 92,834
-## Variables: 4
+<pre><code>## Rows: 92,834
+## Columns: 4
 ## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
 ## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, …
 ## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 4337, 41…
@@ -77,8 +77,8 @@ ratings %&gt;%
                                   &quot;friendID&quot; = col_factor()))
 friends %&gt;% 
   glimpse()</code></pre>
-<pre><code>## Observations: 25,434
-## Variables: 2
+<pre><code>## Rows: 25,434
+## Columns: 2
 ## $ userID   &lt;fct&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, …
 ## $ friendID &lt;fct&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …</code></pre>
 <pre class="r"><code>metadata &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)
@@ -90,8 +90,8 @@ metadata %&gt;%
          artistName = as.factor(artistName)) -&gt; metadata</code></pre>
 <pre class="r"><code>metadata %&gt;% 
   glimpse()</code></pre>
-<pre><code>## Observations: 186,479
-## Variables: 8
+<pre><code>## Rows: 186,479
+## Columns: 8
 ## $ userID     &lt;fct&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
 ## $ artistID   &lt;fct&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 73, 73…
 ## $ tagID      &lt;fct&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 20, 21…
