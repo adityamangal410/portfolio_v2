@@ -39,12 +39,9 @@ rm(list = ls())
 library(tidyverse)
 library(ggplot2)
 library(tidymodels)
-library(janitor)
-library(vip)
-library(ggthemes)
+library(silgelib)
 
-source("../data/ggtheme_cb.R")
-theme_set(theme_cb())
+theme_set(theme_plex())
 ```
 
 ## Loading processed data from previous part
@@ -324,6 +321,8 @@ knn_last_fit %>%
 ```
 
 Our final fit knn model with K=20 gives an f1-score of 0.7610, which is much higher than our baseline model on the same CV dataset.   
+
+# Summary
 
 We can hence learn quite a few things about our underlying problem space by using this basic modelling algorithm K-nearest neighbors and use our learning in further model selection and tuning and also generate a fairly robust model that predicts quite effectively as compared to the baseline model.   
 Also, this tidymodels framework provides a good modelling structure which can be easily reproduced and used to train a variety of models. In the next part of this series, I will work on another classic modelling algorithm, Lasso Regression, where we will also see if we can identify if there any of these features are much more important than the others and if our 2 custom features are useful.  

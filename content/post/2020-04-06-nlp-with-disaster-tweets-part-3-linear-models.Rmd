@@ -39,13 +39,11 @@ rm(list = ls())
 library(tidyverse)
 library(ggplot2)
 library(tidymodels)
-library(janitor)
 library(glmnet)
 library(vip)
-library(ggthemes)
+library(silgelib)
 
-source("../data/ggtheme_cb.R")
-theme_set(theme_cb())
+theme_set(theme_plex())
 ```
 
 ## Loading processed data from previous part
@@ -312,6 +310,8 @@ In general, closer the calibration curve to the diagonal, the better. When a mod
 The KNN model calibration plot shows that the curve is above the diagonal, i.e. the model is frequently under estimating the predicted probabilities.   
 However, the lasso regression seems to be well calibrated out of the box. That's a sign of good stable algorithm and training procedure.   
 Note that all the predicted probabilities here are calculated on the cross validation set.    
+
+# Summary 
 
 In the next part of this series, I will start building models with a different class of function space, like piece-wise constant functions and linear combination of piece-wise constant functions classes i.e. simple decision trees and gradient boosted trees respectively. As we see in this blog post that the class of linear functions do give better performing models and we learnt our problem space to be leaning towards flexible models in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}, I expect to see better results for different, more flexible modelling approaches.   
 

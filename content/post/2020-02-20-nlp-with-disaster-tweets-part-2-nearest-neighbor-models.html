@@ -38,6 +38,7 @@ coverCaption: Photo by Marcus Kauffman on Unsplash
 <li><a href="#k-nearest-neighbor-model">K-Nearest Neighbor model</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#summary">Summary</a></li>
 <li><a href="#references">References</a></li>
 </ul>
 </div>
@@ -55,12 +56,9 @@ In this part 2 for Nearest Neighbor Modelling, I will use the processed data gen
 library(tidyverse)
 library(ggplot2)
 library(tidymodels)
-library(janitor)
-library(vip)
-library(ggthemes)
+library(silgelib)
 
-source(&quot;../data/ggtheme_cb.R&quot;)
-theme_set(theme_cb())</code></pre>
+theme_set(theme_plex())</code></pre>
 </div>
 <div id="loading-processed-data-from-previous-part" class="section level2">
 <h2>Loading processed data from previous part</h2>
@@ -313,11 +311,14 @@ knn_last_fit %&gt;%
 ## 2 f_meas   binary         0.761
 ## 3 roc_auc  binary         0.701</code></pre>
 <p>Our final fit knn model with K=20 gives an f1-score of 0.7610, which is much higher than our baseline model on the same CV dataset.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
 <p>We can hence learn quite a few things about our underlying problem space by using this basic modelling algorithm K-nearest neighbors and use our learning in further model selection and tuning and also generate a fairly robust model that predicts quite effectively as compared to the baseline model.<br />
 Also, this tidymodels framework provides a good modelling structure which can be easily reproduced and used to train a variety of models. In the next part of this series, I will work on another classic modelling algorithm, Lasso Regression, where we will also see if we can identify if there any of these features are much more important than the others and if our 2 custom features are useful.</p>
-</div>
-</div>
-</div>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
