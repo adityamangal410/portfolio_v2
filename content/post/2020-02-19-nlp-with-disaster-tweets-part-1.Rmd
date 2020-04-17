@@ -72,15 +72,14 @@ The simple workflow for vectorizing tweet text into glove embeddings is as follo
 Using keras' text_tokenizer to tokenize the text in tweets dataset. 
 
 ```{r}
-num_words <- 10000
-
-text_tokenizer(num_words = num_words) %>% 
+text_tokenizer() %>% 
   fit_text_tokenizer(tweets$text) -> tokenizer
 
-length(tokenizer$word_index)
+num_words <- length(tokenizer$word_index) + 1
+print(length(tokenizer$word_index))
 ```
 
-A total of 22,700 unique words were assigned an index in the tokenization.   
+A total of `r length(tokenizer$word_index)` unique words were assigned an index in the tokenization.   
 Using the above fit tokenizer, converting the text to actual sequences of indices.
 
 ```{r}
@@ -88,10 +87,11 @@ sequences <- texts_to_sequences(tokenizer, tweets$text)
 
 summary(map_int(sequences, length))
 
-maxlen <- 20
+maxlen <- max(map_int(sequences, length))
+print(maxlen)
 ```
 
-Capping the maximum length of a tweets sequence to 20. This will translate all the tweets text sequences into a sequence of length 20. If the original sequence was longer, it will truncate from the beginning and if the original sequence is smaller, it will pad the sequence in the beginning to bring the final length to 20. 
+Capping the maximum length of a tweets sequence to `r maxlen`. This will translate all the tweets text sequences into a sequence of length `r maxlen`. If the original sequence was longer, it will truncate from the beginning and if the original sequence is smaller, it will pad the sequence in the beginning to bring the final length to `r maxlen`. 
 
 ```{r}
 pad_sequences(sequences, maxlen = maxlen) -> padded_sequences
@@ -99,7 +99,7 @@ pad_sequences(sequences, maxlen = maxlen) -> padded_sequences
 str(padded_sequences)
 ```
 
-Like we see above, for all the 7,613 tweets in the training data we have created a tokenized sequence of 20 elements each. 
+Like we see above, for all the 7,613 tweets in the training data we have created a tokenized sequence of `r maxlen` elements each. 
 
 ### Download and parse glove embeddings into an embedding matrix for the tokenized words
 
@@ -155,11 +155,11 @@ embedding_matrix <- readRDS("../data/nlp_with_disaster_tweets/embedding_matrix_2
 str(embedding_matrix)
 ```
 
-Using only 25 dimensional embedding in order to keep the computations fast, we have created an embedding matrix which holds the 25 dimension values for the most popular 10,000 words in our tweets text data. 
+Using only 25 dimensional embedding in order to keep the computations fast, we have created an embedding matrix which holds the 25 dimension values for the most popular `r length(tokenizer$word_index)` words in our tweets text data. 
 
 ### Generate embeddings vector for tweets text in training data
 
-Using the keras modelling framework to generate embeddings for the given training data. We basically create a simple sequential model with one embedding layer whose weights we will freeze based on our embedding matrix created above, and a flattening layer that will flatten the output into a 2D matrix of dimensions (7613, 20x25).
+Using the keras modelling framework to generate embeddings for the given training data. We basically create a simple sequential model with one embedding layer whose weights we will freeze based on our embedding matrix created above, and a flattening layer that will flatten the output into a 2D matrix of dimensions (7613, `r maxlen`x25).
 
 ```{r}
 keras_model_sequential() %>% 
@@ -178,7 +178,7 @@ model_embedding %>%
 str(tweets_embeddings)
 ```
 
-For each of the 7,613 padded tweet sequences of upto max length 20, we use the keras model to "predict" and populate the embedding for each of those 20 words in the sequence and susequently flatten those to create a single feature vector of 20x25=500 dimensions.
+For each of the 7,613 padded tweet sequences of upto max length `r maxlen`, we use the keras model to "predict" and populate the embedding for each of those `r maxlen` words in the sequence and susequently flatten those to create a single feature vector of `r maxlen`x25=825 dimensions.
 
 ### Generate embeddings vector for tweets text in test data
 
@@ -198,7 +198,7 @@ model_embedding %>%
 str(tweets_embeddings_test)
 ```
 
-We similarly get 500 embedding dimensions for 3,263 tweets in the test data. 
+We similarly get 825 embedding dimensions for 3,263 tweets in the test data. 
 
 ### Append to given tweets features and export
 

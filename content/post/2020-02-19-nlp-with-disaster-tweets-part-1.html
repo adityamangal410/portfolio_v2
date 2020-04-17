@@ -218,27 +218,28 @@ skim(tweets)</code></pre>
 <div id="tokenize-incoming-tweet-texts-in-the-training-data" class="section level3">
 <h3>Tokenize incoming tweet texts in the training data</h3>
 <p>Using keras’ text_tokenizer to tokenize the text in tweets dataset.</p>
-<pre class="r"><code>num_words &lt;- 10000
-
-text_tokenizer(num_words = num_words) %&gt;% 
+<pre class="r"><code>text_tokenizer() %&gt;% 
   fit_text_tokenizer(tweets$text) -&gt; tokenizer
 
-length(tokenizer$word_index)</code></pre>
+num_words &lt;- length(tokenizer$word_index) + 1
+print(length(tokenizer$word_index))</code></pre>
 <pre><code>## [1] 22700</code></pre>
-<p>A total of 22,700 unique words were assigned an index in the tokenization.<br />
+<p>A total of 22700 unique words were assigned an index in the tokenization.<br />
 Using the above fit tokenizer, converting the text to actual sequences of indices.</p>
 <pre class="r"><code>sequences &lt;- texts_to_sequences(tokenizer, tweets$text)
 
 summary(map_int(sequences, length))</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00   11.00   15.00   15.17   19.00   32.00</code></pre>
-<pre class="r"><code>maxlen &lt;- 20</code></pre>
-<p>Capping the maximum length of a tweets sequence to 20. This will translate all the tweets text sequences into a sequence of length 20. If the original sequence was longer, it will truncate from the beginning and if the original sequence is smaller, it will pad the sequence in the beginning to bring the final length to 20.</p>
+##    1.00   13.00   17.00   16.84   21.00   33.00</code></pre>
+<pre class="r"><code>maxlen &lt;- max(map_int(sequences, length))
+print(maxlen)</code></pre>
+<pre><code>## [1] 33</code></pre>
+<p>Capping the maximum length of a tweets sequence to 33. This will translate all the tweets text sequences into a sequence of length 33. If the original sequence was longer, it will truncate from the beginning and if the original sequence is smaller, it will pad the sequence in the beginning to bring the final length to 33.</p>
 <pre class="r"><code>pad_sequences(sequences, maxlen = maxlen) -&gt; padded_sequences
 
 str(padded_sequences)</code></pre>
-<pre><code>##  int [1:7613, 1:20] 0 0 1620 0 0 0 0 0 0 0 ...</code></pre>
-<p>Like we see above, for all the 7,613 tweets in the training data we have created a tokenized sequence of 20 elements each.</p>
+<pre><code>##  int [1:7613, 1:33] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+<p>Like we see above, for all the 7,613 tweets in the training data we have created a tokenized sequence of 33 elements each.</p>
 </div>
 <div id="download-and-parse-glove-embeddings-into-an-embedding-matrix-for-the-tokenized-words" class="section level3">
 <h3>Download and parse glove embeddings into an embedding matrix for the tokenized words</h3>
@@ -281,12 +282,12 @@ generate_embedding_matrix &lt;- function(word_index, embedding_dim, max_words, g
 saveRDS(embedding_matrix, &quot;../data/nlp_with_disaster_tweets/embedding_matrix_25d.rds&quot;)</code></pre>
 <pre class="r"><code>embedding_matrix &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/embedding_matrix_25d.rds&quot;)
 str(embedding_matrix)</code></pre>
-<pre><code>##  num [1:10000, 1:25] 0 0.7864 0.4186 0.7086 -0.0102 ...</code></pre>
-<p>Using only 25 dimensional embedding in order to keep the computations fast, we have created an embedding matrix which holds the 25 dimension values for the most popular 10,000 words in our tweets text data.</p>
+<pre><code>##  num [1:22701, 1:25] 0 0.7864 0.4186 0.7086 -0.0102 ...</code></pre>
+<p>Using only 25 dimensional embedding in order to keep the computations fast, we have created an embedding matrix which holds the 25 dimension values for the most popular 22700 words in our tweets text data.</p>
 </div>
 <div id="generate-embeddings-vector-for-tweets-text-in-training-data" class="section level3">
 <h3>Generate embeddings vector for tweets text in training data</h3>
-<p>Using the keras modelling framework to generate embeddings for the given training data. We basically create a simple sequential model with one embedding layer whose weights we will freeze based on our embedding matrix created above, and a flattening layer that will flatten the output into a 2D matrix of dimensions (7613, 20x25).</p>
+<p>Using the keras modelling framework to generate embeddings for the given training data. We basically create a simple sequential model with one embedding layer whose weights we will freeze based on our embedding matrix created above, and a flattening layer that will flatten the output into a 2D matrix of dimensions (7613, 33x25).</p>
 <pre class="r"><code>keras_model_sequential() %&gt;% 
   layer_embedding(input_dim = num_words, output_dim = embedding_dim, 
                   input_length = maxlen, name = &quot;embedding&quot;) %&gt;% 
@@ -301,8 +302,8 @@ model_embedding %&gt;%
   predict(padded_sequences) -&gt; tweets_embeddings
 
 str(tweets_embeddings)</code></pre>
-<pre><code>##  num [1:7613, 1:500] 0 0 -0.524 0 0 ...</code></pre>
-<p>For each of the 7,613 padded tweet sequences of upto max length 20, we use the keras model to “predict” and populate the embedding for each of those 20 words in the sequence and susequently flatten those to create a single feature vector of 20x25=500 dimensions.</p>
+<pre><code>##  num [1:7613, 1:825] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+<p>For each of the 7,613 padded tweet sequences of upto max length 33, we use the keras model to “predict” and populate the embedding for each of those 33 words in the sequence and susequently flatten those to create a single feature vector of 33x25=825 dimensions.</p>
 </div>
 <div id="generate-embeddings-vector-for-tweets-text-in-test-data" class="section level3">
 <h3>Generate embeddings vector for tweets text in test data</h3>
@@ -314,8 +315,8 @@ model_embedding %&gt;%
   predict(padded_sequences_test) -&gt; tweets_embeddings_test
 
 str(tweets_embeddings_test)</code></pre>
-<pre><code>##  num [1:3263, 1:500] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
-<p>We similarly get 500 embedding dimensions for 3,263 tweets in the test data.</p>
+<pre><code>##  num [1:3263, 1:825] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+<p>We similarly get 825 embedding dimensions for 3,263 tweets in the test data.</p>
 </div>
 <div id="append-to-given-tweets-features-and-export" class="section level3">
 <h3>Append to given tweets features and export</h3>

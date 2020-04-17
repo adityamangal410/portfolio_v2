@@ -65,10 +65,10 @@ theme_set(theme_plex())</code></pre>
 tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)</code></pre>
 <pre class="r"><code>tweets %&gt;% 
   dim</code></pre>
-<pre><code>## [1] 7613  505</code></pre>
+<pre><code>## [1] 7613  830</code></pre>
 <pre class="r"><code>tweets_final %&gt;% 
   dim</code></pre>
-<pre><code>## [1] 3263  504</code></pre>
+<pre><code>## [1] 3263  829</code></pre>
 </div>
 <div id="feature-preprocessing-and-engineering" class="section level2">
 <h2>Feature preprocessing and engineering</h2>
@@ -95,8 +95,8 @@ recipe(target ~ ., data = tweets_train) %&gt;%
               num_hashtags = str_count(text, &quot;#&quot;)) %&gt;% 
   step_rm(text) %&gt;% 
   step_zv(all_numeric(), -all_outcomes()) %&gt;% 
-  step_normalize(all_numeric(), -all_outcomes()) -&gt; tweets_recipe 
-  # step_pca(all_predictors(), num_comp = 2)-&gt; tweets_recipe
+  step_normalize(all_numeric(), -all_outcomes())  %&gt;% 
+  step_pca(all_predictors(), -len, -num_hashtags, threshold = 0.80)-&gt; tweets_recipe
 
 tweets_prep &lt;- tweets_recipe %&gt;% 
   prep(training = tweets_train, 
@@ -111,7 +111,7 @@ tweets_prep &lt;- tweets_recipe %&gt;%
 <h4>Basic</h4>
 <pre class="r"><code>lasso_spec &lt;- logistic_reg(penalty = 0.1, mixture = 1) %&gt;% 
   set_engine(&quot;glmnet&quot;) %&gt;% 
-  set_mode(&quot;classification&quot;)
+  set_mode(&quot;classification&quot;) 
 
 wf &lt;- workflow() %&gt;% 
   add_recipe(tweets_recipe)</code></pre>
@@ -125,20 +125,20 @@ saveRDS(lasso_fit, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_basic_fit
 lasso_fit %&gt;% 
   pull_workflow_fit() %&gt;% 
   tidy() </code></pre>
-<pre><code>## # A tibble: 22,952 x 5
+<pre><code>## # A tibble: 11,684 x 5
 ##    term         step estimate lambda dev.ratio
 ##    &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
-##  1 (Intercept)     1 -0.283    0.136  1.80e-14
-##  2 (Intercept)     2 -0.284    0.124  1.24e- 2
-##  3 v299            2 -0.0451   0.124  1.24e- 2
-##  4 v447            2 -0.0202   0.124  1.24e- 2
-##  5 (Intercept)     3 -0.284    0.113  2.80e- 2
-##  6 v299            3 -0.0785   0.113  2.80e- 2
-##  7 v314            3  0.0236   0.113  2.80e- 2
-##  8 v447            3 -0.0535   0.113  2.80e- 2
-##  9 (Intercept)     4 -0.285    0.103  4.77e- 2
-## 10 v164            4  0.00914  0.103  4.77e- 2
-## # … with 22,942 more rows</code></pre>
+##  1 (Intercept)     1  -0.283  0.151   1.80e-14
+##  2 (Intercept)     2  -0.284  0.138   1.17e- 2
+##  3 PC001           2  -0.0101 0.138   1.17e- 2
+##  4 (Intercept)     3  -0.284  0.126   2.14e- 2
+##  5 PC001           3  -0.0194 0.126   2.14e- 2
+##  6 (Intercept)     4  -0.285  0.114   2.97e- 2
+##  7 PC001           4  -0.0280 0.114   2.97e- 2
+##  8 (Intercept)     5  -0.286  0.104   3.66e- 2
+##  9 PC001           5  -0.0360 0.104   3.66e- 2
+## 10 (Intercept)     6  -0.288  0.0951  5.21e- 2
+## # … with 11,674 more rows</code></pre>
 <p>Above we see the familiar output of glmnet. Now, Let’s try and tune the regularization penalty and visualize the results.</p>
 </div>
 <div id="tuning-lasso-penalty" class="section level4">
@@ -172,16 +172,16 @@ lasso_grid %&gt;%
 <pre><code>## # A tibble: 225 x 6
 ##     penalty .metric  .estimator  mean     n std_err
 ##       &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-##  1 1.00e-10 accuracy binary     0.760    30 0.00438
-##  2 1.00e-10 f_meas   binary     0.797    30 0.00363
-##  3 1.00e-10 roc_auc  binary     0.822    30 0.00399
-##  4 1.37e-10 accuracy binary     0.760    30 0.00438
-##  5 1.37e-10 f_meas   binary     0.797    30 0.00363
-##  6 1.37e-10 roc_auc  binary     0.822    30 0.00399
-##  7 1.86e-10 accuracy binary     0.760    30 0.00438
-##  8 1.86e-10 f_meas   binary     0.797    30 0.00363
-##  9 1.86e-10 roc_auc  binary     0.822    30 0.00399
-## 10 2.54e-10 accuracy binary     0.760    30 0.00438
+##  1 1.00e-10 accuracy binary     0.772    30 0.00343
+##  2 1.00e-10 f_meas   binary     0.807    30 0.00277
+##  3 1.00e-10 roc_auc  binary     0.836    30 0.00370
+##  4 1.37e-10 accuracy binary     0.772    30 0.00343
+##  5 1.37e-10 f_meas   binary     0.807    30 0.00277
+##  6 1.37e-10 roc_auc  binary     0.836    30 0.00370
+##  7 1.86e-10 accuracy binary     0.772    30 0.00343
+##  8 1.86e-10 f_meas   binary     0.807    30 0.00277
+##  9 1.86e-10 roc_auc  binary     0.836    30 0.00370
+## 10 2.54e-10 accuracy binary     0.772    30 0.00343
 ## # … with 215 more rows</code></pre>
 <pre class="r"><code>lasso_grid %&gt;% 
   collect_metrics() %&gt;% 
@@ -219,10 +219,10 @@ lasso_last_fit %&gt;%
 <pre><code>## # A tibble: 3 x 3
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-## 1 accuracy binary         0.777
-## 2 f_meas   binary         0.817
-## 3 roc_auc  binary         0.833</code></pre>
-<p>The f1-score metric on the validation set comes out to be 0.81 which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a>. Lets try and visualize the variable importance for different features that we used to train our model.</p>
+## 1 accuracy binary         0.763
+## 2 f_meas   binary         0.806
+## 3 roc_auc  binary         0.826</code></pre>
+<p>The f1-score metric on the validation set comes out to be 0.8058252 which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a>. Lets try and visualize the variable importance for different features that we used to train our model.</p>
 <pre class="r"><code>lasso_last_fit$.workflow[[1]] %&gt;% 
   pull_workflow_fit() %&gt;% 
   vi(lambda = highest_f_meas$penalty) %&gt;% 
@@ -237,15 +237,15 @@ lasso_last_fit %&gt;%
        title = &quot;Variable Importance plot&quot;,
        subtitle = &quot;&#39;len&#39; feature has high positive impact on disaster probability&quot;)</code></pre>
 <p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>Since most of our features are the different dimensions coming out of the glove embeddings, we can not interpret them. However, as in the plot above, our custom feature “len” i.e. length of the tweets comes out as one of the most important features. The model gives a higher probability of a tweet being about a disaster if its longer in length, signifying that people tweeting about real disasters usually use a lot more words as compared to others.</p>
+<p>Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, as in the plot above, our custom feature “len” i.e. length of the tweets comes out as one of the most important features. The model gives a higher probability of a tweet being about a disaster if its longer in length, signifying that people tweeting about real disasters usually use a lot more words as compared to others.</p>
 <p>Let’s visualize how the coefficient estimates vary based on lambda for our 2 custom features, length of tweets and number of hashtags, and also for 1 other high coefficient feature in both positive and negative directions each.</p>
 <pre class="r"><code>lasso_last_fit$.workflow[[1]] %&gt;% 
   pull_workflow_fit() %&gt;% 
   tidy() %&gt;% 
-  filter(term %in% c(&quot;len&quot;, &quot;num_hashtags&quot;, &quot;v288&quot;, &quot;v472&quot;)) %&gt;% 
+  filter(term %in% c(&quot;len&quot;, &quot;num_hashtags&quot;, &quot;PC009&quot;, &quot;PC026&quot;)) %&gt;% 
   select(term, estimate, lambda) %&gt;% 
   pivot_wider(names_from = term, values_from = estimate) %&gt;% 
-  replace_na(list(num_hashtags = 0, v472 = 0, len = 0, v288 = 0)) %&gt;% 
+  replace_na(list(num_hashtags = 0, PC009 = 0, len = 0, PC026 = 0)) %&gt;% 
   pivot_longer(names_to = &quot;term&quot;, values_to = &quot;estimate&quot;, cols = -lambda) %&gt;% 
   ggplot(aes(x = lambda, y = estimate, color = term)) + 
   geom_point() + 

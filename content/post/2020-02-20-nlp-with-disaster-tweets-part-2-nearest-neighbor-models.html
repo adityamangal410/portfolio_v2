@@ -66,10 +66,10 @@ theme_set(theme_plex())</code></pre>
 tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)</code></pre>
 <pre class="r"><code>tweets %&gt;% 
   dim</code></pre>
-<pre><code>## [1] 7613  505</code></pre>
+<pre><code>## [1] 7613  830</code></pre>
 <pre class="r"><code>tweets_final %&gt;% 
   dim</code></pre>
-<pre><code>## [1] 3263  504</code></pre>
+<pre><code>## [1] 3263  829</code></pre>
 </div>
 <div id="feature-preprocessing-and-engineering" class="section level2">
 <h2>Feature preprocessing and engineering</h2>
@@ -97,11 +97,11 @@ tweets_split &lt;- initial_split(tweets_train_cv, prop = 7/9, strata = target)
 tweets_train &lt;- training(tweets_split)
 tweets_cv &lt;- testing(tweets_split)</code></pre>
 <pre class="r"><code>dim(tweets_train)</code></pre>
-<pre><code>## [1] 5328  505</code></pre>
+<pre><code>## [1] 5328  830</code></pre>
 <pre class="r"><code>dim(tweets_cv)</code></pre>
-<pre><code>## [1] 1522  505</code></pre>
+<pre><code>## [1] 1522  830</code></pre>
 <pre class="r"><code>dim(tweets_test)</code></pre>
-<pre><code>## [1] 763 505</code></pre>
+<pre><code>## [1] 763 830</code></pre>
 </div>
 <div id="preparation-recipe" class="section level3">
 <h3>Preparation Recipe</h3>
@@ -113,8 +113,8 @@ tweets_cv &lt;- testing(tweets_split)</code></pre>
               num_hashtags = str_count(text, &quot;#&quot;)) %&gt;% 
   step_rm(text) %&gt;% 
   step_zv(all_numeric(), -all_outcomes()) %&gt;% 
-  step_normalize(all_numeric(), -all_outcomes()) -&gt; tweets_recipe 
-  # step_pca(all_predictors(), num_comp = 2)-&gt; tweets_recipe</code></pre>
+  step_normalize(all_numeric(), -all_outcomes())  %&gt;% 
+  step_pca(all_predictors(), -len, -num_hashtags, threshold = 0.80)-&gt; tweets_recipe</code></pre>
 <p>Note above</p>
 <ul>
 <li>We use the training dataset to create the recipe<br />
@@ -129,7 +129,9 @@ tweets_cv &lt;- testing(tweets_split)</code></pre>
 </li>
 <li>Removing all predictors with zero variance.<br />
 </li>
-<li>Normalizing all features i.e. centering and scaling.</li>
+<li>Normalizing all features i.e. centering and scaling.<br />
+</li>
+<li>Adding dimensionality reduction using PCA to keep 80% variance and reduce the number of features while still keeping our custom features.</li>
 </ul>
 <pre class="r"><code>tweets_prep &lt;- tweets_recipe %&gt;% 
   prep(training = tweets_train, 
@@ -223,8 +225,8 @@ knn_fit %&gt;%
 
 wf_fit$fit$MISCLASS</code></pre>
 <pre><code>##     optimal
-## 3 0.3421547</code></pre>
-<p>The above shows a simple K-nearest neighbors model using the “kknn” engine. Gives about 0.34 of minimal misclassification.
+## 3 0.3521021</code></pre>
+<p>The above shows a simple K-nearest neighbors model using the “kknn” engine. Gives about 0.3521021 of minimal misclassification.
 Let’s try and tune the number of neighbors (k) and see if we can interpret the underlying problem space.</p>
 </div>
 <div id="tuning-number-of-neighbors" class="section level4">
@@ -259,16 +261,16 @@ knn_grid %&gt;%
 <pre><code>## # A tibble: 300 x 6
 ##    neighbors .metric  .estimator  mean     n std_err
 ##        &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-##  1         1 accuracy binary     0.653     5 0.00572
-##  2         1 f_meas   binary     0.728     5 0.00523
-##  3         1 roc_auc  binary     0.627     5 0.00543
-##  4         2 accuracy binary     0.652     5 0.00673
-##  5         2 f_meas   binary     0.726     5 0.00610
-##  6         2 roc_auc  binary     0.665     5 0.00861
-##  7         3 accuracy binary     0.652     5 0.00681
-##  8         3 f_meas   binary     0.726     5 0.00635
-##  9         3 roc_auc  binary     0.680     5 0.00953
-## 10         4 accuracy binary     0.653     5 0.00642
+##  1         1 accuracy binary     0.628     5 0.00597
+##  2         1 f_meas   binary     0.705     5 0.00426
+##  3         1 roc_auc  binary     0.604     5 0.00653
+##  4         2 accuracy binary     0.628     5 0.00598
+##  5         2 f_meas   binary     0.705     5 0.00426
+##  6         2 roc_auc  binary     0.630     5 0.00928
+##  7         3 accuracy binary     0.628     5 0.00544
+##  8         3 f_meas   binary     0.706     5 0.00349
+##  9         3 roc_auc  binary     0.639     5 0.00873
+## 10         4 accuracy binary     0.628     5 0.00537
 ## # … with 290 more rows</code></pre>
 <pre class="r"><code>knn_grid %&gt;% 
   collect_metrics() %&gt;% 
@@ -307,10 +309,10 @@ knn_last_fit %&gt;%
 <pre><code>## # A tibble: 3 x 3
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-## 1 accuracy binary         0.655
-## 2 f_meas   binary         0.761
-## 3 roc_auc  binary         0.701</code></pre>
-<p>Our final fit knn model with K=20 gives an f1-score of 0.7610, which is much higher than our baseline model on the same CV dataset.</p>
+## 1 accuracy binary         0.643
+## 2 f_meas   binary         0.756
+## 3 roc_auc  binary         0.687</code></pre>
+<p>Our final fit knn model with K=25 gives an f1-score of 0.7560538, which is much higher than our baseline model on the same CV dataset.</p>
 </div>
 </div>
 </div>

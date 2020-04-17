@@ -89,8 +89,8 @@ recipe(target ~ ., data = tweets_train) %>%
               num_hashtags = str_count(text, "#")) %>% 
   step_rm(text) %>% 
   step_zv(all_numeric(), -all_outcomes()) %>% 
-  step_normalize(all_numeric(), -all_outcomes()) -> tweets_recipe 
-  # step_pca(all_predictors(), num_comp = 2)-> tweets_recipe
+  step_normalize(all_numeric(), -all_outcomes())  %>% 
+  step_pca(all_predictors(), -len, -num_hashtags, threshold = 0.80)-> tweets_recipe
 
 tweets_prep <- tweets_recipe %>% 
   prep(training = tweets_train, 
@@ -108,7 +108,7 @@ Let's build a basic logistic regression model with some default value of regular
 ```{r}
 lasso_spec <- logistic_reg(penalty = 0.1, mixture = 1) %>% 
   set_engine("glmnet") %>% 
-  set_mode("classification")
+  set_mode("classification") 
 
 wf <- workflow() %>% 
   add_recipe(tweets_recipe)
@@ -214,7 +214,7 @@ lasso_last_fit %>%
   collect_metrics()
 ```
 
-The f1-score metric on the validation set comes out to be 0.81 which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}. Lets try and visualize the variable importance for different features that we used to train our model. 
+The f1-score metric on the validation set comes out to be `r lasso_last_fit %>% collect_metrics() %>% filter(.metric == "f_meas") %>% pull()` which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}. Lets try and visualize the variable importance for different features that we used to train our model. 
 
 ```{r}
 lasso_last_fit$.workflow[[1]] %>% 
@@ -232,7 +232,7 @@ lasso_last_fit$.workflow[[1]] %>%
        subtitle = "'len' feature has high positive impact on disaster probability")
 ```
 
-Since most of our features are the different dimensions coming out of the glove embeddings, we can not interpret them. However, as in the plot above, our custom feature "len" i.e. length of the tweets comes out as one of the most important features. The model gives a higher probability of a tweet being about a disaster if its longer in length, signifying that people tweeting about real disasters usually use a lot more words as compared to others. 
+Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, as in the plot above, our custom feature "len" i.e. length of the tweets comes out as one of the most important features. The model gives a higher probability of a tweet being about a disaster if its longer in length, signifying that people tweeting about real disasters usually use a lot more words as compared to others. 
 
 Let's visualize how the coefficient estimates vary based on lambda for our 2 custom features, length of tweets and number of hashtags, and also for 1 other high coefficient feature in both positive and negative directions each.
 
@@ -240,10 +240,10 @@ Let's visualize how the coefficient estimates vary based on lambda for our 2 cus
 lasso_last_fit$.workflow[[1]] %>% 
   pull_workflow_fit() %>% 
   tidy() %>% 
-  filter(term %in% c("len", "num_hashtags", "v288", "v472")) %>% 
+  filter(term %in% c("len", "num_hashtags", "PC009", "PC026")) %>% 
   select(term, estimate, lambda) %>% 
   pivot_wider(names_from = term, values_from = estimate) %>% 
-  replace_na(list(num_hashtags = 0, v472 = 0, len = 0, v288 = 0)) %>% 
+  replace_na(list(num_hashtags = 0, PC009 = 0, len = 0, PC026 = 0)) %>% 
   pivot_longer(names_to = "term", values_to = "estimate", cols = -lambda) %>% 
   ggplot(aes(x = lambda, y = estimate, color = term)) + 
   geom_point() + 
