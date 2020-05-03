@@ -1,7 +1,8 @@
 ---
-title: 'NLP with Disaster Tweets: Part 3 Linear Models'
+title: 'NLP with Disaster Tweets: Part 4 Tree-based Models'
 author: Aditya Mangal
-date: '2020-04-06'
+date: '2020-04-19'
+slug: nlp-with-disaster-tweets-part-4-tree-based-models.en-us
 categories:
   - Projects
 tags:
@@ -9,7 +10,6 @@ tags:
   - DataScience
   - NLP
   - TextMining
-slug: nlp-with-disaster-tweets-part-3-linear-models
 keywords:
   - tech
 summary: NLP and Tidymodelling in R
@@ -17,7 +17,7 @@ readingtime: '15'
 draft: no
 coverImage: https://lh3.googleusercontent.com/NhQQ6_tTtlSd0SOqdTjXXaaFxEC186pYF68dyx8BJcdeqWUns0kas6nKS7jNUjTorlWCOvYDSXvgTbJSMgHLvc-ViHQkvKe_cGiU4gMP92vb1QSO98BlROygzqVBRO_2pnbPPS3coQVCdbAGJP3PQi0J4hExUkwsxCyPZ7RSOu9kOsIFJ7i7Pi68Ewg8yzEUw7zSb5JyYoDRkunuYedzzrPvS1Z2LWx-T-bVnkedbv72e3fjIfHHpwDf2LM4Tz_orR0lSjyrLt29k8YP2vbGoqRJhOurgj8UxWRC8J1BmDZxaG4fMzF5VfY2QToUTEFUryIzihBzb82z9IBQB7KiBuoKZBvrM03uHBwi_ePO7lt138P5DSufFH3xANhUrY8UPbMIcEKOKaxNXGUhdZG1EDykY6KW5ufjuAgEFoOKUSVp_kHyHmk_qJonukh5zRL07tUhRyXwYNXoP1ixHX-bN8K4yLLobU-Q2kAlrXD89OzMySyD6sm8gu6LcrzwthgEWLwTgRgcpvx0hPncV477w6mZnu1yd8xi8EAE3IVVhWAlQF2oUphPtcWjOBfK-aIocc62MSEFfCPb6DLSBpCWCkFFxydl0KSrbvboXBVX-AM7eVyAnFV3SfSfdQMxtKuLtWbAINTcPhoN05LhQxiOOJtc4KCJFbUOWO29U-rjrunXEbRXPhki1DUCy_KX5phRnwO3hniDAwqubCEZkKU3s6T0yCVT4WARB7E5RcmoVPdLWSRK=w2372-h1832-no
 thumbnailImage: https://lh3.googleusercontent.com/-z0Ja7Q6Sb7BXIno6Ycxun1BRzcJ_en9A9EulOKiXX8QAAx_UWYtH8y04Vqu9-YZF9G1zROwyLXxH77yvOKGqlfcCJPpC5S6_0wAEVc7mNLOCq0bmj2r0iE20NP0P_2jvxfZ3TtHAQHvagPsTbe7lbVxhy3-6yEdsAMn4idYDkIbxtgMj5Elo9SeO991NyEDNyj6a31SVlt1U22HnrFhmJMtYvilT30ZCXq3zaC5y7PKMjb1bA605bTRhc0AiDPCUtD8u2AjyrJ0CwaDQ7dzvW-UpeGx-BoJZvveJIPITw7HiofhcCcYoM69W0CDCwDf106GgH8KDRvlnOdlc9AHgqKdwJ38E1Pbxu9enMofV6WsIdx9-a-P0V8UVltiEKu-Iqq0pfnvEVznP3sQlQw6WV1jG2tWrs78xXM4U4Bu2SqOAjQc8rVJaTVh5uOJfon8zxSJ1opZSnzif364UXlZJpsXxouufy6TDEDUxe5c-jI8wEWPNLEy2JeFwjP9FXxm3EnSbRvIUnjtALh2T-ma0Xyd8d7EJQrsE2vziIAK-ZVY6A6qnv9bptefReAq9p5jmBRABp7wFm8NSuPIXdyYneDch1M4V1SSjf4oz7oaP_AuHMuaAKViG65uuw6QoLCNoDsR4Ifq8g4ADUZxp0naty2ElqCkS0Lj3vND0ZcuUMaMUiqUygAcmmInaZMaCqQa-KWRDwgvxL-NCgV1UzXtE81F8nxhcFW481Bjt7fSDQWz8LNm=w750-h579-no
-thumbnailImagePosition: left
+thumbnailImagePosition: top
 comments: yes
 coverCaption: Photo by Marcus Kauffman on Unsplash
 ---
@@ -28,7 +28,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALS
 # Introduction
 
 In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started){target="_blank"} on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.   
-In this part 3 for Linear Modelling, I will use the processed data generated in [Part 1](/2020/02/nlp-with-disaster-tweets-part-1/){target="_blank"} to train logistic regression based model with regularization in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"} about Nearest Neighbors model, I will do a comparative study among these 2 modelling algorithms. 
+In this part 4 for Tree based Modelling, I will use the processed data generated in [Part 1](/2020/02/nlp-with-disaster-tweets-part-1/){target="_blank"} to train decision trees and gradient boosted tree based models in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous [Part 3](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/){target="_blank"} about Linear models, I will do a comparative study among all these modelling algorithms. 
 
 # Analysis
 
@@ -42,6 +42,7 @@ library(tidymodels)
 library(glmnet)
 library(vip)
 library(silgelib)
+library(rpart.plot)
 
 theme_set(theme_plex())
 ```
@@ -64,7 +65,7 @@ tweets_final %>%
 
 ## Feature preprocessing and engineering
 
-I will use the same steps of feature preprocessing and engineering from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"} here, in order to have an apples to apples comparison of the 2 models.
+I will use the same steps of feature preprocessing and engineering from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"} here, in order to have an apples to apples comparison of all the models.
 
 ```{r}
 tweets %>% 
@@ -99,15 +100,15 @@ tweets_prep <- tweets_recipe %>%
 
 ## Modelling
 
-### Lasso Regression using glmnet
+### Decision Trees using rpart
 
-Let's build a basic logistic regression model with some default value of regularization penalty.
+Let's build a basic decision tree model with default values.
 
 #### Basic
 
 ```{r}
-lasso_spec <- logistic_reg(penalty = 0.1, mixture = 1) %>% 
-  set_engine("glmnet") %>% 
+dtree_spec <- decision_tree() %>% 
+  set_engine("rpart") %>% 
   set_mode("classification") 
 
 wf <- workflow() %>% 
@@ -115,154 +116,156 @@ wf <- workflow() %>%
 ```
 
 ```{r eval=FALSE}
-lasso_fit <- wf %>% 
-  add_model(lasso_spec) %>% 
+dtree_fit <- wf %>% 
+  add_model(dtree_spec) %>% 
   fit(data = tweets_train)
 
-saveRDS(lasso_fit, "../data/nlp_with_disaster_tweets/glmnet/lasso_basic_fit.rds")
+saveRDS(dtree_fit, "../data/nlp_with_disaster_tweets/trees/dtree_basic_fit.rds")
 ```
 
 ```{r}
-lasso_fit <- readRDS("../data/nlp_with_disaster_tweets/glmnet/lasso_basic_fit.rds")
+dtree_fit <- readRDS("../data/nlp_with_disaster_tweets/trees/dtree_basic_fit.rds")
 
-lasso_fit %>% 
-  pull_workflow_fit() %>% 
-  tidy() 
+pull_workflow_fit(dtree_fit)$fit %>% 
+  rpart.plot()
 ```
 
-Above we see the familiar output of glmnet. Now, Let's try and tune the regularization penalty and visualize the results. 
+Above we see the familiar plot of rpart, showing PC009 to be the most important variable. 
 
-#### Tuning lasso penalty
+### Gradient Boosted Trees using xgboost
 
-Using 10-fold cross validation and a few different values of regularization penalty. 
+Let's build a basic boosted tree model with default values.
+
+#### Basic
+
+```{r}
+gbtree_spec <- boost_tree() %>% 
+  set_engine("xgboost") %>% 
+  set_mode("classification") 
+
+wf <- workflow() %>% 
+  add_recipe(tweets_recipe)
+```
+
+```{r eval=FALSE}
+gbtree_fit <- wf %>% 
+  add_model(gbtree_spec) %>% 
+  fit(data = tweets_train)
+
+saveRDS(gbtree_fit, "../data/nlp_with_disaster_tweets/trees/gbtree_basic_fit.rds")
+```
+
+```{r}
+gbtree_fit <- readRDS("../data/nlp_with_disaster_tweets/trees/gbtree_basic_fit.rds")
+```
+
+#### Tuning boosted tree parameters
+
+Using 5-fold cross validation and a few different values of various parameters. 
 
 ```{r}
 set.seed(1234)
-folds <- vfold_cv(tweets_train, strata = target, v = 10, repeats = 3)
+folds <- vfold_cv(tweets_train, strata = target, v = 5, repeats = 1)
 
-tune_spec <- logistic_reg(penalty = tune(), mixture = 1) %>% 
+tune_spec <- boost_tree(trees = 500, 
+                        tree_depth = tune(), 
+                        learn_rate = 0.01) %>% 
   set_mode("classification") %>% 
-  set_engine("glmnet")
+  set_engine("xgboost")
 
-lambda_grid <- grid_regular(penalty(), levels = 75)
+param_grid <- grid_regular(tree_depth(), levels = 50)
 ```
 
 ```{r eval=FALSE}
 doParallel::registerDoParallel(cores = parallel::detectCores(logical = FALSE))
 
 set.seed(1234)
-lasso_grid <- tune_grid(
+gbtree_grid <- tune_grid(
   wf %>% add_model(tune_spec),
   resamples = folds,
-  grid = lambda_grid,
+  grid = param_grid,
   metrics = metric_set(accuracy, roc_auc, f_meas),
   control = control_grid(save_pred = TRUE,
                            verbose = TRUE)
 )
 
-saveRDS(lasso_grid, "../data/nlp_with_disaster_tweets/glmnet/lasso_grid.rds")
+saveRDS(gbtree_grid, "../data/nlp_with_disaster_tweets/trees/gbtree_grid.rds")
 ```
 
 ```{r}
-lasso_grid <- readRDS("../data/nlp_with_disaster_tweets/glmnet/lasso_grid.rds")
+gbtree_grid <- readRDS("../data/nlp_with_disaster_tweets/trees/gbtree_grid.rds")
 
-lasso_grid %>% 
+gbtree_grid %>% 
   collect_metrics()
 ```
 
 ```{r}
-lasso_grid %>% 
+gbtree_grid %>% 
   collect_metrics() %>% 
-  mutate(flexibility = 1/penalty,
+  mutate(flexibility = tree_depth,
          .metric = str_to_title(str_replace_all(.metric, "_", " "))) %>% 
   ggplot(aes(flexibility, mean, color = .metric)) + 
   geom_errorbar(aes(ymin = mean - std_err,
                     ymax = mean + std_err), alpha = 0.5) + 
   geom_line(size = 1.5) + 
   facet_wrap(~.metric, scales = "free", nrow = 3) + 
-  scale_x_log10() + 
   theme(legend.position = "none") +
   labs(title = "Model performance against model flexibility",
        subtitle = "F1-score peaks around lower flexibility values",
-       x = "Model flexibility i.e. Log(1/penalty)",
+       x = "Model flexibility i.e. tree_depth",
        y = "Mean metric value")
 ```
-As we see in the plot above, the f1-score increases on the evaluation set until around penalty=0.005 and then starts falling down. We plot the flexibility (i.e. 1/penalty) to visualize how the model performance varies as the model flexibility increases. The Lasso Regression model with a lower penalty value will be highly flexible since it will not penalize the features weights by a lot and thus have high variance, whereas a higher penalty would lead to a much stricter model which is less flexible since a lot of feature weights will be moved to zero due to high penalty and therefore the model might suffer from bias.  
+As we see in the plot above, the f1-score increases on the evaluation set until around tree_depth=5 and then starts falling down. We plot the flexibility (i.e. tree_depth) to visualize how the model performance varies as the model flexibility increases. The tree model with higher tree_depth will be more flexible as it will be able to train deeper trees that try and capture more patterns in the data and might suffer from higher variance. Correspondingly, lower tree_depth will lead to a much leaner model that might suffer from bias. 
 
-Let's pickout the best parameter penalty based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset. 
+Let's pickout the best parameter tree_depth based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset. 
 
 ```{r}
-lasso_grid %>% 
+gbtree_grid %>% 
   select_best("f_meas") -> highest_f_meas
 
-final_lasso <- finalize_workflow(
+final_gbtree <- finalize_workflow(
   wf %>% add_model(tune_spec),
   highest_f_meas
 )
 ```
 
 ```{r eval=FALSE}
-last_fit(final_lasso, 
+last_fit(final_gbtree, 
          tweets_split,
-         metrics = metric_set(accuracy, roc_auc, f_meas)) -> lasso_last_fit
+         metrics = metric_set(accuracy, roc_auc, f_meas)) -> gbtree_last_fit
 
-saveRDS(lasso_last_fit, "../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds")
+saveRDS(gbtree_last_fit, "../data/nlp_with_disaster_tweets/trees/gbtree_last_fit.rds")
 ```
 ```{r}
-lasso_last_fit <- readRDS("../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds")
-lasso_last_fit %>% 
+gbtree_last_fit <- readRDS("../data/nlp_with_disaster_tweets/trees/gbtree_last_fit.rds")
+gbtree_last_fit %>% 
   collect_metrics()
 ```
 
-The f1-score metric on the validation set comes out to be `r lasso_last_fit %>% collect_metrics() %>% filter(.metric == "f_meas") %>% pull()` which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}. Lets try and visualize the variable importance for different features that we used to train our model. 
+The f1-score metric on the validation set comes out to be `r gbtree_last_fit %>% collect_metrics() %>% filter(.metric == "f_meas") %>% pull()` which is higher compared to all the previous models we have built in this series [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/){target="_blank"}. Lets try and visualize the variable importance for different features that we used to train our model. 
 
 ```{r}
-lasso_last_fit$.workflow[[1]] %>% 
+gbtree_last_fit$.workflow[[1]] %>% 
   pull_workflow_fit() %>% 
-  vi(lambda = highest_f_meas$penalty) %>% 
+  vi() %>% 
   mutate(Importance = abs(Importance),
          Variable = fct_reorder(Variable, Importance)) %>% 
   top_n(10, Importance) %>% 
-  ggplot(aes(x = Importance, y = Variable, fill = Sign)) + 
+  ggplot(aes(x = Importance, y = Variable)) + 
   geom_col() + 
   scale_x_continuous(expand = c(0,0)) + 
   labs(y = NULL,
        x = "Importance",
        title = "Variable Importance plot",
-       subtitle = "'len' feature has high positive impact on disaster probability")
+       subtitle = "PC009 remains to be the most important feature")
 ```
 
-Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, as in the plot above, our custom feature "len" i.e. length of the tweets comes out as one of the most important features. The model gives a higher probability of a tweet being about a disaster if its longer in length, signifying that people tweeting about real disasters usually use a lot more words as compared to others. 
 
-Let's visualize how the coefficient estimates vary based on lambda for our 2 custom features, length of tweets and number of hashtags, and also for 1 other high coefficient feature in both positive and negative directions each.
-
-```{r}
-lasso_last_fit$.workflow[[1]] %>% 
-  pull_workflow_fit() %>% 
-  tidy() %>% 
-  filter(term %in% c("len", "num_hashtags", "PC009", "PC026")) %>% 
-  select(term, estimate, lambda) %>% 
-  pivot_wider(names_from = term, values_from = estimate) %>% 
-  replace_na(list(num_hashtags = 0, PC009 = 0, len = 0, PC026 = 0)) %>% 
-  pivot_longer(names_to = "term", values_to = "estimate", cols = -lambda) %>% 
-  ggplot(aes(x = lambda, y = estimate, color = term)) + 
-  geom_point() + 
-  geom_line() +
-  geom_abline(slope = 0, intercept = 0, linetype = 2, 
-            color = 'grey50') +
-  scale_x_log10() + 
-  labs(x = "Log (Penalty Parameter) ",
-       y = "Coefficient Estimate",
-       color = "Feature",
-       title = "Feature coefficients against penalty parameter",
-       subtitle = "'num_hashtags' feature gets to zero coefficient very soon in comparison")
-```
-
-All feature coefficients tend to move towards zero as we increase the lambda penalty parameter, some more quickly than others.  
+Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, one thing to note here, for gradient boosted trees, none of our custom features turn out to be of any significant importance. 
 
 ## Model Calibration
 
-Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let's compare our 2 models, lasso regression here and the best k-nearest neighbor model from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}, by plotting calibration plots for each of them. 
+Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let's compare our 3 models, gradient boosted trees here, lasso regression in [Part 3](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/){target="_blank"} and the best k-nearest neighbor model from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}, by plotting calibration plots for each of them. 
 
 ```{r}
 readRDS("../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds") %>% 
@@ -286,7 +289,7 @@ readRDS("../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds") %>%
 ```
 
 ```{r}
-lasso_last_fit %>% 
+readRDS("../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds") %>% 
   collect_predictions() %>% 
   mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %>% 
   group_by(pred_bucket) %>% 
@@ -306,14 +309,35 @@ lasso_last_fit %>%
        subtitle = "Close to the diagonal signifies well calibrated model")
 ```
 
+```{r}
+gbtree_last_fit %>% 
+  collect_predictions() %>% 
+  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %>% 
+  group_by(pred_bucket) %>% 
+  summarise(mean_truth = mean(as.numeric(as.character(target)))*100,
+            mean_pred = mean(`.pred_1`)*100) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = mean_pred, y = mean_truth)) +
+  geom_point(color = "#F8766D", size = 3) + 
+  geom_line(color = "#F8766D") +
+  scale_x_continuous(limits = c(0, 100)) +
+  scale_y_continuous(limits = c(0, 100)) +
+  geom_abline(slope = 1, intercept = 0, linetype = 2, 
+            color = 'grey50') +
+  labs(x = "Mean True Prediction",
+       y = "Mean Truth",
+       title = "Calibration Plot for Gradient Boosted Tree model",
+       subtitle = "Close to the diagonal signifies well calibrated model")
+```
+
 In general, closer the calibration curve to the diagonal, the better. When a model is well calibrated, the mean prediction probability will be equal to mean truth. Meaning the model is predicting the target in the same ratios as the actual truth values.  
 The KNN model calibration plot shows that the curve is above the diagonal, i.e. the model is frequently under estimating the predicted probabilities.   
-However, the lasso regression seems to be well calibrated out of the box. That's a sign of good stable algorithm and training procedure.   
+However, both lasso regression and gradient boosted tree models seem to be well calibrated out of the box. That's a sign of good stable algorithm and training procedure.   
 Note that all the predicted probabilities here are calculated on the cross validation set.    
 
 # Summary 
 
-In the next part of this series, I will start building models with a different class of function space, like piece-wise constant functions and linear combination of piece-wise constant functions classes i.e. simple decision trees and gradient boosted trees respectively. As we see in this blog post that the class of linear functions do give better performing models and we learnt our problem space to be leaning towards flexible models in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}, I expect to see better results for different, more flexible modelling approaches.   
+In this part I built tree based models in order to understand how the problem space can be modelled with these approaches. We do see a small improvement in f1-score as compared to all our previous approaches. Note that, due to limited compute resources on my mac, I have kept the size of tuning grid to be small. In the next part of this series, I will move focus towards neural networks based models and see how "deep" we can go. Other NLP strategies like Named-entity recognition and others are also on my bucket list for this series. 
 
 
 # References
@@ -321,5 +345,5 @@ In the next part of this series, I will start building models with a different c
  - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/){target="_blank"}
  - Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/){target="_blank"}
  - Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/){target="_blank"}
- - Lasso Regression using [Tidymodels by Julia Silge](https://juliasilge.com/blog/lasso-the-office/){target="_blank"}.
- - Introduction to Statistical Learning - [Book](https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370){target="_blank"} 
+ - Project Part 3 - [NLP with Disaster Tweets: Part 3 Linear Models](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/){target="_blank"}
+ 
