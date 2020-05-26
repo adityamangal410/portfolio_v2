@@ -66,8 +66,9 @@ import numpy as np
 torch.__version__
 ```
 
+## Tensorflow
 
-## Prep Data
+### Prep Data
 
 ```{python}
 mnist = tf.keras.datasets.mnist
@@ -78,8 +79,6 @@ print('X_TRAIN: {0} Y_TRAIN: {1} \n X_TEST: {2} Y_TEST: {3}'.format(x_train.shap
 ```
 
 Using the classic MNIST dataset to predict the handwritten digit.
-
-## Tensorflow
 
 ### Network Architecture
 
