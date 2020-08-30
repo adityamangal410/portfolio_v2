@@ -59,7 +59,7 @@ library(igraph)
 library(ggraph)
 
 theme_set(theme_light())
-use_python("~/anaconda3/bin/python")
+use_condaenv("stanford-nlp")
 ```
 
 ## Read cleaned data

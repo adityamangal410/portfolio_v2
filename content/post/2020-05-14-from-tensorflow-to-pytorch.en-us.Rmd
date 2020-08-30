@@ -16,7 +16,7 @@ readingtime: '5'
 draft: no
 coverImage: https://lh3.googleusercontent.com/pw/ACtC-3eh0Oi-KV1LxCS3p2NRcDCkd1dl0DJHZwxSwnuXJI9Y5mNN1ZIHZ0rKXvxEWVqAbn90NY1FXB79jh7cbgml2kOs_9ycgShYRlkRZNM3Tr2Bd6G90aK7sxyFZSA2J7RJNM7YnBpP3Vh0Kgdmhc__zPKtVQ=w1720-h1147-no?authuser=0
 thumbnailImage: https://lh3.googleusercontent.com/pw/ACtC-3dwnOpV--O4-kDgkU_S8f5vXGiCUMYaNch19FxdGiE3azE35_5-nlA1JL9kfo6OhOZ68_WVCtPlO7a4SgI30eNLJ0fJhTaJBXBNw_Jugw2s1U1WQyv7qmUIfF1Iiz8u1tsCCZi3moq-3BS04HpO089t5A=w750-h500-no?authuser=0
-thumbnailImagePosition: top
+thumbnailImagePosition: left
 comments: yes
 coverCaption: Photo by Road Trip with Raj on Unsplash
 ---
@@ -45,14 +45,14 @@ I will use the same above blueprint and build model in both these frameworks. No
 
 ## Load Libraries
 
-```{r}
+```{r eval=FALSE}
 rm(list = ls())
 library(reticulate)
 
 use_condaenv("stanford-nlp")
 ```
 
-```{python}
+```{python eval=FALSE}
 import tensorflow as tf
 
 tf.__version__
@@ -70,7 +70,7 @@ torch.__version__
 
 ### Prep Data
 
-```{python}
+```{python eval=FALSE}
 mnist = tf.keras.datasets.mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
@@ -82,7 +82,7 @@ Using the classic MNIST dataset to predict the handwritten digit.
 
 ### Network Architecture
 
-```{python}
+```{python eval=FALSE}
 model = tf.keras.models.Sequential([
   tf.keras.layers.Flatten(input_shape=(28, 28)),
   tf.keras.layers.Dense(128, activation='relu'),
@@ -102,13 +102,13 @@ Next we define our loss function, the categorical cross entropy function (with p
 
 ### Fit and evaluate
 
-```{python results = "hide"}
+```{python eval=FALSE}
 model.fit(x_train, y_train, epochs=5)
 ```
 
 We train our model for 5 epochs above and evaluate below.
 
-```{python}
+```{python eval=FALSE}
 model.evaluate(x_test,  y_test, verbose=2)
 
 probability_model = tf.keras.Sequential([
@@ -127,7 +127,7 @@ Now moving on to PyTorch!
 
 ### Prep data
 
-```{python}
+```{python eval=FALSE}
 x_train_torch = torch.from_numpy(x_train)
 y_train_torch = torch.from_numpy(y_train)
 
@@ -144,7 +144,7 @@ We are using the same MNIST dataset we used for building our Tensorflow example 
 
 ### Network Architecture
 
-```{python}
+```{python eval=FALSE}
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -170,7 +170,7 @@ We define the same loss function (CrossEntropyLoss), note however PyTorch's Cros
 
 ### Fit and evaluate
 
-```{python}
+```{python eval=FALSE}
 torch_model.train()
 for epoch in range(30):
     y_pred = torch_model(x_train_torch)
@@ -189,7 +189,7 @@ for epoch in range(30):
 
 We have a much more hands-on approach to fitting the network on the data. You can see the exact steps are similar to what we defined initially. This workflow gives a bit more control to the user (IMHO) while training the neural network. 
 
-```{python}
+```{python eval=FALSE}
 torch_model.eval()
 preds = torch_model(x_test_torch).detach().numpy()
 
@@ -201,7 +201,7 @@ I also wanted to run this network through a simple gradient descent instead of a
 
 ### Simple Gradient Descent
 
-```{python}
+```{python eval=FALSE}
 torch_model = Net()
 learning_rate = 1e-4
 
