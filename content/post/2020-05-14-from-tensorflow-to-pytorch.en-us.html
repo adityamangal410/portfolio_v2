@@ -16,7 +16,7 @@ readingtime: '5'
 draft: no
 coverImage: https://lh3.googleusercontent.com/pw/ACtC-3eh0Oi-KV1LxCS3p2NRcDCkd1dl0DJHZwxSwnuXJI9Y5mNN1ZIHZ0rKXvxEWVqAbn90NY1FXB79jh7cbgml2kOs_9ycgShYRlkRZNM3Tr2Bd6G90aK7sxyFZSA2J7RJNM7YnBpP3Vh0Kgdmhc__zPKtVQ=w1720-h1147-no?authuser=0
 thumbnailImage: https://lh3.googleusercontent.com/pw/ACtC-3dwnOpV--O4-kDgkU_S8f5vXGiCUMYaNch19FxdGiE3azE35_5-nlA1JL9kfo6OhOZ68_WVCtPlO7a4SgI30eNLJ0fJhTaJBXBNw_Jugw2s1U1WQyv7qmUIfF1Iiz8u1tsCCZi3moq-3BS04HpO089t5A=w750-h500-no?authuser=0
-thumbnailImagePosition: top
+thumbnailImagePosition: left
 comments: yes
 coverCaption: Photo by Road Trip with Raj on Unsplash
 ---
@@ -69,16 +69,15 @@ library(reticulate)
 use_condaenv(&quot;stanford-nlp&quot;)</code></pre>
 <pre class="python"><code>import tensorflow as tf
 
-tf.__version__</code></pre>
-<pre><code>## &#39;2.2.0&#39;</code></pre>
-<pre class="python"><code>import torch
+tf.__version__
+
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 
 torch.__version__</code></pre>
-<pre><code>## &#39;1.4.0&#39;</code></pre>
 </div>
 <div id="tensorflow" class="section level2">
 <h2>Tensorflow</h2>
@@ -89,8 +88,6 @@ torch.__version__</code></pre>
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
 print(&#39;X_TRAIN: {0} Y_TRAIN: {1} \n X_TEST: {2} Y_TEST: {3}&#39;.format(x_train.shape, y_train.shape, x_test.shape, y_test.shape))</code></pre>
-<pre><code>## X_TRAIN: (60000, 28, 28) Y_TRAIN: (60000,) 
-##  X_TEST: (10000, 28, 28) Y_TEST: (10000,)</code></pre>
 <p>Using the classic MNIST dataset to predict the handwritten digit.</p>
 </div>
 <div id="network-architecture" class="section level3">
@@ -114,24 +111,14 @@ Next we define our loss function, the categorical cross entropy function (with p
 <h3>Fit and evaluate</h3>
 <pre class="python"><code>model.fit(x_train, y_train, epochs=5)</code></pre>
 <p>We train our model for 5 epochs above and evaluate below.</p>
-<pre class="python"><code>model.evaluate(x_test,  y_test, verbose=2)</code></pre>
-<pre><code>## 313/313 - 0s - loss: 0.0773 - accuracy: 0.9738
-## [0.0772763043642044, 0.973800003528595]</code></pre>
-<pre class="python"><code>probability_model = tf.keras.Sequential([
+<pre class="python"><code>model.evaluate(x_test,  y_test, verbose=2)
+
+probability_model = tf.keras.Sequential([
   model,
   tf.keras.layers.Softmax()
 ])
 
 probability_model(x_test[:3]).numpy()</code></pre>
-<pre><code>## array([[3.1675106e-07, 2.3145599e-07, 6.6892753e-05, 2.2017957e-04,
-##         4.1319330e-09, 1.6857163e-07, 9.4870272e-14, 9.9964452e-01,
-##         2.0268694e-06, 6.5717024e-05],
-##        [7.4892768e-09, 1.6987176e-05, 9.9998236e-01, 4.0866948e-07,
-##         7.2810264e-17, 1.7220984e-07, 2.1501261e-09, 5.0949375e-12,
-##         6.0641248e-08, 3.3724926e-11],
-##        [6.3570706e-06, 9.9873573e-01, 5.9583277e-04, 9.2160417e-06,
-##         9.0130925e-06, 5.0910571e-06, 7.6300630e-06, 1.9710122e-04,
-##         4.3375589e-04, 2.5116697e-07]], dtype=float32)</code></pre>
 <p>In order to calculate predicted probability for each digit (instead of log-odds), we run our model output through a simple softmax function and display the predicted probabilities for the first 3 samples in the test data.</p>
 <p>Now moving on to PyTorch!</p>
 </div>
@@ -177,13 +164,8 @@ We define the same loss function (CrossEntropyLoss), note however PyTorch’s Cr
 </div>
 <div id="fit-and-evaluate-1" class="section level3">
 <h3>Fit and evaluate</h3>
-<pre class="python"><code>torch_model.train()</code></pre>
-<pre><code>## Net(
-##   (hidden): Linear(in_features=784, out_features=128, bias=True)
-##   (drop): Dropout(p=0.2, inplace=False)
-##   (out): Linear(in_features=128, out_features=10, bias=True)
-## )</code></pre>
-<pre class="python"><code>for epoch in range(30):
+<pre class="python"><code>torch_model.train()
+for epoch in range(30):
     y_pred = torch_model(x_train_torch)
 
     loss = loss_fn(y_pred, y_train_torch)
@@ -196,21 +178,12 @@ We define the same loss function (CrossEntropyLoss), note however PyTorch’s Cr
     loss.backward()
 
     optimizer.step()</code></pre>
-<pre><code>## 9 1.6672592163085938
-## 19 1.0455528497695923
-## 29 0.7043634653091431</code></pre>
 <p>We have a much more hands-on approach to fitting the network on the data. You can see the exact steps are similar to what we defined initially. This workflow gives a bit more control to the user (IMHO) while training the neural network.</p>
-<pre class="python"><code>torch_model.eval()</code></pre>
-<pre><code>## Net(
-##   (hidden): Linear(in_features=784, out_features=128, bias=True)
-##   (drop): Dropout(p=0.2, inplace=False)
-##   (out): Linear(in_features=128, out_features=10, bias=True)
-## )</code></pre>
-<pre class="python"><code>preds = torch_model(x_test_torch).detach().numpy()
+<pre class="python"><code>torch_model.eval()
+preds = torch_model(x_test_torch).detach().numpy()
 
 preds = np.argmax(preds, axis=1)
 np.mean(y_test_torch.numpy() == preds)</code></pre>
-<pre><code>## 0.8619</code></pre>
 <p>I also wanted to run this network through a simple gradient descent instead of a pre-built optimizer just out of curiosity to see how well it performs.</p>
 </div>
 <div id="simple-gradient-descent" class="section level3">
@@ -218,13 +191,8 @@ np.mean(y_test_torch.numpy() == preds)</code></pre>
 <pre class="python"><code>torch_model = Net()
 learning_rate = 1e-4
 
-torch_model.train()</code></pre>
-<pre><code>## Net(
-##   (hidden): Linear(in_features=784, out_features=128, bias=True)
-##   (drop): Dropout(p=0.2, inplace=False)
-##   (out): Linear(in_features=128, out_features=10, bias=True)
-## )</code></pre>
-<pre class="python"><code>for epoch in range(30):
+torch_model.train()
+for epoch in range(30):
     y_pred = torch_model(x_train_torch)
 
     loss = loss_fn(y_pred, y_train_torch)
@@ -238,21 +206,12 @@ torch_model.train()</code></pre>
     with torch.no_grad():
         for param in torch_model.parameters():
             param = -learning_rate * param.grad
-            </code></pre>
-<pre><code>## 9 2.3100671768188477
-## 19 2.3099873065948486
-## 29 2.3100321292877197</code></pre>
-<pre class="python"><code>torch_model.eval()</code></pre>
-<pre><code>## Net(
-##   (hidden): Linear(in_features=784, out_features=128, bias=True)
-##   (drop): Dropout(p=0.2, inplace=False)
-##   (out): Linear(in_features=128, out_features=10, bias=True)
-## )</code></pre>
-<pre class="python"><code>preds = torch_model(x_test_torch).detach().numpy()
+            
+torch_model.eval()
+preds = torch_model(x_test_torch).detach().numpy()
 
 preds = np.argmax(preds, axis=1)
 np.mean(y_test_torch.numpy() == preds)</code></pre>
-<pre><code>## 0.1399</code></pre>
 <p>So intead of using the adam optimizer, we manually use the learning rate and the computed gradient for each parameter and update the value for each param during an epoch. As we see the model doesn’t perform quite as well, but nevertheless we now know how we can use PyTorch’s cool API to fully control every aspect of training the neural network.</p>
 </div>
 </div>
