@@ -64,10 +64,10 @@ class Vocabulary:
 
 For any text vectorization task, along with transforming individual tokens into numerical indices, we will also need a few other things -  
 
- - Begin Token - A special token (<BEGIN>) that signifies the beginning of a new tweet.
- - End Token - A special token (<END>) that signifies the end of a new tweet.
- - Unknown Token - A special token (<UNK>) that signifies out-of-vocabulary words.
- - Mask Token - A special token (<MASK>) that is used to make all the tweet vectors of same length by appending the mask token in the end. 
+ - Begin Token - A special token (`<BEGIN>`) that signifies the beginning of a new tweet.
+ - End Token - A special token (`<END>`) that signifies the end of a new tweet.
+ - Unknown Token - A special token (`<UNK>`) that signifies out-of-vocabulary words.
+ - Mask Token - A special token (`<MASK>`) that is used to make all the tweet vectors of same length by appending the mask token in the end. 
  
 Let's create a sequence vocabulary object which has these 4 special tokens by default in our vocabulary - 
 
@@ -138,9 +138,9 @@ The TweetsVectorizer class above handles a couple of functionality -
  - Each tweet text is split into tokens (by space) and token counts are generated.
  - We add all the tokens with counts higher than the given cutoff to our text vocabulary.
  - The `vectorize` method is the main method of use, that will vectorize a given tweet text using the previously created text vocabulary.
- - First the <BEGIN> token index is added to the vector, then each of the word in the text is looked up using vocabulary and appended to the vector, and finally the <END> token index is appended.
- - This vector is then normalized to a fixed length by appending <MASK> token indices in the end.
- - Along with the final vector, we also return the actual length of the vector without any <MASK> token indices.
+ - First the `<BEGIN>` token index is added to the vector, then each of the word in the text is looked up using vocabulary and appended to the vector, and finally the `<END>` token index is appended.
+ - This vector is then normalized to a fixed length by appending `<MASK>` token indices in the end.
+ - Along with the final vector, we also return the actual length of the vector without any `<MASK>` token indices.
  
 As, an example if our vocabulary looks like as follows -  
 

@@ -71,10 +71,10 @@ In this part 5 for Deep Learning data preparation, I will use the raw data with 
         return self._idx_to_token[index]</code></pre>
 <p>For any text vectorization task, along with transforming individual tokens into numerical indices, we will also need a few other things -</p>
 <ul>
-<li>Begin Token - A special token (<BEGIN>) that signifies the beginning of a new tweet.</li>
-<li>End Token - A special token (<END>) that signifies the end of a new tweet.</li>
-<li>Unknown Token - A special token (<UNK>) that signifies out-of-vocabulary words.</li>
-<li>Mask Token - A special token (<MASK>) that is used to make all the tweet vectors of same length by appending the mask token in the end.</li>
+<li>Begin Token - A special token (<code>&lt;BEGIN&gt;</code>) that signifies the beginning of a new tweet.</li>
+<li>End Token - A special token (<code>&lt;END&gt;</code>) that signifies the end of a new tweet.</li>
+<li>Unknown Token - A special token (<code>&lt;UNK&gt;</code>) that signifies out-of-vocabulary words.</li>
+<li>Mask Token - A special token (<code>&lt;MASK&gt;</code>) that is used to make all the tweet vectors of same length by appending the mask token in the end.</li>
 </ul>
 <p>Let’s create a sequence vocabulary object which has these 4 special tokens by default in our vocabulary -</p>
 <pre class="python"><code>class SequenceVocabulary(Vocabulary):
@@ -138,9 +138,9 @@ In this part 5 for Deep Learning data preparation, I will use the raw data with 
 <li>Each tweet text is split into tokens (by space) and token counts are generated.</li>
 <li>We add all the tokens with counts higher than the given cutoff to our text vocabulary.</li>
 <li>The <code>vectorize</code> method is the main method of use, that will vectorize a given tweet text using the previously created text vocabulary.</li>
-<li>First the <BEGIN> token index is added to the vector, then each of the word in the text is looked up using vocabulary and appended to the vector, and finally the <END> token index is appended.</li>
-<li>This vector is then normalized to a fixed length by appending <MASK> token indices in the end.</li>
-<li>Along with the final vector, we also return the actual length of the vector without any <MASK> token indices.</li>
+<li>First the <code>&lt;BEGIN&gt;</code> token index is added to the vector, then each of the word in the text is looked up using vocabulary and appended to the vector, and finally the <code>&lt;END&gt;</code> token index is appended.</li>
+<li>This vector is then normalized to a fixed length by appending <code>&lt;MASK&gt;</code> token indices in the end.</li>
+<li>Along with the final vector, we also return the actual length of the vector without any <code>&lt;MASK&gt;</code> token indices.</li>
 </ul>
 <p>As, an example if our vocabulary looks like as follows -</p>
 <table>
