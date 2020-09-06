@@ -44,3 +44,4 @@ The following series of posts tackle the above project goals sequentially
  - Project Part 3 - [NLP with Disaster Tweets: Part 3 Linear Models](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/){target="_blank"}
  - Project Part 4 - [NLP with Disaster Tweets: Part 4 Tree-based Models](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/){target="_blank"}
  - Project Part 5 - [NLP with Disaster Tweets: Part 5 Deep Learning Data Preparation](/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/){target="_blank"}
+ - Project Part 6 - [NLP with Disaster Tweets: Part 6 Multi Layer Perceptron](/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/){target="_blank"}
