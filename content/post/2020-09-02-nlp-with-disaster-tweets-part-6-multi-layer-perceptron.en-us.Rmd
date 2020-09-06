@@ -33,16 +33,20 @@ In this part 6 for building Multi Layer Perceptron, I will use the data module g
 
 # Classifier Class
 
+![Mutli-Layer Perceptron Pictorial representation from https://www.tutorialspoint.com/tensorflow/tensorflow_multi_layer_perceptron_learning.htm](https://lh3.googleusercontent.com/sjTyPuRcdPqEU2B1bSfFv18OAcWtOJSyjZkBL2Q6xekMbM21Ma2Df5uABC4hlm0dAFIt-hbdptFQmug_fupIMeuM7Xsev8cpRyTZ0MgZFzo5CmVVT0NeUzJHAh5TLuWhWqc-wuxg7wbVGekZo2sTdNzeDhVofi4sai3K20fJmFvD9a-dmyDUbWqXMaNVBY9off9RTzd_o6Xt6Id-jA90RLxHghwMVO1Qm_J9IYRY0YLfJceqzMQVItY8wz0avkNhQxtXzWGGqbq2DqO6PztEwC46DnUaGMu31uUbNmeJx4ikRuKV6FSb33sxqXfzrndVy2TbKANtgKMzPllqhPpVDBD5JULMz7e_Vn_K-UVybWJPNiVuCRx2Rd8XWMoFrTPPifgXYrU4s2Xo7A8nXyhaRBUSARlfnJQtMNSDuIkGQ53Z3i76qswLOQIEl5RbJJEL3RDcG4Bcy-0sNg4IguBUMBO9HTm8JbRLSoSFv58nwdRKW3SVl-SNQ7rrt1UAmqOMeDxRLI5pZTd6_79DFTBKNXuIF-MGOnZKaJgQCsCZdlzBoqZHIqcof5MWV0Q3FQaYcfu8HJoKZ_fJjInACzOmdt6ujXnar_vAPxwF8S1KKpBD4vy5VW6ed4KWAUK1d627a_tuI4KAqy4YvX8ebJI-bzi1yO6sLsAaip5a0STIl9Vnno8bTKDVGAnHG2ChJw=w600-h331-no?authuser=0)
+
+Above pictorial representation shows a simple multi-layer perceptron with 2 hidden layers. We will essentially build the same for our usecase with a few more layers and additional bells and whistles related to network regularization.   
+
 I will be using the [pytorch-lightning](https://github.com/PyTorchLightning/pytorch-lightning){target="_blank"} framework to build a classifier class.  
 In a deep learning training pipeline we need to configure the following 5 essential components -  
 
- - Network architecture - Exactly how is the network structured? Is it a perceptron? a convolutional network? a recurrent network? How many layers does it have? How exactly each layer is laid out? Number of neurons in case of perceptron, number of channels in case of convolutional network etc. 
- - Loss function - How do we calculate the loss of the prediction from the truth and backpropogate it's gradient through the network so as to update the weights?
- - Optimizer - Optimizers update the weight parameters to minimize the loss function. In its simplest form, we multiply our preconfigured constant learning rate to the gradient of each parameter in the network to update it. Fancier optimizers update the learning rate, bring in momentum etc. but essentially accomplish the same goal of updating the weights to minimize loss.
- - Forward Pass - This method defines how the training batch will forward pass through the Network by using parameter weights and activation functions (and dropout/batch norms) and finally generate the prediction output.
- - Training Step / Val Step / Test Step - We configure specific to each phase (train/val/test) how exactly we will compute and report the loss. 
+ - **Network architecture** - We define exactly how is the network structured. The architecture would vary based on if the network we are trying to build is a perceptron or a Convolutional network or a Recurrent network or any other form of network. We also define different architecture parameters like the number of layers in the network and the number of neurons in each hidden layer of the fully connected network or the number of channels in case of a convolutional network. 
+ - **Loss function** - The loss function would calculate the loss of the prediction from the ground truth. This loss value's gradient is then backpropogated through the network in order to update the network weights and come up with a lower loss value in subsequent iterations.  
+ - **Optimizer** - Optimizers update the weight parameters to minimize the loss function. In its simplest form, we multiply our preconfigured constant learning rate to the gradient of each parameter in the network to update it. Fancier optimizers update the learning rate, bring in momentum etc. but essentially accomplish the same goal of updating the weights to minimize loss.
+ - **Forward Pass** - This method defines how the training batch will forward pass through the Network by using parameter weights and activation functions (and dropout/batch norms) and finally generate the prediction output.
+ - **Training Step / Val Step / Test Step** - We configure specific to each phase (train/val/test) how exactly we will compute and report the loss. 
  
-That's it! Rest everything related to epoch loop, checkpointing, logging, book-keeping etc. are handled by PyTorch Lightning so we do not need to implement that specifically (as we would have if we were to use vanilla PyTorch. Example [here](/2020/05/from-tensorflow-to-pytorch.en-us){target="_blank"}). In the rest of the post I will mainly discuss the above 5 components specific to building a Multi Layer Perceptron for our Disaster Tweets usecase. 
+That's it! Rest everything related to epoch loop, checkpointing, logging, book-keeping are handled by PyTorch Lightning so we do not need to implement that specifically (as we would have if we were to use vanilla PyTorch. example [here](/2020/05/from-tensorflow-to-pytorch.en-us){target="_blank"}). In the rest of the post I will mainly discuss the above 5 components specific to building a Multi Layer Perceptron for our Disaster Tweets usecase. 
 
 ## Network Architecture and Loss Function
 
@@ -94,9 +98,9 @@ class DisasterTweetsClassifierMLP(pl.LightningModule):
  - Next we define our `fc` (fully connected) network, using the `torch.nn.Sequential` syntactic sugar provided by PyTorch. In here we have 5 fully connected layers of 128, 64, 32, 16 and 2 neurons respectively. Each of these layers use linear transform (therefore `torch.nn.Linear`) to transform its input from one dimension to another. 
  - In order to regularize the network so it doesn't overfit our training data we are using Dropout, this will randomly drop output of certain nodes/neurons based on given dropout probability. [Here](https://machinelearningmastery.com/dropout-for-regularizing-deep-neural-networks/){target="_blank"} is an excellent post on Dropout if you are curious.
  - In order to stabilize the learning process and reduce the number of training epochs required for the network to converge, we are also using batch normalization via `torch.nn.BatchNorm1d`. This will standardize (0 mean and 1 standard deviation) the inputs to a layer for each batch. [Here](https://machinelearningmastery.com/batch-normalization-for-training-of-deep-neural-networks/){target="_blank"} is an excellent post on Batch Normalization if you are curious.
- - We apply ReLU activation to the output of each layer which provides us with our non-linearity. It will keep the output as is if it is positive or else make it zero. 
+ - We apply **ReLU** activation to the output of each layer which provides us with our non-linearity. It will keep the output as is if it is positive or else make it zero. 
  - Finally, the last layer will provide 2 outputs, one for each of our classes (disaster or not). We can transform it to probability by using softmax to see what's the predicted probability of each class.  
- - Loss Function - We are using the Cross Entropy Loss function here. My favorite explanation for this loss is [this](https://gombru.github.io/2018/05/23/cross_entropy_loss/){target="_blank"} post that does a beautiful job of explaining how exactly it is computed and how its gradient is calculated. The reason for passing 'reduction=none' in the loss function will become clear in the section below about training/val step.
+ - Loss Function - We are using the **Cross Entropy Loss** function here. My favorite explanation for this loss is [this](https://gombru.github.io/2018/05/23/cross_entropy_loss/){target="_blank"} post that does a beautiful job of explaining how exactly it is computed and how its gradient is calculated. The reason for passing 'reduction=none' in the loss function will become clear in the section below about training/val step.
 
 ## Optimizer
 
@@ -108,7 +112,7 @@ class DisasterTweetsClassifierMLP(pl.LightningModule):
                                 weight_decay=self.hparams.weight_decay)
 ```
 
-We are using the adam optimizer for optimizer our network parameters which is a good default optimizer as it combines advantages of 2 other well known optimizers AdaGrad and RMSProp. [Here](https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/){target="_blank"} is a gentle introduction on Adam optimizer. We pass in all our network parameters, the provided learning rate and weight decay hyper parameters to `torch.optim.Adam`. 
+We are using the **Adam** optimizer for optimizer our network parameters which is a good default optimizer as it combines advantages of 2 other well known optimizers AdaGrad and RMSProp. [Here](https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/){target="_blank"} is a gentle introduction on Adam optimizer. We pass in all our network parameters, the provided learning rate and weight decay hyper parameters to `torch.optim.Adam`. 
 
 ## Forward Method 
 
@@ -121,7 +125,7 @@ class DisasterTweetsClassifierMLP(pl.LightningModule):
         return output
 ```
 
-In the forward pass through the network, we first generate the embeddings for our batch and also flatten it. For example, if we had batch size as 8 and each of the 8 samples were of normalized length 70, then the `self.emb` embedding layer will transform it to a tensor 8x70x25 (if we were to use 25 dimensional glove embeddings). i.e. it'll extract the 25-dimensional embedding for each of 70 words in our 8 samples. Then the `view(batch.size(0), -1)` will flatten it such that the tensor will transform from 8x70x25 to 8x1750 (i.e. it'll append the embedding vectors of all 70 words in the sample for all 8 samples).   
+In the forward pass through the network, we first generate the embeddings for our batch and also flatten it. For example, if we had batch size as 8 and each of the 8 samples were of normalized length 70, then the `self.emb` embedding layer will transform it to a tensor `8 x 70 x 25` (if we were to use 25 dimensional glove embeddings). i.e. it'll extract the 25-dimensional embedding for each of 70 words in our 8 samples. Then the `view(batch.size(0), -1)` will flatten it such that the tensor will transform from `8 x 70 x 25` to `8 x 1750` (i.e. it'll append the embedding vectors of all 70 words in the sample for all 8 samples).   
 This flattened vector then gets passed through our `fc` fully connected layer and generates the output which gets returned. 
 
 ## Training Step / Val Step / Test Step
