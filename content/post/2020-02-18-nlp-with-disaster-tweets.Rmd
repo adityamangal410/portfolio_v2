@@ -29,11 +29,13 @@ I will use the [NLP getting started challenge](https://www.kaggle.com/c/nlp-gett
 
 # Project Goals
 
-1. Apply and improve NLP skills in R.
+1. Apply and improve NLP skills in R & Python.
 
 2. Learn and apply tidymodels modelling framework to do reproducible and effective science. 
 
 3. Focus more on model explainability and relative comparison of different algorithms. 
+
+4. Improve skills in PyTorch deep learning framework for model training and prediction. 
 
 # Series
 
@@ -45,3 +47,4 @@ The following series of posts tackle the above project goals sequentially
  - Project Part 4 - [NLP with Disaster Tweets: Part 4 Tree-based Models](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/){target="_blank"}
  - Project Part 5 - [NLP with Disaster Tweets: Part 5 Deep Learning Data Preparation](/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/){target="_blank"}
  - Project Part 6 - [NLP with Disaster Tweets: Part 6 Multi Layer Perceptron](/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/){target="_blank"}
+ - Project Part 7 - [NLP with Disaster Tweets: Part 7 Vanilla RNN and GRU](/2020/09/nlp-with-disaster-tweets-part-7-vanilla-rnn-and-gru.en-us/){target="_blank"}
