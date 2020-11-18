@@ -33,9 +33,9 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [author]
   name = "Aditya Mangal"
-  bio = "Working in the Location Center of Excellence at Yahoo building the richest Geolocation platform"
-  job = "Senior Research Engineer"
-  location = "Sunnyvale, CA"
+  bio = "Working in the Search & Discovery Team at Roblox building the richest Recommendations Platform"
+  job = "Senior Machine Learning Engineer"
+  location = "San Mateo, CA"
   # Your Gravatar email. Overwrite `author.picture` everywhere in the blog
   gravatarEmail = ""
   # Your profile picture
