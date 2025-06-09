@@ -1,4 +1,0 @@
-output:
-  blogdown::html_page:
-    toc: true
-    df_print: tibble

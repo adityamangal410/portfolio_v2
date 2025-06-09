@@ -1,0 +1,111 @@
+---
+title: 'Christmas Bird Counts: TidyTuesday'
+author: Aditya Mangal
+date: '2019-06-21'
+slug: christmas-bird-counts-tidytuesday
+categories:
+  - TidyTuesday
+tags:
+  - DataAnalysis
+  - R
+  - Visualizations
+  - TidyTuesday
+keywords:
+  - tech
+summary: Visualizing bird watching data as collected in Hamilton area of Ontario during Christmas time since 1921
+readingtime: '10'
+draft: no
+coverImage: https://lh3.googleusercontent.com/K6bZi7jApSS0bpjxtxuRF5HrpBw5YLUDiWlnVFrIhjY3Wqzrt6PzprlbEzRjDLZ11sStS6eISkmeg6nk44ZVV-X4g4ZFYx3QO7njbWd_NfEg_89NjdKOU__H9qWTbotQe34RmZyZd3_cw5UK00Fmf3LbTQnlUpmIam5EIy9T9m-Yweq09kxPPmjKTQmuZxx3wDzfNFgBHJ5B_FjQ4_NHnKnsWWHcjnR9TXrZ6GHtYt0sNSiMVvFki1KsTO3qxtl6Ecas-PrNgC8cXgiqp-Oe_U56KavqjDyyKmMEOJRRbi1SurquuqyLyCuZqWJQabQx4EXOMVwf53RoC38juXtfZZnpM6YAPnPdaWhjGXS1IcR7jXFelru9QGaPk_qTgc7l_3ysvStoig8Xfzbae2TTVK8z9YepwoT_JmbWIpmpTvr9ad6qMngMq6LPy-hAV4dvYDif4u3b3GY4pz68qKPfd0W1BnA7a7HG0iBIMsAhkd9lWhH629M6_p4FUNW1fm9pIzItMp9BIqZoe7ECmqmJgAdZTtXvTUY9B5rJC7Yazh5JKeuF3Q9dgx9u2kEq9YDk5GOD5ULkBv5cDNTBL9B-0KAvLkaagqGXhuHzFDTJvqssUEBHUdNeeNZBuEllc_6KhGkL_FXV4n-TJF3sWmpwkBExY8y7Px1n2_OGZvSY6jcIR_VTKtpYh_spyQtu-KNTwfvXW6BgyckPWQQekz0VqX3OaA=w2748-h1832-no
+thumbnailImage: https://lh3.googleusercontent.com/JBef9WeNBXypnIEidWeyLQWwPMmTT2NYPn-OLjNQT-NojT-Zj8OhH6sWDL2I06vlj3SFkq_GrTGcvhcr6hFKlwQz0YBYManmFUJBw3XqgLkILgEjAe_NdS-_iV0RlZfoJwOk4U6NsqBsL1973fy25T6NAsq1jyYGaeNss_WJNQhlGn_zufeVMEAPuPZkRqKUokmxtfQH_ILk2sAJngfRREH-pJ-50y0WAP4Ex3s0eOrQ0QIH7zFO1sAoiuObvmBJtjW3aukky4zGAAwNvANiuURzVUbnM7PiY5IVYmkB494jB_4Vp0YtLF4v4Q2-t_idus25G_ZKdCf26tI3OB9BGMbPI8zYRNs7oVtPwNWqu1spBxcardCcLh0Hq0TI0tUwgWuxXxjto55KTp7g6M7lQizDGWlFsOwmGs8f-XsKk86AIPny-7wvl_yKZ9l0aFEpXM80-yA1r2QAlNZo5VcfH1dc6oxVy5YVV3MRPSox0MgG1dAnM9J8gr9ULXheQC1u-nZLXE-gEDA5mlqbwKe-H-sWHE_zv-6etpyvvq_DIeG3Cgy76SkndQndYZYA02amwZ53QodzmBgrsifulkedRbTjhfirH5ConjoKCglmoIuhbuKp9OE49A6UwCExhpeYY0OAcuLCKBWl4LbQZAzZEU7vB1hT0iNOAU6Y1SkMbhhRpsLDNR2tACHuturODfU1Q-B1OXZpAhCPXtZN3kiGL4RbHA=w750-h500-no
+thumbnailImagePosition: left
+coverCaption: Photo by Wynand van Poortvliet on Unsplash
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALSE)
+```
+
+
+# Introduction
+
+Visualizing bird watching data as collected in Hamilton area of Ontario during Christmas time since 1921.
+
+Working on the weekly social data project [Tidy Tuesday](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-18). 
+
+# Analysis  
+
+## Load libraries
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(gganimate)
+library(gridExtra)
+library(scales)
+theme_set(theme_light())
+```
+
+```{r}
+bird_counts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-18/bird_counts.csv")
+
+bird_counts
+```
+
+```{r}
+bird_counts %>% 
+  summary
+```
+
+
+## Which are the 5 most common birds over years?
+
+```{r}
+bird_counts %>% 
+  group_by(year) %>% 
+  mutate(rank = min_rank(-how_many_counted) * 1) %>% 
+  ungroup() %>% 
+  filter(rank <= 5) %>% 
+  ggplot(aes(rank, 
+             group = species,
+             fill = as.factor(species), 
+             color = as.factor(species))) +
+  geom_tile(aes(y = how_many_counted/2,
+                height = how_many_counted,
+                width = 0.9),
+            alpha = 0.8, 
+            color = NA) + 
+  geom_text(aes(y = 0,
+                label = paste(species, " ")),
+            vjust = 0.2, 
+            hjust = 1) + 
+  coord_flip(clip = "off",
+             expand = FALSE) + 
+  scale_y_continuous(labels = scales::comma) + 
+  scale_x_reverse() + 
+  guides(color = FALSE,
+         fill = FALSE) + 
+  labs(title = '{closest_state}',
+       subtitle = "Which are the 5 most common birds over years? Birds seen in the Hamilton area of Ontario during Christmas since 1921",
+       caption = "Based on data from @BirdsCanada",
+       x = "",
+       y = "Sights per year") + 
+  theme(plot.title = element_text(hjust = 0, size = 22),
+        axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(),
+        plot.margin = margin(1,1,1,4,"cm")) + 
+  transition_states(year, transition_length = 4, state_length = 1) + 
+  ease_aes('cubic-in-out') -> p
+```
+
+```{r}
+p %>% 
+  animate(fps = 5,
+          nframes = 200,
+          duration = 30,
+          width = 800,
+          height = 600,
+          renderer = gifski_renderer("../data/christmas_bird_counts/most_common.gif"))
+```
+

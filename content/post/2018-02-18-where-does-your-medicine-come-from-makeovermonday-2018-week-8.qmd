@@ -1,0 +1,162 @@
+---
+title: 'Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8'
+author: Aditya Mangal
+date: '2018-02-18'
+categories:
+  - MakeOverMonday
+tags:
+  - DataAnalysis
+  - DataScience
+  - MakeOverMonday
+  - Medicine
+  - Visualizations
+  - R
+slug: where-does-your-medicine-come-from-makeovermonday-2018-week-8
+keywords:
+  - tech
+summary: Goal of this Visualization task is to create a visualization for the [Drug
+  and Medicine Exports data for different countries.](https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1)
+readingtime: '5'
+coverImage: https://lh3.googleusercontent.com/Q2HXmhvfyNs3DnEd5u1q9CYHiOB9l-fX4XBzBuBYNKRipmFzpoM8s-vcRuJAw3Tm_sXpH_xOIgJI4vjiXkOxDZmiWmM1Du9XOLIsoEtPUWXovhBmVXEIZI7yn_j3GLMwoBOQ_pzSpe5mxkfK6FxtIr6OGLAkOAHU9dUpz2jyUfCU-J9CiiJYC5m_OpyeVaujFyq8J2FreRRH9vbrHcKIj7K1nVKk5Ud_t9P8DtB_DffFMXKlr-UaphCGba3RA4rPovIVYJGxFZjEMCuDETSlE64bRY-PSGpvnvWA_op8k07tk_SbWaoQC53PMSGtCe5Gv1-INBYeXOF3_ULYj755xnfRm4UWjScEr0oNgDKHQyYLrf81lZF2yhXSdTt3UrBMZPh4sfsPLrsK5UzG8SwI15Nq6yLal16Egk5ZMW_bow8PjvuBvZbgoZmVrlU4EqOoEdbdRyxlii20Ku-veLhexOrrVL-SADDIYsfUM4dbIiaxF0ZNQewrThrPXcppsKulZTBnVYde1f7hVmxT0OYxw9Q5y00VXeVziwM5J-_I0wOTcNfTXb2g8k7_wrY9-GgrwUIGPSXZkdVYUJhqMrxKPalFOCbeoE7VbiobaJALA6qWD8lxey-uesWq9_6hetauVAk_W8ameuW4u8kWdJpLbciOfc_3joMs=w2750-h1832-no
+thumbnailImage: https://lh3.googleusercontent.com/5wIFfhutkaFsqnv2M72bnV_hFyJ_0d6y_Lu11O3U9Kx9XCD_WIGpMZCBl1iXJWzt63JsquXvi7TwNcNy6FGd_v5zq8PH2o7UhTqVIraM8Re5UGWb0myvjgzwsl080wnIXAwCx6s8oRkxXgIE5OzIar_Fw6kPcXJLIaTho3Q2lSWVac9p_U1vxNlbgWsf16aKc2lKWjkwHTaE6Hj2NnchUAXJ_6TpnoUiran--qVOKgkwQcCtEqo7DulTQxEuBZaQV9yoGTt6jbrgmwcquzR1OqTezSyLCzp_D6hK-GSkRYyvxAmRg2PvB1HedzzmiQ67y-32Z0bctMcUBigffgX3P_H9hO5v-K--dyDM-mBDHByiBkJ-ltrm0GdoMEARmE6E0kC4oy2afPX9_-PzDFhnK7_I-TXLt-1yO63abxRM2weynQ9qJHka6tyOiom3xTl1B8nkpwo1UfHkbF9MGOBER32zb86JVLmR9fJJZvLAMNjyYefxLb7BdP1CHeSvAK7CZMOkgdLJ3BQ7a4PAbKLUJTXPGiFaMRwmzbrx6OrUNNQnA3qF_bfW7ALEs3PnwDlXPJ3GBOnH8KOqfAU_ChQSW4rwlaqKa4d8O5mc_RMUNgSuTXYe6Q3TsXW7c_VPz7QLcC5spGONtyJQ9T6CRvAxXq2mtI5zRUdu=w750-h500-no
+thumbnailImagePosition: left
+coverCaption: Photo by Simone van der Koelen on Unsplash
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,error = FALSE)
+```
+
+# Introduction
+
+Goal of this Visualization task is to create a visualization for the <a href="https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1" target="_blank">Drug and Medicine Exports data for different countries.</a>
+
+In this blog post, I'm trying to find the leading countries in Export across these 5 years.
+
+# Analysis
+
+## Cleaning up workspace and loading required libraries
+
+```{r Cleanup}
+rm(list = ls())
+```
+
+```{r Load Libraries, results='hide'}
+library(tidyverse) #Data Wrangling
+library("httr")
+library(readxl) #Data Ingestion
+library(ggplot2) #Data Visualization
+```
+## Obtaining Data
+
+Reading and viewing the dataset
+```{r Reading Data, results='hide'}
+GET("https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf", write_disk(tf <- tempfile(fileext = ".xlsx")))
+drugs <- read_excel(tf)
+```
+```{r Viewing Data}
+drugs
+```
+
+Summarizing and getting stats to better understand the dataset
+
+```{r Data Stats}
+drugs %>% 
+  glimpse()
+drugs %>% 
+  summary()
+```
+
+## Scrubbing data
+
+Removing rows with NA for the purposes of this visualization
+
+```{r}
+drugs = drugs %>% 
+  filter(!is.na(`Exports (USD)`))
+```
+
+Let's see overall which are the Countries with highest export over these 5 years.
+
+```{r}
+drugs %>% 
+  group_by(Exporter) %>% 
+  summarise(TotalExport = sum(`Exports (USD)`)) %>% 
+  arrange(desc(TotalExport))
+```
+
+
+## Exploring Data
+
+Lets plot the countries which were among the top 5 exporters each year and each of their performance over these 5 years.
+```{r}
+top5ExportersByYear = drugs %>% 
+  filter(Exporter!="World") %>% 
+  group_by(Year) %>% 
+  top_n(5, `Exports (USD)`) %>% 
+  ungroup()
+```
+```{r}
+g = ggplot(data = top5ExportersByYear, aes(x = Year, y = `Exports (USD)`))
+g + geom_line(aes(color = Exporter)) + labs(title = 'Trend for top 5 exporters in the world over the years')
+```
+
+
+Evaluating Top 10 exporters per Year. Excluding 2017 since we do not have numbers for total export in the world. 
+```{r}
+getTop10ForYear = function(df){
+  top10ForYear = df %>% 
+    filter(Exporter!="World") %>% 
+    top_n(10, `Exports (USD)`)
+  
+  othersExports = (df %>% filter(Exporter=="World") %>% select(`Exports (USD)`)) - (top10ForYear %>% summarise(Total = sum(`Exports (USD)`)))
+  
+  YEAR = df %>% select(Year) %>% unique() %>% .$Year
+  top10ForYear = top10ForYear %>% 
+    add_row(Exporter = "Others", Year = YEAR, `Exports (USD)` = othersExports %>% .$`Exports (USD)`)
+  return(top10ForYear)
+}
+yearlyTop10s = drugs %>% 
+  filter(Year != 2017) %>% 
+  group_by(Year) %>% 
+  do(getTop10ForYear(.))
+yearlyTop10s
+```
+Writing function to plot a Donut Chart for each year showing percentage export contribution for top 10 exporters of that year as compared to all others.
+```{r}
+plotTop10 = function(df){
+  YEAR = df %>% select(Year) %>% unique() %>% .$Year
+  plotTitle = paste("World Medicine Export in", YEAR, sep = " ")
+  
+  df = df %>% 
+    mutate(tot = sum(`Exports (USD)`),
+           prop = round(100*`Exports (USD)`/tot,2))
+  
+  p = ggplot(df, aes(x=2, y=prop, fill=Exporter)) + 
+    geom_bar(stat="identity") + 
+    geom_text( aes(label = prop), position = position_stack(vjust = 0.5)) + 
+    xlim(0.5, 2.5) +
+    coord_polar(theta = "y") +
+    labs(x=NULL, y=NULL) + 
+    labs(fill="") + 
+    ggtitle(plotTitle) + 
+    theme_bw() + 
+    theme(plot.title = element_text(face="bold",family=c("sans"),size=15),
+          legend.text=element_text(size=10),
+          axis.ticks=element_blank(),
+          axis.text=element_blank(),
+          axis.title=element_blank(),
+          panel.grid=element_blank(),
+          panel.border=element_blank())
+  return(p)
+}
+```
+Plotting the donuts for each year
+```{r}
+plotTop10(yearlyTop10s %>% filter(Year==2013))
+plotTop10(yearlyTop10s %>% filter(Year==2014))
+plotTop10(yearlyTop10s %>% filter(Year==2015))
+plotTop10(yearlyTop10s %>% filter(Year==2016))
+```
+
+As can be seen Germany remains the biggest exporter of Drugs and Medicines over the past 5 years.
