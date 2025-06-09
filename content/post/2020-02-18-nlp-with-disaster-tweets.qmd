@@ -11,7 +11,7 @@ tags:
 slug: nlp-with-disaster-tweets
 keywords:
   - tech
-comments: no
+comments: false
 showMeta: no
 showActions: no
 summary: NLP and TidyModelling in R

@@ -9,7 +9,7 @@ tags:
 slug: music-artist-recommendation-system-project
 keywords:
   - tech
-comments: no
+comments: false
 showMeta: no
 showActions: no
 summary: Recommendation systems are all around us, from Netflix's amazing video recommender

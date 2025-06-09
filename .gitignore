@@ -7,3 +7,5 @@ public
 blogdown
 content/data
 _site/
+
+/.quarto/
