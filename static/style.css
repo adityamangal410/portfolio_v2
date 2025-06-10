@@ -1,23 +1,39 @@
 .post-block {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 1.5em;
-  padding-bottom: 1.5em;
+  display: grid;
+  grid-template-columns: 120px 1fr 200px;
+  grid-gap: 1em;
+  align-items: center;
+  padding: 1.5em 0;
   border-bottom: 1px solid #eaeaea;
 }
+
+.post-meta {
+  text-align: right;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.post-date {
+  margin-bottom: 0.25em;
+}
+
 .post-block img {
-  width: 150px;
+  width: 200px;
   height: auto;
-  margin-left: 1em;
   object-fit: cover;
 }
-.post-info {
-  flex: 1;
-}
+
 .post-info h2 {
-  margin-top: 0;
-  margin-bottom: 0.3em;
+  margin: 0 0 0.3em 0;
+  font-weight: 600;
+  color: #000;
 }
+
+.post-info h2 a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .post-info p {
   margin: 0;
   color: #555;
