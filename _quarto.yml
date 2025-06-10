@@ -16,6 +16,8 @@ website:
         text: Home
       - href: posts/index.qmd
         text: Posts
+      - href: about.qmd
+        text: About
     right:
       - icon: github
         href: https://github.com/adityamangal410

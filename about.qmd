@@ -1,0 +1,26 @@
+---
+title: "About Me"
+image: static/profile.jpg
+format:
+  html:
+    toc: false
+---
+
+::: {.quarto-row}
+::: {.quarto-column about-img width="30%"}
+![Aditya Mangal](static/profile.jpg){#profile style="border-radius:50%; max-width:100%;"}
+:::
+::: {.quarto-column width="70%"}
+
+Hello! I'm **Aditya Mangal**. I'm currently working in the Search & Discovery Team at Roblox building the richest Recommendations Platform. Previously, I worked in the Location Center of Excellence at Yahoo. I'm originally from India and have been living in the San Francisco Bay Area for the past few years. I love blogging about Data Science and Machine Learning. Java was my first love and R/Python are competing for a close second. In an ideal world, I'd also share my musings about travel and photography here. If you have questions or feedback, feel free to reach out at [adityamangal410@yahoo.co.in](mailto:adityamangal410@yahoo.co.in).
+
+### Connect with me
+
+- [LinkedIn](https://www.linkedin.com/in/adityamangal410/)
+- [GitHub](https://github.com/adityamangal410)
+- [Twitter](https://twitter.com/adityamangal410)
+
+:::
+:::
+
+
