@@ -37,6 +37,10 @@ The `posts/` folder contains the Quarto sources for all articles. You can write
 posts in several formats and Quarto will convert them to HTML when you run
 `quarto render`.
 
+When rendering, a pre-build script scans all posts and automatically creates
+category listing pages under the `categories/` directory. Any new categories you
+add in a post will therefore gain their own page without extra work.
+
 ### Jupyter Notebook (`.ipynb`)
 
 1. Create a new notebook under `posts/` with a descriptive name, e.g.

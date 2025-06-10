@@ -1,5 +1,6 @@
 project:
   type: website
+  pre-render: "python tools/generate_categories.py"
   resources:
     # copy legacy HTML posts and their assets
     - post/*.html

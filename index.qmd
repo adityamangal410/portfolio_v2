@@ -86,12 +86,22 @@ posts.sort(reverse=True)
 blocks = []
 for date, cats, title, summary, url, image in posts:
     img_tag = f'<img src="{escape(image)}" alt="{escape(title)}">' if image else ''
-    cats_str = ', '.join(cats) if isinstance(cats, list) else cats
+    if isinstance(cats, list):
+        cat_links = []
+        for cat in cats:
+            slug = cat.lower().replace(' ', '-')
+            cat_links.append(f'<a class="cat-link" href="categories/{escape(slug)}.html">{escape(cat)}</a>')
+        cats_str = ' '.join(cat_links)
+    elif cats:
+        slug = cats.lower().replace(' ', '-')
+        cats_str = f'<a class="cat-link" href="categories/{escape(slug)}.html">{escape(cats)}</a>'
+    else:
+        cats_str = ''
     blocks.append(
         f'''<div class="post-block">
   <div class="post-meta">
     <div class="post-date">{escape(date)}</div>
-    <div class="post-cats">{escape(cats_str)}</div>
+    <div class="post-cats">{cats_str}</div>
   </div>
   <div class="post-info">
     <h2><a href="{escape(url)}">{escape(title)}</a></h2>
