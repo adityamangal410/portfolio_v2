@@ -79,3 +79,19 @@ Follow these steps to review changes locally before merging:
 6. Verify that the GitHub Actions workflow passes on the pull request page.
 
 These steps confirm that both the local build and the CI workflow are functioning correctly.
+
+## Deploying a branch preview to Netlify
+
+These steps create a temporary site from any branch so you can review changes before merging. This uses the Netlify CLI and requires a Netlify account.
+
+1. Install the Netlify CLI globally with `npm install -g netlify-cli` if you have not already.
+2. Run `netlify login` and authorize the CLI to access your Netlify account.
+3. Ensure your working directory is clean and check out the branch you want to preview, e.g. `git checkout quarto5`.
+4. Build and deploy the site using:
+   ```
+   netlify deploy --build --dir _site --branch quarto5
+   ```
+   - The first time this runs you will be prompted to create or select a Netlify site. Choose **Create & configure a new site** to get a temporary URL.
+   - Netlify will build the project and provide a **Draft URL** you can open in the browser.
+5. Whenever you update the branch, repeat step 4 to redeploy the preview.
+6. Once satisfied, you can delete the temporary site from the Netlify dashboard.
