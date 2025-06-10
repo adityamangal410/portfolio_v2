@@ -1,0 +1,9 @@
+---
+title: "Welcome"
+---
+
+# Welcome
+
+This is the home page for Aditya Mangal's blog.
+
+Visit the [posts section](posts/index.qmd) to browse past articles.

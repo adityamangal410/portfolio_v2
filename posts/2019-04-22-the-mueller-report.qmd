@@ -1,0 +1,412 @@
+---
+title: The Mueller Report
+author: Aditya Mangal
+date: '2019-04-22'
+categories:
+  - Projects
+tags:
+  - DataAnalysis
+  - DataScience
+  - SentimentAnalysis
+  - TextMining
+  - Visualizations
+  - R
+  - Python
+slug: the-mueller-report
+keywords:
+  - tech
+summary: Analyzing the Special Counsel's "Report On The Investigation Into Russian
+  Interference In The 2016 Presidential Election" from - [justice.gov](https://www.justice.gov/storage/report.pdf)
+readingtime: '15'
+draft: false
+coverImage: https://lh3.googleusercontent.com/rCAvA7NkPNFuMZTZJZ1oL3sOBAXHVlxE0Dq13qPSkJpomxLYx9O-Zx2vd7OMaPA4d_izBW34ggHtoJOBXFa4DXEWqv-lBS7ZpC-7jAtO1E-JQWRwjpz2qCVmCBrR348x-GlP6ENWhykU-pWkZp-ogDLhiqbiZemhFjJk_YN7tI68aMR_KaUGYTg9fcqL7nXfbakHqMpe-Px2ITB44gfDCIYyYACFCDQR0DYRMDuOVPzvlqE_H-xvTkd7vvl8iBVrpUcJUiG0ugTYP8N5laj6RLLvMVQzUkclldd1eqnLnxfDFKiXb63WxXmV2WndZN8E90fx3wArK-uzVGBucLpbCgI7_deAx6-FZGz9mypKuRk3lWk8nCrL-o7BqfF2L7fLvKFHfjGyXg3NBj0443YyYTwYXy3KyTlCYPbuIQwhCkQtaYwSneHLIOSeapIY8GDIcbe0M3wVItyQkMq9xw2dkkB98G_5yr6ksVBHThQEQUG1MZz5jGGQXQcNxNt_ANnMxQ6cj80ArTv60MPpyh52PODotREvzR0LUOuobAx4qk2EhoErlnMKYvPWd0foC1NyJ0Q39Eebh-gSxWS83_hee7LW5m-ebTPUUS8GQy0e5eKIngbHd3e7sNbIgsMtUUBY1DO0ScZlpJw3bieQ5mTragOe9Kn3Jyjk7hEt0xbsr3GIt3hTT4qMypbNS9QFxR2IlVrAxaHFH-0YLrk3cbjd_5-F2g=w3258-h1832-no
+thumbnailImage: https://lh3.googleusercontent.com/xAuRPz7Ak_we8eZ8ImIUuLSKATVeeAOWlXUIYg89TrSMZ_eKS8eGQCHqXKGJytF8k5ABvHMD_PjN0ZK9yOPa0MGSWqeoZlIXdLWu73-L_JHCji1Ah_sQUwDpOj6osmS00AIMnGk897Y9HAIWQXjdFAlwJ4_rxVOiGtD-oh4En-48ZRDGJmKOqRtlHt9RBhTJ1ZzawqYwZzPZc629QILuatgMj9blSsASPxZTxUtMf9hP6LoOSlK2X1pbYi5jxAEQ33tRG4FgvnQJtcjYtqvE0HDoIrcSneKSyPaY0o3fkda6tX07wMW8nxHSq4UgraY_A2xQndtGmsBVMdrL9j6OnYdPNiv6uyW3DEquMAVt9EKGRUtDJNSYXjyDffQfhI6v7nirLBbEBlrVJ0xSkju-Skxu4jbTEHzpp0rZW73xyBfIjzwIww6VJzOnFmJOjt6E_eZZHY3W39sW4m5W9uLYGxozhE_mf_IaFLE6UbW7klsmGEkRgzB0h6vwx6FB6nSMyXSG7telr-Zy1p_L_GBdL3VJmJJccNH5Sms2RBt7G_dYMeofwEy1qqyP49wFEgaNTGtUKa2aK4tYlNGpa6MuRxYVXBrSY5SgtBtmjudxi6EuSVMhqJ1T6TV_RK4ppTTjo6sGwmaIcuIwP2tN-lRP9-YZz_cjN-4gc89Jm1spz_jghH9h7_LQUqW1S9iXfQuR-Otj3s8lQn5wEmtnOyDUkdwCaQ=w750-h422-no
+thumbnailImagePosition: left
+coverCaption: Photo by Srikanta H. U on Unsplash
+format:
+  html:
+    theme: distill
+freeze: true
+---
+
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#analysis">Analysis</a><ul>
+<li><a href="#load-libraries">Load libraries</a></li>
+<li><a href="#downloading-report">Downloading Report</a></li>
+<li><a href="#cleaning">Cleaning</a><ul>
+<li><a href="#page-range">Page range</a></li>
+<li><a href="#text-na">Text NA</a></li>
+<li><a href="#misspelled-words">Misspelled Words</a></li>
+<li><a href="#normalize">Normalize</a></li>
+</ul></li>
+<li><a href="#most-popular-words">Most popular words</a></li>
+<li><a href="#most-dramatic-pages">Most dramatic pages</a></li>
+<li><a href="#most-common-correlated-words">Most Common Correlated Words</a></li>
+<li><a href="#search-engine">Search Engine</a><ul>
+<li><a href="#search-query---michael-cohen">Search Query - Michael Cohen</a></li>
+<li><a href="#search-query---vladimir-putin">Search Query - Vladimir Putin</a></li>
+</ul></li>
+<li><a href="#late-night-hosts-jokes">Late Night Hosts’ Jokes</a><ul>
+<li><a href="#trevor-noah">Trevor Noah</a></li>
+<li><a href="#stephen-colbert">Stephen Colbert</a></li>
+<li><a href="#jimmy-fallon">Jimmy Fallon</a></li>
+<li><a href="#jimmy-kimmel">Jimmy Kimmel</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Analyzing the Special Counsel’s “Report On The Investigation Into Russian Interference In The 2016 Presidential Election” from - <a href="https://www.justice.gov/storage/report.pdf">justice.gov</a>.</p>
+</div>
+<div id="analysis" class="section level1">
+<h1>Analysis</h1>
+<div id="load-libraries" class="section level2">
+<h2>Load libraries</h2>
+<pre class="r"><code>rm(list = ls())
+library(tidyverse)
+library(pdftools)
+library(tidylog)
+library(hunspell)
+library(tidytext)
+library(ggplot2)
+library(gridExtra)
+library(scales)
+library(reticulate)
+library(widyr)
+library(igraph)
+library(ggraph)
+
+theme_set(theme_light())
+use_condaenv(&quot;stanford-nlp&quot;)</code></pre>
+</div>
+<div id="downloading-report" class="section level2">
+<h2>Downloading Report</h2>
+<p>If we want to download and parse the report ourselves we can do so as follows -</p>
+<pre class="r"><code>download.file(&quot;https://www.justice.gov/storage/report.pdf&quot;, &quot;~/Downloads/mueller-report.pdf&quot;)
+
+report &lt;- pdf_text(&quot;~/Downloads/mueller-report.pdf&quot;)</code></pre>
+<p>I will use the preconverted CSV format of the report present <a href="https://github.com/gadenbuie/mueller-report/blob/36fbb136a2a508c812db8773e9342b7a55204b20/mueller_report.csv">here</a>.</p>
+<pre class="r"><code>report &lt;- read_csv(&quot;https://raw.githubusercontent.com/gadenbuie/mueller-report/master/mueller_report.csv&quot;)
+report %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## Rows: 19,195
+## Columns: 3
+## $ page &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3…
+## $ line &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 1, 2, 3, 4, 5, 6…
+## $ text &lt;chr&gt; &quot;U.S. Department of Justice&quot;, &quot;AttarAe:,c\\\\&#39;erlc Predtiet // M…</code></pre>
+</div>
+<div id="cleaning" class="section level2">
+<h2>Cleaning</h2>
+<div id="page-range" class="section level3">
+<h3>Page range</h3>
+<p>As we see from the pdf, first few pages contain Title and Index of the report, and the actual report text starts from page 9. Filtering out all the other pages for exploration</p>
+<pre class="r"><code>report %&gt;% 
+  filter(page &gt;= 9) -&gt; content</code></pre>
+</div>
+<div id="text-na" class="section level3">
+<h3>Text NA</h3>
+<p>There are about 386 rows with NA as text, these maybe because of parsing failures over redactions, among other things. Dropping them for now.</p>
+<pre class="r"><code>content %&gt;% 
+  filter(!is.na(text)) -&gt; content</code></pre>
+</div>
+<div id="misspelled-words" class="section level3">
+<h3>Misspelled Words</h3>
+<pre class="r"><code>content %&gt;% 
+  rowwise() %&gt;% 
+  mutate(num_misspelled_words = length(hunspell(text)[[1]]),
+         num_words = length(str_split(text, &quot; &quot;)[[1]]),
+         perc_misspelled = num_misspelled_words/num_words) %&gt;% 
+  select(-num_misspelled_words, -num_words) -&gt; content</code></pre>
+<p>Dropping all rows (around 400 rows) where percentage of misspelled words is more than 50%. Assuming these are introduced because of pdf parsing errors over redactions.</p>
+<pre class="r"><code>content %&gt;% 
+  filter(perc_misspelled &lt;= 0.5) -&gt; content</code></pre>
+</div>
+<div id="normalize" class="section level3">
+<h3>Normalize</h3>
+<pre class="r"><code>content %&gt;% 
+  unnest_tokens(text, text, token = &quot;lines&quot;) -&gt; content</code></pre>
+</div>
+</div>
+<div id="most-popular-words" class="section level2">
+<h2>Most popular words</h2>
+<pre class="r"><code>tidy_content &lt;- content %&gt;%
+  unnest_tokens(word, text) %&gt;%
+  anti_join(stop_words)</code></pre>
+<pre class="r"><code>tidy_content %&gt;% 
+  mutate(word = str_extract(word, &quot;[a-z&#39;]+&quot;)) %&gt;%
+  filter(!is.na(word)) %&gt;% 
+  count(word, sort = TRUE) %&gt;% 
+  filter(str_length(word) &gt; 1,
+         n &gt; 400) %&gt;% 
+  mutate(word = reorder(word, n)) %&gt;%
+  ggplot( aes(x=word, y=n)) +
+  geom_segment( aes(x=word, xend=word, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
+  geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
+  coord_flip() + 
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        legend.position=&quot;none&quot;) +
+  labs(x = &quot;&quot;,
+       y = &quot;Number of Occurences&quot;,
+       title = &quot;Most popular words from the Mueller Report&quot;,
+       subtitle = &quot;Words occurring more than 400 times&quot;,
+       caption = &quot;Based on data from the Mueller Report&quot;)</code></pre>
+<p><img src="/post/2019-04-22-the-mueller-report_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="most-dramatic-pages" class="section level2">
+<h2>Most dramatic pages</h2>
+<p>Using python’s NLTK’s Vader Lexicon to generate sentiments for each line.</p>
+<pre class="python"><code>import pandas as pd
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+sid = SentimentIntensityAnalyzer()
+text = pd.Series(r[&quot;content$text&quot;])
+sentiments = text.apply(sid.polarity_scores).apply(pd.Series)</code></pre>
+<pre class="r"><code>content &lt;- bind_cols(content, py$sentiments)
+
+content %&gt;%
+  group_by(index = as.integer(page/2)) %&gt;% 
+  summarise(total_sentiment = sum(compound)) %&gt;% 
+  mutate(sentiment_color=ifelse(total_sentiment&gt;0, &quot;yes&quot;, &quot;no&quot;)) %&gt;%
+  ggplot(aes(x=index, y=total_sentiment)) +
+  geom_ribbon(aes(ymin=0, ymax=total_sentiment, fill=sentiment_color), color=&quot;black&quot;, alpha=0.5, show.legend = FALSE) +
+  scale_fill_manual(values=c(&quot;#271569&quot;,&quot;#69b3a2&quot;)) +
+  labs(x = &quot;Page Index&quot;,
+       y = &quot;Total Polarity&quot;,
+       title = &quot;Text sentiment variance over pages&quot;,
+       subtitle = &quot;PageIndex = PageNumber/2, Compound polarity calculated using NLTK&quot;,
+       caption = &quot;Based on data from the Mueller Report&quot;)</code></pre>
+<p><img src="/post/2019-04-22-the-mueller-report_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>While the above plot shows the general interesting areas of the report, lets see which are some of the most polarized lines in the document, in either direction.</p>
+<pre class="r"><code>content %&gt;% 
+  arrange(desc(compound)) %&gt;% 
+  head(10) %&gt;% 
+  select(text, page)</code></pre>
+<pre><code>## # A tibble: 10 x 2
+##    text                                                                     page
+##    &lt;chr&gt;                                                                   &lt;dbl&gt;
+##  1 &quot;crime\&quot;). obstruction of justice can be motivated by a desire to prot…   369
+##  2 &quot;justice statutes to protect, among other things, the integrity of its…   388
+##  3 &quot;wealth fund and was interested in improving relations between the uni…   163
+##  4 &quot;protected the president. and (have great respect for that, i&#39;ll be ho…   322
+##  5 &quot;the same thing , but co-opt the liberal opposition and the gop opposi…    52
+##  6 &quot;go. he is a good guy. i hope you can let this go.\&quot; 238 comey agreed …   252
+##  7 &quot;\&quot;not based on a legal issue, but based on a trust issue, [where] a l…   250
+##  8 &quot;success would require u.s. support to succeed: \&quot;all that is required…   138
+##  9 &quot;friends. please share with them - we believe this is a good foundatio…   166
+## 10 &quot;that the president still cared about him and encouraging him to stay …   333</code></pre>
+<pre class="r"><code>content %&gt;% 
+  arrange(compound) %&gt;% 
+  head(10) %&gt;% 
+  select(text, page)</code></pre>
+<pre><code>## # A tibble: 10 x 2
+##    text                                                                     page
+##    &lt;chr&gt;                                                                   &lt;dbl&gt;
+##  1 &quot;specialist who exposed a fraud and later died in a russian prison. 67…   120
+##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked .\&quot; 504 th…   290
+##  3 &quot;be no serious argument against the president&#39;s potential criminal lia…   392
+##  4 &quot;worse , alfonse capone , legendary mob boss, killer and &#39;public enemy…   337
+##  5 &quot;foreign contributions ban, in violation of 18 u.s.c. § 371 ; the soli…   193
+##  6 &quot;horrible witch hunt and the dishonest media! 1025&quot;                       359
+##  7 &quot;had \&quot;never been directed to do anything [he] believe[d] to be illega…   269
+##  8 &quot;one), three defendants with conspiracy to commit wire fraud and •bank…   182
+##  9 &quot;guilty, pursuant to a single-count information , to identity fraud , …   183
+## 10 &quot;difficult to argue that hacked emails in electronic form, which are t…   184</code></pre>
+</div>
+<div id="most-common-correlated-words" class="section level2">
+<h2>Most Common Correlated Words</h2>
+<pre class="r"><code>word_cors &lt;- tidy_content %&gt;% 
+  add_count(word) %&gt;% 
+  filter(n &gt; stats::quantile(n, 0.7)) %&gt;% 
+  pairwise_cor(word, page, sort = TRUE)</code></pre>
+<pre class="r"><code>set.seed(123)
+
+word_cors %&gt;%
+  filter(correlation &gt; 0.25,
+         !str_detect(item1, &quot;\\d&quot;),
+         !str_detect(item2, &quot;\\d&quot;)) %&gt;% 
+  graph_from_data_frame() %&gt;%
+  ggraph(layout = &quot;fr&quot;) +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = &quot;lightblue&quot;, size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void() + 
+  labs(x = &quot;&quot;,
+       y = &quot;&quot;,
+       title = &quot;Commonly Occurring Correlated Words&quot;,
+       subtitle = &quot;Per page correlation higher than 0.25&quot;,
+       caption = &quot;Based on data from the Mueller Report&quot;)</code></pre>
+<p><img src="/post/2019-04-22-the-mueller-report_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Words like “mcgahn” and “comey” show up as centers of correlation network.</p>
+</div>
+<div id="search-engine" class="section level2">
+<h2>Search Engine</h2>
+<p>Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make this document more easily searchable and gain context using most related lines in the report for a given query.
+Using python’s scikit-learn for this.</p>
+<pre class="python"><code>from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
+from sklearn.metrics.pairwise import linear_kernel
+
+stopwords = ENGLISH_STOP_WORDS
+vectorizer = TfidfVectorizer(analyzer=&#39;word&#39;, stop_words=stopwords, max_df=0.3, min_df=2)
+vector_train = vectorizer.fit_transform(r[&quot;content$text&quot;])
+
+def get_related_lines(query):
+  vector_query = vectorizer.transform([query])
+  cosine_sim = linear_kernel(vector_query, vector_train).flatten()
+  return cosine_sim.argsort()[:-10:-1]</code></pre>
+<pre class="r"><code>get_related_lines &lt;- py_to_r(py$get_related_lines)</code></pre>
+<div id="search-query---michael-cohen" class="section level3">
+<h3>Search Query - Michael Cohen</h3>
+<pre class="r"><code>content %&gt;% 
+  slice(get_related_lines(&quot;michael cohen&quot;)) %&gt;% 
+  select(text, page, line)</code></pre>
+<pre><code>## # A tibble: 9 x 3
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;alphabetically by subject, are summarized below.&quot;                   446     3
+## 2 &quot;flynn is awaiting sentencing .&quot;                                     203    25
+## 3 &quot;called melania trump&#39;s cell phone several times between january …   357    39
+## 4 &quot;manafort \&quot;a brave man\&quot; for refusin to \&quot;break\&quot; and said that …   218    23
+## 5 &quot;(bob)                     spring 2016 to discuss russian foreign…   404    17
+## 6 &quot;p-sco-000000328 (5/9/17 letter, hpsci to cohen); p-sco-000000331…   351    31
+## 7 &quot;u.s. department of justice&quot;                                         346     1
+## 8 &quot;988&quot;                                                                354    48
+## 9 &quot;organization before the house oversight and ref orm committee, 1…   348    50</code></pre>
+<p>One of the interesting results from above (page 357) -<br />
+“Toll records show that Cohen was connected to a White House phone number for approximately five minutes on January 19, 2018, and for approximately seven minutes on January 30, 2018, and that Cohen called Melania Trump’s cell phone several times between January 26, 2018, and January 30, 2018. Call Records of Michael Cohen.”</p>
+</div>
+<div id="search-query---vladimir-putin" class="section level3">
+<h3>Search Query - Vladimir Putin</h3>
+<pre class="r"><code>content %&gt;% 
+  slice(get_related_lines(&quot;vladimir putin&quot;)) %&gt;% 
+  select(text, page, line)</code></pre>
+<pre><code>## # A tibble: 9 x 3
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;response to question i, part (h)&quot;                                   431    18
+## 2 &quot;polon skaya, olga        russian national introduced to george p…   408    30
+## 3 &quot;fine.\&quot;); andrew rafferty, trump says he would \&quot;get along very …   228    26
+## 4 &quot;and former aide to russia&#39;s mini ster of energy . he communicate…   406     6
+## 5 &quot;2016?&quot;                                                              420    32
+## 6 &quot;accompanied by a russian female named olga polonskaya. mifsud in…    92     9
+## 7 &quot;vt.     why did you ultimately not give the speech you reference…   428    32
+## 8 &quot;candidates by speaking of closer ties with russia, 10 saying he …   228     6
+## 9 &quot;kuznetsov, sergey        russian government official at the russ…   406    18</code></pre>
+<p>One of the interesting results from above (page 92) -<br />
+“On March 24, 2016, Papadopoulos met with Mifsud in London. Mifsud was accompanied by a russian female named olga polonskaya. Mifsud introduced Polonskaya as a former student of his who had connections to Vladimir Putin”</p>
+</div>
+</div>
+<div id="late-night-hosts-jokes" class="section level2">
+<h2>Late Night Hosts’ Jokes</h2>
+<p>Lets see if we can catch (or fact check, if you will), any of the late night hosts’ jokes about the Mueller Report.</p>
+<div id="trevor-noah" class="section level3">
+<h3>Trevor Noah</h3>
+{{% youtube id="pVbwZg8rM2c" %}}
+<pre class="r"><code>content %&gt;% 
+  arrange(compound) %&gt;% 
+  head(10) %&gt;% 
+  select(text, page, line)</code></pre>
+<pre><code>## # A tibble: 10 x 3
+##    text                                                               page  line
+##    &lt;chr&gt;                                                             &lt;dbl&gt; &lt;dbl&gt;
+##  1 &quot;specialist who exposed a fraud and later died in a russian pris…   120    11
+##  2 &quot;is terrible. this is the end of my presidency. i&#39; m fucked .\&quot; …   290    20
+##  3 &quot;be no serious argument against the president&#39;s potential crimin…   392    26
+##  4 &quot;worse , alfonse capone , legendary mob boss, killer and &#39;public…   337    14
+##  5 &quot;foreign contributions ban, in violation of 18 u.s.c. § 371 ; th…   193    41
+##  6 &quot;horrible witch hunt and the dishonest media! 1025&quot;                 359     4
+##  7 &quot;had \&quot;never been directed to do anything [he] believe[d] to be …   269     4
+##  8 &quot;one), three defendants with conspiracy to commit wire fraud and…   182    28
+##  9 &quot;guilty, pursuant to a single-count information , to identity fr…   183    15
+## 10 &quot;difficult to argue that hacked emails in electronic form, which…   184    27</code></pre>
+<p>The joke at around 34secs into the video can be clearly seen above as the 2nd highest polarized line in the report (page 290, line 20).</p>
+</div>
+<div id="stephen-colbert" class="section level3">
+<h3>Stephen Colbert</h3>
+{{% youtube id="7MursWMNONo" %}}
+<pre class="r"><code>content %&gt;% 
+  slice(get_related_lines(&quot;olc&quot;)) %&gt;% 
+  select(text, page, line)</code></pre>
+<pre><code>## # A tibble: 9 x 3
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;concerns about sealed indictments. even if an indictment were se…   214    20
+## 2 &quot;alia, bribery,\&quot; id. (citing u.s. const.artii,§ 4).&quot;                382    28
+## 3 &quot;constitution confers no power in the president to receive bribes…   382    24
+## 4 &quot;second, while the olc opinion concludes that a sitting president…   213    29
+## 5 &quot;a sitting president &#39;s amenability to indictment and criminal pr…   213    35
+## 6 &quot;l, § 3, cl. 7. impeachment is also a drastic and rarely invoked …   390    40
+## 7 &quot;department of justice and the framework of the special counsel r…   213    24
+## 8 &quot;govern and potentially preempt constitutional processes for addr…   213    28
+## 9 &quot;executive officials).&quot;                                              382    18</code></pre>
+<p>The discussion about OLC from the video above at around 9min48secs can be seen in multiple instances as per our search engine, notably here (page 390) -
+“Impeachment is also a drastic and rarely invoked remedy, and Congress is not restricted to relying only on impeachment, rather than making criminal law applicable to a former President, as OLC has recognized.”</p>
+</div>
+<div id="jimmy-fallon" class="section level3">
+<h3>Jimmy Fallon</h3>
+{{% youtube id="TJZf0JIdqqU" %}}
+<pre class="r"><code>content %&gt;% 
+  slice(get_related_lines(&quot;crazy&quot;)) %&gt;% 
+  select(text, page, line)</code></pre>
+<pre><code>## # A tibble: 9 x 3
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;president had said similar things about comey in an off-the-reco…   283    43
+## 2 &quot;ukraine to support the plan. 925 manafort also initially told th…   148     8
+## 3 &quot;president &#39; s request, he decided not to share details of the pr…   299     7
+## 4 &quot;office, prepared to submit a resignation letter with his chief o…   300    23
+## 5 &quot;information.\&quot; 470 hicks said that when she told the president a…   283    16
+## 6 &quot;prior day to terminate comey, telling lavrov and kislyak: \&quot;tjus…   283     8
+## 7 &quot;the president also told the russian foreign minister , \&quot;i just …   274    21
+## 8 &quot;serious concerns about obstruction\&quot; may have referred to concer…   262    38
+## 9 &quot;• &#39; investigative technique&quot;                                        157    20</code></pre>
+<p>The joke in the video around 3mins can be seen by the search query which leads to one of these interesting results on page 299 of the report -
+“That evening, McGahn called both Priebus and Bannon and told them that he intended to
+resign. McGahn recalled that, after speaking with his attorney and given the nature of the
+President’s request, he decided not to share details of the President’s request with other White
+House staff.”</p>
+</div>
+<div id="jimmy-kimmel" class="section level3">
+<h3>Jimmy Kimmel</h3>
+{{% youtube id="NB7ZMczCXEM" %}}
+<pre class="r"><code>content %&gt;% 
+  slice(get_related_lines(&quot;election interference&quot;)) %&gt;% 
+  select(text, page, line)</code></pre>
+<pre><code>## # A tibble: 9 x 3
+##   text                                                                page  line
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 notwithstanding his recusal , he was going to confine the special…   310    28
+## 2 members of the trump campaign conspired or coordinated with the r…    13    23
+## 3 establish that members of the trump campaign conspired or coordin…    10     4
+## 4 2. president-elect trump is briefed on the intelligence community…   239     3
+## 5 (e.g., florida and pennsylvania) that were perceived as competiti…    51    11
+## 6 is a good guy to negotiate ....                                       80     5
+## 7 papadopoulos &#39;s false statements in january 2017 impeded the fbi&#39;…   201    27
+## 8 for having interfered in the election. by early 2017, several con…     9    27
+## 9 rosenstein, rod         deput y attorney general (apr. 20 17 - pr…   409    13</code></pre>
+<p>The discussion at around 50secs into the video can be obtained from the above search query, from page 13 -
+“Although the investigation established that the Russian government perceived it would benefit from a Trump presidency and worked to secure that outcome, and that the Campaign expected it would benefit electorally from information stolen and released through Russian efforts, the investigation did not establish that members of the Trump Campaign conspired or coordinated with the Russian government in its election interference activities.”</p>
+</div>
+</div>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>Looks like all the above tools can be pretty handy in doing a quick and thorough investigation of a large document in a very small amount of time (and its pretty fun too!)</p>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<ol style="list-style-type: decimal">
+<li><a href="https://www.kaggle.com/paultimothymooney/mueller-report">Kaggle data reference</a></li>
+<li><a href="https://www.tidytextmining.com/">Text Mining with R by Julia Silge &amp; David Robinson</a></li>
+<li><a href="https://www.data-to-viz.com/">Visualization reference</a></li>
+<li><a href="https://towardsdatascience.com/how-i-used-machine-learning-to-classify-emails-and-turn-them-into-insights-efed37c1e66">Enron Email Analysis by Anthony Dm.</a></li>
+</ol>
+</div>

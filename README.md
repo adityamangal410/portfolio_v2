@@ -16,10 +16,30 @@ You can get most of the information about me on the blog. Some more things about
 4. In an ideal world, this blog would also contain my writings about travel, random musings and photography among other things. One day, some day. 
 5. If you have any questions or suggestions or feedback, you're always welcome to connect with me at adityamangal410 [at] yahoo [dot] co [dot] in.
 
-Here are the technologies/tools and their references that I'm mostly using to run this blog -   
+Here are the technologies/tools and their references that I'm mostly using to run this blog -
 
-- [Blogdown](https://bookdown.org/yihui/blogdown/) - For building the blog.
+- [Quarto](https://quarto.org/) - Static site generator with Markdown and Jupyter notebook support.
 - [Netlify](https://www.netlify.com/) - For CD and DNS.
-- [RStudio](https://www.rstudio.com/) - For development and testing.
+- [RStudio](https://www.rstudio.com/) or any text editor - For development and testing.
 - [Unsplash](https://unsplash.com/) - For article cover images.
-- [Hugo TranquilPeak Theme](https://github.com/kakawait/hugo-tranquilpeak-theme) - Blog theme.
+- [Distill theme](https://distill.pub) via Quarto - Blog theme.
+Legacy posts live under the `post/` folder but are also converted to Quarto
+files using `tools/convert_posts.py`. The generated `.qmd` files in `posts/`
+apply the Distill theme so the articles look consistent with the rest of the
+site. Old URLs like `/post/my-post.html` redirect to the new pages via Netlify.
+
+To regenerate the converted posts after editing the HTML originals, run
+`python tools/convert_posts.py` and then `quarto render`.
+
+## Testing pull requests
+
+Follow these steps to review changes locally before merging:
+
+1. **Install Quarto** by downloading it from [quarto.org](https://quarto.org/docs/get-started/).
+2. Install Python packages used for rendering with `pip install ipykernel pyyaml nbformat nbclient`.
+3. Clone the repository and check out the pull request branch.
+4. Run `quarto render` to build the site and ensure it compiles without errors.
+5. Preview the result with `quarto preview` and browse to `http://localhost:4200`.
+6. Verify that the GitHub Actions workflow passes on the pull request page.
+
+These steps confirm that both the local build and the CI workflow are functioning correctly.

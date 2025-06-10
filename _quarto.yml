@@ -1,0 +1,28 @@
+project:
+  type: website
+  resources:
+    # copy legacy HTML posts and their assets
+    - post/*.html
+    - post/*_files/**
+    # other static files like favicon and images
+    - static/**
+
+website:
+  title: "Aditya Mangal's Blog"
+  site-url: https://www.adityamangal.com/
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: posts/index.qmd
+        text: Posts
+    right:
+      - icon: github
+        href: https://github.com/adityamangal410
+      - icon: twitter
+        href: https://twitter.com/adityamangal410
+
+format:
+  html:
+    theme: distill
+    toc: true

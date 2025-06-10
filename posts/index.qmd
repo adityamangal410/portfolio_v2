@@ -1,0 +1,38 @@
+
+---
+title: Blog Posts
+jupyter: python3
+execute:
+  echo: false
+---
+
+```{python}
+import re, glob
+from IPython.display import Markdown, display
+posts = []
+for f in glob.glob('*.qmd'):
+    if f == 'index.qmd':
+        continue
+    with open(f, encoding='utf-8') as fh:
+        head_lines = []
+        in_yaml = False
+        for line in fh:
+            if line.strip() == '---':
+                if in_yaml:
+                    break
+                in_yaml = True
+                continue
+            if in_yaml:
+                head_lines.append(line)
+    head = ''.join(head_lines)
+    title_match = re.search(r'^title:\s*(.*)', head, re.MULTILINE)
+    date_match = re.search(r"^date:\s*'?([^'\n]+)'?", head, re.MULTILINE)
+    title = title_match.group(1).strip() if title_match else f
+    date = date_match.group(1).strip() if date_match else ''
+    slug = f.replace('.qmd','')
+    url = f'{slug}.html'
+    posts.append((date, title, url))
+posts.sort(reverse=True)
+lines = [f"- [{title}]({url})" for date, title, url in posts]
+display(Markdown('\n'.join(lines)))
+```
