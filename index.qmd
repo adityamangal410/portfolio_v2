@@ -7,6 +7,7 @@ execute:
 
 ```{python}
 import glob, os, re
+from typing import List
 from html import escape
 from IPython.display import HTML, display
 
@@ -17,13 +18,24 @@ def parse_front_matter(path):
         lines = fh.readlines()
     if not lines or lines[0].strip() != '---':
         return yaml
-    for line in lines[1:]:
+    i = 1
+    while i < len(lines):
+        line = lines[i]
+        i += 1
         if line.strip() == '---':
             break
-        if ':' not in line:
-            continue
-        key, val = line.split(':', 1)
-        yaml[key.strip()] = val.strip().strip('"').strip("'")
+        if ':' in line:
+            key, val = line.split(':', 1)
+            key = key.strip()
+            val = val.strip()
+            if val == '':
+                values: List[str] = []
+                while i < len(lines) and lines[i].startswith('  -'):
+                    values.append(lines[i].strip()[2:].strip())
+                    i += 1
+                yaml[key] = values
+            else:
+                yaml[key] = val.strip('"').strip("'")
     return yaml
 
 
@@ -61,6 +73,7 @@ for f in glob.glob('posts/*.qmd'):
     posts.append(
         (
             meta.get('date', ''),
+            meta.get('categories', []),
             meta.get('title', slug),
             meta.get('summary', ''),
             url,
@@ -71,10 +84,15 @@ for f in glob.glob('posts/*.qmd'):
 posts.sort(reverse=True)
 
 blocks = []
-for date, title, summary, url, image in posts:
+for date, cats, title, summary, url, image in posts:
     img_tag = f'<img src="{escape(image)}" alt="{escape(title)}">' if image else ''
+    cats_str = ', '.join(cats) if isinstance(cats, list) else cats
     blocks.append(
         f'''<div class="post-block">
+  <div class="post-meta">
+    <div class="post-date">{escape(date)}</div>
+    <div class="post-cats">{escape(cats_str)}</div>
+  </div>
   <div class="post-info">
     <h2><a href="{escape(url)}">{escape(title)}</a></h2>
     <p>{escape(summary)}</p>
