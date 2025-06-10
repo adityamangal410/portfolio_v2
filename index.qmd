@@ -6,7 +6,7 @@ execute:
 ---
 
 ```{python}
-import glob, os
+import glob, os, re
 from html import escape
 from IPython.display import HTML, display
 
@@ -27,6 +27,27 @@ def parse_front_matter(path):
     return yaml
 
 
+def extract_first_local_image(path):
+    """Return the first image path inside the post that is not an external URL."""
+    with open(path, encoding='utf-8') as fh:
+        text = fh.read()
+    if text.startswith('---'):
+        parts = text.split('---', 2)
+        if len(parts) == 3:
+            text = parts[2]
+    # search for HTML <img> tags
+    for m in re.finditer(r'<img[^>]+src="([^"]+)"', text):
+        src = m.group(1)
+        if not src.startswith('http://') and not src.startswith('https://'):
+            return src
+    # search for Markdown images
+    for m in re.finditer(r'!\[[^\]]*\]\(([^)]+)\)', text):
+        src = m.group(1)
+        if not src.startswith('http://') and not src.startswith('https://'):
+            return src
+    return None
+
+
 posts = []
 for f in glob.glob('posts/*.qmd'):
     if os.path.basename(f) == 'index.qmd':
@@ -34,13 +55,16 @@ for f in glob.glob('posts/*.qmd'):
     meta = parse_front_matter(f)
     slug = os.path.splitext(os.path.basename(f))[0]
     url = f'posts/{slug}.html'
+    image = extract_first_local_image(f)
+    if not image:
+        image = meta.get('coverImage') or meta.get('thumbnailImage', '')
     posts.append(
         (
             meta.get('date', ''),
             meta.get('title', slug),
             meta.get('summary', ''),
             url,
-            meta.get('thumbnailImage') or meta.get('coverImage', ''),
+            image,
         )
     )
 
