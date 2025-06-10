@@ -1,0 +1,25 @@
+.post-block {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1.5em;
+  padding-bottom: 1.5em;
+  border-bottom: 1px solid #eaeaea;
+}
+.post-block img {
+  width: 150px;
+  height: auto;
+  margin-left: 1em;
+  object-fit: cover;
+}
+.post-info {
+  flex: 1;
+}
+.post-info h2 {
+  margin-top: 0;
+  margin-bottom: 0.3em;
+}
+.post-info p {
+  margin: 0;
+  color: #555;
+}
+
