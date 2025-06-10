@@ -1,9 +1,64 @@
 ---
-title: "Welcome"
+title: "Blog Posts"
+jupyter: python3
+execute:
+  echo: false
 ---
 
-# Welcome
+```{python}
+import glob, os
+from html import escape
+from IPython.display import HTML, display
 
-This is the home page for Aditya Mangal's blog.
 
-Visit the [posts section](posts/index.qmd) to browse past articles.
+def parse_front_matter(path):
+    yaml = {}
+    with open(path, encoding='utf-8') as fh:
+        lines = fh.readlines()
+    if not lines or lines[0].strip() != '---':
+        return yaml
+    for line in lines[1:]:
+        if line.strip() == '---':
+            break
+        if ':' not in line:
+            continue
+        key, val = line.split(':', 1)
+        yaml[key.strip()] = val.strip().strip('"').strip("'")
+    return yaml
+
+
+posts = []
+for f in glob.glob('posts/*.qmd'):
+    if os.path.basename(f) == 'index.qmd':
+        continue
+    meta = parse_front_matter(f)
+    slug = os.path.splitext(os.path.basename(f))[0]
+    url = f'posts/{slug}.html'
+    posts.append(
+        (
+            meta.get('date', ''),
+            meta.get('title', slug),
+            meta.get('summary', ''),
+            url,
+            meta.get('thumbnailImage') or meta.get('coverImage', ''),
+        )
+    )
+
+posts.sort(reverse=True)
+
+blocks = []
+for date, title, summary, url, image in posts:
+    img_tag = f'<img src="{escape(image)}" alt="{escape(title)}">' if image else ''
+    blocks.append(
+        f'''<div class="post-block">
+  <div class="post-info">
+    <h2><a href="{escape(url)}">{escape(title)}</a></h2>
+    <p>{escape(summary)}</p>
+  </div>
+  {img_tag}
+</div>'''
+    )
+
+display(HTML('\n'.join(blocks)))
+```
+

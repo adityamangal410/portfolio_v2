@@ -26,3 +26,4 @@ format:
   html:
     theme: distill
     toc: true
+    css: static/style.css
