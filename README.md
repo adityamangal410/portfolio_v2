@@ -76,7 +76,7 @@ add in a post will therefore gain their own page without extra work.
 Follow these steps to review changes locally before merging:
 
 1. **Install Quarto** by downloading it from [quarto.org](https://quarto.org/docs/get-started/).
-2. Install Python packages used for rendering with `pip install ipykernel pyyaml nbformat nbclient`.
+2. Install Python packages used for rendering with `pip install -r requirements.txt`.
 3. Clone the repository and check out the pull request branch.
 4. Run `quarto render` to build the site and ensure it compiles without errors.
 5. Preview the result with `quarto preview` and browse to `http://localhost:4200`.
@@ -119,3 +119,10 @@ If your Netlify site was previously configured for Hugo, update the build settin
 3. Remove any `HUGO_` environment variables that are no longer needed.
 
 With these options saved, subsequent builds will use the `netlify.toml` file in the repository.
+
+### Continuous integration
+
+The **Quarto Publish** workflow in `.github/workflows/quarto.yml` installs
+dependencies from `requirements.txt` before running `quarto render`. Keep this
+file updated whenever you modify the Python packages so the CI environment
+matches your local setup.
