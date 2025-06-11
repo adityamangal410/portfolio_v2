@@ -23,6 +23,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us.html
 ---
 
 

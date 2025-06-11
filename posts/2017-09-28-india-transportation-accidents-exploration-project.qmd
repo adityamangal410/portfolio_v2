@@ -22,6 +22,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: india-transportation-accidents-exploration-project.html
 ---
 
 

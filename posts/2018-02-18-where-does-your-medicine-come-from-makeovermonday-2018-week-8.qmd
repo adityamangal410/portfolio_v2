@@ -25,6 +25,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: where-does-your-medicine-come-from-makeovermonday-2018-week-8.html
 ---
 
 

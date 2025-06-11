@@ -30,6 +30,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth.html
 ---
 
 

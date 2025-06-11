@@ -18,6 +18,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019.html
 ---
 
 

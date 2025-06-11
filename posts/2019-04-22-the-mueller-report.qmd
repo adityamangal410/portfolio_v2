@@ -27,6 +27,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: the-mueller-report.html
 ---
 
 

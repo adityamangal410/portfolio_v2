@@ -17,6 +17,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: music-artist-recommendation-system-surprise.html
 ---
 
 

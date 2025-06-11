@@ -18,6 +18,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: blogdown-to-quarto-via-codex.html
 ---
 
 > **TL;DR** — I pointed ChatGPT Codex at my creaky Blogdown repo, queued up tasks before crashing for the night, and over the next two days mostly just hammered **Merge** between coffee sips. \~30 k lines later, barely a dozen manual tweaks, and a brand‑new publishing workflow. Here’s the behind‑the‑scenes play‑by‑play. ⚡️

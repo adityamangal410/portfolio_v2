@@ -23,6 +23,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: music-recommendation-system.html
 ---
 
 

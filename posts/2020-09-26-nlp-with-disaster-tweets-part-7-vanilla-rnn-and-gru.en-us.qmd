@@ -24,6 +24,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: nlp-with-disaster-tweets-part-7-vanilla-rnn-and-gru.en-us.html
 ---
 
 

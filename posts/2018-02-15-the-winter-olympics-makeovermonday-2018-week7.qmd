@@ -25,6 +25,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: the-winter-olympics-makeovermonday-2018-week7.html
 ---
 
 

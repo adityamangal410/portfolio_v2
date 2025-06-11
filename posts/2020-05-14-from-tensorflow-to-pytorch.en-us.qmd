@@ -22,6 +22,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: from-tensorflow-to-pytorch.en-us.html
 ---
 
 

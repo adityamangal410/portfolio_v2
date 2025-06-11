@@ -20,6 +20,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: india-general-elections-2019-analysis.html
 ---
 
 

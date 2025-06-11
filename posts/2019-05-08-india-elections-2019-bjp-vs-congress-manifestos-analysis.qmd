@@ -29,6 +29,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: india-elections-2019-bjp-vs-congress-manifestos-analysis.html
 ---
 
 
