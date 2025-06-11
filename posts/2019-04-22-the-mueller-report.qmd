@@ -12,7 +12,6 @@ tags:
   - Visualizations
   - R
   - Python
-slug: the-mueller-report
 keywords:
   - tech
 summary: Analyzing the Special Counsel's "Report On The Investigation Into Russian
@@ -27,6 +26,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: the-mueller-report.html
 ---
 
 

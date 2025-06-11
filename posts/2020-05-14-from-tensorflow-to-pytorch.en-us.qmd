@@ -8,7 +8,6 @@ tags:
   - DataScience
   - Python
   - DeepLearning
-slug: from-tensorflow-to-pytorch.en-us
 keywords:
   - tech
 summary: Quickstart guide to help move from Tensorflow to PyTorch
@@ -22,6 +21,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: from-tensorflow-to-pytorch.en-us.html
 ---
 
 

@@ -9,7 +9,6 @@ tags:
   - DataScience
   - NLP
   - TextMining
-slug: nlp-with-disaster-tweets-part-1
 keywords:
   - tech
 summary: NLP and TidyModelling in R
@@ -23,6 +22,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: nlp-with-disaster-tweets-part-1.html
 ---
 
 

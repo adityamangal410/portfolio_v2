@@ -3,7 +3,6 @@ title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 6 Nati
   Security'
 author: Aditya Mangal
 date: '2019-05-13'
-slug: india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security
 categories:
   - Projects
 tags:
@@ -31,6 +30,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security.html
 ---
 
 

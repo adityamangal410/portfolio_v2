@@ -2,7 +2,6 @@
 title: 'NLP with Disaster Tweets: Part 6 Multi Layer Perceptron'
 author: Aditya Mangal
 date: '2020-09-02'
-slug: nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us
 categories:
   - Projects
 tags:
@@ -24,6 +23,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us.html
 ---
 
 

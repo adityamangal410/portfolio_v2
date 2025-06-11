@@ -2,7 +2,6 @@
 title: 'NLP with Disaster Tweets: Part 2 Nearest Neighbor Models'
 author: Aditya Mangal
 date: '2020-02-20'
-slug: nlp-with-disaster-tweets-part-2-nearest-neighbor-models
 categories:
   - Projects
 tags:
@@ -23,6 +22,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: nlp-with-disaster-tweets-part-2-nearest-neighbor-models.html
 ---
 
 

@@ -41,6 +41,15 @@ When rendering, a pre-build script scans all posts and automatically creates
 category listing pages under the `categories/` directory. Any new categories you
 add in a post will therefore gain their own page without extra work.
 
+Each article's URL is derived from the `output-file` value in its YAML header.
+Set this to your desired slug with a `.html` extension, e.g.
+
+```yaml
+output-file: my-first-post.html
+```
+
+Use this field for new posts instead of the legacy `slug` setting.
+
 ### Jupyter Notebook (`.ipynb`)
 
 1. Create a new notebook under `posts/` with a descriptive name, e.g.

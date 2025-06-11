@@ -2,7 +2,6 @@
 title: 'NLP with Disaster Tweets: Part 7 Vanilla RNN and GRU'
 author: Aditya Mangal
 date: '2020-09-26'
-slug: nlp-with-disaster-tweets-part-7-vanilla-rnn-and-gru.en-us
 categories:
   - Projects
 tags:
@@ -24,6 +23,7 @@ format:
   html:
     theme: distill
 freeze: true
+output-file: nlp-with-disaster-tweets-part-7-vanilla-rnn-and-gru.en-us.html
 ---
 
 
