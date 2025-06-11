@@ -11,6 +11,8 @@ project:
 website:
   title: "Aditya Mangal's Blog"
   site-url: https://www.adityamangal.com/
+  google-analytics: UA-78062737-2
+  comments: false
   navbar:
     left:
       - href: index.qmd
@@ -30,3 +32,4 @@ format:
     theme: distill
     toc: true
     css: static/style.css
+    include-after-body: static/disqus.html
