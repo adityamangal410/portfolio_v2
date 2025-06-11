@@ -8,4 +8,7 @@ blogdown
 content/data
 _site/
 
+/node_modules
+package-lock.json
+
 /.quarto/
