@@ -1,0 +1,10 @@
+<script>
+var offset = '';
+var meta = document.querySelector('meta[name="quarto:offset"]');
+if (meta) {
+  offset = meta.getAttribute('content') || '';
+}
+var script = document.createElement('script');
+script.src = offset + 'static/categories.js';
+document.currentScript.parentNode.insertBefore(script, document.currentScript);
+</script>

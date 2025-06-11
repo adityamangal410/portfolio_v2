@@ -32,4 +32,6 @@ format:
     theme: distill
     toc: true
     css: static/style.css
-    include-after-body: static/disqus.html
+    include-after-body:
+      - static/categories.html
+      - static/disqus.html
