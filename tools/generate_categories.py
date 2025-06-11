@@ -71,7 +71,7 @@ for f in glob.glob('../posts/*.qmd'):
         cats = [cats]
     if CATEGORY not in cats:
         continue
-    slug = os.path.splitext(os.path.basename(f))[0]
+    slug = meta.get("slug") or os.path.splitext(os.path.basename(f))[0]
     url = f'../posts/{{slug}}.html'
     image = extract_first_local_image(f)
     if not image:

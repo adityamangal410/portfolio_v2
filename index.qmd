@@ -65,7 +65,7 @@ for f in glob.glob('posts/*.qmd'):
     if os.path.basename(f) == 'index.qmd':
         continue
     meta = parse_front_matter(f)
-    slug = os.path.splitext(os.path.basename(f))[0]
+    slug = meta.get('slug') or os.path.splitext(os.path.basename(f))[0]
     url = f'posts/{slug}.html'
     image = extract_first_local_image(f)
     if not image:
