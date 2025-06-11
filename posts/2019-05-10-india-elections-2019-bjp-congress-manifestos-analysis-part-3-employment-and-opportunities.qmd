@@ -3,7 +3,6 @@ title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 3 Empl
   and Opportunities'
 author: Aditya Mangal
 date: '2019-05-10'
-slug: india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities
 categories:
   - Projects
 tags:

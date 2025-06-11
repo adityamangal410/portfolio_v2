@@ -2,7 +2,6 @@
 title: India Transportation Accidents Exploration Project
 author: Aditya Mangal
 date: '2017-09-28'
-slug: india-transportation-accidents-exploration-project
 categories:
   - Projects
 tags:

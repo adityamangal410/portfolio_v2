@@ -2,7 +2,6 @@
 title: 'NLP with Disaster Tweets: Part 4 Tree-based Models'
 author: Aditya Mangal
 date: '2020-04-19'
-slug: nlp-with-disaster-tweets-part-4-tree-based-models.en-us
 categories:
   - Projects
 tags:

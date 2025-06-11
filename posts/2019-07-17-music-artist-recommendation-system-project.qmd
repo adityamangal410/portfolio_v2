@@ -6,7 +6,6 @@ categories:
   - Projects
 tags:
   - Summary
-slug: music-artist-recommendation-system-project
 keywords:
   - tech
 summary: Recommendation systems are all around us, from Netflix's amazing video recommender

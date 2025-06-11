@@ -11,7 +11,6 @@ tags:
   - Olympics
   - Visualizations
   - R
-slug: the-winter-olympics-makeovermonday-2018-week7
 keywords:
   - tech
 summary: Goal of this Visualization task is to create an alternative visualization

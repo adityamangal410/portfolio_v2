@@ -65,8 +65,13 @@ for f in glob.glob('posts/*.qmd'):
     if os.path.basename(f) == 'index.qmd':
         continue
     meta = parse_front_matter(f)
-    slug = meta.get('slug') or os.path.splitext(os.path.basename(f))[0]
-    url = f'posts/{slug}.html'
+    output_file = meta.get('output-file')
+    if output_file:
+        slug = os.path.splitext(output_file)[0]
+    else:
+        slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', os.path.splitext(os.path.basename(f))[0])
+        output_file = f'{slug}.html'
+    url = f'posts/{output_file}'
     image = extract_first_local_image(f)
     if not image:
         image = meta.get('coverImage') or meta.get('thumbnailImage', '')

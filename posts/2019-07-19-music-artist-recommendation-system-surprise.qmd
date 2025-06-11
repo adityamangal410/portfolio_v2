@@ -2,7 +2,6 @@
 title: Music Artist Recommendation System - Surprise
 author: Aditya Mangal
 date: '2019-07-19'
-slug: music-artist-recommendation-system-surprise
 keywords:
   - tech
 summary: Music Artist Recommendation System using the [Last.fm Dataset](https://grouplens.org/datasets/hetrec-2011/).

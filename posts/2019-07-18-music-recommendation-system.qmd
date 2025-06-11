@@ -8,7 +8,6 @@ tags:
   - DataAnalysis
   - DataScience
   - Visualizations
-slug: music-recommendation-system
 keywords:
   - tech
 summary: Music Artist Recommendation System using the [Last.fm Dataset](https://grouplens.org/datasets/hetrec-2011/).

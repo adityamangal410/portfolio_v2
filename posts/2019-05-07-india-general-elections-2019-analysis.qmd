@@ -6,7 +6,6 @@ categories:
   - Projects
 tags:
   - Summary
-slug: india-general-elections-2019-analysis
 keywords:
   - tech
 summary: With a whole lot of buzz in India (and world) about the 2019 General Elections in India, I thought it would be a good idea to do some election analysis of these pivotal elections in India's history.

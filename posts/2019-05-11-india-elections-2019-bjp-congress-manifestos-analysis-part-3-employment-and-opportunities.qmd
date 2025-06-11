@@ -14,7 +14,6 @@ tags:
   - SentimentAnalysis
   - TextMining
   - Visualizations
-slug: india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance
 keywords:
   - tech
 summary: With India's 2019 General Elections around the corner, I thought it'd be

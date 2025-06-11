@@ -3,7 +3,6 @@ title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 5 Incl
   & Diversity'
 author: Aditya Mangal
 date: '2019-05-12'
-slug: india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity
 categories:
   - Projects
 tags:

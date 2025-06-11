@@ -8,7 +8,6 @@ tags:
   - DataScience
   - NLP
   - Summary
-slug: nlp-with-disaster-tweets
 keywords:
   - tech
 summary: NLP and TidyModelling in R

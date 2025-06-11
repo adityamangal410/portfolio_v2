@@ -29,9 +29,14 @@ for f in glob.glob('*.qmd'):
     date_match = re.search(r"^date:\s*'?([^'\n]+)'?", head, re.MULTILINE)
     title = title_match.group(1).strip() if title_match else f
     date = date_match.group(1).strip() if date_match else ''
-    slug_match = re.search(r'^slug:\s*(.*)', head, re.MULTILINE)
-    slug = slug_match.group(1).strip() if slug_match else f.replace('.qmd','')
-    url = f'{slug}.html'
+    output_match = re.search(r'^output-file:\s*(.*)', head, re.MULTILINE)
+    if output_match:
+        output_file = output_match.group(1).strip()
+        slug = os.path.splitext(output_file)[0]
+    else:
+        slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', f.replace('.qmd',''))
+        output_file = f'{slug}.html'
+    url = output_file
     posts.append((date, title, url))
 posts.sort(reverse=True)
 lines = [f"- [{title}]({url})" for date, title, url in posts]

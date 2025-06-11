@@ -9,7 +9,6 @@ tags:
   - TidyTuesday
   - Visualizations
   - R
-slug: economist-s-visualization-mistakes
 summary: Redrawing Economist's erroneous visualizations as described here - [Mistakes,
   we’ve drawn a few](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368)
 readingtime: '10'

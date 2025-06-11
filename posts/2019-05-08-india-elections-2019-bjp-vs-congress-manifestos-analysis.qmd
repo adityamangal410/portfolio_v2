@@ -12,7 +12,6 @@ tags:
   - R
   - TextMining
   - Visualizations
-slug: india-elections-2019-bjp-vs-congress-manifestos-analysis
 keywords:
   - tech
 summary: With India's 2019 General Elections around the corner, I thought it'd be
