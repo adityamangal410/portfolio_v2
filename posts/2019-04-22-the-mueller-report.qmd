@@ -309,7 +309,7 @@ def get_related_lines(query):
 <p>Lets see if we can catch (or fact check, if you will), any of the late night hosts’ jokes about the Mueller Report.</p>
 <div id="trevor-noah" class="section level3">
 <h3>Trevor Noah</h3>
-{{% youtube id="pVbwZg8rM2c" %}}
+{{< video https://www.youtube.com/embed/pVbwZg8rM2c >}}
 <pre class="r"><code>content %&gt;% 
   arrange(compound) %&gt;% 
   head(10) %&gt;% 
@@ -331,7 +331,7 @@ def get_related_lines(query):
 </div>
 <div id="stephen-colbert" class="section level3">
 <h3>Stephen Colbert</h3>
-{{% youtube id="7MursWMNONo" %}}
+{{< video https://www.youtube.com/embed/7MursWMNONo >}}
 <pre class="r"><code>content %&gt;% 
   slice(get_related_lines(&quot;olc&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
@@ -352,7 +352,7 @@ def get_related_lines(query):
 </div>
 <div id="jimmy-fallon" class="section level3">
 <h3>Jimmy Fallon</h3>
-{{% youtube id="TJZf0JIdqqU" %}}
+{{< video https://www.youtube.com/embed/TJZf0JIdqqU >}}
 <pre class="r"><code>content %&gt;% 
   slice(get_related_lines(&quot;crazy&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
@@ -376,7 +376,7 @@ House staff.”</p>
 </div>
 <div id="jimmy-kimmel" class="section level3">
 <h3>Jimmy Kimmel</h3>
-{{% youtube id="NB7ZMczCXEM" %}}
+{{< video https://www.youtube.com/embed/NB7ZMczCXEM >}}
 <pre class="r"><code>content %&gt;% 
   slice(get_related_lines(&quot;election interference&quot;)) %&gt;% 
   select(text, page, line)</code></pre>
