@@ -53,7 +53,7 @@ def extract_first_local_image(path):
         if not src.startswith('http://') and not src.startswith('https://'):
             return src
     # search for Markdown images
-    for m in re.finditer(r'!\[[^\]]*\]\(([^)]+)\)', text):
+    for m in re.finditer(r'!\[.*?\]\(([^)]+)\)', text):
         src = m.group(1)
         if not src.startswith('http://') and not src.startswith('https://'):
             return src

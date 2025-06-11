@@ -51,11 +51,11 @@ def extract_first_local_image(path):
         parts = text.split('---', 2)
         if len(parts) == 3:
             text = parts[2]
-    for m in re.finditer(r'<img[^>]+src=\"([^\"]+)\"', text):
+    for m in re.finditer(r'<img[^>]+src="([^"]+)"', text):
         src = m.group(1)
         if not src.startswith('http://') and not src.startswith('https://'):
             return src
-    for m in re.finditer(r'!\\[[^\\]]*\\]\\(([^)]+)\\)', text):
+    for m in re.finditer(r'!\[.*?\]\(([^)]+)\)', text):
         src = m.group(1)
         if not src.startswith('http://') and not src.startswith('https://'):
             return src
