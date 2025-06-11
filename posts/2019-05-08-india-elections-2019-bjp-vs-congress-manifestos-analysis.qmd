@@ -33,32 +33,12 @@ freeze: true
 
 
 
-<div id="TOC">
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#analysis">Analysis</a><ul>
-<li><a href="#load-libraries">Load libraries</a></li>
-<li><a href="#downloading-manifestos">Downloading Manifestos</a></li>
-<li><a href="#cleaning">Cleaning</a><ul>
-<li><a href="#page-range">Page range</a></li>
-<li><a href="#text-na">Text NA</a></li>
-<li><a href="#normalize">Normalize</a></li>
-</ul></li>
-<li><a href="#export-data">Export Data</a></li>
-</ul></li>
-<li><a href="#references">References</a></li>
-</ul>
-</div>
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
+# Introduction
 <p>With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.<br />
 In this part 1, I’ll collect and clean data and setup the ground work for the project.</p>
-</div>
-<div id="analysis" class="section level1">
-<h1>Analysis</h1>
-<div id="load-libraries" class="section level2">
-<h2>Load libraries</h2>
+# Analysis
+## Load libraries
 <pre class="r"><code>rm(list = ls())
 library(tidyverse)
 library(pdftools)
@@ -75,9 +55,7 @@ library(ggraph)
 
 theme_set(theme_light())
 use_python(&quot;~/anaconda3/bin/python&quot;)</code></pre>
-</div>
-<div id="downloading-manifestos" class="section level2">
-<h2>Downloading Manifestos</h2>
+## Downloading Manifestos
 <p>BJP’s Manifesto available at their website - <a href="https://www.bjp.org/manifestoPDF/BJP-Election-english-2019.pdf">bjp.org</a></p>
 <pre class="r"><code>bjp_txt &lt;- pdf_text(&quot;~/Downloads/BJP-Election-english-2019.pdf&quot;)
 
@@ -116,48 +94,34 @@ congress %&gt;%
 ## $ page &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
 ## $ line &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1…
 ## $ text &lt;chr&gt; &quot;CONGRESS&quot;, &quot;WILL&quot;, &quot;DELIVER&quot;, &quot;      MANIFESTO&quot;, &quot;      LOK SAB…</code></pre>
-</div>
-<div id="cleaning" class="section level2">
-<h2>Cleaning</h2>
-<div id="page-range" class="section level3">
-<h3>Page range</h3>
+## Cleaning
+### Page range
 <p>As we see from the 2 documents, first few pages contain Title and Index of the manifestos, and then moves on to the notes from the Party Leaders. The actual plans for development and work starts from page 11 in BJP’s manifesto and page 7 in Congress’. Filtering out all the other pages for exploration</p>
 <pre class="r"><code>bjp %&gt;% 
   filter(page &gt;= 11) -&gt; bjp_content</code></pre>
 <pre class="r"><code>congress %&gt;% 
   filter(page &gt;= 7) -&gt; congress_content</code></pre>
-</div>
-<div id="text-na" class="section level3">
-<h3>Text NA</h3>
+### Text NA
 <p>Dropping all the rows where we dont have any text.</p>
 <pre class="r"><code>bjp_content %&gt;% 
   filter(!is.na(text)) -&gt; bjp_content
 congress_content %&gt;% 
   filter(!is.na(text)) -&gt; congress_content</code></pre>
-</div>
-<div id="normalize" class="section level3">
-<h3>Normalize</h3>
+### Normalize
 <p>Normalizing text lines.</p>
 <pre class="r"><code>bjp_content %&gt;% 
   unnest_tokens(text, text, token = &quot;lines&quot;) -&gt; bjp_content
 congress_content %&gt;% 
   unnest_tokens(text, text, token = &quot;lines&quot;) -&gt; congress_content</code></pre>
 <p>I’ll take a deep dive into individual topics of the manifestos in separate blog posts. For now, I will export our cleaned and normalized data for future analysis.</p>
-</div>
-</div>
-<div id="export-data" class="section level2">
-<h2>Export Data</h2>
+## Export Data
 <pre class="r"><code>bjp_content %&gt;% 
   write_csv(&quot;../data/indian_election_2019/bjp_manifesto_clean.csv&quot;)
 congress_content %&gt;% 
   write_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)</code></pre>
 <p>Stay Tuned!</p>
-</div>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+# References
 <ul>
 <li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/">Part 2 Economic Growth</a></li>
 <li>For all the parts go to Project Summary Page - <a href="/2019/05/india-general-elections-2019-analysis/">India General Elections 2019 Analysis</a></li>
 </ul>
-</div>

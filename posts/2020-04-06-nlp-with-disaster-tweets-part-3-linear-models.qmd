@@ -27,32 +27,12 @@ freeze: true
 
 
 
-<div id="TOC">
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#analysis">Analysis</a><ul>
-<li><a href="#load-libraries">Load Libraries</a></li>
-<li><a href="#loading-processed-data-from-previous-part">Loading processed data from previous part</a></li>
-<li><a href="#feature-preprocessing-and-engineering">Feature preprocessing and engineering</a></li>
-<li><a href="#modelling">Modelling</a><ul>
-<li><a href="#lasso-regression-using-glmnet">Lasso Regression using glmnet</a></li>
-</ul></li>
-<li><a href="#model-calibration">Model Calibration</a></li>
-</ul></li>
-<li><a href="#summary">Summary</a></li>
-<li><a href="#references">References</a></li>
-</ul>
-</div>
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
+# Introduction
 <p>In this <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.<br />
 In this part 3 for Linear Modelling, I will use the processed data generated in <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">Part 1</a> to train logistic regression based model with regularization in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a> about Nearest Neighbors model, I will do a comparative study among these 2 modelling algorithms.</p>
-</div>
-<div id="analysis" class="section level1">
-<h1>Analysis</h1>
-<div id="load-libraries" class="section level2">
-<h2>Load Libraries</h2>
+# Analysis
+## Load Libraries
 <pre class="r"><code>rm(list = ls())
 library(tidyverse)
 library(ggplot2)
@@ -62,9 +42,7 @@ library(vip)
 library(silgelib)
 
 theme_set(theme_plex())</code></pre>
-</div>
-<div id="loading-processed-data-from-previous-part" class="section level2">
-<h2>Loading processed data from previous part</h2>
+## Loading processed data from previous part
 <pre class="r"><code>tweets &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot;)
 tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)</code></pre>
 <pre class="r"><code>tweets %&gt;% 
@@ -73,9 +51,7 @@ tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_pr
 <pre class="r"><code>tweets_final %&gt;% 
   dim</code></pre>
 <pre><code>## [1] 3263  829</code></pre>
-</div>
-<div id="feature-preprocessing-and-engineering" class="section level2">
-<h2>Feature preprocessing and engineering</h2>
+## Feature preprocessing and engineering
 <p>I will use the same steps of feature preprocessing and engineering from <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a> here, in order to have an apples to apples comparison of the 2 models.</p>
 <pre class="r"><code>tweets %&gt;% 
   mutate(target = as.factor(target),
@@ -105,14 +81,10 @@ recipe(target ~ ., data = tweets_train) %&gt;%
 tweets_prep &lt;- tweets_recipe %&gt;% 
   prep(training = tweets_train, 
        strings_as_factors = FALSE)</code></pre>
-</div>
-<div id="modelling" class="section level2">
-<h2>Modelling</h2>
-<div id="lasso-regression-using-glmnet" class="section level3">
-<h3>Lasso Regression using glmnet</h3>
+## Modelling
+### Lasso Regression using glmnet
 <p>Let’s build a basic logistic regression model with some default value of regularization penalty.</p>
-<div id="basic" class="section level4">
-<h4>Basic</h4>
+#### Basic
 <pre class="r"><code>lasso_spec &lt;- logistic_reg(penalty = 0.1, mixture = 1) %&gt;% 
   set_engine(&quot;glmnet&quot;) %&gt;% 
   set_mode(&quot;classification&quot;) 
@@ -144,9 +116,7 @@ lasso_fit %&gt;%
 ## 10 (Intercept)     6  -0.288  0.0951  5.21e- 2
 ## # … with 11,674 more rows</code></pre>
 <p>Above we see the familiar output of glmnet. Now, Let’s try and tune the regularization penalty and visualize the results.</p>
-</div>
-<div id="tuning-lasso-penalty" class="section level4">
-<h4>Tuning lasso penalty</h4>
+#### Tuning lasso penalty
 <p>Using 10-fold cross validation and a few different values of regularization penalty.</p>
 <pre class="r"><code>set.seed(1234)
 folds &lt;- vfold_cv(tweets_train, strata = target, v = 10, repeats = 3)
@@ -264,11 +234,7 @@ lasso_last_fit %&gt;%
        subtitle = &quot;&#39;num_hashtags&#39; feature gets to zero coefficient very soon in comparison&quot;)</code></pre>
 <p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>All feature coefficients tend to move towards zero as we increase the lambda penalty parameter, some more quickly than others.</p>
-</div>
-</div>
-</div>
-<div id="model-calibration" class="section level2">
-<h2>Model Calibration</h2>
+## Model Calibration
 <p>Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let’s compare our 2 models, lasso regression here and the best k-nearest neighbor model from <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a>, by plotting calibration plots for each of them.</p>
 <pre class="r"><code>readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;% 
   collect_predictions() %&gt;% 
@@ -312,14 +278,9 @@ lasso_last_fit %&gt;%
 The KNN model calibration plot shows that the curve is above the diagonal, i.e. the model is frequently under estimating the predicted probabilities.<br />
 However, the lasso regression seems to be well calibrated out of the box. That’s a sign of good stable algorithm and training procedure.<br />
 Note that all the predicted probabilities here are calculated on the cross validation set.</p>
-</div>
-</div>
-<div id="summary" class="section level1">
-<h1>Summary</h1>
+# Summary
 <p>In the next part of this series, I will start building models with a different class of function space, like piece-wise constant functions and linear combination of piece-wise constant functions classes i.e. simple decision trees and gradient boosted trees respectively. As we see in this blog post that the class of linear functions do give better performing models and we learnt our problem space to be leaning towards flexible models in <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a>, I expect to see better results for different, more flexible modelling approaches.</p>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+# References
 <ul>
 <li>Project Summary Page - <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with disaster tweets: Summary</a></li>
 <li>Project Part 1 - <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP with Disaster Tweets: Part 1 Data Preparation</a></li>
@@ -327,4 +288,3 @@ Note that all the predicted probabilities here are calculated on the cross valid
 <li>Lasso Regression using <a href="https://juliasilge.com/blog/lasso-the-office/" target="_blank">Tidymodels by Julia Silge</a>.</li>
 <li>Introduction to Statistical Learning - <a href="https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370" target="_blank">Book</a></li>
 </ul>
-</div>

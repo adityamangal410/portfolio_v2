@@ -29,35 +29,18 @@ freeze: true
 
 
 
-<div id="TOC">
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#analysis">Analysis</a><ul>
-<li><a href="#cleaning-up-workspace-and-loading-required-libraries">Cleaning up workspace and loading required libraries</a></li>
-<li><a href="#obtaining-data">Obtaining Data</a></li>
-<li><a href="#scrubbing-data">Scrubbing data</a></li>
-<li><a href="#exploring-data">Exploring Data</a></li>
-</ul></li>
-</ul>
-</div>
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
+# Introduction
 <p>Goal of this Visualization task is to create a visualization for the <a href="https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1" target="_blank">Drug and Medicine Exports data for different countries.</a></p>
 <p>In this blog post, I’m trying to find the leading countries in Export across these 5 years.</p>
-</div>
-<div id="analysis" class="section level1">
-<h1>Analysis</h1>
-<div id="cleaning-up-workspace-and-loading-required-libraries" class="section level2">
-<h2>Cleaning up workspace and loading required libraries</h2>
+# Analysis
+## Cleaning up workspace and loading required libraries
 <pre class="r"><code>rm(list = ls())</code></pre>
 <pre class="r"><code>library(tidyverse) #Data Wrangling
 library(&quot;httr&quot;)
 library(readxl) #Data Ingestion
 library(ggplot2) #Data Visualization</code></pre>
-</div>
-<div id="obtaining-data" class="section level2">
-<h2>Obtaining Data</h2>
+## Obtaining Data
 <p>Reading and viewing the dataset</p>
 <pre class="r"><code>GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
 <pre class="r"><code>drugs &lt;- read_excel(tf)</code></pre>
@@ -94,9 +77,7 @@ library(ggplot2) #Data Visualization</code></pre>
 ##                     3rd Qu.:2016   3rd Qu.:3.293e+08  
 ##                     Max.   :2017   Max.   :3.405e+11  
 ##                                    NA&#39;s   :266</code></pre>
-</div>
-<div id="scrubbing-data" class="section level2">
-<h2>Scrubbing data</h2>
+## Scrubbing data
 <p>Removing rows with NA for the purposes of this visualization</p>
 <pre class="r"><code>drugs = drugs %&gt;% 
   filter(!is.na(`Exports (USD)`))</code></pre>
@@ -119,9 +100,7 @@ library(ggplot2) #Data Visualization</code></pre>
 ##  9 Italy                      76012918000
 ## 10 Netherlands                59659401000
 ## # … with 210 more rows</code></pre>
-</div>
-<div id="exploring-data" class="section level2">
-<h2>Exploring Data</h2>
+## Exploring Data
 <p>Lets plot the countries which were among the top 5 exporters each year and each of their performance over these 5 years.</p>
 <pre class="r"><code>top5ExportersByYear = drugs %&gt;% 
   filter(Exporter!=&quot;World&quot;) %&gt;% 
@@ -200,5 +179,3 @@ yearlyTop10s</code></pre>
 <pre class="r"><code>plotTop10(yearlyTop10s %&gt;% filter(Year==2016))</code></pre>
 <p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
 <p>As can be seen Germany remains the biggest exporter of Drugs and Medicines over the past 5 years.</p>
-</div>
-</div>

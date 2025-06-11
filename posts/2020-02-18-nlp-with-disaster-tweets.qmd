@@ -25,30 +25,18 @@ freeze: true
 
 
 
-<div id="TOC">
-<ul>
-<li><a href="#project-summary">Project Summary</a></li>
-<li><a href="#project-goals">Project Goals</a></li>
-<li><a href="#series">Series</a></li>
-</ul>
-</div>
 
-<div id="project-summary" class="section level1">
-<h1>Project Summary</h1>
+# Project Summary
 <p>With this project, I’ll apply and practice various NLP techniques, along with trying my hands on the <a href="https://github.com/tidymodels/tidymodels" target="_blank">tidymodels framework</a>.
 I will use the <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle for its dataset and also evaluating model performance using submissions.</p>
-</div>
-<div id="project-goals" class="section level1">
-<h1>Project Goals</h1>
+# Project Goals
 <ol style="list-style-type: decimal">
 <li><p>Apply and improve NLP skills in R &amp; Python.</p></li>
 <li><p>Learn and apply tidymodels modelling framework to do reproducible and effective science.</p></li>
 <li><p>Focus more on model explainability and relative comparison of different algorithms.</p></li>
 <li><p>Improve skills in PyTorch deep learning framework for model training and prediction.</p></li>
 </ol>
-</div>
-<div id="series" class="section level1">
-<h1>Series</h1>
+# Series
 <p>The following series of posts tackle the above project goals sequentially</p>
 <ul>
 <li>Project Part 1 - <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP with Disaster Tweets: Part 1 Data Preparation</a><br />
@@ -60,4 +48,3 @@ I will use the <a href="https://www.kaggle.com/c/nlp-getting-started" target="_b
 <li>Project Part 6 - <a href="/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/" target="_blank">NLP with Disaster Tweets: Part 6 Multi Layer Perceptron</a></li>
 <li>Project Part 7 - <a href="/2020/09/nlp-with-disaster-tweets-part-7-vanilla-rnn-and-gru.en-us/" target="_blank">NLP with Disaster Tweets: Part 7 Vanilla RNN and GRU</a></li>
 </ul>
-</div>

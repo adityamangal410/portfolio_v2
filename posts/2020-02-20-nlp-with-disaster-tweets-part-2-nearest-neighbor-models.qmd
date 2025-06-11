@@ -27,35 +27,12 @@ freeze: true
 
 
 
-<div id="TOC">
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#analysis">Analysis</a><ul>
-<li><a href="#load-libraries">Load Libraries</a></li>
-<li><a href="#loading-processed-data-from-previous-part">Loading processed data from previous part</a></li>
-<li><a href="#feature-preprocessing-and-engineering">Feature preprocessing and engineering</a><ul>
-<li><a href="#split-data">Split data</a></li>
-<li><a href="#preparation-recipe">Preparation Recipe</a></li>
-</ul></li>
-<li><a href="#modelling">Modelling</a><ul>
-<li><a href="#baseline-model">Baseline model</a></li>
-<li><a href="#k-nearest-neighbor-model">K-Nearest Neighbor model</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#summary">Summary</a></li>
-<li><a href="#references">References</a></li>
-</ul>
-</div>
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
+# Introduction
 <p>In this <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.<br />
 In this part 2 for Nearest Neighbor Modelling, I will use the processed data generated in <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">Part 1</a> to train nearest neighbor models in order to predict if a tweet is about a real disaster or not using the tidymodels framework.</p>
-</div>
-<div id="analysis" class="section level1">
-<h1>Analysis</h1>
-<div id="load-libraries" class="section level2">
-<h2>Load Libraries</h2>
+# Analysis
+## Load Libraries
 <pre class="r"><code>rm(list = ls())
 library(tidyverse)
 library(ggplot2)
@@ -63,9 +40,7 @@ library(tidymodels)
 library(silgelib)
 
 theme_set(theme_plex())</code></pre>
-</div>
-<div id="loading-processed-data-from-previous-part" class="section level2">
-<h2>Loading processed data from previous part</h2>
+## Loading processed data from previous part
 <pre class="r"><code>tweets &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot;)
 tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)</code></pre>
 <pre class="r"><code>tweets %&gt;% 
@@ -74,9 +49,7 @@ tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_pr
 <pre class="r"><code>tweets_final %&gt;% 
   dim</code></pre>
 <pre><code>## [1] 3263  829</code></pre>
-</div>
-<div id="feature-preprocessing-and-engineering" class="section level2">
-<h2>Feature preprocessing and engineering</h2>
+## Feature preprocessing and engineering
 <pre class="r"><code>tweets %&gt;% 
   mutate(target = as.factor(target),
          id = as.character(id)) -&gt; tweets</code></pre>
@@ -87,8 +60,7 @@ tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_pr
 ##   &lt;fct&gt;  &lt;int&gt;
 ## 1 0       4342
 ## 2 1       3271</code></pre>
-<div id="split-data" class="section level3">
-<h3>Split data</h3>
+### Split data
 <p>Splitting the data into 3 sets. A test set of 10% data, a cross validation set of 20% data and a training set of 70% data. Training and validation sets will be used for training, tuning and validating performance of models and comparing among them. Test set will only be used for final estimation of the model performance on unknown data.</p>
 <pre class="r"><code>set.seed(42)
 tweets_split &lt;- initial_split(tweets, prop = 0.1, strata = target)
@@ -106,9 +78,7 @@ tweets_cv &lt;- testing(tweets_split)</code></pre>
 <pre><code>## [1] 1522  830</code></pre>
 <pre class="r"><code>dim(tweets_test)</code></pre>
 <pre><code>## [1] 763 830</code></pre>
-</div>
-<div id="preparation-recipe" class="section level3">
-<h3>Preparation Recipe</h3>
+### Preparation Recipe
 <p>I will use the recipe package from tidymodels to generate a recipe for data preprocessing and feature engineering.</p>
 <pre class="r"><code>recipe(target ~ ., data = tweets_train) %&gt;% 
   update_role(id, new_role = &quot;ID&quot;) %&gt;% 
@@ -140,12 +110,8 @@ tweets_cv &lt;- testing(tweets_split)</code></pre>
 <pre class="r"><code>tweets_prep &lt;- tweets_recipe %&gt;% 
   prep(training = tweets_train, 
        strings_as_factors = FALSE)</code></pre>
-</div>
-</div>
-<div id="modelling" class="section level2">
-<h2>Modelling</h2>
-<div id="baseline-model" class="section level3">
-<h3>Baseline model</h3>
+## Modelling
+### Baseline model
 <p>I will first create a baseline model to beat. In this case, we can predict randomly in the ratio of target counts and evaluate the model performance accordingly.</p>
 <pre class="r"><code>tweets_prep %&gt;% 
   juice() %&gt;% 
@@ -206,12 +172,9 @@ tweets_prep %&gt;%
                                    prob = probs, replace = T))) %&gt;% 
   select(id, target) %&gt;% 
   write_csv(&quot;../data/nlp_with_disaster_tweets/submissions/baseline_cvf_57_testf_57.csv&quot;)</code></pre>
-</div>
-<div id="k-nearest-neighbor-model" class="section level3">
-<h3>K-Nearest Neighbor model</h3>
+### K-Nearest Neighbor model
 <p>Let’s build a basic KNN model with some default number of neighbors to see how the modelling is done in this framework and checkout how the modelling output looks like.</p>
-<div id="basic" class="section level4">
-<h4>Basic</h4>
+#### Basic
 <pre class="r"><code>knn_spec &lt;- nearest_neighbor(neighbors = 3) %&gt;% 
   set_engine(&quot;kknn&quot;) %&gt;% 
   set_mode(&quot;classification&quot;)
@@ -232,9 +195,7 @@ wf_fit$fit$MISCLASS</code></pre>
 ## 3 0.3521021</code></pre>
 <p>The above shows a simple K-nearest neighbors model using the “kknn” engine. Gives about 0.3521021 of minimal misclassification.
 Let’s try and tune the number of neighbors (k) and see if we can interpret the underlying problem space.</p>
-</div>
-<div id="tuning-number-of-neighbors" class="section level4">
-<h4>Tuning number of neighbors</h4>
+#### Tuning number of neighbors
 <p>Using 5-fold cross validation and values of K going from 1 to 100.</p>
 <pre class="r"><code>set.seed(1234)
 folds &lt;- vfold_cv(tweets_train, strata = target, v = 5, repeats = 1)
@@ -317,21 +278,13 @@ knn_last_fit %&gt;%
 ## 2 f_meas   binary         0.756
 ## 3 roc_auc  binary         0.687</code></pre>
 <p>Our final fit knn model with K=25 gives an f1-score of 0.7560538, which is much higher than our baseline model on the same CV dataset.</p>
-</div>
-</div>
-</div>
-</div>
-<div id="summary" class="section level1">
-<h1>Summary</h1>
+# Summary
 <p>We can hence learn quite a few things about our underlying problem space by using this basic modelling algorithm K-nearest neighbors and use our learning in further model selection and tuning and also generate a fairly robust model that predicts quite effectively as compared to the baseline model.<br />
 Also, this tidymodels framework provides a good modelling structure which can be easily reproduced and used to train a variety of models. In the next part of this series, I will work on another classic modelling algorithm, Lasso Regression, where we will also see if we can identify if there any of these features are much more important than the others and if our 2 custom features are useful.</p>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+# References
 <ul>
 <li>Project Summary Page - <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with disaster tweets: Summary</a></li>
 <li>Project Part 1 - <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP with Disaster Tweets: Part 1 Data Preparation</a></li>
 <li>Lasso Regression using <a href="https://juliasilge.com/blog/lasso-the-office/" target="_blank">Tidymodels by Julia Silge</a>.</li>
 <li>Introduction to Statistical Learning - <a href="https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370" target="_blank">Book</a></li>
 </ul>
-</div>
