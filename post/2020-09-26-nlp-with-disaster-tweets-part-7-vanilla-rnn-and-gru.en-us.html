@@ -114,7 +114,7 @@ class DisasterTweetsClassifierRNN(pl.LightningModule):
 <p>Vanilla RNNs suffer from the problem of Vanishing Gradients. In simple words, the basic RNNs discussed above are more impacted by near word effects instead of words which are far away. So, for sentences with longer length, at each RNN step, the model is only able to carry information from the previous few words and not from the words which are farther away but may have more relevance to the word in current step.<br />
 The issue mainly arises because we completely modify hidden state and weights at each step based on the currently incoming word and the hidden state vector becomes an information bottleneck. GRUs try to fix this problem by controlling how much of the previous hidden vector is forgotten and how much of it is kept/updated. Another popular variant to fix this problem is the LSTM (Long Short Term Memory) network which tries to keep a separate vector (cell state) as “memory” to hold information over long sequences. However, I am using GRU in my work in favour of limited compute power.</p>
 <p>This lecture by Abigail See at Stanford is the best resource IMO to understand the issues with Vanilla RNNs and how GRUs and LSTMs work to try and resolve them.</p>
-{{% youtube id="QEw0qEa0E50" %}}
+<iframe width="560" height="315" src="https://www.youtube.com/embed/QEw0qEa0E50" frameborder="0" allowfullscreen></iframe>
 <p>For our purposes, we create the GRU network as follows -</p>
 <pre class="python"><code>import pytorch_lightning as pl
 
