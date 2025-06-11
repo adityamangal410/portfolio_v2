@@ -99,3 +99,10 @@ These steps create a temporary site from any branch so you can review changes be
    - Netlify will build the project and provide a **Draft URL** you can open in the browser.
 5. Whenever you update the branch, repeat step 4 to redeploy the preview.
 6. Once satisfied, you can delete the temporary site from the Netlify dashboard.
+
+## Netlify build configuration
+
+The site is built on Netlify using the Quarto build plugin. The repository
+includes a `netlify.toml` file that installs Quarto and runs `quarto render`.
+Python packages required during rendering are listed in `requirements.txt` and
+are installed automatically during the build.
