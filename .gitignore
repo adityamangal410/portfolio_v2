@@ -12,3 +12,10 @@ _site/
 package-lock.json
 
 /.quarto/
+
+# Python virtual environment
+venv/
+.venv/
+*.pyc
+__pycache__/
+.python-version
