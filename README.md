@@ -76,7 +76,7 @@ add in a post will therefore gain their own page without extra work.
 Follow these steps to review changes locally before merging:
 
 1. **Install Quarto** by downloading it from [quarto.org](https://quarto.org/docs/get-started/).
-2. Install Python packages used for rendering with `pip install ipykernel pyyaml nbformat nbclient`.
+2. Install Python packages used for rendering with `pip install -r requirements.txt`.
 3. Clone the repository and check out the pull request branch.
 4. Run `quarto render` to build the site and ensure it compiles without errors.
 5. Preview the result with `quarto preview` and browse to `http://localhost:4200`.
@@ -99,3 +99,30 @@ These steps create a temporary site from any branch so you can review changes be
    - Netlify will build the project and provide a **Draft URL** you can open in the browser.
 5. Whenever you update the branch, repeat step 4 to redeploy the preview.
 6. Once satisfied, you can delete the temporary site from the Netlify dashboard.
+
+## Netlify build configuration
+
+The site is built on Netlify using the Quarto build plugin. The repository
+includes a `netlify.toml` file that installs Quarto and runs `quarto render`.
+Python packages required during rendering are listed in `requirements.txt` and
+are installed automatically during the build.
+
+### Updating Netlify settings
+
+If your Netlify site was previously configured for Hugo, update the build settings:
+
+1. In **Site settings → Build & deploy → Build settings**, change the **Build command** to:
+   ```
+   pip install -r requirements.txt && quarto render
+   ```
+2. Set the **Publish directory** to `_site`.
+3. Remove any `HUGO_` environment variables that are no longer needed.
+
+With these options saved, subsequent builds will use the `netlify.toml` file in the repository.
+
+### Continuous integration
+
+The **Quarto Publish** workflow in `.github/workflows/quarto.yml` installs
+dependencies from `requirements.txt` before running `quarto render`. Keep this
+file updated whenever you modify the Python packages so the CI environment
+matches your local setup.

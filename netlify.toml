@@ -1,0 +1,10 @@
+
+[build]
+publish = "_site"
+command = "pip install -r requirements.txt && quarto render"
+
+[build.environment]
+PYTHON_VERSION = "3.11"
+
+[[plugins]]
+package = "@quarto/netlify-plugin-quarto"
