@@ -59,3 +59,22 @@
   background-color: #ddd;
 }
 
+.about-img {
+  text-align: center;
+  padding-right: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.about-img img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.about-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
