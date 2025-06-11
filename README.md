@@ -106,3 +106,16 @@ The site is built on Netlify using the Quarto build plugin. The repository
 includes a `netlify.toml` file that installs Quarto and runs `quarto render`.
 Python packages required during rendering are listed in `requirements.txt` and
 are installed automatically during the build.
+
+### Updating Netlify settings
+
+If your Netlify site was previously configured for Hugo, update the build settings:
+
+1. In **Site settings → Build & deploy → Build settings**, change the **Build command** to:
+   ```
+   pip install -r requirements.txt && quarto render
+   ```
+2. Set the **Publish directory** to `_site`.
+3. Remove any `HUGO_` environment variables that are no longer needed.
+
+With these options saved, subsequent builds will use the `netlify.toml` file in the repository.
