@@ -28,30 +28,11 @@ freeze: true
 
 
 
-<div id="TOC">
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#classifier">Classifier</a><ul>
-<li><a href="#network-architecture">Network Architecture</a><ul>
-<li><a href="#vanilla-rnns-for-sentence-classification">Vanilla RNNs for Sentence Classification</a></li>
-<li><a href="#gated-recurrent-units-gru-for-sentence-classification">Gated Recurrent Units (GRU) for Sentence Classification</a></li>
-</ul></li>
-<li><a href="#forward-method">Forward Method</a></li>
-</ul></li>
-<li><a href="#the-training-routine">The Training Routine</a></li>
-<li><a href="#results">Results</a></li>
-<li><a href="#summary">Summary</a></li>
-<li><a href="#references">References</a></li>
-</ul>
-</div>
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
+# Introduction
 <p>In this <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.<br />
 In this part 7 for building RNNs, I will use the data module generated in <a href="/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/" target="_blank">Part 5</a> to create a RNN models to predict if the tweet is about a real disaster. Following up from the previous <a href="/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/" target="_blank">Part 6</a> about multi-layer perceptron model, I will generate the prediction output of this model on the validation set and compare results.</p>
-</div>
-<div id="classifier" class="section level1">
-<h1>Classifier</h1>
+# Classifier
 <p>I will be using the <a href="https://github.com/PyTorchLightning/pytorch-lightning" target="_blank">pytorch-lightning</a> framework to build a classifier class.<br />
 Let’s follow the same overall flow of modelling that we had in <a href="/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/" target="_blank">Part 6</a>. The training pipeline will have the following components -</p>
 <ul>
@@ -63,15 +44,12 @@ Let’s follow the same overall flow of modelling that we had in <a href="/2020/
 <li><strong>Training Step / Val Step / Test Step</strong></li>
 </ul>
 <p>Note that the Loss Function, the Optimizer and the training/val/test steps remains the same as our Multilayer Perceptron from <a href="/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/" target="_blank">Part 6</a>, so I will only discuss the remaining 2 components in this part.</p>
-<div id="network-architecture" class="section level2">
-<h2>Network Architecture</h2>
+## Network Architecture
 <p>The essential idea of a Recurrent Neural Network is to process the words (tokens) in an input sentence sequentially, by applying the same weights W repeatedly to the output of previous word. The output at each processed word is called the hidden state. It looks like the following pictorial representation.</p>
 <div class="figure">
 <img src="https://lh3.googleusercontent.com/pw/ACtC-3eaiycpvplnp4dqTjPVk3La1j605Lx0oqD3kbX_zgljdIqRAVKi_lvs1XQq9ET_PHfHEVpwrNMcx0YbWYy3KTTKkZnnECkoYtSud6OqrOQVjk-hLOxHOH3liJvkyiLhxLfjn0jCU6sVHRCEBGViLON5ew=w1423-h670-no?authuser=1" alt="" />
 <p class="caption">Recurrent Neural Network Pictorial representation from <a href="https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf" class="uri">https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf</a></p>
-</div>
-<div id="vanilla-rnns-for-sentence-classification" class="section level3">
-<h3>Vanilla RNNs for Sentence Classification</h3>
+### Vanilla RNNs for Sentence Classification
 <p>In our usecase, we will use the above vanilla RNN to create a “Sentence Encoding” i.e. a vector of values that represent the given sentence and then pass that vector through another linear layer to make our final binary prediction of whether the given tweets is about a real disaster or not.</p>
 <p>The network architecture looks as follows.</p>
 <pre class="python"><code>import pytorch_lightning as pl
@@ -112,9 +90,7 @@ class DisasterTweetsClassifierRNN(pl.LightningModule):
 <li>We also pass the <code>bidirectional</code> flag to the RNN object. Like we discussed earlier, RNN processes input sentence sequentially, we can process the sentence from beginning to end or end to beginning. Usually, processing from both the directions and using the concatenated vector of both directions leads to higher predictive power.</li>
 <li>Finally we have 2 linear layers which transform the RNN output into our 2 layer output which can be used to calculate cross entropy loss.</li>
 </ul>
-</div>
-<div id="gated-recurrent-units-gru-for-sentence-classification" class="section level3">
-<h3>Gated Recurrent Units (GRU) for Sentence Classification</h3>
+### Gated Recurrent Units (GRU) for Sentence Classification
 <p>Vanilla RNNs suffer from the problem of Vanishing Gradients. In simple words, the basic RNNs discussed above are more impacted by near word effects instead of words which are far away. So, for sentences with longer length, at each RNN step, the model is only able to carry information from the previous few words and not from the words which are farther away but may have more relevance to the word in current step.<br />
 The issue mainly arises because we completely modify hidden state and weights at each step based on the currently incoming word and the hidden state vector becomes an information bottleneck. GRUs try to fix this problem by controlling how much of the previous hidden vector is forgotten and how much of it is kept/updated. Another popular variant to fix this problem is the LSTM (Long Short Term Memory) network which tries to keep a separate vector (cell state) as “memory” to hold information over long sequences. However, I am using GRU in my work in favour of limited compute power.</p>
 <p>This lecture by Abigail See at Stanford is the best resource IMO to understand the issues with Vanilla RNNs and how GRUs and LSTMs work to try and resolve them.</p>
@@ -136,15 +112,11 @@ class DisasterTweetsClassifierGRU(DisasterTweetsClassifierRNN):
 <li>Note that this class has the vanilla RNN class as a parent so it borrows almost all the implementation from there.</li>
 <li>The only difference in this GRU network is the usage of <code>torch.nn.GRU</code> instead of <code>torch.nn.RNN</code> in order to process the input sentences.</li>
 </ul>
-</div>
-</div>
-<div id="forward-method" class="section level2">
-<h2>Forward Method</h2>
+## Forward Method
 <p>The simplest and most basic way to create a sentence encoding using the above RNN is by just using the final hidden state of the sentence as the Sentence Encoding. Pictorially it looks like this.</p>
 <div class="figure">
 <img src="https://lh3.googleusercontent.com/pw/ACtC-3fPQJK7h2FE2nDDMaJDF7_4kObyfuQVgJHeF_nDF4Zav0VOHN7klITJLoZ6NujDfDROUwd6dA9dbdWMdwX2rQ_KRBiOHdDj_53xm9B1b0J7wK5SRpJj1FCpRqPsBF757G0EtHWX67jt9ijNKHVyQBbURg=w1494-h937-no?authuser=1" alt="" />
 <p class="caption">Recurrent Neural Network used for Sentence Classification Basic - Pictorial representation from <a href="https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf" class="uri">https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf</a></p>
-</div>
 <p>A usually better way is to do an element wise aggregation (max or mean) of all hidden states as theoretically it will contain information from all parts of the sentence while contributing to sentence encoding.</p>
 <div class="figure">
 <img src="https://lh3.googleusercontent.com/pw/ACtC-3dQIECTYZtxUJcxjj_ddSvc1Xj6fkDoSH_CPkjuGY-jpHh7Eicz0GHDFi58naBpwkOf_HG3PrMG0CvNbDt3Fieb76Xo3AqpmYeraKBq2Mspf3LwODe_8II2pgpHUbzzY0GAJM79M4evMd8Dy4CRKsjRcA=w1464-h939-no?authuser=1" alt="" />
@@ -175,12 +147,9 @@ class DisasterTweetsClassifierGRU(DisasterTweetsClassifierRNN):
 This final vector then gets passed through our <code>fc</code> fully connected layers and generates the output which gets returned.</p>
 </div>
 </div>
-<div id="the-training-routine" class="section level1">
-<h1>The Training Routine</h1>
+# The Training Routine
 <p>The training routine for these networks remains almost exactly the same as the one in <a href="/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/" target="_blank">Part 6</a>. Instead of instantiating an object of class <code>DisasterTweetsClassifierMLP</code>, we create objects of class <code>DisasterTweetsClassifierRNN</code> or <code>DisasterTweetsClassifierGRU</code>.</p>
-</div>
-<div id="results" class="section level1">
-<h1>Results</h1>
+# Results
 <table style="width:100%;">
 <colgroup>
 <col width="15%" />
@@ -274,13 +243,9 @@ This final vector then gets passed through our <code>fc</code> fully connected l
 <li>Aggregating hidden layers is better than just using the last hidden layer as the sentence encoding.</li>
 <li>Bidirectional GRU with Mean aggregation of hidden layers gives the best result of <code>0.7392739273927393</code> F1 Score. This F1 score is lower in comparison to the multilayer perceptron that we built in <a href="/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/" target="_blank">Part 6</a> and also much lower than the XGBoost tree we built in Part 4.</li>
 </ul>
-</div>
-<div id="summary" class="section level1">
-<h1>Summary</h1>
+# Summary
 <p>In this part of the series, we built a few Recurrent Neural Networks to predict if a tweet is about a real disaster using the PyTorch Lightning framework. We built this on top of the Lightning Data Module that we discussed in the previous post of this series. We can see that we get a good performance from this network and can hopefully with further hyperparameter tuning improve it. The full code for this post can be viewed on my github <a href="https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/3.3-am-pl-rnn-glove-disaster-tweets.py" target="_blank">here</a>. In the next part, I will use the Transformer Architecture based pre-trained models like BERT to generate predictions for our usecase.</p>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+# References
 <ul>
 <li>Project Summary Page - <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with disaster tweets: Summary</a></li>
 <li>Project Part 1 - <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP with Disaster Tweets: Part 1 Data Preparation</a></li>
@@ -295,4 +260,3 @@ This final vector then gets passed through our <code>fc</code> fully connected l
 <li>Full DisasterTweetsClassifierRNN implementation - <a href="https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/3.3-am-pl-rnn-glove-disaster-tweets.py" target="_blank">github</a></li>
 <li>Stanford CS224N NLP with Deep Learning - <a href="https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf" target="_blank">Lecture Notes</a></li>
 </ul>
-</div>

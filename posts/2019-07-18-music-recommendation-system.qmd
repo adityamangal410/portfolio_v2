@@ -30,31 +30,11 @@ freeze: true
 <link href="/rmarkdown-libs/sequences/sequences.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/sunburst-binding/sunburst.js"></script>
 
-<div id="TOC">
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#analysis">Analysis</a><ul>
-<li><a href="#load-libraries">Load Libraries</a></li>
-<li><a href="#obtain-data">Obtain Data</a></li>
-<li><a href="#scrub-and-explore">Scrub and Explore</a><ul>
-<li><a href="#ratings">Ratings</a></li>
-<li><a href="#friends">Friends</a></li>
-<li><a href="#metadata">Metadata</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#summary">Summary</a></li>
-<li><a href="#references">References</a></li>
-</ul>
-</div>
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
+# Introduction
 <p>Music Artist Recommendation System using the <a href="https://grouplens.org/datasets/hetrec-2011/">Last.fm Dataset</a>. Exploratory data analysis.</p>
-</div>
-<div id="analysis" class="section level1">
-<h1>Analysis</h1>
-<div id="load-libraries" class="section level2">
-<h2>Load Libraries</h2>
+# Analysis
+## Load Libraries
 <pre class="r"><code>rm(list = ls())
 library(tidyverse)
 library(tidylog)
@@ -66,9 +46,7 @@ library(htmltools)
 library(htmlwidgets)
 
 theme_set(theme_light())</code></pre>
-</div>
-<div id="obtain-data" class="section level2">
-<h2>Obtain Data</h2>
+## Obtain Data
 <pre class="r"><code>artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/artists.dat&quot;)
 tags &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/tags.dat&quot;)
 ratings &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_artists.dat&quot;)
@@ -107,11 +85,8 @@ user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_tagge
 ## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
 ## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, …
 ## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 4337, 41…</code></pre>
-</div>
-<div id="scrub-and-explore" class="section level2">
-<h2>Scrub and Explore</h2>
-<div id="ratings" class="section level3">
-<h3>Ratings</h3>
+## Scrub and Explore
+### Ratings
 <pre class="r"><code>ratings %&gt;% 
   head()</code></pre>
 <pre><code>## # A tibble: 6 x 3
@@ -216,9 +191,7 @@ grid.arrange(p +
 ##  9 190        400
 ## 10 498        399
 ## # … with 17,622 more rows</code></pre>
-</div>
-<div id="friends" class="section level3">
-<h3>Friends</h3>
+### Friends
 <pre class="r"><code>friends %&gt;% 
   glimpse()</code></pre>
 <pre><code>## Rows: 25,434
@@ -248,9 +221,7 @@ grid.arrange(p +
 ##  9 1300      89
 ## 10 390       88
 ## # … with 1,882 more rows</code></pre>
-</div>
-<div id="metadata" class="section level3">
-<h3>Metadata</h3>
+### Metadata
 <pre class="r"><code>metadata %&gt;% 
   glimpse()</code></pre>
 <pre><code>## Rows: 186,479
@@ -372,20 +343,17 @@ metadata %&gt;%
 snb &lt;- htmlwidgets::prependContent(snb, htmltools::h2(&quot;Sunburst of most popular artists in 5 most popular tags&quot;))
 snb &lt;- htmlwidgets::prependContent(snb, htmltools::h5(&quot;Hover over to the see the artists and tags&quot;))
 snb</code></pre>
-<h2>Sunburst of most popular artists in 5 most popular tags</h2>
-<h5>Hover over to the see the artists and tags</h5>
+## Sunburst of most popular artists in 5 most popular tags
+##### Hover over to the see the artists and tags
 <div class="sunburst html-widget" id="htmlwidget-1" style="width:672px;height:480px; position:relative;">
 <div>
 <div class="sunburst-main">
 <div class="sunburst-sequence"></div>
 <div class="sunburst-chart">
 <div class="sunburst-explanation" style="visibility:hidden;"></div>
-</div>
-</div>
 <div class="sunburst-sidebar">
 <input type="checkbox" class="sunburst-togglelegend" style="visibility:hidden;">Legend</input>
 <div class="sunburst-legend" style="visibility:hidden;"></div>
-</div>
 </div>
 </div>
 <script type="application/json" data-for="htmlwidget-1">{"x":{"data":{"children":[{"name":"pop","children":[{"name":"Britney Spears","size":108,"colname":"X2"},{"name":"Lady Gaga","size":99,"colname":"X2"},{"name":"Christina Aguilera","size":83,"colname":"X2"},{"name":"Madonna","size":78,"colname":"X2"},{"name":"Katy Perry","size":68,"colname":"X2"}],"colname":"X1"},{"name":"electronic","children":[{"name":"Depeche Mode","size":68,"colname":"X2"},{"name":"Björk","size":54,"colname":"X2"},{"name":"Lady Gaga","size":51,"colname":"X2"},{"name":"Daft Punk","size":39,"colname":"X2"},{"name":"Massive Attack","size":37,"colname":"X2"}],"colname":"X1"},{"name":"rock","children":[{"name":"The Beatles","size":67,"colname":"X2"},{"name":"Muse","size":65,"colname":"X2"},{"name":"Paramore","size":58,"colname":"X2"},{"name":"U2","size":52,"colname":"X2"},{"name":"Linkin Park","size":48,"colname":"X2"},{"name":"Radiohead","size":48,"colname":"X2"}],"colname":"X1"},{"name":"alternative","children":[{"name":"Radiohead","size":64,"colname":"X2"},{"name":"Muse","size":62,"colname":"X2"},{"name":"Placebo","size":48,"colname":"X2"},{"name":"Björk","size":46,"colname":"X2"},{"name":"Paramore","size":46,"colname":"X2"}],"colname":"X1"},{"name":"indie","children":[{"name":"The Killers","size":49,"colname":"X2"},{"name":"Franz Ferdinand","size":43,"colname":"X2"},{"name":"Arctic Monkeys","size":41,"colname":"X2"},{"name":"Muse","size":39,"colname":"X2"},{"name":"Radiohead","size":39,"colname":"X2"}],"colname":"X1"}],"name":"root"},"options":{"legendOrder":null,"colors":null,"valueField":"size","percent":true,"count":false,"explanation":null,"breadcrumb":[],"legend":false,"sortFunction":null,"sumNodes":true}},"evals":[],"jsHooks":[]}</script>
@@ -393,8 +361,7 @@ snb</code></pre>
 </div>
 </div>
 </div>
-<div id="summary" class="section level1">
-<h1>Summary</h1>
+# Summary
 <p>In this post, we</p>
 <ul>
 <li>Downloaded and merged the dataset</li>
@@ -408,11 +375,8 @@ friends %&gt;%
   write_csv(&quot;../data/hetrec2011-lastfm-2k/friends_clean.csv&quot;)
 metadata %&gt;% 
   write_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)</code></pre>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+# References
 <ol style="list-style-type: decimal">
 <li><a href="https://grouplens.org/datasets/hetrec-2011/">Data reference</a></li>
 <li><a href="https://www.data-to-viz.com/">Visualization reference</a></li>
 </ol>
-</div>

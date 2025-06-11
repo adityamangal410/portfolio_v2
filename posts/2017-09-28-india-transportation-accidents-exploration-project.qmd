@@ -26,23 +26,13 @@ freeze: true
 
 
 
-<div id="TOC">
-<ul>
-<li><a href="#project-summary">Project Summary</a></li>
-<li><a href="#project-goals">Project Goals</a></li>
-</ul>
-</div>
 
-<div id="project-summary" class="section level1">
-<h1>Project Summary</h1>
+# Project Summary
 <p>With this project I will try to visualize and understand the traffic accident data for India as publicly accessible <a href="https://data.gov.in/">here</a>.</p>
-</div>
-<div id="project-goals" class="section level1">
-<h1>Project Goals</h1>
+# Project Goals
 <ol style="list-style-type: decimal">
 <li><p>Visualize traffic information and find trends</p></li>
 <li><p>Find outliers and see if any valuable info can be dugout for each state or overall.</p></li>
 <li><p>Try to predict number of accidents or other useful information.</p></li>
 </ol>
 <p>I’ll put out notebooks related to the work as separate articles.</p>
-</div>

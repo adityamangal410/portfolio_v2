@@ -24,19 +24,10 @@ freeze: true
 
 
 
-<div id="TOC">
-<ul>
-<li><a href="#project-summary">Project Summary</a></li>
-<li><a href="#project-goals">Project Goals</a></li>
-</ul>
-</div>
 
-<div id="project-summary" class="section level1">
-<h1>Project Summary</h1>
+# Project Summary
 <p>With a whole lot of buzz in India (and world) about the 2019 General Elections in India, I thought it would be a good idea to do some election analysis of these pivotal elections in India’s history. I’ll start with analyzing the 2019 Election Manifestos of the 2 biggest political parties in India, the <a href="https://www.bjp.org">Bhartiya Janta Party</a> and the <a href="https://www.inc.in">Indian National Congress</a>.</p>
-</div>
-<div id="project-goals" class="section level1">
-<h1>Project Goals</h1>
+# Project Goals
 <ol style="list-style-type: decimal">
 <li><p>Data collection and cleaning for the election manifestos of the 2 parties.</p></li>
 <li><p>Take a deep dive into the following 6 crucial sections of these manifestos for these elections -</p></li>
@@ -59,4 +50,3 @@ freeze: true
 <li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security/">Part 6 - National Security</a></li>
 <li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc/">Part 7 - Education, Healthcare and Miscellaneous</a></li>
 </ol>
-</div>

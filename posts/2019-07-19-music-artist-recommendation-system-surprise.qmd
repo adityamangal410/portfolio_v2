@@ -21,25 +21,11 @@ freeze: true
 
 
 
-<div id="TOC">
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#modelling">Modelling</a><ul>
-<li><a href="#load-libraries">Load Libraries</a></li>
-<li><a href="#obtain-data">Obtain Data</a></li>
-</ul></li>
-<li><a href="#python-surprise">Python Surprise</a></li>
-</ul>
-</div>
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
+# Introduction
 <p>Music Artist Recommendation System using the <a href="https://grouplens.org/datasets/hetrec-2011/">Last.fm Dataset</a>. Recommenders using Python’s Surprise Library.</p>
-</div>
-<div id="modelling" class="section level1">
-<h1>Modelling</h1>
-<div id="load-libraries" class="section level2">
-<h2>Load Libraries</h2>
+# Modelling
+## Load Libraries
 <pre class="r"><code>rm(list = ls())
 library(tidyverse)
 library(tidylog)
@@ -51,9 +37,7 @@ library(reticulate)
 theme_set(theme_light())
 # use_condaenv(&quot;py-portfolioV2&quot;)
 use_condaenv(&quot;stanford-nlp&quot;)</code></pre>
-</div>
-<div id="obtain-data" class="section level2">
-<h2>Obtain Data</h2>
+## Obtain Data
 <pre class="r"><code>ratings &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/ratings_clean.csv&quot;)
 ratings %&gt;% 
   glimpse()</code></pre>
@@ -122,11 +106,7 @@ metadata %&gt;%
 ##  9 227           178
 ## 10 55            173
 ## # … with 12,513 more rows</code></pre>
-</div>
-</div>
-<div id="python-surprise" class="section level1">
-<h1>Python Surprise</h1>
+# Python Surprise
 <pre class="python"><code>import surprise
 from surprise import SVD, Dataset, Reader, accuracy
 from surprise.model_selection import cross_validate, train_test_split</code></pre>
-</div>
