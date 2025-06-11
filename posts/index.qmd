@@ -7,6 +7,7 @@ execute:
 ---
 
 ```{python}
+import os
 import re, glob
 from IPython.display import Markdown, display
 posts = []
