@@ -120,7 +120,7 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
 ```
-
+<img src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security_files/figure-html/unnamed-chunk-6-1.png" width="1344" />
 ## Common correlated words
 ```r
 plot_common_correlated_words &lt;- function(df,
@@ -168,7 +168,7 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
 ```
-
+<img src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security_files/figure-html/unnamed-chunk-8-1.png" width="1152" />
 ## Basic Search Engine
 Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
 Using python’s scikit-learn for this.
@@ -220,9 +220,9 @@ bjp_content %&gt;%
 ## 9 - shri narendra modi                                                  39    13
 ```
 This is the excerpt that we find from page 38, as we dug up based on above results -
-
+<blockquote>
 We are committed to taking concrete steps on international forums against countries and organizations supporting terrorism, and we will take all necessary measures to isolate such countries and organizations on the global stage. To ensure the same, we will work towards establishing a ‘Comity of Nations Against International Terrorism’ as a voluntary multi-lateral forum based on the principles of the draft Comprehensive Convention on International Terrorism.
-
+</blockquote>
 Now, Congress.
 ```r
 congress_content %&gt;%
@@ -244,9 +244,9 @@ congress_content %&gt;%
 ## 9 03. the concept of national security in the 21st century        d…    14    14
 ```
 One of the excerpts from page 14 related to above results -
-
+<blockquote>
 The concept of national security in the 21st century has expanded beyond defence of the territory to include data security, cyber security, financial security, communication security and security of trade routes. Congress promises to evolve suitable policies to address each of these subjects.
-
+</blockquote>
 ### Unique popular words with BJP &amp; Congress
 One of the popular words that seems curious from BJP’s manifesto is “police”.
 ```r
@@ -269,9 +269,9 @@ bjp_content %&gt;%
 ## 9 border areas in the country’s development and progress.               12     4
 ```
 An excerpt from BJP’s manifesto about police forces as identified from above -
-
+<blockquote>
 We will provide assistance to the states to upgrade their police forces through the ‘Scheme for Modernization of Police Forces’. We will encourage expedited police reforms in the states so as to enable the State police forces to deal with new types of crimes like cyber crime and help them to be more sensitive to the citizens, especially the weak and vulnerable sections of the society.
-
+</blockquote>
 Now, one of the popular words that seems curious from Congress’ manifesto is “border”.
 ```r
 congress_content %&gt;%
@@ -292,15 +292,15 @@ congress_content %&gt;%
 ## 8 and living conditions for the forces. the distance               …    15    13
 ## 9 02. we will construct modern, well-equipped inte-              di…    15    11
 ```
-
+<blockquote>
 We will accelerate the construction of border roads along all borders of India, especially, the India-China border. We will enhance the capacity of the Border Roads Organisation and create separate divisions to build roads along the India-China and the India-Myanmar borders.
-
+</blockquote>
 With all the above analysis, we have developed some idea about the National Security goals of the 2 parties. In the next post, I’ll do a similar analysis for Education Healthcare and other miscellaneous proposals by them.
 Stay Tuned!
 # References
 
-Part 5 - Inclusion and Diversity
+- [Part 5 - Inclusion and Diversity](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity/)
 
-- Part 7 - Education, Healthcare and Miscellaneous
-- For all the parts go to Project Summary Page - India General Elections 2019 Analysis
+- [Part 7 - Education, Healthcare and Miscellaneous](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc/)
+- For all the parts go to Project Summary Page - [India General Elections 2019 Analysis](/2019/05/india-general-elections-2019-analysis/)
 

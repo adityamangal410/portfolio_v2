@@ -23,8 +23,8 @@ output-file: nlp-with-disaster-tweets.html
 ---
 
 # Project Summary
-With this project, I’ll apply and practice various NLP techniques, along with trying my hands on the tidymodels framework.
-I will use the NLP getting started challenge on kaggle for its dataset and also evaluating model performance using submissions.
+With this project, I’ll apply and practice various NLP techniques, along with trying my hands on the [tidymodels framework](https://github.com/tidymodels/tidymodels).
+I will use the [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle for its dataset and also evaluating model performance using submissions.
 # Project Goals
 
 - Apply and improve NLP skills in R &amp; Python.
@@ -35,12 +35,12 @@ I will use the NLP getting started challenge on kaggle for its dataset and also 
 # Series
 The following series of posts tackle the above project goals sequentially
 
-Project Part 1 - NLP with Disaster Tweets: Part 1 Data Preparation
+- Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/)
 
-- Project Part 2 - NLP with Disaster Tweets: Part 2 Nearest Neighbor Models
-- Project Part 3 - NLP with Disaster Tweets: Part 3 Linear Models
-- Project Part 4 - NLP with Disaster Tweets: Part 4 Tree-based Models
-- Project Part 5 - NLP with Disaster Tweets: Part 5 Deep Learning Data Preparation
-- Project Part 6 - NLP with Disaster Tweets: Part 6 Multi Layer Perceptron
-- Project Part 7 - NLP with Disaster Tweets: Part 7 Vanilla RNN and GRU
+- Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/)
+- Project Part 3 - [NLP with Disaster Tweets: Part 3 Linear Models](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/)
+- Project Part 4 - [NLP with Disaster Tweets: Part 4 Tree-based Models](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/)
+- Project Part 5 - [NLP with Disaster Tweets: Part 5 Deep Learning Data Preparation](/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/)
+- Project Part 6 - [NLP with Disaster Tweets: Part 6 Multi Layer Perceptron](/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/)
+- Project Part 7 - [NLP with Disaster Tweets: Part 7 Vanilla RNN and GRU](/2020/09/nlp-with-disaster-tweets-part-7-vanilla-rnn-and-gru.en-us/)
 

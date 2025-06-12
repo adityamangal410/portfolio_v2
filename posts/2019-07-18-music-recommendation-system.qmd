@@ -25,7 +25,7 @@ output-file: music-recommendation-system.html
 ---
 
 # Introduction
-Music Artist Recommendation System using the Last.fm Dataset. Exploratory data analysis.
+Music Artist Recommendation System using the [Last.fm Dataset](https://grouplens.org/datasets/hetrec-2011/). Exploratory data analysis.
 # Analysis
 ## Load Libraries
 ```r
@@ -163,7 +163,7 @@ grid.arrange(p +
                scale_x_log10() +
                labs(x = &quot;z-score(log(weight))&quot;, y = &quot;density&quot;, title = &quot;z-score(log(Weight)) Density Distribution&quot;))
 ```
-
+<img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-12-1.png" width="768" />
 ```r
 ratings %&gt;%
   mutate(log_weight = log10(weight),
@@ -383,7 +383,7 @@ metadata %&gt;%
        subtitle = &quot;Top 20 artists&quot;,
        caption = &quot;Based on data from the Last.fm dataset&quot;)
 ```
-
+<img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-27-1.png" width="672" />
 ```r
 metadata %&gt;%
   count(tagValue, sort = TRUE) %&gt;%
@@ -402,7 +402,7 @@ metadata %&gt;%
        subtitle = &quot;Top 20 Tags&quot;,
        caption = &quot;Based on data from the Last.fm dataset&quot;)
 ```
-
+<img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-28-1.png" width="672" />
 Looks like few of the most popular Artists in this dataset are Britney Spears, Lady Gaga and Christina Aguilera and as expected, Rock and Pop are the most popular tags. Lets see which are the most popular artists in the top most popular tags.
 ```r
 topTags &lt;- metadata %&gt;%
@@ -429,9 +429,8 @@ snb
 ## Sunburst of most popular artists in 5 most popular tags
 ##### Hover over to the see the artists and tags
 
-Legend
+<input type="checkbox" class="sunburst-togglelegend" style="visibility:hidden;">Legend</input>
 
-{"x":{"data":{"children":[{"name":"pop","children":[{"name":"Britney Spears","size":108,"colname":"X2"},{"name":"Lady Gaga","size":99,"colname":"X2"},{"name":"Christina Aguilera","size":83,"colname":"X2"},{"name":"Madonna","size":78,"colname":"X2"},{"name":"Katy Perry","size":68,"colname":"X2"}],"colname":"X1"},{"name":"electronic","children":[{"name":"Depeche Mode","size":68,"colname":"X2"},{"name":"Björk","size":54,"colname":"X2"},{"name":"Lady Gaga","size":51,"colname":"X2"},{"name":"Daft Punk","size":39,"colname":"X2"},{"name":"Massive Attack","size":37,"colname":"X2"}],"colname":"X1"},{"name":"rock","children":[{"name":"The Beatles","size":67,"colname":"X2"},{"name":"Muse","size":65,"colname":"X2"},{"name":"Paramore","size":58,"colname":"X2"},{"name":"U2","size":52,"colname":"X2"},{"name":"Linkin Park","size":48,"colname":"X2"},{"name":"Radiohead","size":48,"colname":"X2"}],"colname":"X1"},{"name":"alternative","children":[{"name":"Radiohead","size":64,"colname":"X2"},{"name":"Muse","size":62,"colname":"X2"},{"name":"Placebo","size":48,"colname":"X2"},{"name":"Björk","size":46,"colname":"X2"},{"name":"Paramore","size":46,"colname":"X2"}],"colname":"X1"},{"name":"indie","children":[{"name":"The Killers","size":49,"colname":"X2"},{"name":"Franz Ferdinand","size":43,"colname":"X2"},{"name":"Arctic Monkeys","size":41,"colname":"X2"},{"name":"Muse","size":39,"colname":"X2"},{"name":"Radiohead","size":39,"colname":"X2"}],"colname":"X1"}],"name":"root"},"options":{"legendOrder":null,"colors":null,"valueField":"size","percent":true,"count":false,"explanation":null,"breadcrumb":[],"legend":false,"sortFunction":null,"sumNodes":true}},"evals":[],"jsHooks":[]}
 Alright, so we know the most popular artists in each popular tag as provided by the user. Don’t worry, Beatles is right up there in the “rock” tag! :)
 
 # Summary
@@ -452,6 +451,6 @@ metadata %&gt;%
 ```
 # References
 
-- Data reference
-- Visualization reference
+- [Data reference](https://grouplens.org/datasets/hetrec-2011/)
+- [Visualization reference](https://www.data-to-viz.com/)
 

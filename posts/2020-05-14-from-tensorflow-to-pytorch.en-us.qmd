@@ -35,7 +35,7 @@ Any neural network model training workflow follows the following basic steps -
 - Use learning rate and the calculated gradient to calculate the new parameter values.
 - Repeat step 2 above for another epoch.
 
-I will use the same above blueprint and build model in both these frameworks. Note that I am using Tensorflow’s quickstart tutorial as the toy model and will build corresponding model in PyTorch.
+I will use the same above blueprint and build model in both these frameworks. Note that I am using Tensorflow’s [quickstart tutorial](https://www.tensorflow.org/tutorials/quickstart/beginner) as the toy model and will build corresponding model in PyTorch.
 # Modelling
 ## Load Libraries
 ```r
@@ -197,6 +197,6 @@ So intead of using the adam optimizer, we manually use the learning rate and the
 In summary, I think both Tensorflow and PyTorch provide solid frameworks for training neural networks. If you prefer more intuitive, easy-to-use API Tensorflow should be the way to go and if you like a neat object-oriented, more fine-grained control API then PyTorch serves that purpose well.
 # References
 
-- Tensorflow’s quickstart tutorial
-- PyTorch docs
+- Tensorflow’s [quickstart tutorial](https://www.tensorflow.org/tutorials/quickstart/beginner)
+- PyTorch [docs](https://pytorch.org/docs/stable/index.html)
 

@@ -27,7 +27,7 @@ output-file: christmas-bird-counts-tidytuesday.html
 
 # Introduction
 Visualizing bird watching data as collected in Hamilton area of Ontario during Christmas time since 1921.
-Working on the weekly social data project Tidy Tuesday.
+Working on the weekly social data project [Tidy Tuesday](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-18).
 # Analysis
 ## Load libraries
 ```r
@@ -130,4 +130,4 @@ p %&gt;%
           height = 600,
           renderer = gifski_renderer(&quot;../data/christmas_bird_counts/most_common.gif&quot;))
 ```
-
+<img src="/post/2019-06-21-christmas-bird-counts-tidytuesday_files/figure-html/unnamed-chunk-5-1.gif" /><!-- -->

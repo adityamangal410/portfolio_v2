@@ -25,8 +25,8 @@ output-file: nlp-with-disaster-tweets-part-2-nearest-neighbor-models.html
 ---
 
 # Introduction
-In this NLP getting started challenge on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
-In this part 2 for Nearest Neighbor Modelling, I will use the processed data generated in Part 1 to train nearest neighbor models in order to predict if a tweet is about a real disaster or not using the tidymodels framework.
+In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
+In this part 2 for Nearest Neighbor Modelling, I will use the processed data generated in [Part 1](/2020/02/nlp-with-disaster-tweets-part-1/) to train nearest neighbor models in order to predict if a tweet is about a real disaster or not using the tidymodels framework.
 # Analysis
 ## Load Libraries
 ```r
@@ -121,19 +121,19 @@ recipe(target ~ ., data = tweets_train) %&gt;%
 ```
 Note above
 
-We use the training dataset to create the recipe
+- We use the training dataset to create the recipe
 
-We won’t use ‘id’ field as a predictor, only as an identifier.
+- We won’t use ‘id’ field as a predictor, only as an identifier.
 
-For current analysis, we will drop the location and keyword features.
+- For current analysis, we will drop the location and keyword features.
 
-Creating a length feature to model the tweet length and another feature to store the number of hashtags in the tweet.
+- Creating a length feature to model the tweet length and another feature to store the number of hashtags in the tweet.
 
-Getting rid of the text field since we have generated all the features from it that we wanted for now.
+- Getting rid of the text field since we have generated all the features from it that we wanted for now.
 
-Removing all predictors with zero variance.
+- Removing all predictors with zero variance.
 
-Normalizing all features i.e. centering and scaling.
+- Normalizing all features i.e. centering and scaling.
 
 - Adding dimensionality reduction using PCA to keep 80% variance and reduce the number of features while still keeping our custom features.
 
@@ -213,7 +213,7 @@ tweets_prep %&gt;%
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
 ## 1 f_meas  binary         0.574
 ```
-Generating submission file
+*Generating submission file*
 ```r
 set.seed(42)
 tweets_prep %&gt;%
@@ -321,7 +321,7 @@ knn_grid %&gt;%
        x = &quot;Model flexibility i.e. Log(1/NumberOfNeighbors)&quot;,
        y = &quot;Mean metric value&quot;)
 ```
-
+<img src="/post/2020-02-20-nlp-with-disaster-tweets-part-2-nearest-neighbor-models_files/figure-html/unnamed-chunk-22-1.png" width="672" />
 As we see in the plot above, the f1-score increases on the evaluation set until around K=20 and then starts falling down. We plot the flexibility (i.e. 1/NumberOfNeighbors) to visualize how the model performance varies as the model flexibility increases. The KNN model with K=1 will be highly flexible and thus have high variance, whereas K=100 would lead to a much stricter model which is less flexible and might suffer from bias.
 Looks like our underlying problem stays much closer to being flexible than strict (since optimal K looks to be around 20). We should remember this fact for picking further models for experimentation.
 Let’s pickout the best parameter K based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset.
@@ -360,8 +360,8 @@ We can hence learn quite a few things about our underlying problem space by usin
 Also, this tidymodels framework provides a good modelling structure which can be easily reproduced and used to train a variety of models. In the next part of this series, I will work on another classic modelling algorithm, Lasso Regression, where we will also see if we can identify if there any of these features are much more important than the others and if our 2 custom features are useful.
 # References
 
-- Project Summary Page - NLP with disaster tweets: Summary
-- Project Part 1 - NLP with Disaster Tweets: Part 1 Data Preparation
-- Lasso Regression using Tidymodels by Julia Silge.
-- Introduction to Statistical Learning - Book
+- Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
+- Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/)
+- Lasso Regression using [Tidymodels by Julia Silge](https://juliasilge.com/blog/lasso-the-office/).
+- Introduction to Statistical Learning - [Book](https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370)
 

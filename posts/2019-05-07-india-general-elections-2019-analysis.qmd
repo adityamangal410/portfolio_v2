@@ -24,7 +24,7 @@ output-file: india-general-elections-2019-analysis.html
 ---
 
 # Project Summary
-With a whole lot of buzz in India (and world) about the 2019 General Elections in India, I thought it would be a good idea to do some election analysis of these pivotal elections in India’s history. I’ll start with analyzing the 2019 Election Manifestos of the 2 biggest political parties in India, the Bhartiya Janta Party and the Indian National Congress.
+With a whole lot of buzz in India (and world) about the 2019 General Elections in India, I thought it would be a good idea to do some election analysis of these pivotal elections in India’s history. I’ll start with analyzing the 2019 Election Manifestos of the 2 biggest political parties in India, the [Bhartiya Janta Party](https://www.bjp.org) and the [Indian National Congress](https://www.inc.in).
 # Project Goals
 
 - Data collection and cleaning for the election manifestos of the 2 parties.
@@ -39,11 +39,11 @@ With a whole lot of buzz in India (and world) about the 2019 General Elections i
 
 In the next series of posts I’ll roughly follow the above steps and link them here to this master project summary page. Here goes -
 
-- Part 1 - Data Collection and Cleaning
-- Part 2 - Economic Growth
-- Part 3 - Employment and Opportunities
-- Part 4 - Anti-Corruption and Good Governance
-- Part 5 - Inclusion and Diversity
-- Part 6 - National Security
-- Part 7 - Education, Healthcare and Miscellaneous
+- [Part 1 - Data Collection and Cleaning](/2019/05/india-elections-2019-bjp-vs-congress-manifestos-analysis/)
+- [Part 2 - Economic Growth](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/)
+- [Part 3 - Employment and Opportunities](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/)
+- [Part 4 - Anti-Corruption and Good Governance](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance/)
+- [Part 5 - Inclusion and Diversity](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity/)
+- [Part 6 - National Security](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security/)
+- [Part 7 - Education, Healthcare and Miscellaneous](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc/)
 

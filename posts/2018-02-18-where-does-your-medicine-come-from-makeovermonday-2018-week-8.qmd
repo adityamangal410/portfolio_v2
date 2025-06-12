@@ -27,7 +27,7 @@ output-file: where-does-your-medicine-come-from-makeovermonday-2018-week-8.html
 ---
 
 # Introduction
-Goal of this Visualization task is to create a visualization for the Drug and Medicine Exports data for different countries.
+Goal of this Visualization task is to create a visualization for the [Drug and Medicine Exports data for different countries.](https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1)
 In this blog post, I’m trying to find the leading countries in Export across these 5 years.
 # Analysis
 ## Cleaning up workspace and loading required libraries
@@ -135,7 +135,7 @@ top5ExportersByYear = drugs %&gt;%
 g = ggplot(data = top5ExportersByYear, aes(x = Year, y = `Exports (USD)`))
 g + geom_line(aes(color = Exporter)) + labs(title = &#39;Trend for top 5 exporters in the world over the years&#39;)
 ```
-
+<img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 Evaluating Top 10 exporters per Year. Excluding 2017 since we do not have numbers for total export in the world.
 ```r
 getTop10ForYear = function(df){
@@ -205,17 +205,17 @@ Plotting the donuts for each year
 ```r
 plotTop10(yearlyTop10s %&gt;% filter(Year==2013))
 ```
-
+<img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 ```r
 plotTop10(yearlyTop10s %&gt;% filter(Year==2014))
 ```
-
+<img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-2.png" width="672" />
 ```r
 plotTop10(yearlyTop10s %&gt;% filter(Year==2015))
 ```
-
+<img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-3.png" width="672" />
 ```r
 plotTop10(yearlyTop10s %&gt;% filter(Year==2016))
 ```
-
+<img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-4.png" width="672" />
 As can be seen Germany remains the biggest exporter of Drugs and Medicines over the past 5 years.

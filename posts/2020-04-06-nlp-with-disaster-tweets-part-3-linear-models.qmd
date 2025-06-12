@@ -25,8 +25,8 @@ output-file: nlp-with-disaster-tweets-part-3-linear-models.html
 ---
 
 # Introduction
-In this NLP getting started challenge on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
-In this part 3 for Linear Modelling, I will use the processed data generated in Part 1 to train logistic regression based model with regularization in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous Part 2 about Nearest Neighbors model, I will do a comparative study among these 2 modelling algorithms.
+In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
+In this part 3 for Linear Modelling, I will use the processed data generated in [Part 1](/2020/02/nlp-with-disaster-tweets-part-1/) to train logistic regression based model with regularization in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/) about Nearest Neighbors model, I will do a comparative study among these 2 modelling algorithms.
 # Analysis
 ## Load Libraries
 ```r
@@ -60,7 +60,7 @@ tweets_final %&gt;%
 ## [1] 3263  829
 ```
 ## Feature preprocessing and engineering
-I will use the same steps of feature preprocessing and engineering from Part 2 here, in order to have an apples to apples comparison of the 2 models.
+I will use the same steps of feature preprocessing and engineering from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/) here, in order to have an apples to apples comparison of the 2 models.
 ```r
 tweets %&gt;%
   mutate(target = as.factor(target),
@@ -200,7 +200,7 @@ lasso_grid %&gt;%
        x = &quot;Model flexibility i.e. Log(1/penalty)&quot;,
        y = &quot;Mean metric value&quot;)
 ```
-
+<img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 As we see in the plot above, the f1-score increases on the evaluation set until around penalty=0.005 and then starts falling down. We plot the flexibility (i.e. 1/penalty) to visualize how the model performance varies as the model flexibility increases. The Lasso Regression model with a lower penalty value will be highly flexible since it will not penalize the features weights by a lot and thus have high variance, whereas a higher penalty would lead to a much stricter model which is less flexible since a lot of feature weights will be moved to zero due to high penalty and therefore the model might suffer from bias.
 Let’s pickout the best parameter penalty based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset.
 ```r
@@ -232,7 +232,7 @@ lasso_last_fit %&gt;%
 ## 2 f_meas   binary         0.806
 ## 3 roc_auc  binary         0.826
 ```
-The f1-score metric on the validation set comes out to be 0.8058252 which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in Part 2. Lets try and visualize the variable importance for different features that we used to train our model.
+The f1-score metric on the validation set comes out to be 0.8058252 which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/). Lets try and visualize the variable importance for different features that we used to train our model.
 ```r
 lasso_last_fit$.workflow[[1]] %&gt;%
   pull_workflow_fit() %&gt;%
@@ -248,7 +248,7 @@ lasso_last_fit$.workflow[[1]] %&gt;%
        title = &quot;Variable Importance plot&quot;,
        subtitle = &quot;&#39;len&#39; feature has high positive impact on disaster probability&quot;)
 ```
-
+<img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-15-1.png" width="672" />
 Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, as in the plot above, our custom feature “len” i.e. length of the tweets comes out as one of the most important features. The model gives a higher probability of a tweet being about a disaster if its longer in length, signifying that people tweeting about real disasters usually use a lot more words as compared to others.
 Let’s visualize how the coefficient estimates vary based on lambda for our 2 custom features, length of tweets and number of hashtags, and also for 1 other high coefficient feature in both positive and negative directions each.
 ```r
@@ -272,10 +272,10 @@ lasso_last_fit$.workflow[[1]] %&gt;%
        title = &quot;Feature coefficients against penalty parameter&quot;,
        subtitle = &quot;&#39;num_hashtags&#39; feature gets to zero coefficient very soon in comparison&quot;)
 ```
-
+<img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-16-1.png" width="672" />
 All feature coefficients tend to move towards zero as we increase the lambda penalty parameter, some more quickly than others.
 ## Model Calibration
-Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let’s compare our 2 models, lasso regression here and the best k-nearest neighbor model from Part 2, by plotting calibration plots for each of them.
+Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let’s compare our 2 models, lasso regression here and the best k-nearest neighbor model from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/), by plotting calibration plots for each of them.
 ```r
 readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;%
   collect_predictions() %&gt;%
@@ -296,7 +296,7 @@ readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;
        title = &quot;Calibration Plot for K-nearest neighbors model&quot;,
        subtitle = &quot;Above the diagonal signifies under-forecast&quot;)
 ```
-
+<img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-17-1.png" width="672" />
 ```r
 lasso_last_fit %&gt;%
   collect_predictions() %&gt;%
@@ -317,18 +317,18 @@ lasso_last_fit %&gt;%
        title = &quot;Calibration Plot for Lasso Regression model&quot;,
        subtitle = &quot;Close to the diagonal signifies well calibrated model&quot;)
 ```
-
+<img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-18-1.png" width="672" />
 In general, closer the calibration curve to the diagonal, the better. When a model is well calibrated, the mean prediction probability will be equal to mean truth. Meaning the model is predicting the target in the same ratios as the actual truth values.
 The KNN model calibration plot shows that the curve is above the diagonal, i.e. the model is frequently under estimating the predicted probabilities.
 However, the lasso regression seems to be well calibrated out of the box. That’s a sign of good stable algorithm and training procedure.
 Note that all the predicted probabilities here are calculated on the cross validation set.
 # Summary
-In the next part of this series, I will start building models with a different class of function space, like piece-wise constant functions and linear combination of piece-wise constant functions classes i.e. simple decision trees and gradient boosted trees respectively. As we see in this blog post that the class of linear functions do give better performing models and we learnt our problem space to be leaning towards flexible models in Part 2, I expect to see better results for different, more flexible modelling approaches.
+In the next part of this series, I will start building models with a different class of function space, like piece-wise constant functions and linear combination of piece-wise constant functions classes i.e. simple decision trees and gradient boosted trees respectively. As we see in this blog post that the class of linear functions do give better performing models and we learnt our problem space to be leaning towards flexible models in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/), I expect to see better results for different, more flexible modelling approaches.
 # References
 
-- Project Summary Page - NLP with disaster tweets: Summary
-- Project Part 1 - NLP with Disaster Tweets: Part 1 Data Preparation
-- Project Part 2 - NLP with Disaster Tweets: Part 2 Nearest Neighbor Models
-- Lasso Regression using Tidymodels by Julia Silge.
-- Introduction to Statistical Learning - Book
+- Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
+- Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/)
+- Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/)
+- Lasso Regression using [Tidymodels by Julia Silge](https://juliasilge.com/blog/lasso-the-office/).
+- Introduction to Statistical Learning - [Book](https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370)
 

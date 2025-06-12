@@ -120,7 +120,7 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
 ```
-
+<img src="/post/2019-05-10-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-6-1.png" width="1344" />
 ## Common correlated words
 ```r
 plot_common_correlated_words &lt;- function(df,
@@ -168,7 +168,7 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
 ```
-
+<img src="/post/2019-05-10-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-8-1.png" width="1152" />
 ## Basic Search Engine
 Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
 Using python’s scikit-learn for this.
@@ -220,12 +220,12 @@ bjp_content %&gt;%
 ## 9 approach the issue of water management holistically and ensure be…    21     4
 ```
 This is the excerpt that we find from page 22, as we dug up based on above results -
-
+<blockquote>
 Now, we will work towards:
 - Ensuring a right mix of energy which leads towards a cleaner environment.
 - Supplying quality electricity to all consumers.
 - Making the state electricity entities financially sound and administratively more efficient.
-
+</blockquote>
 Now, Congress.
 ```r
 congress_content %&gt;%
@@ -247,9 +247,9 @@ congress_content %&gt;%
 ## 9 04. we will work with state governments to create               a…     7    33
 ```
 One of the full excerpts from page 8 related to above results -
-
+<blockquote>
 Congress promises to enhance availability of, and access to, electricity in rural areas by encour- aging investment in off-grid renewable power generation with ownership and revenues vesting in local bodies. Every village and every home will be electrified in the true sense. In the long term, we aim to substitute LPG used in homes by electricity and solar energy.
-
+</blockquote>
 ### Unique popular words with BJP &amp; Congress
 One of the popular words that seems curious from BJP’s manifesto is “youth”. Let’s see what BJP has planned for the youth employment opportunities.
 ```r
@@ -272,9 +272,9 @@ bjp_content %&gt;%
 ## 9 greater civic engagement of the youth.                                27    25
 ```
 An excerpt from BJP’s manifesto about youth employment opportunities as identified from above -
-
+<blockquote>
 We will incentivise and reward self-organized groups of youth who adopt social assets like schools, hospitals, lakes, public gardens etc. and ensure their maintenance and cleanliness to encourage greater civic engagement of the youth.
-
+</blockquote>
 Now, one of the popular words that seems curious from Congress’ manifesto is “tourism”.
 ```r
 congress_content %&gt;%
@@ -295,16 +295,16 @@ congress_content %&gt;%
 ## 8 and government posts will be abolished.                     until…     7    39
 ## 9 05. application fees for government examinations                b…     7    38
 ```
-
+<blockquote>
 Tourism creates jobs. Congress promises an ade- quately capitalised Tourism Development Bank to provide low-cost, long-term funds for invest- ment in tourism-related businesses. We will also offer lower rates of corporate and personal income tax on tourism-related business income.
-
+</blockquote>
 A surprisingly large amount of mention of the word “business”/“businesses” in this section of Congress’ manifesto.
 With all the above analysis, we have developed some idea about the Employment and Opportunities plans of the 2 parties. In the next post, I’ll do a similar analysis for Anti-Corruption and Good Governance proposals by them.
 Stay Tuned!
 # References
 
-Part 2 - Economic Growth
+- [Part 2 - Economic Growth](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/)
 
-- Part 4 - Anti-Corruption and Good Governance
-- For all the parts go to Project Summary Page - India General Elections 2019 Analysis
+- [Part 4 - Anti-Corruption and Good Governance](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance/)
+- For all the parts go to Project Summary Page - [India General Elections 2019 Analysis](/2019/05/india-general-elections-2019-analysis/)
 

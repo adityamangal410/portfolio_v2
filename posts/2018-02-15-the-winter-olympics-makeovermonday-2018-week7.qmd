@@ -27,7 +27,7 @@ output-file: the-winter-olympics-makeovermonday-2018-week7.html
 ---
 
 # Introduction
-Goal of this Visualization task is to create an alternative visualization to the Tableau’s visualization for Winter Olympics data for different countries
+Goal of this Visualization task is to create an alternative visualization to the [Tableau’s visualization for Winter Olympics data for different countries](https://public.tableau.com/views/TheWinterOlympics/TheWinterOlympics?:embed=y&:showVizHome=no)
 In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
 # Analysis
 ## Cleaning up workspace and loading required libraries
@@ -334,7 +334,7 @@ TotalMedalsPerCountry %&gt;%
 Germany obtained the most number of medals (377) closely followed by Russia with (341)
 ## Exploring Data
 Lets plot the above data on a map using leaflet.
-Loading shape file data set from World Borders Dataset.
+Loading shape file data set from [World Borders Dataset](http://thematicmapping.org/downloads/world_borders.php).
 ```r
 shape = readOGR(&quot;~/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp&quot;)
 ```
@@ -371,6 +371,5 @@ TotalMedalsPerCountry %&gt;%
   addCircles(~LON, ~LAT, label = ~label, color = ~pal(TotalMedals), weight = 10)
 ```
 
-{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; OpenStreetMap contributors, CC-BY-SA"}]},{"method":"addCircles","args":[[-24.973,47.683,53.54,50.643,42.761,59.081,33.42,45.723,56.058,58.674,64.504,46.565,51.11,47.07,42.7,36.491,48.16,39.778,56.858,47.153,49.771,52.077,-42.634,61.152,52.125,45.844,61.988,48.707,46.124,40.227,62.011,46.861,49.016,53,39.622,41.75],[136.189,14.912,28.047,4.664,25.231,-109.433,106.514,16.693,9.264,25.793,26.272,2.55,9.851,19.134,12.8,139.068,67.301,126.451,25.641,9.555,6.088,5.389,172.235,8.74,19.401,24.969,96.689,19.491,14.827,-3.649,15.27,7.908,31.388,-1.6,-98.606,63.17],10,null,null,{"interactive":true,"className":"","stroke":true,"color":["#F46D43","#66BD63","#F46D43","#D73027","#D73027","#A6D96A","#FFFFBF","#F46D43","#D73027","#D73027","#A6D96A","#D9EF8B","#1A9850","#D73027","#D9EF8B","#FEE08B","#D73027","#D73027","#D73027","#D73027","#D73027","#D9EF8B","#D73027","#1A9850","#FDAE61","#D73027","#1A9850","#D73027","#F46D43","#D73027","#D9EF8B","#D9EF8B","#D73027","#FDAE61","#66BD63","#D73027"],"weight":10,"opacity":0.5,"fill":true,"fillColor":["#F46D43","#66BD63","#F46D43","#D73027","#D73027","#A6D96A","#FFFFBF","#F46D43","#D73027","#D73027","#A6D96A","#D9EF8B","#1A9850","#D73027","#D9EF8B","#FEE08B","#D73027","#D73027","#D73027","#D73027","#D73027","#D9EF8B","#D73027","#1A9850","#FDAE61","#D73027","#1A9850","#D73027","#F46D43","#D73027","#D9EF8B","#D9EF8B","#D73027","#FDAE61","#66BD63","#D73027"],"fillOpacity":0.2},null,null,["Australia - TotalMedals - 12","Austria - TotalMedals - 218","Belarus - TotalMedals - 15","Belgium - TotalMedals - 5","Bulgaria - TotalMedals - 6","Canada - TotalMedals - 170","China - TotalMedals - 53","Croatia - TotalMedals - 11","Denmark - TotalMedals - 1","Estonia - TotalMedals - 7","Finland - TotalMedals - 161","France - TotalMedals - 109","Germany - TotalMedals - 377","Hungary - TotalMedals - 6","Italy - TotalMedals - 114","Japan - TotalMedals - 45","Kazakhstan - TotalMedals - 7","Korea, Democratic People's Republic of - TotalMedals - 2","Latvia - TotalMedals - 7","Liechtenstein - TotalMedals - 9","Luxembourg - TotalMedals - 2","Netherlands - TotalMedals - 110","New Zealand - TotalMedals - 1","Norway - TotalMedals - 329","Poland - TotalMedals - 20","Romania - TotalMedals - 1","Russia - TotalMedals - 341","Slovakia - TotalMedals - 5","Slovenia - TotalMedals - 15","Spain - TotalMedals - 2","Sweden - TotalMedals - 144","Switzerland - TotalMedals - 138","Ukraine - TotalMedals - 7","United Kingdom - TotalMedals - 26","United States - TotalMedals - 282","Uzbekistan - TotalMedals - 1"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null,null]}],"setView":[[1.369002,53.019815],1,[]],"limits":{"lat":[-42.634,64.504],"lng":[-109.433,172.235]}},"evals":[],"jsHooks":[]}
 As can be clearly seen above, Norway and USA closely followed in the total medals ranking.
 Visualizing data on a map can provide a clear view of the overall data.

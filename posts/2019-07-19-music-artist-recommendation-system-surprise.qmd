@@ -20,7 +20,7 @@ output-file: music-artist-recommendation-system-surprise.html
 ---
 
 # Introduction
-Music Artist Recommendation System using the Last.fm Dataset. Recommenders using Python’s Surprise Library.
+Music Artist Recommendation System using the [Last.fm Dataset](https://grouplens.org/datasets/hetrec-2011/). Recommenders using Python’s Surprise Library.
 # Modelling
 ## Load Libraries
 ```r

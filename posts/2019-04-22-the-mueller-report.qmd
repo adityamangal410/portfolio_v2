@@ -29,7 +29,7 @@ output-file: the-mueller-report.html
 ---
 
 # Introduction
-Analyzing the Special Counsel’s “Report On The Investigation Into Russian Interference In The 2016 Presidential Election” from - justice.gov.
+Analyzing the Special Counsel’s “Report On The Investigation Into Russian Interference In The 2016 Presidential Election” from - [justice.gov](https://www.justice.gov/storage/report.pdf).
 # Analysis
 ## Load libraries
 ```r
@@ -57,7 +57,7 @@ download.file(&quot;https://www.justice.gov/storage/report.pdf&quot;, &quot;~/Do
 
 report &lt;- pdf_text(&quot;~/Downloads/mueller-report.pdf&quot;)
 ```
-I will use the preconverted CSV format of the report present here.
+I will use the preconverted CSV format of the report present [here](https://github.com/gadenbuie/mueller-report/blob/36fbb136a2a508c812db8773e9342b7a55204b20/mueller_report.csv).
 ```r
 report &lt;- read_csv(&quot;https://raw.githubusercontent.com/gadenbuie/mueller-report/master/mueller_report.csv&quot;)
 report %&gt;%
@@ -129,7 +129,7 @@ tidy_content %&gt;%
        subtitle = &quot;Words occurring more than 400 times&quot;,
        caption = &quot;Based on data from the Mueller Report&quot;)
 ```
-
+<img src="/post/2019-04-22-the-mueller-report_files/figure-html/unnamed-chunk-10-1.png" width="672" />
 ## Most dramatic pages
 Using python’s NLTK’s Vader Lexicon to generate sentiments for each line.
 ```python
@@ -156,7 +156,7 @@ content %&gt;%
        subtitle = &quot;PageIndex = PageNumber/2, Compound polarity calculated using NLTK&quot;,
        caption = &quot;Based on data from the Mueller Report&quot;)
 ```
-
+<img src="/post/2019-04-22-the-mueller-report_files/figure-html/unnamed-chunk-12-1.png" width="672" />
 While the above plot shows the general interesting areas of the report, lets see which are some of the most polarized lines in the document, in either direction.
 ```r
 content %&gt;%
@@ -226,7 +226,7 @@ word_cors %&gt;%
        subtitle = &quot;Per page correlation higher than 0.25&quot;,
        caption = &quot;Based on data from the Mueller Report&quot;)
 ```
-
+<img src="/post/2019-04-22-the-mueller-report_files/figure-html/unnamed-chunk-16-1.png" width="672" />
 Words like “mcgahn” and “comey” show up as centers of correlation network.
 ## Search Engine
 Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make this document more easily searchable and gain context using most related lines in the report for a given query.
@@ -294,7 +294,7 @@ One of the interesting results from above (page 92) -
 ## Late Night Hosts’ Jokes
 Lets see if we can catch (or fact check, if you will), any of the late night hosts’ jokes about the Mueller Report.
 ### Trevor Noah
-{{}}
+{{< video https://www.youtube.com/embed/pVbwZg8rM2c >}}
 ```r
 content %&gt;%
   arrange(compound) %&gt;%
@@ -318,7 +318,7 @@ content %&gt;%
 ```
 The joke at around 34secs into the video can be clearly seen above as the 2nd highest polarized line in the report (page 290, line 20).
 ### Stephen Colbert
-{{}}
+{{< video https://www.youtube.com/embed/7MursWMNONo >}}
 ```r
 content %&gt;%
   slice(get_related_lines(&quot;olc&quot;)) %&gt;%
@@ -341,7 +341,7 @@ content %&gt;%
 The discussion about OLC from the video above at around 9min48secs can be seen in multiple instances as per our search engine, notably here (page 390) -
 “Impeachment is also a drastic and rarely invoked remedy, and Congress is not restricted to relying only on impeachment, rather than making criminal law applicable to a former President, as OLC has recognized.”
 ### Jimmy Fallon
-{{}}
+{{< video https://www.youtube.com/embed/TJZf0JIdqqU >}}
 ```r
 content %&gt;%
   slice(get_related_lines(&quot;crazy&quot;)) %&gt;%
@@ -367,7 +367,7 @@ resign. McGahn recalled that, after speaking with his attorney and given the nat
 President’s request, he decided not to share details of the President’s request with other White
 House staff.”
 ### Jimmy Kimmel
-{{}}
+{{< video https://www.youtube.com/embed/NB7ZMczCXEM >}}
 ```r
 content %&gt;%
   slice(get_related_lines(&quot;election interference&quot;)) %&gt;%
@@ -393,8 +393,8 @@ The discussion at around 50secs into the video can be obtained from the above se
 Looks like all the above tools can be pretty handy in doing a quick and thorough investigation of a large document in a very small amount of time (and its pretty fun too!)
 # References
 
-- Kaggle data reference
-- Text Mining with R by Julia Silge &amp; David Robinson
-- Visualization reference
-- Enron Email Analysis by Anthony Dm.
+- [Kaggle data reference](https://www.kaggle.com/paultimothymooney/mueller-report)
+- [Text Mining with R by Julia Silge &amp; David Robinson](https://www.tidytextmining.com/)
+- [Visualization reference](https://www.data-to-viz.com/)
+- [Enron Email Analysis by Anthony Dm.](https://towardsdatascience.com/how-i-used-machine-learning-to-classify-emails-and-turn-them-into-insights-efed37c1e66)
 

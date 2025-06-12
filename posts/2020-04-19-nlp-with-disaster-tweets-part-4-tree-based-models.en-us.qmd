@@ -25,8 +25,8 @@ output-file: nlp-with-disaster-tweets-part-4-tree-based-models.en-us.html
 ---
 
 # Introduction
-In this NLP getting started challenge on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
-In this part 4 for Tree based Modelling, I will use the processed data generated in Part 1 to train decision trees and gradient boosted tree based models in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous Part 3 about Linear models, I will do a comparative study among all these modelling algorithms.
+In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
+In this part 4 for Tree based Modelling, I will use the processed data generated in [Part 1](/2020/02/nlp-with-disaster-tweets-part-1/) to train decision trees and gradient boosted tree based models in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous [Part 3](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/) about Linear models, I will do a comparative study among all these modelling algorithms.
 # Analysis
 ## Load Libraries
 ```r
@@ -61,7 +61,7 @@ tweets_final %&gt;%
 ## [1] 3263  829
 ```
 ## Feature preprocessing and engineering
-I will use the same steps of feature preprocessing and engineering from Part 2 here, in order to have an apples to apples comparison of all the models.
+I will use the same steps of feature preprocessing and engineering from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/) here, in order to have an apples to apples comparison of all the models.
 ```r
 tweets %&gt;%
   mutate(target = as.factor(target),
@@ -117,7 +117,7 @@ dtree_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/trees/dtree_basic
 pull_workflow_fit(dtree_fit)$fit %&gt;%
   rpart.plot()
 ```
-
+<img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 Above we see the familiar plot of rpart, showing PC009 to be the most important variable.
 ### Gradient Boosted Trees using xgboost
 Let’s build a basic boosted tree model with default values.
@@ -207,7 +207,7 @@ gbtree_grid %&gt;%
        x = &quot;Model flexibility i.e. tree_depth&quot;,
        y = &quot;Mean metric value&quot;)
 ```
-
+<img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 As we see in the plot above, the f1-score increases on the evaluation set until around tree_depth=5 and then starts falling down. We plot the flexibility (i.e. tree_depth) to visualize how the model performance varies as the model flexibility increases. The tree model with higher tree_depth will be more flexible as it will be able to train deeper trees that try and capture more patterns in the data and might suffer from higher variance. Correspondingly, lower tree_depth will lead to a much leaner model that might suffer from bias.
 Let’s pickout the best parameter tree_depth based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset.
 ```r
@@ -239,7 +239,7 @@ gbtree_last_fit %&gt;%
 ## 2 f_meas   binary         0.811
 ## 3 roc_auc  binary         0.820
 ```
-The f1-score metric on the validation set comes out to be 0.8107538 which is higher compared to all the previous models we have built in this series NLP with disaster tweets: Summary. Lets try and visualize the variable importance for different features that we used to train our model.
+The f1-score metric on the validation set comes out to be 0.8107538 which is higher compared to all the previous models we have built in this series [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/). Lets try and visualize the variable importance for different features that we used to train our model.
 ```r
 gbtree_last_fit$.workflow[[1]] %&gt;%
   pull_workflow_fit() %&gt;%
@@ -255,10 +255,10 @@ gbtree_last_fit$.workflow[[1]] %&gt;%
        title = &quot;Variable Importance plot&quot;,
        subtitle = &quot;PC009 remains to be the most important feature&quot;)
 ```
-
+<img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-18-1.png" width="672" />
 Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, one thing to note here, for gradient boosted trees, none of our custom features turn out to be of any significant importance.
 ## Model Calibration
-Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let’s compare our 3 models, gradient boosted trees here, lasso regression in Part 3 and the best k-nearest neighbor model from Part 2, by plotting calibration plots for each of them.
+Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let’s compare our 3 models, gradient boosted trees here, lasso regression in [Part 3](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/) and the best k-nearest neighbor model from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/), by plotting calibration plots for each of them.
 ```r
 readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;%
   collect_predictions() %&gt;%
@@ -279,7 +279,7 @@ readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;
        title = &quot;Calibration Plot for K-nearest neighbors model&quot;,
        subtitle = &quot;Above the diagonal signifies under-forecast&quot;)
 ```
-
+<img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-19-1.png" width="672" />
 ```r
 readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds&quot;) %&gt;%
   collect_predictions() %&gt;%
@@ -300,7 +300,7 @@ readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds&quot;) 
        title = &quot;Calibration Plot for Lasso Regression model&quot;,
        subtitle = &quot;Close to the diagonal signifies well calibrated model&quot;)
 ```
-
+<img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-20-1.png" width="672" />
 ```r
 gbtree_last_fit %&gt;%
   collect_predictions() %&gt;%
@@ -321,7 +321,7 @@ gbtree_last_fit %&gt;%
        title = &quot;Calibration Plot for Gradient Boosted Tree model&quot;,
        subtitle = &quot;Close to the diagonal signifies well calibrated model&quot;)
 ```
-
+<img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-21-1.png" width="672" />
 In general, closer the calibration curve to the diagonal, the better. When a model is well calibrated, the mean prediction probability will be equal to mean truth. Meaning the model is predicting the target in the same ratios as the actual truth values.
 The KNN model calibration plot shows that the curve is above the diagonal, i.e. the model is frequently under estimating the predicted probabilities.
 However, both lasso regression and gradient boosted tree models seem to be well calibrated out of the box. That’s a sign of good stable algorithm and training procedure.
@@ -330,8 +330,8 @@ Note that all the predicted probabilities here are calculated on the cross valid
 In this part I built tree based models in order to understand how the problem space can be modelled with these approaches. We do see a small improvement in f1-score as compared to all our previous approaches. Note that, due to limited compute resources on my mac, I have kept the size of tuning grid to be small. In the next part of this series, I will move focus towards neural networks based models and see how “deep” we can go. Other NLP strategies like Named-entity recognition and others are also on my bucket list for this series.
 # References
 
-- Project Summary Page - NLP with disaster tweets: Summary
-- Project Part 1 - NLP with Disaster Tweets: Part 1 Data Preparation
-- Project Part 2 - NLP with Disaster Tweets: Part 2 Nearest Neighbor Models
-- Project Part 3 - NLP with Disaster Tweets: Part 3 Linear Models
+- Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
+- Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/)
+- Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/)
+- Project Part 3 - [NLP with Disaster Tweets: Part 3 Linear Models](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/)
 

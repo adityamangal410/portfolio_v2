@@ -25,10 +25,10 @@ keywords:
 ---
 
 ## Introduction
-From the article on Seattle Times -
+From the article on [Seattle Times](https://www.seattletimes.com/seattle-news/transportation/what-we-can-learn-from-seattles-bike-counter-data/) -
 “While millions of public dollars are going for bike lanes in Seattle, the city’s data collection on actual bike-lane ridership is scattered and incomplete. Given they’re the best the public can get, here’s what those numbers can tell us about who’s riding where.”
 ## Analysis
-Following along the screencast from David Robinson
+Following along the [screencast](https://www.youtube.com/watch?v=sBho2GJE5lc) from [David Robinson](https://twitter.com/drob)
 ```r
 library(tidyverse)
 library(lubridate)
@@ -89,14 +89,14 @@ bike_traffic %&gt;%
   geom_histogram() +
   facet_wrap(~ crossing)
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 ```r
 bike_traffic %&gt;%
   ggplot(aes(date)) +
   geom_histogram() +
   facet_grid(crossing ~ direction)
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 ### When in the day do we see bikers?
 ```r
 bike_traffic %&gt;%
@@ -106,7 +106,7 @@ bike_traffic %&gt;%
   geom_line() +
   geom_point()
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-6-1.png" width="672" />
 ```r
 bike_traffic %&gt;%
   group_by(hour = hour(date),
@@ -116,7 +116,7 @@ bike_traffic %&gt;%
   geom_line() +
   geom_point()
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 ```r
 bike_traffic %&gt;%
   group_by(crossing,
@@ -133,7 +133,7 @@ bike_traffic %&gt;%
        x = &quot;Time of day (local time)&quot;,
        y = &quot;% of bike crossings that happen in this hour&quot;)
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-8-1.png" width="672" />
 ```r
 bike_traffic %&gt;%
   mutate(hour = hour(date),
@@ -174,7 +174,7 @@ bike_by_time_window %&gt;%
   coord_flip() +
   facet_wrap(~ crossing)
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-10-1.png" width="672" />
 ```r
 bike_by_time_window %&gt;%
   group_by(crossing) %&gt;%
@@ -184,7 +184,7 @@ bike_by_time_window %&gt;%
   geom_point() +
   scale_x_log10()
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 ```r
 bike_traffic %&gt;%
   group_by(crossing,
@@ -202,7 +202,7 @@ bike_traffic %&gt;%
        title = &quot;When in the week do people in Seattle bike?&quot;,
        subtitle = &quot;Based on crossings from 2014-Feb 2019&quot;)
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-12-1.png" width="672" />
 ```r
 bike_traffic %&gt;%
   filter(date &lt; &quot;2018-01-01&quot;) %&gt;%
@@ -220,7 +220,7 @@ bike_traffic %&gt;%
        y = &quot;% of yearly trips in this month&quot;,
        x = &quot;&quot;)
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-13-1.png" width="672" />
 ### What directions do people commute by bike?
 ```r
 bike_traffic %&gt;%
@@ -246,7 +246,7 @@ bike_by_time_window_commute %&gt;%
                 labels = c(&quot;1/2&quot;, &quot;Same&quot;, &quot;2x&quot;, &quot;4x&quot;, &quot;8x&quot;)) +
   facet_wrap(~crossing, scales = &quot;free_x&quot;)
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 ```r
 bike_traffic %&gt;%
   filter(crossing != &quot;MTS Trail&quot;,
@@ -274,4 +274,4 @@ bike_by_direction_hour_crossing %&gt;%
        subtitle = &quot;Based on weekday crossings at six Seattle locations from 2014-Feb 2019&quot;,
        color = &quot;Direction&quot;)
 ```
-
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-15-1.png" width="672" />

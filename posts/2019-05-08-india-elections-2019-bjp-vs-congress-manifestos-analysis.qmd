@@ -54,7 +54,7 @@ theme_set(theme_light())
 use_python(&quot;~/anaconda3/bin/python&quot;)
 ```
 ## Downloading Manifestos
-BJP’s Manifesto available at their website - bjp.org
+BJP’s Manifesto available at their website - [bjp.org](https://www.bjp.org/manifestoPDF/BJP-Election-english-2019.pdf)
 ```r
 bjp_txt &lt;- pdf_text(&quot;~/Downloads/BJP-Election-english-2019.pdf&quot;)
 
@@ -77,7 +77,7 @@ bjp %&gt;%
 ## $ line &lt;int&gt; 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18…
 ## $ text &lt;chr&gt; &quot;&quot;, &quot;                                           Table of Content…
 ```
-Congress’ manifesto available at their website - inc.in
+Congress’ manifesto available at their website - [inc.in](https://manifesto.inc.in/pdf/english.pdf)
 ```r
 download.file(&quot;https://manifesto.inc.in/pdf/english.pdf&quot;, &quot;~/Downloads/congress.pdf&quot;)
 ```
@@ -142,6 +142,6 @@ congress_content %&gt;%
 Stay Tuned!
 # References
 
-- Part 2 Economic Growth
-- For all the parts go to Project Summary Page - India General Elections 2019 Analysis
+- [Part 2 Economic Growth](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/)
+- For all the parts go to Project Summary Page - [India General Elections 2019 Analysis](/2019/05/india-general-elections-2019-analysis/)
 

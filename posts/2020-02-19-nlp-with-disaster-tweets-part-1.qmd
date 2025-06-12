@@ -25,8 +25,8 @@ output-file: nlp-with-disaster-tweets-part-1.html
 ---
 
 # Introduction
-In this NLP getting started challenge on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
-In this part 1 for data preparation, I will do some basic exploration and vectorize the given tweet text into glove embedding vectors.
+In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
+In this part 1 for data preparation, I will do some basic exploration and vectorize the given tweet text into [glove](https://nlp.stanford.edu/projects/glove/) embedding vectors.
 # Analysis
 ## Load Libraries
 ```r
@@ -47,119 +47,150 @@ tweets &lt;- read_csv(&quot;../data/nlp_with_disaster_tweets/train.csv&quot;)
 tweets_test &lt;- read_csv(&quot;../data/nlp_with_disaster_tweets/test.csv&quot;)
 skim(tweets)
 ```
-
-Table 1: Data summary
-
-Name
-tweets
-
-Number of rows
-7613
-
-Number of columns
-5
-
-_______________________
-
-Column type frequency:
-
-character
-3
-
-numeric
-2
-
-________________________
-
-Group variables
-None
-
-Variable type: character
-
-skim_variable
-n_missing
-complete_rate
-min
-max
-empty
-n_unique
-whitespace
-
-keyword
-61
-0.99
-4
-21
-0
-221
-0
-
-location
-2534
-0.67
-1
-49
-0
-3279
-0
-
-text
-0
-1.00
-7
-157
-0
-7503
-0
-
-Variable type: numeric
-
-skim_variable
-n_missing
-complete_rate
-mean
-sd
-p0
-p25
-p50
-p75
-p100
-hist
-
-id
-0
-1
-5441.93
-3137.12
-1
-2734
-5408
-8146
-10873
-▇▇▇▇▇
-
-target
-0
-1
-0.43
-0.50
-0
-0
-0
-1
-1
-▇▁▁▁▆
-
+<table>
+<caption>Table 1: Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">tweets</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">7613</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">5</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+**Variable type: character**
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">keyword</td>
+<td align="right">61</td>
+<td align="right">0.99</td>
+<td align="right">4</td>
+<td align="right">21</td>
+<td align="right">0</td>
+<td align="right">221</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">location</td>
+<td align="right">2534</td>
+<td align="right">0.67</td>
+<td align="right">1</td>
+<td align="right">49</td>
+<td align="right">0</td>
+<td align="right">3279</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">text</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">7</td>
+<td align="right">157</td>
+<td align="right">0</td>
+<td align="right">7503</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+**Variable type: numeric**
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">id</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5441.93</td>
+<td align="right">3137.12</td>
+<td align="right">1</td>
+<td align="right">2734</td>
+<td align="right">5408</td>
+<td align="right">8146</td>
+<td align="right">10873</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">target</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.43</td>
+<td align="right">0.50</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">▇▁▁▁▆</td>
+</tr>
+</tbody>
+</table>
 ## Getting glove embedding for tweet text and adding as features
 The simple workflow for vectorizing tweet text into glove embeddings is as follows -
 
-Tokenize incoming tweet texts in the training data.
+- Tokenize incoming tweet texts in the training data.
 
-Download and parse glove embeddings into an embedding matrix for the tokenized words.
+- Download and parse glove embeddings into an embedding matrix for the tokenized words.
 
-Generate embeddings vector for tweets text in training data.
+- Generate embeddings vector for tweets text in training data.
 
-Generate embeddings vector for tweets text in test data.
+- Generate embeddings vector for tweets text in test data.
 
 - Append to given tweets features and export.
 
@@ -204,7 +235,7 @@ str(padded_sequences)
 ```
 Like we see above, for all the 7,613 tweets in the training data we have created a tokenized sequence of 33 elements each.
 ### Download and parse glove embeddings into an embedding matrix for the tokenized words
-Downloaded the pre-trained glove embeddings trained on 2 billion tweets from Stanford’s NLP projects page on Glove and borrowing the code for parsing and generating glove embedding matrix from my deepSentimentR package.
+Downloaded the pre-trained glove embeddings trained on 2 billion tweets from Stanford’s NLP projects page on [Glove](https://nlp.stanford.edu/projects/glove/) and borrowing the code for parsing and generating glove embedding matrix from my [deepSentimentR](https://adityamangal410.github.io/deepSentimentR/reference/index.html) package.
 ```r
 parse_glove_embeddings &lt;- function(file_path) {
   lines &lt;- readLines(file_path)
@@ -311,7 +342,7 @@ saveRDS(tweets_test_proc, &quot;../data/nlp_with_disaster_tweets/tweets_test_pro
 Exporting the appended feature set will help us work on this dataset for modelling. I will cover the modelling using the tidymodels framework in my upcoming posts.
 # References
 
-- Project Summary Page - NLP with disaster tweets: Summary
-- GloVe: Global Vectors for Word Representation - Stanford NLP Glove Project
-- DeepSentimentR package - deepSentimentR
+- Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
+- GloVe: Global Vectors for Word Representation - [Stanford NLP Glove Project](https://nlp.stanford.edu/projects/glove/)
+- DeepSentimentR package - [deepSentimentR](https://adityamangal410.github.io/deepSentimentR/index.html)
 
