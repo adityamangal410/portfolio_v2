@@ -34,7 +34,8 @@ output-file: music-recommendation-system.html
 <p>Music Artist Recommendation System using the <a href="https://grouplens.org/datasets/hetrec-2011/">Last.fm Dataset</a>. Exploratory data analysis.</p>
 # Analysis
 ## Load Libraries
-<pre class="r"><code>rm(list = ls())
+```r
+rm(list = ls())
 library(tidyverse)
 library(tidylog)
 library(lubridate)
@@ -44,22 +45,32 @@ library(sunburstR)
 library(htmltools)
 library(htmlwidgets)
 
-theme_set(theme_light())</code></pre>
+theme_set(theme_light())
+```
 ## Obtain Data
-<pre class="r"><code>artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/artists.dat&quot;)
+```r
+artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/artists.dat&quot;)
 tags &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/tags.dat&quot;)
 ratings &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_artists.dat&quot;)
 friends &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_friends.dat&quot;)
-user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_taggedartists.dat&quot;)</code></pre>
+user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_taggedartists.dat&quot;)
+```
 <p>Lets try and join all the data tables, into logical condensed tables.</p>
-<pre class="r"><code>user_tagged_artists %&gt;% 
+```r
+user_tagged_artists %&gt;% 
   left_join(tags, by = c(&quot;tagID&quot;)) %&gt;% 
-  left_join(artists, by = c(&quot;artistID&quot; = &quot;id&quot;)) -&gt; metadata</code></pre>
+  left_join(artists, by = c(&quot;artistID&quot; = &quot;id&quot;)) -&gt; metadata
+```
 <p>We will work with the final above 3 dataframes, metadata, ratings and friends. Lets drop the rest of them.</p>
-<pre class="r"><code>rm(artists, tags, user_tagged_artists)</code></pre>
-<pre class="r"><code>metadata %&gt;% 
-  glimpse()</code></pre>
-<pre><code>## Rows: 186,479
+```r
+rm(artists, tags, user_tagged_artists)
+```
+```r
+metadata %&gt;% 
+  glimpse()
+```
+```
+## Rows: 186,479
 ## Columns: 10
 ## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
 ## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 73, 73…
@@ -70,25 +81,37 @@ user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_tagge
 ## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;female…
 ## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morch…
 ## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.last.fm/…
-## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;, &quot;htt…</code></pre>
-<pre class="r"><code>friends %&gt;% 
-  glimpse()</code></pre>
-<pre><code>## Rows: 25,434
+## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;, &quot;htt…
+```
+```r
+friends %&gt;% 
+  glimpse()
+```
+```
+## Rows: 25,434
 ## Columns: 2
 ## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, …
-## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …</code></pre>
-<pre class="r"><code>ratings %&gt;% 
-  glimpse()</code></pre>
-<pre><code>## Rows: 92,834
+## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …
+```
+```r
+ratings %&gt;% 
+  glimpse()
+```
+```
+## Rows: 92,834
 ## Columns: 3
 ## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
 ## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, …
-## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 4337, 41…</code></pre>
+## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 4337, 41…
+```
 ## Scrub and Explore
 ### Ratings
-<pre class="r"><code>ratings %&gt;% 
-  head()</code></pre>
-<pre><code>## # A tibble: 6 x 3
+```r
+ratings %&gt;% 
+  head()
+```
+```
+## # A tibble: 6 x 3
 ##   userID artistID weight
 ##    &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
 ## 1      2       51  13883
@@ -96,26 +119,38 @@ user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_tagge
 ## 3      2       53  11351
 ## 4      2       54  10300
 ## 5      2       55   8983
-## 6      2       56   6152</code></pre>
-<pre class="r"><code>ratings %&gt;% 
+## 6      2       56   6152
+```
+```r
+ratings %&gt;% 
   select_if(function(x) any(is.na(x))) %&gt;% 
-  summarise_all(funs(sum(is.na(.))))</code></pre>
-<pre><code>## # A tibble: 1 x 0</code></pre>
+  summarise_all(funs(sum(is.na(.))))
+```
+```
+## # A tibble: 1 x 0
+```
 <p>Lets first make userID and artistID as factors.</p>
-<pre class="r"><code>ratings %&gt;% 
+```r
+ratings %&gt;% 
   mutate(userID = as.factor(userID),
-         artistID = as.factor(artistID)) -&gt; ratings</code></pre>
-<pre class="r"><code>ratings %&gt;% 
-  summary()</code></pre>
-<pre><code>##      userID         artistID         weight        
+         artistID = as.factor(artistID)) -&gt; ratings
+```
+```r
+ratings %&gt;% 
+  summary()
+```
+```
+##      userID         artistID         weight        
 ##  2      :   50   89     :  611   Min.   :     1.0  
 ##  3      :   50   289    :  522   1st Qu.:   107.0  
 ##  4      :   50   288    :  484   Median :   260.0  
 ##  5      :   50   227    :  480   Mean   :   745.2  
 ##  6      :   50   300    :  473   3rd Qu.:   614.0  
 ##  7      :   50   67     :  429   Max.   :352698.0  
-##  (Other):92534   (Other):89835</code></pre>
-<pre class="r"><code>ratings %&gt;% 
+##  (Other):92534   (Other):89835
+```
+```r
+ratings %&gt;% 
   mutate(z_score_weight = scale(weight)) %&gt;% 
   ggplot() -&gt; p
 
@@ -132,13 +167,17 @@ grid.arrange(p +
              p + 
                geom_density(aes(x = z_score_weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7)+
                scale_x_log10() + 
-               labs(x = &quot;z-score(log(weight))&quot;, y = &quot;density&quot;, title = &quot;z-score(log(Weight)) Density Distribution&quot;))</code></pre>
+               labs(x = &quot;z-score(log(weight))&quot;, y = &quot;density&quot;, title = &quot;z-score(log(Weight)) Density Distribution&quot;))
+```
 <p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
-<pre class="r"><code>ratings %&gt;% 
+```r
+ratings %&gt;% 
   mutate(log_weight = log10(weight),
          z_score_log_weight = scale(log_weight)) %&gt;% 
-  summary()</code></pre>
-<pre><code>##      userID         artistID         weight           log_weight   
+  summary()
+```
+```
+##      userID         artistID         weight           log_weight   
 ##  2      :   50   89     :  611   Min.   :     1.0   Min.   :0.000  
 ##  3      :   50   289    :  522   1st Qu.:   107.0   1st Qu.:2.029  
 ##  4      :   50   288    :  484   Median :   260.0   Median :2.415  
@@ -153,13 +192,19 @@ grid.arrange(p +
 ##  Mean   : 0.000000    
 ##  3rd Qu.: 0.621593    
 ##  Max.   : 4.772614    
-## </code></pre>
+## 
+```
 <p>Using scaled (i.e. z-score) of log10 of weight field as the rating.</p>
-<pre class="r"><code>ratings %&gt;% 
-  mutate(rating = scale(log10(weight))) -&gt; ratings</code></pre>
-<pre class="r"><code>ratings %&gt;% 
-  count(userID, sort = TRUE)</code></pre>
-<pre><code>## # A tibble: 1,892 x 2
+```r
+ratings %&gt;% 
+  mutate(rating = scale(log10(weight))) -&gt; ratings
+```
+```r
+ratings %&gt;% 
+  count(userID, sort = TRUE)
+```
+```
+## # A tibble: 1,892 x 2
 ##    userID     n
 ##    &lt;fct&gt;  &lt;int&gt;
 ##  1 2         50
@@ -172,11 +217,15 @@ grid.arrange(p +
 ##  8 9         50
 ##  9 10        50
 ## 10 11        50
-## # … with 1,882 more rows</code></pre>
+## # … with 1,882 more rows
+```
 <p>Looks like a highly cleaned dataset, where every user has exactly 50 ratings (or user’s play counts of exactly 50 artists).</p>
-<pre class="r"><code>ratings %&gt;% 
-  count(artistID, sort = TRUE)</code></pre>
-<pre><code>## # A tibble: 17,632 x 2
+```r
+ratings %&gt;% 
+  count(artistID, sort = TRUE)
+```
+```
+## # A tibble: 17,632 x 2
 ##    artistID     n
 ##    &lt;fct&gt;    &lt;int&gt;
 ##  1 89         611
@@ -189,24 +238,38 @@ grid.arrange(p +
 ##  8 292        407
 ##  9 190        400
 ## 10 498        399
-## # … with 17,622 more rows</code></pre>
+## # … with 17,622 more rows
+```
 ### Friends
-<pre class="r"><code>friends %&gt;% 
-  glimpse()</code></pre>
-<pre><code>## Rows: 25,434
+```r
+friends %&gt;% 
+  glimpse()
+```
+```
+## Rows: 25,434
 ## Columns: 2
 ## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, …
-## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …</code></pre>
-<pre class="r"><code>friends %&gt;% 
+## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …
+```
+```r
+friends %&gt;% 
   select_if(function(x) any(is.na(x))) %&gt;% 
-  summarise_all(funs(sum(is.na(.))))</code></pre>
-<pre><code>## # A tibble: 1 x 0</code></pre>
-<pre class="r"><code>friends %&gt;% 
+  summarise_all(funs(sum(is.na(.))))
+```
+```
+## # A tibble: 1 x 0
+```
+```r
+friends %&gt;% 
   mutate(userID = as.factor(userID),
-         friendID = as.factor(friendID)) -&gt; friends</code></pre>
-<pre class="r"><code>friends %&gt;% 
-  count(userID, sort = TRUE)</code></pre>
-<pre><code>## # A tibble: 1,892 x 2
+         friendID = as.factor(friendID)) -&gt; friends
+```
+```r
+friends %&gt;% 
+  count(userID, sort = TRUE)
+```
+```
+## # A tibble: 1,892 x 2
 ##    userID     n
 ##    &lt;fct&gt;  &lt;int&gt;
 ##  1 1543     119
@@ -219,11 +282,15 @@ grid.arrange(p +
 ##  8 1895      90
 ##  9 1300      89
 ## 10 390       88
-## # … with 1,882 more rows</code></pre>
+## # … with 1,882 more rows
+```
 ### Metadata
-<pre class="r"><code>metadata %&gt;% 
-  glimpse()</code></pre>
-<pre><code>## Rows: 186,479
+```r
+metadata %&gt;% 
+  glimpse()
+```
+```
+## Rows: 186,479
 ## Columns: 10
 ## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
 ## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 73, 73…
@@ -234,18 +301,26 @@ grid.arrange(p +
 ## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;female…
 ## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morch…
 ## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.last.fm/…
-## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;, &quot;htt…</code></pre>
-<pre class="r"><code>metadata %&gt;% 
+## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;, &quot;htt…
+```
+```r
+metadata %&gt;% 
   select_if(function(x) any(is.na(x))) %&gt;% 
-  summarise_all(funs(sum(is.na(.))))</code></pre>
-<pre><code>## # A tibble: 1 x 3
+  summarise_all(funs(sum(is.na(.))))
+```
+```
+## # A tibble: 1 x 3
 ##    name   url pictureURL
 ##   &lt;int&gt; &lt;int&gt;      &lt;int&gt;
-## 1 22951 22951      23024</code></pre>
+## 1 22951 22951      23024
+```
 <p>I’ll skip worrying about NA urls and pictureURLs for now. Lets explore the rows where name is NA.</p>
-<pre class="r"><code>metadata %&gt;% 
-  filter(is.na(name))</code></pre>
-<pre><code>## # A tibble: 22,951 x 10
+```r
+metadata %&gt;% 
+  filter(is.na(name))
+```
+```
+## # A tibble: 22,951 x 10
 ##    userID artistID tagID   day month  year tagValue       name  url   pictureURL
 ##     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     
 ##  1      4     1713    18     1    11  2007 electronic     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
@@ -258,10 +333,14 @@ grid.arrange(p +
 ##  8      4     2370    76     1     9  2007 progressive m… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
 ##  9      5     2786    96     1     4  2008 spring         &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
 ## 10      8    14103    24     1    11  2006 pop            &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-## # … with 22,941 more rows</code></pre>
-<pre class="r"><code>ratings %&gt;% 
-  filter(artistID == 1713)</code></pre>
-<pre><code>## # A tibble: 58 x 4
+## # … with 22,941 more rows
+```
+```r
+ratings %&gt;% 
+  filter(artistID == 1713)
+```
+```
+## # A tibble: 58 x 4
 ##    userID artistID weight rating[,1]
 ##    &lt;fct&gt;  &lt;fct&gt;     &lt;dbl&gt;      &lt;dbl&gt;
 ##  1 59     1713        610     0.617 
@@ -274,19 +353,25 @@ grid.arrange(p +
 ##  8 210    1713       7898     2.29  
 ##  9 211    1713        709     0.716 
 ## 10 216    1713        174    -0.202 
-## # … with 48 more rows</code></pre>
+## # … with 48 more rows
+```
 <p>Looks like even though we dont have the name of these artists, we have ratings for them in the ratings dataframe, so we’ll keep them.</p>
-<pre class="r"><code>metadata %&gt;% 
+```r
+metadata %&gt;% 
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID),
          tagID = as.factor(tagID),
          tagValue = as.factor(tagValue),
          name = as.factor(name)) %&gt;% 
-  rename(artistName = name) -&gt; metadata</code></pre>
+  rename(artistName = name) -&gt; metadata
+```
 <p>I dont think we will need the 2 URL columns for this study, dropping them for now.</p>
-<pre class="r"><code>metadata %&gt;% 
-  select(-url, -pictureURL) -&gt; metadata</code></pre>
-<pre class="r"><code>metadata %&gt;% 
+```r
+metadata %&gt;% 
+  select(-url, -pictureURL) -&gt; metadata
+```
+```r
+metadata %&gt;% 
   filter(!is.na(artistName)) %&gt;% 
   count(artistName, sort = TRUE) %&gt;% 
   top_n(20, n) %&gt;% 
@@ -302,9 +387,11 @@ grid.arrange(p +
        y = &quot;Number of Occurences&quot;,
        title = &quot;Most popular Artists&quot;,
        subtitle = &quot;Top 20 artists&quot;,
-       caption = &quot;Based on data from the Last.fm dataset&quot;)</code></pre>
+       caption = &quot;Based on data from the Last.fm dataset&quot;)
+```
 <p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
-<pre class="r"><code>metadata %&gt;% 
+```r
+metadata %&gt;% 
   count(tagValue, sort = TRUE) %&gt;% 
   top_n(20, n) %&gt;% 
   mutate(tagValue = reorder(tagValue, n)) %&gt;%
@@ -319,10 +406,12 @@ grid.arrange(p +
        y = &quot;Number of Occurences&quot;,
        title = &quot;Most popular Tags&quot;,
        subtitle = &quot;Top 20 Tags&quot;,
-       caption = &quot;Based on data from the Last.fm dataset&quot;)</code></pre>
+       caption = &quot;Based on data from the Last.fm dataset&quot;)
+```
 <p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 <p>Looks like few of the most popular Artists in this dataset are Britney Spears, Lady Gaga and Christina Aguilera and as expected, Rock and Pop are the most popular tags. Lets see which are the most popular artists in the top most popular tags.</p>
-<pre class="r"><code>topTags &lt;- metadata %&gt;% 
+```r
+topTags &lt;- metadata %&gt;% 
   count(tagValue) %&gt;% 
   top_n(5, n) %&gt;% 
   select(tagValue) %&gt;% 
@@ -341,7 +430,8 @@ metadata %&gt;%
 
 snb &lt;- htmlwidgets::prependContent(snb, htmltools::h2(&quot;Sunburst of most popular artists in 5 most popular tags&quot;))
 snb &lt;- htmlwidgets::prependContent(snb, htmltools::h5(&quot;Hover over to the see the artists and tags&quot;))
-snb</code></pre>
+snb
+```
 ## Sunburst of most popular artists in 5 most popular tags
 ##### Hover over to the see the artists and tags
 <div class="sunburst html-widget" id="htmlwidget-1" style="width:672px;height:480px; position:relative;">
@@ -368,12 +458,14 @@ snb</code></pre>
 <li>Visualized the most import data points in the dataset.</li>
 </ul>
 <p>I think I will wrap up the exploration phase for now. Lets export the data so we can model it in a later post.</p>
-<pre class="r"><code>ratings %&gt;% 
+```r
+ratings %&gt;% 
   write_csv(&quot;../data/hetrec2011-lastfm-2k/ratings_clean.csv&quot;)
 friends %&gt;% 
   write_csv(&quot;../data/hetrec2011-lastfm-2k/friends_clean.csv&quot;)
 metadata %&gt;% 
-  write_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)</code></pre>
+  write_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)
+```
 # References
 <ol style="list-style-type: decimal">
 <li><a href="https://grouplens.org/datasets/hetrec-2011/">Data reference</a></li>

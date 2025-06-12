@@ -32,7 +32,8 @@ output-file: nlp-with-disaster-tweets-part-3-linear-models.html
 In this part 3 for Linear Modelling, I will use the processed data generated in <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">Part 1</a> to train logistic regression based model with regularization in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a> about Nearest Neighbors model, I will do a comparative study among these 2 modelling algorithms.</p>
 # Analysis
 ## Load Libraries
-<pre class="r"><code>rm(list = ls())
+```r
+rm(list = ls())
 library(tidyverse)
 library(ggplot2)
 library(tidymodels)
@@ -40,19 +41,31 @@ library(glmnet)
 library(vip)
 library(silgelib)
 
-theme_set(theme_plex())</code></pre>
+theme_set(theme_plex())
+```
 ## Loading processed data from previous part
-<pre class="r"><code>tweets &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot;)
-tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)</code></pre>
-<pre class="r"><code>tweets %&gt;% 
-  dim</code></pre>
-<pre><code>## [1] 7613  830</code></pre>
-<pre class="r"><code>tweets_final %&gt;% 
-  dim</code></pre>
-<pre><code>## [1] 3263  829</code></pre>
+```r
+tweets &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot;)
+tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)
+```
+```r
+tweets %&gt;% 
+  dim
+```
+```
+## [1] 7613  830
+```
+```r
+tweets_final %&gt;% 
+  dim
+```
+```
+## [1] 3263  829
+```
 ## Feature preprocessing and engineering
 <p>I will use the same steps of feature preprocessing and engineering from <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a> here, in order to have an apples to apples comparison of the 2 models.</p>
-<pre class="r"><code>tweets %&gt;% 
+```r
+tweets %&gt;% 
   mutate(target = as.factor(target),
          id = as.character(id)) -&gt; tweets
 
@@ -79,28 +92,36 @@ recipe(target ~ ., data = tweets_train) %&gt;%
 
 tweets_prep &lt;- tweets_recipe %&gt;% 
   prep(training = tweets_train, 
-       strings_as_factors = FALSE)</code></pre>
+       strings_as_factors = FALSE)
+```
 ## Modelling
 ### Lasso Regression using glmnet
 <p>Let’s build a basic logistic regression model with some default value of regularization penalty.</p>
 #### Basic
-<pre class="r"><code>lasso_spec &lt;- logistic_reg(penalty = 0.1, mixture = 1) %&gt;% 
+```r
+lasso_spec &lt;- logistic_reg(penalty = 0.1, mixture = 1) %&gt;% 
   set_engine(&quot;glmnet&quot;) %&gt;% 
   set_mode(&quot;classification&quot;) 
 
 wf &lt;- workflow() %&gt;% 
-  add_recipe(tweets_recipe)</code></pre>
-<pre class="r"><code>lasso_fit &lt;- wf %&gt;% 
+  add_recipe(tweets_recipe)
+```
+```r
+lasso_fit &lt;- wf %&gt;% 
   add_model(lasso_spec) %&gt;% 
   fit(data = tweets_train)
 
-saveRDS(lasso_fit, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_basic_fit.rds&quot;)</code></pre>
-<pre class="r"><code>lasso_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_basic_fit.rds&quot;)
+saveRDS(lasso_fit, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_basic_fit.rds&quot;)
+```
+```r
+lasso_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_basic_fit.rds&quot;)
 
 lasso_fit %&gt;% 
   pull_workflow_fit() %&gt;% 
-  tidy() </code></pre>
-<pre><code>## # A tibble: 11,684 x 5
+  tidy() 
+```
+```
+## # A tibble: 11,684 x 5
 ##    term         step estimate lambda dev.ratio
 ##    &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
 ##  1 (Intercept)     1  -0.283  0.151   1.80e-14
@@ -113,19 +134,23 @@ lasso_fit %&gt;%
 ##  8 (Intercept)     5  -0.286  0.104   3.66e- 2
 ##  9 PC001           5  -0.0360 0.104   3.66e- 2
 ## 10 (Intercept)     6  -0.288  0.0951  5.21e- 2
-## # … with 11,674 more rows</code></pre>
+## # … with 11,674 more rows
+```
 <p>Above we see the familiar output of glmnet. Now, Let’s try and tune the regularization penalty and visualize the results.</p>
 #### Tuning lasso penalty
 <p>Using 10-fold cross validation and a few different values of regularization penalty.</p>
-<pre class="r"><code>set.seed(1234)
+```r
+set.seed(1234)
 folds &lt;- vfold_cv(tweets_train, strata = target, v = 10, repeats = 3)
 
 tune_spec &lt;- logistic_reg(penalty = tune(), mixture = 1) %&gt;% 
   set_mode(&quot;classification&quot;) %&gt;% 
   set_engine(&quot;glmnet&quot;)
 
-lambda_grid &lt;- grid_regular(penalty(), levels = 75)</code></pre>
-<pre class="r"><code>doParallel::registerDoParallel(cores = parallel::detectCores(logical = FALSE))
+lambda_grid &lt;- grid_regular(penalty(), levels = 75)
+```
+```r
+doParallel::registerDoParallel(cores = parallel::detectCores(logical = FALSE))
 
 set.seed(1234)
 lasso_grid &lt;- tune_grid(
@@ -137,12 +162,16 @@ lasso_grid &lt;- tune_grid(
                            verbose = TRUE)
 )
 
-saveRDS(lasso_grid, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_grid.rds&quot;)</code></pre>
-<pre class="r"><code>lasso_grid &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_grid.rds&quot;)
+saveRDS(lasso_grid, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_grid.rds&quot;)
+```
+```r
+lasso_grid &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_grid.rds&quot;)
 
 lasso_grid %&gt;% 
-  collect_metrics()</code></pre>
-<pre><code>## # A tibble: 225 x 6
+  collect_metrics()
+```
+```
+## # A tibble: 225 x 6
 ##     penalty .metric  .estimator  mean     n std_err
 ##       &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
 ##  1 1.00e-10 accuracy binary     0.772    30 0.00343
@@ -155,8 +184,10 @@ lasso_grid %&gt;%
 ##  8 1.86e-10 f_meas   binary     0.807    30 0.00277
 ##  9 1.86e-10 roc_auc  binary     0.836    30 0.00370
 ## 10 2.54e-10 accuracy binary     0.772    30 0.00343
-## # … with 215 more rows</code></pre>
-<pre class="r"><code>lasso_grid %&gt;% 
+## # … with 215 more rows
+```
+```r
+lasso_grid %&gt;% 
   collect_metrics() %&gt;% 
   mutate(flexibility = 1/penalty,
          .metric = str_to_title(str_replace_all(.metric, &quot;_&quot;, &quot; &quot;))) %&gt;% 
@@ -170,33 +201,43 @@ lasso_grid %&gt;%
   labs(title = &quot;Model performance against model flexibility&quot;,
        subtitle = &quot;F1-score peaks around lower flexibility values&quot;,
        x = &quot;Model flexibility i.e. Log(1/penalty)&quot;,
-       y = &quot;Mean metric value&quot;)</code></pre>
+       y = &quot;Mean metric value&quot;)
+```
 <p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 As we see in the plot above, the f1-score increases on the evaluation set until around penalty=0.005 and then starts falling down. We plot the flexibility (i.e. 1/penalty) to visualize how the model performance varies as the model flexibility increases. The Lasso Regression model with a lower penalty value will be highly flexible since it will not penalize the features weights by a lot and thus have high variance, whereas a higher penalty would lead to a much stricter model which is less flexible since a lot of feature weights will be moved to zero due to high penalty and therefore the model might suffer from bias.</p>
 <p>Let’s pickout the best parameter penalty based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset.</p>
-<pre class="r"><code>lasso_grid %&gt;% 
+```r
+lasso_grid %&gt;% 
   select_best(&quot;f_meas&quot;) -&gt; highest_f_meas
 
 final_lasso &lt;- finalize_workflow(
   wf %&gt;% add_model(tune_spec),
   highest_f_meas
-)</code></pre>
-<pre class="r"><code>last_fit(final_lasso, 
+)
+```
+```r
+last_fit(final_lasso, 
          tweets_split,
          metrics = metric_set(accuracy, roc_auc, f_meas)) -&gt; lasso_last_fit
 
-saveRDS(lasso_last_fit, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds&quot;)</code></pre>
-<pre class="r"><code>lasso_last_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds&quot;)
+saveRDS(lasso_last_fit, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds&quot;)
+```
+```r
+lasso_last_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds&quot;)
 lasso_last_fit %&gt;% 
-  collect_metrics()</code></pre>
-<pre><code>## # A tibble: 3 x 3
+  collect_metrics()
+```
+```
+## # A tibble: 3 x 3
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
 ## 1 accuracy binary         0.763
 ## 2 f_meas   binary         0.806
-## 3 roc_auc  binary         0.826</code></pre>
+## 3 roc_auc  binary         0.826
+```
 <p>The f1-score metric on the validation set comes out to be 0.8058252 which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a>. Lets try and visualize the variable importance for different features that we used to train our model.</p>
-<pre class="r"><code>lasso_last_fit$.workflow[[1]] %&gt;% 
+```r
+lasso_last_fit$.workflow[[1]] %&gt;% 
   pull_workflow_fit() %&gt;% 
   vi(lambda = highest_f_meas$penalty) %&gt;% 
   mutate(Importance = abs(Importance),
@@ -208,11 +249,13 @@ lasso_last_fit %&gt;%
   labs(y = NULL,
        x = &quot;Importance&quot;,
        title = &quot;Variable Importance plot&quot;,
-       subtitle = &quot;&#39;len&#39; feature has high positive impact on disaster probability&quot;)</code></pre>
+       subtitle = &quot;&#39;len&#39; feature has high positive impact on disaster probability&quot;)
+```
 <p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, as in the plot above, our custom feature “len” i.e. length of the tweets comes out as one of the most important features. The model gives a higher probability of a tweet being about a disaster if its longer in length, signifying that people tweeting about real disasters usually use a lot more words as compared to others.</p>
 <p>Let’s visualize how the coefficient estimates vary based on lambda for our 2 custom features, length of tweets and number of hashtags, and also for 1 other high coefficient feature in both positive and negative directions each.</p>
-<pre class="r"><code>lasso_last_fit$.workflow[[1]] %&gt;% 
+```r
+lasso_last_fit$.workflow[[1]] %&gt;% 
   pull_workflow_fit() %&gt;% 
   tidy() %&gt;% 
   filter(term %in% c(&quot;len&quot;, &quot;num_hashtags&quot;, &quot;PC009&quot;, &quot;PC026&quot;)) %&gt;% 
@@ -230,12 +273,14 @@ lasso_last_fit %&gt;%
        y = &quot;Coefficient Estimate&quot;,
        color = &quot;Feature&quot;,
        title = &quot;Feature coefficients against penalty parameter&quot;,
-       subtitle = &quot;&#39;num_hashtags&#39; feature gets to zero coefficient very soon in comparison&quot;)</code></pre>
+       subtitle = &quot;&#39;num_hashtags&#39; feature gets to zero coefficient very soon in comparison&quot;)
+```
 <p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>All feature coefficients tend to move towards zero as we increase the lambda penalty parameter, some more quickly than others.</p>
 ## Model Calibration
 <p>Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let’s compare our 2 models, lasso regression here and the best k-nearest neighbor model from <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a>, by plotting calibration plots for each of them.</p>
-<pre class="r"><code>readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;% 
+```r
+readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;% 
   collect_predictions() %&gt;% 
   mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;% 
   group_by(pred_bucket) %&gt;% 
@@ -252,9 +297,11 @@ lasso_last_fit %&gt;%
   labs(x = &quot;Mean True Prediction&quot;,
        y = &quot;Mean Truth&quot;,
        title = &quot;Calibration Plot for K-nearest neighbors model&quot;,
-       subtitle = &quot;Above the diagonal signifies under-forecast&quot;)</code></pre>
+       subtitle = &quot;Above the diagonal signifies under-forecast&quot;)
+```
 <p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
-<pre class="r"><code>lasso_last_fit %&gt;% 
+```r
+lasso_last_fit %&gt;% 
   collect_predictions() %&gt;% 
   mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;% 
   group_by(pred_bucket) %&gt;% 
@@ -271,7 +318,8 @@ lasso_last_fit %&gt;%
   labs(x = &quot;Mean True Prediction&quot;,
        y = &quot;Mean Truth&quot;,
        title = &quot;Calibration Plot for Lasso Regression model&quot;,
-       subtitle = &quot;Close to the diagonal signifies well calibrated model&quot;)</code></pre>
+       subtitle = &quot;Close to the diagonal signifies well calibrated model&quot;)
+```
 <p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>In general, closer the calibration curve to the diagonal, the better. When a model is well calibrated, the mean prediction probability will be equal to mean truth. Meaning the model is predicting the target in the same ratios as the actual truth values.<br />
 The KNN model calibration plot shows that the curve is above the diagonal, i.e. the model is frequently under estimating the predicted probabilities.<br />

@@ -34,17 +34,28 @@ output-file: where-does-your-medicine-come-from-makeovermonday-2018-week-8.html
 <p>In this blog post, I’m trying to find the leading countries in Export across these 5 years.</p>
 # Analysis
 ## Cleaning up workspace and loading required libraries
-<pre class="r"><code>rm(list = ls())</code></pre>
-<pre class="r"><code>library(tidyverse) #Data Wrangling
+```r
+rm(list = ls())
+```
+```r
+library(tidyverse) #Data Wrangling
 library(&quot;httr&quot;)
 library(readxl) #Data Ingestion
-library(ggplot2) #Data Visualization</code></pre>
+library(ggplot2) #Data Visualization
+```
 ## Obtaining Data
 <p>Reading and viewing the dataset</p>
-<pre class="r"><code>GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
-<pre class="r"><code>drugs &lt;- read_excel(tf)</code></pre>
-<pre class="r"><code>drugs</code></pre>
-<pre><code>## # A tibble: 1,100 x 3
+```r
+GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.xlsx&quot;)))
+```
+```r
+drugs &lt;- read_excel(tf)
+```
+```r
+drugs
+```
+```
+## # A tibble: 1,100 x 3
 ##    Exporter                  Year `Exports (USD)`
 ##    &lt;chr&gt;                    &lt;dbl&gt;           &lt;dbl&gt;
 ##  1 World                     2013    326445385000
@@ -57,35 +68,49 @@ library(ggplot2) #Data Visualization</code></pre>
 ##  8 Ireland                   2013     18152573000
 ##  9 Italy                     2013     20898532000
 ## 10 Netherlands               2013     13480651000
-## # … with 1,090 more rows</code></pre>
+## # … with 1,090 more rows
+```
 <p>Summarizing and getting stats to better understand the dataset</p>
-<pre class="r"><code>drugs %&gt;% 
-  glimpse()</code></pre>
-<pre><code>## Rows: 1,100
+```r
+drugs %&gt;% 
+  glimpse()
+```
+```
+## Rows: 1,100
 ## Columns: 3
 ## $ Exporter        &lt;chr&gt; &quot;World&quot;, &quot;Germany&quot;, &quot;Switzerland&quot;, &quot;Belgium&quot;, &quot;France…
 ## $ Year            &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013,…
-## $ `Exports (USD)` &lt;dbl&gt; 326445385000, 48493611000, 32337891000, 33329615000, …</code></pre>
-<pre class="r"><code>drugs %&gt;% 
-  summary()</code></pre>
-<pre><code>##    Exporter              Year      Exports (USD)      
+## $ `Exports (USD)` &lt;dbl&gt; 326445385000, 48493611000, 32337891000, 33329615000, …
+```
+```r
+drugs %&gt;% 
+  summary()
+```
+```
+##    Exporter              Year      Exports (USD)      
 ##  Length:1100        Min.   :2013   Min.   :0.000e+00  
 ##  Class :character   1st Qu.:2014   1st Qu.:1.212e+05  
 ##  Mode  :character   Median :2015   Median :7.393e+06  
 ##                     Mean   :2015   Mean   :3.315e+09  
 ##                     3rd Qu.:2016   3rd Qu.:3.293e+08  
 ##                     Max.   :2017   Max.   :3.405e+11  
-##                                    NA&#39;s   :266</code></pre>
+##                                    NA&#39;s   :266
+```
 ## Scrubbing data
 <p>Removing rows with NA for the purposes of this visualization</p>
-<pre class="r"><code>drugs = drugs %&gt;% 
-  filter(!is.na(`Exports (USD)`))</code></pre>
+```r
+drugs = drugs %&gt;% 
+  filter(!is.na(`Exports (USD)`))
+```
 <p>Let’s see overall which are the Countries with highest export over these 5 years.</p>
-<pre class="r"><code>drugs %&gt;% 
+```r
+drugs %&gt;% 
   group_by(Exporter) %&gt;% 
   summarise(TotalExport = sum(`Exports (USD)`)) %&gt;% 
-  arrange(desc(TotalExport))</code></pre>
-<pre><code>## # A tibble: 220 x 2
+  arrange(desc(TotalExport))
+```
+```
+## # A tibble: 220 x 2
 ##    Exporter                   TotalExport
 ##    &lt;chr&gt;                            &lt;dbl&gt;
 ##  1 World                    1309425248000
@@ -98,19 +123,25 @@ library(ggplot2) #Data Visualization</code></pre>
 ##  8 Ireland                    96686923000
 ##  9 Italy                      76012918000
 ## 10 Netherlands                59659401000
-## # … with 210 more rows</code></pre>
+## # … with 210 more rows
+```
 ## Exploring Data
 <p>Lets plot the countries which were among the top 5 exporters each year and each of their performance over these 5 years.</p>
-<pre class="r"><code>top5ExportersByYear = drugs %&gt;% 
+```r
+top5ExportersByYear = drugs %&gt;% 
   filter(Exporter!=&quot;World&quot;) %&gt;% 
   group_by(Year) %&gt;% 
   top_n(5, `Exports (USD)`) %&gt;% 
-  ungroup()</code></pre>
-<pre class="r"><code>g = ggplot(data = top5ExportersByYear, aes(x = Year, y = `Exports (USD)`))
-g + geom_line(aes(color = Exporter)) + labs(title = &#39;Trend for top 5 exporters in the world over the years&#39;)</code></pre>
+  ungroup()
+```
+```r
+g = ggplot(data = top5ExportersByYear, aes(x = Year, y = `Exports (USD)`))
+g + geom_line(aes(color = Exporter)) + labs(title = &#39;Trend for top 5 exporters in the world over the years&#39;)
+```
 <p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Evaluating Top 10 exporters per Year. Excluding 2017 since we do not have numbers for total export in the world.</p>
-<pre class="r"><code>getTop10ForYear = function(df){
+```r
+getTop10ForYear = function(df){
   top10ForYear = df %&gt;% 
     filter(Exporter!=&quot;World&quot;) %&gt;% 
     top_n(10, `Exports (USD)`)
@@ -126,8 +157,10 @@ yearlyTop10s = drugs %&gt;%
   filter(Year != 2017) %&gt;% 
   group_by(Year) %&gt;% 
   do(getTop10ForYear(.))
-yearlyTop10s</code></pre>
-<pre><code>## # A tibble: 44 x 3
+yearlyTop10s
+```
+```
+## # A tibble: 44 x 3
 ##    Exporter                  Year `Exports (USD)`
 ##    &lt;chr&gt;                    &lt;dbl&gt;           &lt;dbl&gt;
 ##  1 Germany                   2013     48493611000
@@ -140,9 +173,11 @@ yearlyTop10s</code></pre>
 ##  8 Italy                     2013     20898532000
 ##  9 Netherlands               2013     13480651000
 ## 10 India                     2013     10313989000
-## # … with 34 more rows</code></pre>
+## # … with 34 more rows
+```
 <p>Writing function to plot a Donut Chart for each year showing percentage export contribution for top 10 exporters of that year as compared to all others.</p>
-<pre class="r"><code>plotTop10 = function(df){
+```r
+plotTop10 = function(df){
   YEAR = df %&gt;% select(Year) %&gt;% unique() %&gt;% .$Year
   plotTitle = paste(&quot;World Medicine Export in&quot;, YEAR, sep = &quot; &quot;)
   
@@ -167,14 +202,23 @@ yearlyTop10s</code></pre>
           panel.grid=element_blank(),
           panel.border=element_blank())
   return(p)
-}</code></pre>
+}
+```
 <p>Plotting the donuts for each year</p>
-<pre class="r"><code>plotTop10(yearlyTop10s %&gt;% filter(Year==2013))</code></pre>
+```r
+plotTop10(yearlyTop10s %&gt;% filter(Year==2013))
+```
 <p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<pre class="r"><code>plotTop10(yearlyTop10s %&gt;% filter(Year==2014))</code></pre>
+```r
+plotTop10(yearlyTop10s %&gt;% filter(Year==2014))
+```
 <p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
-<pre class="r"><code>plotTop10(yearlyTop10s %&gt;% filter(Year==2015))</code></pre>
+```r
+plotTop10(yearlyTop10s %&gt;% filter(Year==2015))
+```
 <p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
-<pre class="r"><code>plotTop10(yearlyTop10s %&gt;% filter(Year==2016))</code></pre>
+```r
+plotTop10(yearlyTop10s %&gt;% filter(Year==2016))
+```
 <p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
 <p>As can be seen Germany remains the biggest exporter of Drugs and Medicines over the past 5 years.</p>

@@ -32,7 +32,8 @@ output-file: nlp-with-disaster-tweets-part-1.html
 In this part 1 for data preparation, I will do some basic exploration and vectorize the given tweet text into <a href="https://nlp.stanford.edu/projects/glove/" target="_blank">glove</a> embedding vectors.</p>
 # Analysis
 ## Load Libraries
-<pre class="r"><code>rm(list = ls())
+```r
+rm(list = ls())
 library(tidyverse)
 library(ggplot2)
 library(GGally)
@@ -41,11 +42,14 @@ library(tidymodels)
 library(keras)
 library(janitor)
 
-theme_set(theme_light())</code></pre>
+theme_set(theme_light())
+```
 ## Read Data
-<pre class="r"><code>tweets &lt;- read_csv(&quot;../data/nlp_with_disaster_tweets/train.csv&quot;)
+```r
+tweets &lt;- read_csv(&quot;../data/nlp_with_disaster_tweets/train.csv&quot;)
 tweets_test &lt;- read_csv(&quot;../data/nlp_with_disaster_tweets/test.csv&quot;)
-skim(tweets)</code></pre>
+skim(tweets)
+```
 <table>
 <caption><span id="tab:unnamed-chunk-2">Table 1: </span>Data summary</caption>
 <tbody>
@@ -195,31 +199,48 @@ skim(tweets)</code></pre>
 </ol>
 ### Tokenize incoming tweet texts in the training data
 <p>Using keras’ text_tokenizer to tokenize the text in tweets dataset.</p>
-<pre class="r"><code>text_tokenizer() %&gt;% 
+```r
+text_tokenizer() %&gt;% 
   fit_text_tokenizer(tweets$text) -&gt; tokenizer
 
 num_words &lt;- length(tokenizer$word_index) + 1
-print(length(tokenizer$word_index))</code></pre>
-<pre><code>## [1] 22700</code></pre>
+print(length(tokenizer$word_index))
+```
+```
+## [1] 22700
+```
 <p>A total of 22700 unique words were assigned an index in the tokenization.<br />
 Using the above fit tokenizer, converting the text to actual sequences of indices.</p>
-<pre class="r"><code>sequences &lt;- texts_to_sequences(tokenizer, tweets$text)
+```r
+sequences &lt;- texts_to_sequences(tokenizer, tweets$text)
 
-summary(map_int(sequences, length))</code></pre>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    1.00   13.00   17.00   16.84   21.00   33.00</code></pre>
-<pre class="r"><code>maxlen &lt;- max(map_int(sequences, length))
-print(maxlen)</code></pre>
-<pre><code>## [1] 33</code></pre>
+summary(map_int(sequences, length))
+```
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    1.00   13.00   17.00   16.84   21.00   33.00
+```
+```r
+maxlen &lt;- max(map_int(sequences, length))
+print(maxlen)
+```
+```
+## [1] 33
+```
 <p>Capping the maximum length of a tweets sequence to 33. This will translate all the tweets text sequences into a sequence of length 33. If the original sequence was longer, it will truncate from the beginning and if the original sequence is smaller, it will pad the sequence in the beginning to bring the final length to 33.</p>
-<pre class="r"><code>pad_sequences(sequences, maxlen = maxlen) -&gt; padded_sequences
+```r
+pad_sequences(sequences, maxlen = maxlen) -&gt; padded_sequences
 
-str(padded_sequences)</code></pre>
-<pre><code>##  int [1:7613, 1:33] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+str(padded_sequences)
+```
+```
+##  int [1:7613, 1:33] 0 0 0 0 0 0 0 0 0 0 ...
+```
 <p>Like we see above, for all the 7,613 tweets in the training data we have created a tokenized sequence of 33 elements each.</p>
 ### Download and parse glove embeddings into an embedding matrix for the tokenized words
 <p>Downloaded the pre-trained glove embeddings trained on 2 billion tweets from Stanford’s NLP projects page on <a href="https://nlp.stanford.edu/projects/glove/">Glove</a> and borrowing the code for parsing and generating glove embedding matrix from my <a href="https://adityamangal410.github.io/deepSentimentR/reference/index.html">deepSentimentR</a> package.</p>
-<pre class="r"><code>parse_glove_embeddings &lt;- function(file_path) {
+```r
+parse_glove_embeddings &lt;- function(file_path) {
   lines &lt;- readLines(file_path)
   embeddings_index &lt;- new.env(hash = TRUE, parent = emptyenv())
   for (i in 1:length(lines)) {
@@ -247,21 +268,31 @@ generate_embedding_matrix &lt;- function(word_index, embedding_dim, max_words, g
   }
 
   return(embedding_matrix)
-}</code></pre>
-<pre class="r"><code>embedding_dim &lt;- 25</code></pre>
-<pre class="r"><code>embedding_matrix &lt;- generate_embedding_matrix(tokenizer$word_index, 
+}
+```
+```r
+embedding_dim &lt;- 25
+```
+```r
+embedding_matrix &lt;- generate_embedding_matrix(tokenizer$word_index, 
                                               embedding_dim = embedding_dim, 
                                               max_words = num_words,
 &quot;../../../nlp_with_disaster_tweets/data/glove.twitter.27B/glove.twitter.27B.25d.txt&quot;)
 
-saveRDS(embedding_matrix, &quot;../data/nlp_with_disaster_tweets/embedding_matrix_25d.rds&quot;)</code></pre>
-<pre class="r"><code>embedding_matrix &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/embedding_matrix_25d.rds&quot;)
-str(embedding_matrix)</code></pre>
-<pre><code>##  num [1:22701, 1:25] 0 0.7864 0.4186 0.7086 -0.0102 ...</code></pre>
+saveRDS(embedding_matrix, &quot;../data/nlp_with_disaster_tweets/embedding_matrix_25d.rds&quot;)
+```
+```r
+embedding_matrix &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/embedding_matrix_25d.rds&quot;)
+str(embedding_matrix)
+```
+```
+##  num [1:22701, 1:25] 0 0.7864 0.4186 0.7086 -0.0102 ...
+```
 <p>Using only 25 dimensional embedding in order to keep the computations fast, we have created an embedding matrix which holds the 25 dimension values for the most popular 22700 words in our tweets text data.</p>
 ### Generate embeddings vector for tweets text in training data
 <p>Using the keras modelling framework to generate embeddings for the given training data. We basically create a simple sequential model with one embedding layer whose weights we will freeze based on our embedding matrix created above, and a flattening layer that will flatten the output into a 2D matrix of dimensions (7613, 33x25).</p>
-<pre class="r"><code>keras_model_sequential() %&gt;% 
+```r
+keras_model_sequential() %&gt;% 
   layer_embedding(input_dim = num_words, output_dim = embedding_dim, 
                   input_length = maxlen, name = &quot;embedding&quot;) %&gt;% 
   layer_flatten(name = &quot;flatten&quot;) -&gt; model_embedding
@@ -274,30 +305,43 @@ model_embedding %&gt;%
 model_embedding %&gt;% 
   predict(padded_sequences) -&gt; tweets_embeddings
 
-str(tweets_embeddings)</code></pre>
-<pre><code>##  num [1:7613, 1:825] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+str(tweets_embeddings)
+```
+```
+##  num [1:7613, 1:825] 0 0 0 0 0 0 0 0 0 0 ...
+```
 <p>For each of the 7,613 padded tweet sequences of upto max length 33, we use the keras model to “predict” and populate the embedding for each of those 33 words in the sequence and susequently flatten those to create a single feature vector of 33x25=825 dimensions.</p>
 ### Generate embeddings vector for tweets text in test data
 <p>Using the similar approach as above (i.e. tokenize, pad and vectorize using glove embeddings) on the test data, to generate similar embedding vector for text in the tweets test data. Note that, we use the previously fit text tokenizer on the train data to tokenize the test data.</p>
-<pre class="r"><code>sequences_test &lt;- texts_to_sequences(tokenizer, tweets_test$text)</code></pre>
-<pre class="r"><code>pad_sequences(sequences_test, maxlen = maxlen) -&gt; padded_sequences_test
+```r
+sequences_test &lt;- texts_to_sequences(tokenizer, tweets_test$text)
+```
+```r
+pad_sequences(sequences_test, maxlen = maxlen) -&gt; padded_sequences_test
 
 model_embedding %&gt;% 
   predict(padded_sequences_test) -&gt; tweets_embeddings_test
 
-str(tweets_embeddings_test)</code></pre>
-<pre><code>##  num [1:3263, 1:825] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+str(tweets_embeddings_test)
+```
+```
+##  num [1:3263, 1:825] 0 0 0 0 0 0 0 0 0 0 ...
+```
 <p>We similarly get 825 embedding dimensions for 3,263 tweets in the test data.</p>
 ### Append to given tweets features and export
-<pre class="r"><code>tweets %&gt;% 
+```r
+tweets %&gt;% 
   bind_cols(as_tibble(tweets_embeddings)) %&gt;% 
   clean_names() -&gt; tweets_proc
 
 tweets_test %&gt;% 
   bind_cols(as_tibble(tweets_embeddings_test)) %&gt;% 
-  clean_names() -&gt; tweets_test_proc</code></pre>
-<pre class="r"><code>saveRDS(tweets_proc, &quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot;)
-saveRDS(tweets_test_proc, &quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)</code></pre>
+  clean_names() -&gt; tweets_test_proc
+```
+```r
+saveRDS(tweets_proc, &quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot;)
+saveRDS(tweets_test_proc, &quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)
+```
 <p>Exporting the appended feature set will help us work on this dataset for modelling. I will cover the modelling using the tidymodels framework in my upcoming posts.</p>
 # References
 <ul>
