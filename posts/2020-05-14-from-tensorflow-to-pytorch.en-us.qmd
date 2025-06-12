@@ -3,13 +3,12 @@ title: From Tensorflow to PyTorch
 author: Aditya Mangal
 date: '2020-05-14'
 categories:
-  - Tutorials
-tags:
-  - DataScience
-  - Python
-  - DeepLearning
+- Tutorials
 keywords:
-  - tech
+- tech
+- DataScience
+- Python
+- DeepLearning
 summary: Quickstart guide to help move from Tensorflow to PyTorch
 readingtime: '5'
 draft: false

@@ -3,11 +3,10 @@ title: Music Artist Recommendation System Project
 author: Aditya Mangal
 date: '2019-07-17'
 categories:
-  - Projects
-tags:
-  - Summary
+- Projects
 keywords:
-  - tech
+- tech
+- Summary
 summary: Recommendation systems are all around us, from Netflix's amazing video recommender
   system to Amazon's product recommendation system and many many more. I have always
   been curious about the science and effort that goes into building one...

@@ -3,16 +3,15 @@ title: 'The Winter Olympics: MakeOverMonday 2018 Week7'
 author: Aditya Mangal
 date: '2018-02-15'
 categories:
-  - MakeOverMonday
-tags:
-  - DataAnalysis
-  - DataScience
-  - MakeOverMonday
-  - Olympics
-  - Visualizations
-  - R
+- MakeOverMonday
 keywords:
-  - tech
+- tech
+- DataAnalysis
+- DataScience
+- MakeOverMonday
+- Olympics
+- Visualizations
+- R
 summary: Goal of this Visualization task is to create an alternative visualization
   to the [Tableau's visualization for Winter Olympics data for different countries.](https://public.tableau.com/views/TheWinterOlympics/TheWinterOlympics?:embed=y&:showVizHome=no)
 readingtime: '5'

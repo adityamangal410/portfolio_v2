@@ -3,15 +3,14 @@ title: 'NLP with Disaster Tweets: Part 7 Vanilla RNN and GRU'
 author: Aditya Mangal
 date: '2020-09-26'
 categories:
-  - Projects
-tags:
-  - DataScience
-  - DeepLearning
-  - NLP
-  - Python
-  - TextMining
+- Projects
 keywords:
-  - tech
+- tech
+- DataScience
+- DeepLearning
+- NLP
+- Python
+- TextMining
 summary: Vanilla Recurrent Neural Networks and Gated Recurrent Units in PyTorch
 readingtime: '8'
 draft: false

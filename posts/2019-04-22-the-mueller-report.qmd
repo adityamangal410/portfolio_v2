@@ -3,17 +3,16 @@ title: The Mueller Report
 author: Aditya Mangal
 date: '2019-04-22'
 categories:
-  - Projects
-tags:
-  - DataAnalysis
-  - DataScience
-  - SentimentAnalysis
-  - TextMining
-  - Visualizations
-  - R
-  - Python
+- Projects
 keywords:
-  - tech
+- tech
+- DataAnalysis
+- DataScience
+- SentimentAnalysis
+- TextMining
+- Visualizations
+- R
+- Python
 summary: Analyzing the Special Counsel's "Report On The Investigation Into Russian
   Interference In The 2016 Presidential Election" from - [justice.gov](https://www.justice.gov/storage/report.pdf)
 readingtime: '15'

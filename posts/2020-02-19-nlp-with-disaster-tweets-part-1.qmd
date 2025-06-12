@@ -3,14 +3,13 @@ title: 'NLP with Disaster Tweets: Part 1 Data Preparation'
 author: Aditya Mangal
 date: '2020-02-19'
 categories:
-  - Projects
-tags:
-  - DataAnalysis
-  - DataScience
-  - NLP
-  - TextMining
+- Projects
 keywords:
-  - tech
+- tech
+- DataAnalysis
+- DataScience
+- NLP
+- TextMining
 summary: NLP and TidyModelling in R
 readingtime: '10'
 draft: false

@@ -4,22 +4,21 @@ title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 6 Nati
 author: Aditya Mangal
 date: '2019-05-13'
 categories:
-  - Projects
-tags:
-  - DataAnalysis
-  - DataScience
-  - India
-  - Python
-  - R
-  - SentimentAnalysis
-  - TextMining
-  - Visualizations
+- Projects
 keywords:
-  - tech
+- tech
+- DataAnalysis
+- DataScience
+- India
+- Python
+- R
+- SentimentAnalysis
+- TextMining
+- Visualizations
 summary: With India's 2019 General Elections around the corner, I thought it'd be
   a good idea to analyse the election manifestos of its 2 biggest political parties,
-  BJP and Congress. In this part 6, I'll explore the National Security
-  discussions in both manifestos.
+  BJP and Congress. In this part 6, I'll explore the National Security discussions
+  in both manifestos.
 readingtime: '10'
 draft: false
 coverImage: https://lh3.googleusercontent.com/6CZaM8l5GYkmYiKKAQYnu0sbarilrwyz6EfPgWBXjP5O6zIKGlDiwvM95rVhoUWmjoZ_XTcwSBKzML2KvxPQogPSns4I3kgwJvFClsWXMKYbrus-MKfs-WBuGS5L2dTDfPfs3FCWxIg_KsNGzOy3o2L2CvYm5V9febf1sE7zuFAOQnw_opKwPD_eZt9HXngnekY8lUPDBS29RRvHy-owtj1B6nmNwDl2UmtxnOc5SHyr1uvi_vrU7p6sFv408ukkObRysUcT6_jnCvnS_ANLC5CQhg2MULdr-6zclDLRR68xF6UrCeSZv-8O7QFdLySsDhhxDgaHdRi5pH1h0ZoOBFuajcK-7-2nfz6i9tJKnWtXCEZFm_LKOFDNalGmffEesVa_L41I06DbGLQK5Hpl7QCTW6V5FVq8RdF8Kdmy0ozsgnBqQhRkA61JmPXDjnPqWBwiy_3rS0VLo_hsZNj0T2ASsptKcmNgn9900kSj1snl442UTzlQebGwvhiaEdv2En-y3L-Fhe_Fcb0y16rHqf0FGVroQ5MRxkffdjCDt8sLqNMBQ_5g6tgclokYxF0G6RGgNuTt2PzHVK4zvQLp9RQFUReX7I5Vva4R_cOXWCxM0u95rhDiwSAeE-bNyPE5ygiD1OmhaD8IAH2t6uM2X_OHUJZEGrBfaPbQtoZaNwiSQqljzdBpK7bq5Y3lRE3p1ve9iHioa48ZGufs1Aa3Qbkdog=w2748-h1832-no
