@@ -29,16 +29,22 @@ format:
 freeze: true
 output-file: india-elections-2019-bjp-vs-congress-manifestos-analysis.html
 ---
-
-
-
-
 # Introduction
-<p>With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.<br />
-In this part 1, I’ll collect and clean data and setup the ground work for the project.</p>
+
+With India’s 2019 General Elections around the corner, I thought it’d be
+a good idea to analyse the election manifestos of its 2 biggest
+political parties, BJP and Congress. Let’s use text mining to understand
+what each party promises and prioritizes.  
+In this part 1, I’ll collect and clean data and setup the ground work
+for the project.
+
 # Analysis
+
 ## Load libraries
-```r
+
+<div id="cb1" class="sourceCode">
+
+``` sourcecode
 rm(list = ls())
 library(tidyverse)
 library(pdftools)
@@ -56,9 +62,17 @@ library(ggraph)
 theme_set(theme_light())
 use_python(&quot;~/anaconda3/bin/python&quot;)
 ```
+
+</div>
+
 ## Downloading Manifestos
-<p>BJP’s Manifesto available at their website - <a href="https://www.bjp.org/manifestoPDF/BJP-Election-english-2019.pdf">bjp.org</a></p>
-```r
+
+BJP’s Manifesto available at their website -
+[bjp.org](https://www.bjp.org/manifestoPDF/BJP-Election-english-2019.pdf)
+
+<div id="cb2" class="sourceCode">
+
+``` sourcecode
 bjp_txt &lt;- pdf_text(&quot;~/Downloads/BJP-Election-english-2019.pdf&quot;)
 
 tibble(
@@ -73,21 +87,37 @@ tibble(
 bjp %&gt;% 
   glimpse()
 ```
-```
-## Rows: 1,590
-## Columns: 3
-## $ page &lt;int&gt; 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
-## $ line &lt;int&gt; 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18…
-## $ text &lt;chr&gt; &quot;&quot;, &quot;                                           Table of Content…
-```
-<p>Congress’ manifesto available at their website - <a href="https://manifesto.inc.in/pdf/english.pdf">inc.in</a></p>
-```r
+
+</div>
+
+    ## Rows: 1,590
+    ## Columns: 3
+    ## $ page &lt;int&gt; 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+    ## $ line &lt;int&gt; 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18…
+    ## $ text &lt;chr&gt; &quot;&quot;, &quot;                                           Table of Content…
+
+Congress’ manifesto available at their website -
+[inc.in](https://manifesto.inc.in/pdf/english.pdf)
+
+<div id="cb4" class="sourceCode">
+
+``` sourcecode
 download.file(&quot;https://manifesto.inc.in/pdf/english.pdf&quot;, &quot;~/Downloads/congress.pdf&quot;)
 ```
-```r
+
+</div>
+
+<div id="cb5" class="sourceCode">
+
+``` sourcecode
 congress_txt &lt;- pdf_text(&quot;~/Downloads/congress.pdf&quot;)
 ```
-```r
+
+</div>
+
+<div id="cb6" class="sourceCode">
+
+``` sourcecode
 tibble(
   page = 1:length(congress_txt),
   text = congress_txt
@@ -100,51 +130,96 @@ tibble(
 congress %&gt;% 
   glimpse()
 ```
-```
-## Rows: 1,490
-## Columns: 3
-## $ page &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
-## $ line &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1…
-## $ text &lt;chr&gt; &quot;CONGRESS&quot;, &quot;WILL&quot;, &quot;DELIVER&quot;, &quot;      MANIFESTO&quot;, &quot;      LOK SAB…
-```
+
+</div>
+
+    ## Rows: 1,490
+    ## Columns: 3
+    ## $ page &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+    ## $ line &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1…
+    ## $ text &lt;chr&gt; &quot;CONGRESS&quot;, &quot;WILL&quot;, &quot;DELIVER&quot;, &quot;      MANIFESTO&quot;, &quot;      LOK SAB…
+
 ## Cleaning
+
 ### Page range
-<p>As we see from the 2 documents, first few pages contain Title and Index of the manifestos, and then moves on to the notes from the Party Leaders. The actual plans for development and work starts from page 11 in BJP’s manifesto and page 7 in Congress’. Filtering out all the other pages for exploration</p>
-```r
+
+As we see from the 2 documents, first few pages contain Title and Index
+of the manifestos, and then moves on to the notes from the Party
+Leaders. The actual plans for development and work starts from page 11
+in BJP’s manifesto and page 7 in Congress’. Filtering out all the other
+pages for exploration
+
+<div id="cb8" class="sourceCode">
+
+``` sourcecode
 bjp %&gt;% 
   filter(page &gt;= 11) -&gt; bjp_content
 ```
-```r
+
+</div>
+
+<div id="cb9" class="sourceCode">
+
+``` sourcecode
 congress %&gt;% 
   filter(page &gt;= 7) -&gt; congress_content
 ```
+
+</div>
+
 ### Text NA
-<p>Dropping all the rows where we dont have any text.</p>
-```r
+
+Dropping all the rows where we dont have any text.
+
+<div id="cb10" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   filter(!is.na(text)) -&gt; bjp_content
 congress_content %&gt;% 
   filter(!is.na(text)) -&gt; congress_content
 ```
+
+</div>
+
 ### Normalize
-<p>Normalizing text lines.</p>
-```r
+
+Normalizing text lines.
+
+<div id="cb11" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   unnest_tokens(text, text, token = &quot;lines&quot;) -&gt; bjp_content
 congress_content %&gt;% 
   unnest_tokens(text, text, token = &quot;lines&quot;) -&gt; congress_content
 ```
-<p>I’ll take a deep dive into individual topics of the manifestos in separate blog posts. For now, I will export our cleaned and normalized data for future analysis.</p>
+
+</div>
+
+I’ll take a deep dive into individual topics of the manifestos in
+separate blog posts. For now, I will export our cleaned and normalized
+data for future analysis.
+
 ## Export Data
-```r
+
+<div id="cb12" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   write_csv(&quot;../data/indian_election_2019/bjp_manifesto_clean.csv&quot;)
 congress_content %&gt;% 
   write_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)
 ```
-<p>Stay Tuned!</p>
+
+</div>
+
+Stay Tuned!
+
 # References
-<ul>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/">Part 2 Economic Growth</a></li>
-<li>For all the parts go to Project Summary Page - <a href="/2019/05/india-general-elections-2019-analysis/">India General Elections 2019 Analysis</a></li>
-</ul>
+
+- [Part 2 Economic
+  Growth](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/)
+- For all the parts go to Project Summary Page - [India General
+  Elections 2019
+  Analysis](/2019/05/india-general-elections-2019-analysis/)

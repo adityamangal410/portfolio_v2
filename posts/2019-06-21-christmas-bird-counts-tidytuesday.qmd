@@ -24,16 +24,21 @@ format:
 freeze: true
 output-file: christmas-bird-counts-tidytuesday.html
 ---
-
-
-
-
 # Introduction
-<p>Visualizing bird watching data as collected in Hamilton area of Ontario during Christmas time since 1921.</p>
-<p>Working on the weekly social data project <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-18">Tidy Tuesday</a>.</p>
+
+Visualizing bird watching data as collected in Hamilton area of Ontario
+during Christmas time since 1921.
+
+Working on the weekly social data project [Tidy
+Tuesday](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-18).
+
 # Analysis
+
 ## Load libraries
-```r
+
+<div id="cb1" class="sourceCode">
+
+``` sourcecode
 rm(list = ls())
 library(tidyverse)
 library(lubridate)
@@ -43,51 +48,65 @@ library(gridExtra)
 library(scales)
 theme_set(theme_light())
 ```
-```r
+
+</div>
+
+<div id="cb2" class="sourceCode">
+
+``` sourcecode
 bird_counts &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-18/bird_counts.csv&quot;)
 
 bird_counts
 ```
-```
-## # A tibble: 18,706 x 6
-##     year species    species_latin  how_many_counted total_hours how_many_counte…
-##    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
-##  1  1921 American … Botaurus lent…                0           8            0    
-##  2  1921 American … Anas rubripes                 0           8            0    
-##  3  1921 American … Fulica americ…                0           8            0    
-##  4  1921 American … Corvus brachy…                0           8            0    
-##  5  1921 American … Spinus tristis                0           8            0    
-##  6  1921 American … Falco sparver…                0           8            0    
-##  7  1921 American … Anthus rubesc…                0           8            0    
-##  8  1921 American … Turdus migrat…                1           8            0.125
-##  9  1921 American … Picoides dors…                0           8            0    
-## 10  1921 American … Spizelloides …               12           8            1.5  
-## # … with 18,696 more rows
-```
-```r
+
+</div>
+
+    ## # A tibble: 18,706 x 6
+    ##     year species    species_latin  how_many_counted total_hours how_many_counte…
+    ##    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
+    ##  1  1921 American … Botaurus lent…                0           8            0    
+    ##  2  1921 American … Anas rubripes                 0           8            0    
+    ##  3  1921 American … Fulica americ…                0           8            0    
+    ##  4  1921 American … Corvus brachy…                0           8            0    
+    ##  5  1921 American … Spinus tristis                0           8            0    
+    ##  6  1921 American … Falco sparver…                0           8            0    
+    ##  7  1921 American … Anthus rubesc…                0           8            0    
+    ##  8  1921 American … Turdus migrat…                1           8            0.125
+    ##  9  1921 American … Picoides dors…                0           8            0    
+    ## 10  1921 American … Spizelloides …               12           8            1.5  
+    ## # … with 18,696 more rows
+
+<div id="cb4" class="sourceCode">
+
+``` sourcecode
 bird_counts %&gt;% 
   summary
 ```
-```
-##       year        species          species_latin      how_many_counted 
-##  Min.   :1921   Length:18706       Length:18706       Min.   :    0.0  
-##  1st Qu.:1947   Class :character   Class :character   1st Qu.:    0.0  
-##  Median :1970   Mode  :character   Mode  :character   Median :    0.0  
-##  Mean   :1970                                         Mean   :  193.5  
-##  3rd Qu.:1994                                         3rd Qu.:    5.0  
-##  Max.   :2017                                         Max.   :73000.0  
-##                                                                        
-##   total_hours    how_many_counted_by_hour
-##  Min.   :  8.0   Min.   :  0.000         
-##  1st Qu.:149.5   1st Qu.:  0.000         
-##  Median :171.0   Median :  0.000         
-##  Mean   :170.8   Mean   :  1.336         
-##  3rd Qu.:203.8   3rd Qu.:  0.051         
-##  Max.   :251.0   Max.   :439.024         
-##  NA&#39;s   :3781    NA&#39;s   :3781
-```
+
+</div>
+
+    ##       year        species          species_latin      how_many_counted 
+    ##  Min.   :1921   Length:18706       Length:18706       Min.   :    0.0  
+    ##  1st Qu.:1947   Class :character   Class :character   1st Qu.:    0.0  
+    ##  Median :1970   Mode  :character   Mode  :character   Median :    0.0  
+    ##  Mean   :1970                                         Mean   :  193.5  
+    ##  3rd Qu.:1994                                         3rd Qu.:    5.0  
+    ##  Max.   :2017                                         Max.   :73000.0  
+    ##                                                                        
+    ##   total_hours    how_many_counted_by_hour
+    ##  Min.   :  8.0   Min.   :  0.000         
+    ##  1st Qu.:149.5   1st Qu.:  0.000         
+    ##  Median :171.0   Median :  0.000         
+    ##  Mean   :170.8   Mean   :  1.336         
+    ##  3rd Qu.:203.8   3rd Qu.:  0.051         
+    ##  Max.   :251.0   Max.   :439.024         
+    ##  NA&#39;s   :3781    NA&#39;s   :3781
+
 ## Which are the 5 most common birds over years?
-```r
+
+<div id="cb6" class="sourceCode">
+
+``` sourcecode
 bird_counts %&gt;% 
   group_by(year) %&gt;% 
   mutate(rank = min_rank(-how_many_counted) * 1) %&gt;% 
@@ -124,7 +143,12 @@ bird_counts %&gt;%
   transition_states(year, transition_length = 4, state_length = 1) + 
   ease_aes(&#39;cubic-in-out&#39;) -&gt; p
 ```
-```r
+
+</div>
+
+<div id="cb7" class="sourceCode">
+
+``` sourcecode
 p %&gt;% 
   animate(fps = 5,
           nframes = 200,
@@ -133,4 +157,7 @@ p %&gt;%
           height = 600,
           renderer = gifski_renderer(&quot;../data/christmas_bird_counts/most_common.gif&quot;))
 ```
-<p><img src="/post/2019-06-21-christmas-bird-counts-tidytuesday_files/figure-html/unnamed-chunk-5-1.gif" /><!-- --></p>
+
+</div>
+
+![](/post/2019-06-21-christmas-bird-counts-tidytuesday_files/figure-html/unnamed-chunk-5-1.gif)

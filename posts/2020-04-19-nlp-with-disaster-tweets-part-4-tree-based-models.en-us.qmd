@@ -23,16 +23,31 @@ format:
 freeze: true
 output-file: nlp-with-disaster-tweets-part-4-tree-based-models.en-us.html
 ---
-
-
-
-
 # Introduction
-<p>In this <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.<br />
-In this part 4 for Tree based Modelling, I will use the processed data generated in <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">Part 1</a> to train decision trees and gradient boosted tree based models in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous <a href="/2020/04/nlp-with-disaster-tweets-part-3-linear-models/" target="_blank">Part 3</a> about Linear models, I will do a comparative study among all these modelling algorithms.</p>
+
+In this <a href="https://www.kaggle.com/c/nlp-getting-started"
+target="_blank">NLP getting started challenge</a> on kaggle, we are
+given tweets which are classified as 1 if they are about real disasters
+and 0 if not. The goal is to predict given the text of the tweets and
+some other metadata about the tweet, if its about a real disaster or
+not.  
+In this part 4 for Tree based Modelling, I will use the processed data
+generated in
+<a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">Part
+1</a> to train decision trees and gradient boosted tree based models in
+order to predict if a tweet is about a real disaster or not using the
+tidymodels framework. Following up from the previous
+<a href="/2020/04/nlp-with-disaster-tweets-part-3-linear-models/"
+target="_blank">Part 3</a> about Linear models, I will do a comparative
+study among all these modelling algorithms.
+
 # Analysis
+
 ## Load Libraries
-```r
+
+<div id="cb1" class="sourceCode">
+
+``` sourcecode
 rm(list = ls())
 library(tidyverse)
 library(ggplot2)
@@ -44,28 +59,53 @@ library(rpart.plot)
 
 theme_set(theme_plex())
 ```
+
+</div>
+
 ## Loading processed data from previous part
-```r
+
+<div id="cb2" class="sourceCode">
+
+``` sourcecode
 tweets &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot;)
 tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)
 ```
-```r
+
+</div>
+
+<div id="cb3" class="sourceCode">
+
+``` sourcecode
 tweets %&gt;% 
   dim
 ```
-```
-## [1] 7613  830
-```
-```r
+
+</div>
+
+    ## [1] 7613  830
+
+<div id="cb5" class="sourceCode">
+
+``` sourcecode
 tweets_final %&gt;% 
   dim
 ```
-```
-## [1] 3263  829
-```
+
+</div>
+
+    ## [1] 3263  829
+
 ## Feature preprocessing and engineering
-<p>I will use the same steps of feature preprocessing and engineering from <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a> here, in order to have an apples to apples comparison of all the models.</p>
-```r
+
+I will use the same steps of feature preprocessing and engineering from
+<a
+href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/"
+target="_blank">Part 2</a> here, in order to have an apples to apples
+comparison of all the models.
+
+<div id="cb7" class="sourceCode">
+
+``` sourcecode
 tweets %&gt;% 
   mutate(target = as.factor(target),
          id = as.character(id)) -&gt; tweets
@@ -95,11 +135,20 @@ tweets_prep &lt;- tweets_recipe %&gt;%
   prep(training = tweets_train, 
        strings_as_factors = FALSE)
 ```
+
+</div>
+
 ## Modelling
+
 ### Decision Trees using rpart
-<p>Let’s build a basic decision tree model with default values.</p>
+
+Let’s build a basic decision tree model with default values.
+
 #### Basic
-```r
+
+<div id="cb8" class="sourceCode">
+
+``` sourcecode
 dtree_spec &lt;- decision_tree() %&gt;% 
   set_engine(&quot;rpart&quot;) %&gt;% 
   set_mode(&quot;classification&quot;) 
@@ -107,25 +156,48 @@ dtree_spec &lt;- decision_tree() %&gt;%
 wf &lt;- workflow() %&gt;% 
   add_recipe(tweets_recipe)
 ```
-```r
+
+</div>
+
+<div id="cb9" class="sourceCode">
+
+``` sourcecode
 dtree_fit &lt;- wf %&gt;% 
   add_model(dtree_spec) %&gt;% 
   fit(data = tweets_train)
 
 saveRDS(dtree_fit, &quot;../data/nlp_with_disaster_tweets/trees/dtree_basic_fit.rds&quot;)
 ```
-```r
+
+</div>
+
+<div id="cb10" class="sourceCode">
+
+``` sourcecode
 dtree_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/trees/dtree_basic_fit.rds&quot;)
 
 pull_workflow_fit(dtree_fit)$fit %&gt;% 
   rpart.plot()
 ```
-<p><img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>Above we see the familiar plot of rpart, showing PC009 to be the most important variable.</p>
+
+</div>
+
+<img
+src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-7-1.png"
+width="672" />
+
+Above we see the familiar plot of rpart, showing PC009 to be the most
+important variable.
+
 ### Gradient Boosted Trees using xgboost
-<p>Let’s build a basic boosted tree model with default values.</p>
+
+Let’s build a basic boosted tree model with default values.
+
 #### Basic
-```r
+
+<div id="cb11" class="sourceCode">
+
+``` sourcecode
 gbtree_spec &lt;- boost_tree() %&gt;% 
   set_engine(&quot;xgboost&quot;) %&gt;% 
   set_mode(&quot;classification&quot;) 
@@ -133,19 +205,37 @@ gbtree_spec &lt;- boost_tree() %&gt;%
 wf &lt;- workflow() %&gt;% 
   add_recipe(tweets_recipe)
 ```
-```r
+
+</div>
+
+<div id="cb12" class="sourceCode">
+
+``` sourcecode
 gbtree_fit &lt;- wf %&gt;% 
   add_model(gbtree_spec) %&gt;% 
   fit(data = tweets_train)
 
 saveRDS(gbtree_fit, &quot;../data/nlp_with_disaster_tweets/trees/gbtree_basic_fit.rds&quot;)
 ```
-```r
+
+</div>
+
+<div id="cb13" class="sourceCode">
+
+``` sourcecode
 gbtree_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/trees/gbtree_basic_fit.rds&quot;)
 ```
+
+</div>
+
 #### Tuning boosted tree parameters
-<p>Using 5-fold cross validation and a few different values of various parameters.</p>
-```r
+
+Using 5-fold cross validation and a few different values of various
+parameters.
+
+<div id="cb14" class="sourceCode">
+
+``` sourcecode
 set.seed(1234)
 folds &lt;- vfold_cv(tweets_train, strata = target, v = 5, repeats = 1)
 
@@ -157,7 +247,12 @@ tune_spec &lt;- boost_tree(trees = 500,
 
 param_grid &lt;- grid_regular(tree_depth(), levels = 50)
 ```
-```r
+
+</div>
+
+<div id="cb15" class="sourceCode">
+
+``` sourcecode
 doParallel::registerDoParallel(cores = parallel::detectCores(logical = FALSE))
 
 set.seed(1234)
@@ -172,29 +267,38 @@ gbtree_grid &lt;- tune_grid(
 
 saveRDS(gbtree_grid, &quot;../data/nlp_with_disaster_tweets/trees/gbtree_grid.rds&quot;)
 ```
-```r
+
+</div>
+
+<div id="cb16" class="sourceCode">
+
+``` sourcecode
 gbtree_grid &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/trees/gbtree_grid.rds&quot;)
 
 gbtree_grid %&gt;% 
   collect_metrics()
 ```
-```
-## # A tibble: 45 x 6
-##    tree_depth .metric  .estimator  mean     n std_err
-##         &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-##  1          1 accuracy binary     0.724     5 0.00999
-##  2          1 f_meas   binary     0.778     5 0.00826
-##  3          1 roc_auc  binary     0.775     5 0.00754
-##  4          2 accuracy binary     0.740     5 0.0106 
-##  5          2 f_meas   binary     0.788     5 0.00859
-##  6          2 roc_auc  binary     0.801     5 0.00668
-##  7          3 accuracy binary     0.756     5 0.00862
-##  8          3 f_meas   binary     0.800     5 0.00719
-##  9          3 roc_auc  binary     0.813     5 0.00587
-## 10          4 accuracy binary     0.761     5 0.00675
-## # … with 35 more rows
-```
-```r
+
+</div>
+
+    ## # A tibble: 45 x 6
+    ##    tree_depth .metric  .estimator  mean     n std_err
+    ##         &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+    ##  1          1 accuracy binary     0.724     5 0.00999
+    ##  2          1 f_meas   binary     0.778     5 0.00826
+    ##  3          1 roc_auc  binary     0.775     5 0.00754
+    ##  4          2 accuracy binary     0.740     5 0.0106 
+    ##  5          2 f_meas   binary     0.788     5 0.00859
+    ##  6          2 roc_auc  binary     0.801     5 0.00668
+    ##  7          3 accuracy binary     0.756     5 0.00862
+    ##  8          3 f_meas   binary     0.800     5 0.00719
+    ##  9          3 roc_auc  binary     0.813     5 0.00587
+    ## 10          4 accuracy binary     0.761     5 0.00675
+    ## # … with 35 more rows
+
+<div id="cb18" class="sourceCode">
+
+``` sourcecode
 gbtree_grid %&gt;% 
   collect_metrics() %&gt;% 
   mutate(flexibility = tree_depth,
@@ -210,10 +314,27 @@ gbtree_grid %&gt;%
        x = &quot;Model flexibility i.e. tree_depth&quot;,
        y = &quot;Mean metric value&quot;)
 ```
-<p><img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-14-1.png" width="672" />
-As we see in the plot above, the f1-score increases on the evaluation set until around tree_depth=5 and then starts falling down. We plot the flexibility (i.e. tree_depth) to visualize how the model performance varies as the model flexibility increases. The tree model with higher tree_depth will be more flexible as it will be able to train deeper trees that try and capture more patterns in the data and might suffer from higher variance. Correspondingly, lower tree_depth will lead to a much leaner model that might suffer from bias.</p>
-<p>Let’s pickout the best parameter tree_depth based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset.</p>
-```r
+
+</div>
+
+<img
+src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-14-1.png"
+width="672" /> As we see in the plot above, the f1-score increases on
+the evaluation set until around tree_depth=5 and then starts falling
+down. We plot the flexibility (i.e. tree_depth) to visualize how the
+model performance varies as the model flexibility increases. The tree
+model with higher tree_depth will be more flexible as it will be able to
+train deeper trees that try and capture more patterns in the data and
+might suffer from higher variance. Correspondingly, lower tree_depth
+will lead to a much leaner model that might suffer from bias.
+
+Let’s pickout the best parameter tree_depth based on the highest
+f1-score and train our final model on the full training dataset and
+evaluate against cross validation dataset.
+
+<div id="cb19" class="sourceCode">
+
+``` sourcecode
 gbtree_grid %&gt;% 
   select_best(&quot;f_meas&quot;) -&gt; highest_f_meas
 
@@ -222,28 +343,48 @@ final_gbtree &lt;- finalize_workflow(
   highest_f_meas
 )
 ```
-```r
+
+</div>
+
+<div id="cb20" class="sourceCode">
+
+``` sourcecode
 last_fit(final_gbtree, 
          tweets_split,
          metrics = metric_set(accuracy, roc_auc, f_meas)) -&gt; gbtree_last_fit
 
 saveRDS(gbtree_last_fit, &quot;../data/nlp_with_disaster_tweets/trees/gbtree_last_fit.rds&quot;)
 ```
-```r
+
+</div>
+
+<div id="cb21" class="sourceCode">
+
+``` sourcecode
 gbtree_last_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/trees/gbtree_last_fit.rds&quot;)
 gbtree_last_fit %&gt;% 
   collect_metrics()
 ```
-```
-## # A tibble: 3 x 3
-##   .metric  .estimator .estimate
-##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-## 1 accuracy binary         0.764
-## 2 f_meas   binary         0.811
-## 3 roc_auc  binary         0.820
-```
-<p>The f1-score metric on the validation set comes out to be 0.8107538 which is higher compared to all the previous models we have built in this series <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with disaster tweets: Summary</a>. Lets try and visualize the variable importance for different features that we used to train our model.</p>
-```r
+
+</div>
+
+    ## # A tibble: 3 x 3
+    ##   .metric  .estimator .estimate
+    ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+    ## 1 accuracy binary         0.764
+    ## 2 f_meas   binary         0.811
+    ## 3 roc_auc  binary         0.820
+
+The f1-score metric on the validation set comes out to be 0.8107538
+which is higher compared to all the previous models we have built in
+this series
+<a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with
+disaster tweets: Summary</a>. Lets try and visualize the variable
+importance for different features that we used to train our model.
+
+<div id="cb23" class="sourceCode">
+
+``` sourcecode
 gbtree_last_fit$.workflow[[1]] %&gt;% 
   pull_workflow_fit() %&gt;% 
   vi() %&gt;% 
@@ -258,11 +399,32 @@ gbtree_last_fit$.workflow[[1]] %&gt;%
        title = &quot;Variable Importance plot&quot;,
        subtitle = &quot;PC009 remains to be the most important feature&quot;)
 ```
-<p><img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
-<p>Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, one thing to note here, for gradient boosted trees, none of our custom features turn out to be of any significant importance.</p>
+
+</div>
+
+<img
+src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-18-1.png"
+width="672" />
+
+Since most of our features are the dimensionally reduced different
+dimensions coming out of the glove embeddings, we can not interpret
+them. However, one thing to note here, for gradient boosted trees, none
+of our custom features turn out to be of any significant importance.
+
 ## Model Calibration
-<p>Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let’s compare our 3 models, gradient boosted trees here, lasso regression in <a href="/2020/04/nlp-with-disaster-tweets-part-3-linear-models/" target="_blank">Part 3</a> and the best k-nearest neighbor model from <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a>, by plotting calibration plots for each of them.</p>
-```r
+
+Another method to measure model performance is to see how well
+calibrated a model is on the validation dataset. Let’s compare our 3
+models, gradient boosted trees here, lasso regression in
+<a href="/2020/04/nlp-with-disaster-tweets-part-3-linear-models/"
+target="_blank">Part 3</a> and the best k-nearest neighbor model from <a
+href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/"
+target="_blank">Part 2</a>, by plotting calibration plots for each of
+them.
+
+<div id="cb24" class="sourceCode">
+
+``` sourcecode
 readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;% 
   collect_predictions() %&gt;% 
   mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;% 
@@ -282,8 +444,16 @@ readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;
        title = &quot;Calibration Plot for K-nearest neighbors model&quot;,
        subtitle = &quot;Above the diagonal signifies under-forecast&quot;)
 ```
-<p><img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-19-1.png"
+width="672" />
+
+<div id="cb25" class="sourceCode">
+
+``` sourcecode
 readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds&quot;) %&gt;% 
   collect_predictions() %&gt;% 
   mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;% 
@@ -303,8 +473,16 @@ readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds&quot;) 
        title = &quot;Calibration Plot for Lasso Regression model&quot;,
        subtitle = &quot;Close to the diagonal signifies well calibrated model&quot;)
 ```
-<p><img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-20-1.png"
+width="672" />
+
+<div id="cb26" class="sourceCode">
+
+``` sourcecode
 gbtree_last_fit %&gt;% 
   collect_predictions() %&gt;% 
   mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;% 
@@ -324,17 +502,49 @@ gbtree_last_fit %&gt;%
        title = &quot;Calibration Plot for Gradient Boosted Tree model&quot;,
        subtitle = &quot;Close to the diagonal signifies well calibrated model&quot;)
 ```
-<p><img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
-<p>In general, closer the calibration curve to the diagonal, the better. When a model is well calibrated, the mean prediction probability will be equal to mean truth. Meaning the model is predicting the target in the same ratios as the actual truth values.<br />
-The KNN model calibration plot shows that the curve is above the diagonal, i.e. the model is frequently under estimating the predicted probabilities.<br />
-However, both lasso regression and gradient boosted tree models seem to be well calibrated out of the box. That’s a sign of good stable algorithm and training procedure.<br />
-Note that all the predicted probabilities here are calculated on the cross validation set.</p>
+
+</div>
+
+<img
+src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-21-1.png"
+width="672" />
+
+In general, closer the calibration curve to the diagonal, the better.
+When a model is well calibrated, the mean prediction probability will be
+equal to mean truth. Meaning the model is predicting the target in the
+same ratios as the actual truth values.  
+The KNN model calibration plot shows that the curve is above the
+diagonal, i.e. the model is frequently under estimating the predicted
+probabilities.  
+However, both lasso regression and gradient boosted tree models seem to
+be well calibrated out of the box. That’s a sign of good stable
+algorithm and training procedure.  
+Note that all the predicted probabilities here are calculated on the
+cross validation set.
+
 # Summary
-<p>In this part I built tree based models in order to understand how the problem space can be modelled with these approaches. We do see a small improvement in f1-score as compared to all our previous approaches. Note that, due to limited compute resources on my mac, I have kept the size of tuning grid to be small. In the next part of this series, I will move focus towards neural networks based models and see how “deep” we can go. Other NLP strategies like Named-entity recognition and others are also on my bucket list for this series.</p>
+
+In this part I built tree based models in order to understand how the
+problem space can be modelled with these approaches. We do see a small
+improvement in f1-score as compared to all our previous approaches. Note
+that, due to limited compute resources on my mac, I have kept the size
+of tuning grid to be small. In the next part of this series, I will move
+focus towards neural networks based models and see how “deep” we can go.
+Other NLP strategies like Named-entity recognition and others are also
+on my bucket list for this series.
+
 # References
-<ul>
-<li>Project Summary Page - <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with disaster tweets: Summary</a></li>
-<li>Project Part 1 - <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP with Disaster Tweets: Part 1 Data Preparation</a></li>
-<li>Project Part 2 - <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">NLP with Disaster Tweets: Part 2 Nearest Neighbor Models</a></li>
-<li>Project Part 3 - <a href="/2020/04/nlp-with-disaster-tweets-part-3-linear-models/" target="_blank">NLP with Disaster Tweets: Part 3 Linear Models</a></li>
-</ul>
+
+- Project Summary Page -
+  <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with
+  disaster tweets: Summary</a>
+- Project Part 1 -
+  <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP
+  with Disaster Tweets: Part 1 Data Preparation</a>
+- Project Part 2 - <a
+  href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/"
+  target="_blank">NLP with Disaster Tweets: Part 2 Nearest Neighbor
+  Models</a>
+- Project Part 3 -
+  <a href="/2020/04/nlp-with-disaster-tweets-part-3-linear-models/"
+  target="_blank">NLP with Disaster Tweets: Part 3 Linear Models</a>

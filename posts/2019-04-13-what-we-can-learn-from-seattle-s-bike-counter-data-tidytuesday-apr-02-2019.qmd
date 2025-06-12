@@ -23,22 +23,37 @@ keywords:
 - Visualizations
 - Transportation
 ---
-
-
-
-
 ## Introduction
-<p>From the article on <a href="https://www.seattletimes.com/seattle-news/transportation/what-we-can-learn-from-seattles-bike-counter-data/">Seattle Times</a> -</p>
-<p>“While millions of public dollars are going for bike lanes in Seattle, the city’s data collection on actual bike-lane ridership is scattered and incomplete. Given they’re the best the public can get, here’s what those numbers can tell us about who’s riding where.”</p>
+
+From the article on [Seattle
+Times](https://www.seattletimes.com/seattle-news/transportation/what-we-can-learn-from-seattles-bike-counter-data/)
+-
+
+“While millions of public dollars are going for bike lanes in Seattle,
+the city’s data collection on actual bike-lane ridership is scattered
+and incomplete. Given they’re the best the public can get, here’s what
+those numbers can tell us about who’s riding where.”
+
 ## Analysis
-<p>Following along the <a href="https://www.youtube.com/watch?v=sBho2GJE5lc">screencast</a> from <a href="https://twitter.com/drob">David Robinson</a></p>
-```r
+
+Following along the
+[screencast](https://www.youtube.com/watch?v=sBho2GJE5lc) from [David
+Robinson](https://twitter.com/drob)
+
+<div id="cb1" class="sourceCode">
+
+``` sourcecode
 library(tidyverse)
 library(lubridate)
 library(scales)
 theme_set(theme_light())
 ```
-```r
+
+</div>
+
+<div id="cb2" class="sourceCode">
+
+``` sourcecode
 bike_traffic_raw &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-02/bike_traffic.csv&quot;, col_types = cols(bike_count = col_double(), ped_count = col_logical()))
 
 bike_traffic &lt;- bike_traffic_raw %&gt;% 
@@ -48,60 +63,85 @@ bike_traffic &lt;- bike_traffic_raw %&gt;%
 
 bike_traffic
 ```
-```
-## # A tibble: 509,082 x 4
-##    date                crossing                             direction bike_count
-##    &lt;dttm&gt;              &lt;chr&gt;                                &lt;chr&gt;          &lt;dbl&gt;
-##  1 2014-01-01 00:00:00 Broadway Cycle Track North Of E Uni… North              0
-##  2 2014-01-01 01:00:00 Broadway Cycle Track North Of E Uni… North              3
-##  3 2014-01-01 02:00:00 Broadway Cycle Track North Of E Uni… North              0
-##  4 2014-01-01 03:00:00 Broadway Cycle Track North Of E Uni… North              0
-##  5 2014-01-01 04:00:00 Broadway Cycle Track North Of E Uni… North              0
-##  6 2014-01-01 05:00:00 Broadway Cycle Track North Of E Uni… North              0
-##  7 2014-01-01 06:00:00 Broadway Cycle Track North Of E Uni… North              0
-##  8 2014-01-01 07:00:00 Broadway Cycle Track North Of E Uni… North              0
-##  9 2014-01-01 08:00:00 Broadway Cycle Track North Of E Uni… North              2
-## 10 2014-01-01 09:00:00 Broadway Cycle Track North Of E Uni… North              0
-## # … with 509,072 more rows
-```
-```r
+
+</div>
+
+    ## # A tibble: 509,082 x 4
+    ##    date                crossing                             direction bike_count
+    ##    &lt;dttm&gt;              &lt;chr&gt;                                &lt;chr&gt;          &lt;dbl&gt;
+    ##  1 2014-01-01 00:00:00 Broadway Cycle Track North Of E Uni… North              0
+    ##  2 2014-01-01 01:00:00 Broadway Cycle Track North Of E Uni… North              3
+    ##  3 2014-01-01 02:00:00 Broadway Cycle Track North Of E Uni… North              0
+    ##  4 2014-01-01 03:00:00 Broadway Cycle Track North Of E Uni… North              0
+    ##  5 2014-01-01 04:00:00 Broadway Cycle Track North Of E Uni… North              0
+    ##  6 2014-01-01 05:00:00 Broadway Cycle Track North Of E Uni… North              0
+    ##  7 2014-01-01 06:00:00 Broadway Cycle Track North Of E Uni… North              0
+    ##  8 2014-01-01 07:00:00 Broadway Cycle Track North Of E Uni… North              0
+    ##  9 2014-01-01 08:00:00 Broadway Cycle Track North Of E Uni… North              2
+    ## 10 2014-01-01 09:00:00 Broadway Cycle Track North Of E Uni… North              0
+    ## # … with 509,072 more rows
+
+<div id="cb4" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   count(crossing, direction)
 ```
-```
-## # A tibble: 13 x 3
-##    crossing                                 direction     n
-##    &lt;chr&gt;                                    &lt;chr&gt;     &lt;int&gt;
-##  1 39th Ave NE Greenway at NE 62nd St       North     38660
-##  2 39th Ave NE Greenway at NE 62nd St       South     38660
-##  3 Broadway Cycle Track North Of E Union St North     44565
-##  4 Broadway Cycle Track North Of E Union St South     44565
-##  5 Burke Gilman Trail                       North     42905
-##  6 Burke Gilman Trail                       South     42902
-##  7 Elliot Bay Trail                         North     45234
-##  8 Elliot Bay Trail                         South     45234
-##  9 MTS Trail                                East      45565
-## 10 NW 58th St Greenway at 22nd Ave          East      44342
-## 11 NW 58th St Greenway at 22nd Ave          West      44342
-## 12 Sealth Trail                             North     16054
-## 13 Sealth Trail                             South     16054
-```
-```r
+
+</div>
+
+    ## # A tibble: 13 x 3
+    ##    crossing                                 direction     n
+    ##    &lt;chr&gt;                                    &lt;chr&gt;     &lt;int&gt;
+    ##  1 39th Ave NE Greenway at NE 62nd St       North     38660
+    ##  2 39th Ave NE Greenway at NE 62nd St       South     38660
+    ##  3 Broadway Cycle Track North Of E Union St North     44565
+    ##  4 Broadway Cycle Track North Of E Union St South     44565
+    ##  5 Burke Gilman Trail                       North     42905
+    ##  6 Burke Gilman Trail                       South     42902
+    ##  7 Elliot Bay Trail                         North     45234
+    ##  8 Elliot Bay Trail                         South     45234
+    ##  9 MTS Trail                                East      45565
+    ## 10 NW 58th St Greenway at 22nd Ave          East      44342
+    ## 11 NW 58th St Greenway at 22nd Ave          West      44342
+    ## 12 Sealth Trail                             North     16054
+    ## 13 Sealth Trail                             South     16054
+
+<div id="cb6" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   ggplot(aes(date)) + 
   geom_histogram() +
   facet_wrap(~ crossing)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-4-1.png"
+width="672" />
+
+<div id="cb7" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   ggplot(aes(date)) + 
   geom_histogram() +
   facet_grid(crossing ~ direction)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-5-1.png"
+width="672" />
+
 ### When in the day do we see bikers?
-```r
+
+<div id="cb8" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   group_by(hour = hour(date)) %&gt;% 
   summarise(bike_count = sum(bike_count, na.rm = TRUE)) %&gt;% 
@@ -109,8 +149,16 @@ bike_traffic %&gt;%
   geom_line() + 
   geom_point()
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-6-1.png"
+width="672" />
+
+<div id="cb9" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   group_by(hour = hour(date),
            crossing) %&gt;% 
@@ -119,8 +167,16 @@ bike_traffic %&gt;%
   geom_line() + 
   geom_point()
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-7-1.png"
+width="672" />
+
+<div id="cb10" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   group_by(crossing,
            hour = hour(date)) %&gt;% 
@@ -136,8 +192,16 @@ bike_traffic %&gt;%
        x = &quot;Time of day (local time)&quot;,
        y = &quot;% of bike crossings that happen in this hour&quot;)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-8-1.png"
+width="672" />
+
+<div id="cb11" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   mutate(hour = hour(date), 
          time_window = case_when(
@@ -158,27 +222,39 @@ bike_by_time_window %&gt;%
   mutate(TotalCommute = `Evening Commute` + `Morning Commute`) %&gt;% 
   arrange(desc(TotalCommute))
 ```
-```
-## # A tibble: 7 x 6
-##   crossing           `Evening Commut… Midday `Morning Commut… Night TotalCommute
-##   &lt;chr&gt;                         &lt;dbl&gt;  &lt;dbl&gt;            &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Elliot Bay Trail              0.329  0.250            0.278 0.143        0.607
-## 2 39th Ave NE Green…            0.294  0.248            0.288 0.171        0.581
-## 3 Sealth Trail                  0.266  0.307            0.280 0.147        0.546
-## 4 MTS Trail                     0.270  0.330            0.271 0.129        0.541
-## 5 Burke Gilman Trail            0.271  0.370            0.241 0.117        0.513
-## 6 Broadway Cycle Tr…            0.271  0.248            0.213 0.268        0.484
-## 7 NW 58th St Greenw…            0.240  0.364            0.202 0.194        0.442
-```
-```r
+
+</div>
+
+    ## # A tibble: 7 x 6
+    ##   crossing           `Evening Commut… Midday `Morning Commut… Night TotalCommute
+    ##   &lt;chr&gt;                         &lt;dbl&gt;  &lt;dbl&gt;            &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;
+    ## 1 Elliot Bay Trail              0.329  0.250            0.278 0.143        0.607
+    ## 2 39th Ave NE Green…            0.294  0.248            0.288 0.171        0.581
+    ## 3 Sealth Trail                  0.266  0.307            0.280 0.147        0.546
+    ## 4 MTS Trail                     0.270  0.330            0.271 0.129        0.541
+    ## 5 Burke Gilman Trail            0.271  0.370            0.241 0.117        0.513
+    ## 6 Broadway Cycle Tr…            0.271  0.248            0.213 0.268        0.484
+    ## 7 NW 58th St Greenw…            0.240  0.364            0.202 0.194        0.442
+
+<div id="cb13" class="sourceCode">
+
+``` sourcecode
 bike_by_time_window %&gt;% 
   ggplot(aes(time_window, pct_bike)) + 
   geom_col() + 
   coord_flip() +
   facet_wrap(~ crossing)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-10-1.png"
+width="672" />
+
+<div id="cb14" class="sourceCode">
+
+``` sourcecode
 bike_by_time_window %&gt;% 
   group_by(crossing) %&gt;% 
   summarise(total_bikes = sum(bike_count),
@@ -187,8 +263,16 @@ bike_by_time_window %&gt;%
   geom_point() + 
   scale_x_log10()
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-11-1.png"
+width="672" />
+
+<div id="cb15" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   group_by(crossing,
            weekday = wday(date, label = TRUE),
@@ -205,8 +289,16 @@ bike_traffic %&gt;%
        title = &quot;When in the week do people in Seattle bike?&quot;,
        subtitle = &quot;Based on crossings from 2014-Feb 2019&quot;)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-12-1.png"
+width="672" />
+
+<div id="cb16" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   filter(date &lt; &quot;2018-01-01&quot;) %&gt;% 
   group_by(crossing,
@@ -223,9 +315,18 @@ bike_traffic %&gt;%
        y = &quot;% of yearly trips in this month&quot;,
        x = &quot;&quot;)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-13-1.png"
+width="672" />
+
 ### What directions do people commute by bike?
-```r
+
+<div id="cb17" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   filter(crossing != &quot;MTS Trail&quot;) %&gt;% 
   filter(!wday(date, label = TRUE) %in% c(&quot;Sat&quot;, &quot;Sun&quot;)) %&gt;% 
@@ -249,8 +350,16 @@ bike_by_time_window_commute %&gt;%
                 labels = c(&quot;1/2&quot;, &quot;Same&quot;, &quot;2x&quot;, &quot;4x&quot;, &quot;8x&quot;)) +
   facet_wrap(~crossing, scales = &quot;free_x&quot;)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-14-1.png"
+width="672" />
+
+<div id="cb18" class="sourceCode">
+
+``` sourcecode
 bike_traffic %&gt;% 
   filter(crossing != &quot;MTS Trail&quot;,
          !wday(date, label = TRUE) %in% c(&quot;Sat&quot;, &quot;Sun&quot;),
@@ -277,4 +386,9 @@ bike_by_direction_hour_crossing %&gt;%
        subtitle = &quot;Based on weekday crossings at six Seattle locations from 2014-Feb 2019&quot;,
        color = &quot;Direction&quot;)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+
+</div>
+
+<img
+src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-15-1.png"
+width="672" />

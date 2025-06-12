@@ -31,16 +31,22 @@ format:
 freeze: true
 output-file: india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance.html
 ---
-
-
-
-
 # Introduction
-<p>With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.<br />
-In this part 4, I’ll explore the Anti-corruption and Good Governance discussions in both manifestos.</p>
+
+With India’s 2019 General Elections around the corner, I thought it’d be
+a good idea to analyse the election manifestos of its 2 biggest
+political parties, BJP and Congress. Let’s use text mining to understand
+what each party promises and prioritizes.  
+In this part 4, I’ll explore the Anti-corruption and Good Governance
+discussions in both manifestos.
+
 # Analysis
+
 ## Load libraries
-```r
+
+<div id="cb1" class="sourceCode">
+
+``` sourcecode
 rm(list = ls())
 library(tidyverse)
 library(pdftools)
@@ -58,22 +64,42 @@ library(ggraph)
 theme_set(theme_light())
 use_condaenv(&quot;stanford-nlp&quot;)
 ```
+
+</div>
+
 ## Read cleaned data
-```r
+
+<div id="cb2" class="sourceCode">
+
+``` sourcecode
 bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clean.csv&quot;)
 congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)
 ```
+
+</div>
+
 ## Anti-Corruption and Good Governance
-<p>This topic is covered congress’ manifesto from Pages 17 to 19 of the pdf and in that of bjp’s from pages 24 to 26.</p>
-```r
+
+This topic is covered congress’ manifesto from Pages 17 to 19 of the pdf
+and in that of bjp’s from pages 24 to 26.
+
+<div id="cb3" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   filter(between(page, 24, 26)) -&gt; bjp_content
 
 congress_content %&gt;% 
   filter(between(page, 17, 19)) -&gt; congress_content
 ```
+
+</div>
+
 ## Most Popular Words
-```r
+
+<div id="cb4" class="sourceCode">
+
+``` sourcecode
 plot_most_popular_words &lt;- function(df, 
                                     min_count = 15,
                                     stop_words_list = stop_words) {
@@ -97,12 +123,22 @@ plot_most_popular_words &lt;- function(df,
   return(p)
 }
 ```
-```r
+
+</div>
+
+<div id="cb5" class="sourceCode">
+
+``` sourcecode
 custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;), 
                                           lexicon = rep(&quot;custom&quot;, 5)), 
                                stop_words)
 ```
-```r
+
+</div>
+
+<div id="cb6" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   plot_most_popular_words(min_count = 6,
                           stop_words_list = custom_stop_words) + 
@@ -123,9 +159,18 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
 ```
-<p><img src="/post/2019-05-11-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-6-1.png" width="1344" /></p>
+
+</div>
+
+<img
+src="/post/2019-05-11-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-6-1.png"
+width="1344" />
+
 ## Common correlated words
-```r
+
+<div id="cb7" class="sourceCode">
+
+``` sourcecode
 plot_common_correlated_words &lt;- function(df,
                                          counts_quantile = 0.7,
                                          correlation_threshold = 0.25,
@@ -150,7 +195,12 @@ plot_common_correlated_words &lt;- function(df,
   return(p)
 }
 ```
-```r
+
+</div>
+
+<div id="cb8" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   plot_common_correlated_words(stop_words_list = custom_stop_words,
                                counts_quantile = 0.75) + 
@@ -171,11 +221,24 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
 ```
-<p><img src="/post/2019-05-11-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
+
+</div>
+
+<img
+src="/post/2019-05-11-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-8-1.png"
+width="1152" />
+
 ## Basic Search Engine
-<p>Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
-Using python’s scikit-learn for this.</p>
-```python
+
+Lets build a cosine-similarity based simple search engine (instead of
+the basic keyword-based search that comes with the pdf document), in
+order to make these documents more easily searchable and gain context
+using most related lines in the manifestos for a given query. Using
+python’s scikit-learn for this.
+
+<div id="cb9" class="sourceCode">
+
+``` sourcecode
 from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
 
@@ -198,116 +261,176 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   cosine_sim = linear_kernel(vector_query, vector_train).flatten()
   return cosine_sim.argsort()[:-10:-1]
 ```
-```r
+
+</div>
+
+<div id="cb10" class="sourceCode">
+
+``` sourcecode
 get_related_lines &lt;- py_to_r(py$get_related_lines)
 ```
-### Common Popular Words with both BJP &amp; Congress
-<p>As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto is “police”. Lets see, what each of them have planned for our police force. First, BJP.</p>
-```r
+
+</div>
+
+### Common Popular Words with both BJP & Congress
+
+As we see from the plot above, one of the most popular words in both BJP
+and Congress’ manifesto is “police”. Lets see, what each of them have
+planned for our police force. First, BJP.
+
+<div id="cb11" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   slice(get_related_lines(&quot;police&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)
 ```
-```
-## # A tibble: 9 x 3
-##   text                                                                page  line
-##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
-## 1 upon the colonial police force and there is a need to change and …    24    31
-## 2 peaceful law and order is the key to growth and development. our …    24    30
-## 3 grassroots.                                                           24    27
-## 4 challenges of the 21st century. therefore, we will bring police r…    24    32
-## 5 06 police is the most basic and key functionary a ecting the peop…    24    29
-## 6 police reforms                                                        24    28
-## 7 science and technology                                                25    21
-## 8 09 in order to establish india as a hub of nancial services, we w…    25     5
-## 9 act’ in consultation with the states to have a pro-people citizen…    24    33
-```
-<p>This is the excerpt that we find from page 24, as we dug up based on above results -</p>
-<blockquote>
-<p>Police is the most basic and key functionary affecting the people’s life. An effective policing and peaceful law and order is the key to growth and development. Our present police and policing is based upon the colonial police force and there is a need to change and transform the police according to the challenges of the 21st century.Therefore, we will bring Police Reform. We will formulate a ‘Model Police Act’ in consultation with the States to have a pro-people citizen friendly police. This will take the Indian policing at par with its contemporaries anywhere in the world.</p>
-</blockquote>
-<p>Now, Congress.</p>
-```r
+
+</div>
+
+    ## # A tibble: 9 x 3
+    ##   text                                                                page  line
+    ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+    ## 1 upon the colonial police force and there is a need to change and …    24    31
+    ## 2 peaceful law and order is the key to growth and development. our …    24    30
+    ## 3 grassroots.                                                           24    27
+    ## 4 challenges of the 21st century. therefore, we will bring police r…    24    32
+    ## 5 06 police is the most basic and key functionary a ecting the peop…    24    29
+    ## 6 police reforms                                                        24    28
+    ## 7 science and technology                                                25    21
+    ## 8 09 in order to establish india as a hub of nancial services, we w…    25     5
+    ## 9 act’ in consultation with the states to have a pro-people citizen…    24    33
+
+This is the excerpt that we find from page 24, as we dug up based on
+above results -
+
+> Police is the most basic and key functionary affecting the people’s
+> life. An effective policing and peaceful law and order is the key to
+> growth and development. Our present police and policing is based upon
+> the colonial police force and there is a need to change and transform
+> the police according to the challenges of the 21st century.Therefore,
+> we will bring Police Reform. We will formulate a ‘Model Police Act’ in
+> consultation with the States to have a pro-people citizen friendly
+> police. This will take the Indian policing at par with its
+> contemporaries anywhere in the world.
+
+Now, Congress.
+
+<div id="cb13" class="sourceCode">
+
+``` sourcecode
 congress_content %&gt;% 
   slice(get_related_lines(&quot;police&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)
 ```
-```
-## # A tibble: 9 x 3
-##   text                                                                page  line
-##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
-## 1 of the state police under the direct command                          19    41
-## 2 ots, lynchings and gang rapes by a special wing                       19    40
-## 3 tion agency that has the power to search, seize,                      19    18
-## 4 civil penalties;                                             atta…    19    20
-## 5 06. amend the armed forces (special powers)                      …    19    35
-## 6 the powers of security forces and the human rights              r…    19    37
-## 7 been misused and, in any event, has become                   rela…    19    25
-## 8 during custody or interrogation and punish cases                t…    19    33
-## 9 (that defines the offence of ‘sedition’) that has       08. amend…    19    24
-```
-<p>One of the excerpts from page 19 related to above results -</p>
-<blockquote>
-<p>Provisions will be made in the Model Police Act to:
-a. Make the State police force accountable to an independent Police Accountability Commission as well as to give an annual report to the State Legislature.
-b. Decentralise the police force in the State and to involve the community in the oversight of the
-police force.
-c. Cause investigations into cases of communal riots, lynchings and gang rapes by a special wing of the State police under the direct command of the State Headquarters of the police.</p>
-</blockquote>
-### Unique popular words with BJP &amp; Congress
-<p>One of the popular words that seems curious from BJP’s manifesto is “forest”.</p>
-```r
+
+</div>
+
+    ## # A tibble: 9 x 3
+    ##   text                                                                page  line
+    ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+    ## 1 of the state police under the direct command                          19    41
+    ## 2 ots, lynchings and gang rapes by a special wing                       19    40
+    ## 3 tion agency that has the power to search, seize,                      19    18
+    ## 4 civil penalties;                                             atta…    19    20
+    ## 5 06. amend the armed forces (special powers)                      …    19    35
+    ## 6 the powers of security forces and the human rights              r…    19    37
+    ## 7 been misused and, in any event, has become                   rela…    19    25
+    ## 8 during custody or interrogation and punish cases                t…    19    33
+    ## 9 (that defines the offence of ‘sedition’) that has       08. amend…    19    24
+
+One of the excerpts from page 19 related to above results -
+
+> Provisions will be made in the Model Police Act to: a. Make the State
+> police force accountable to an independent Police Accountability
+> Commission as well as to give an annual report to the State
+> Legislature. b. Decentralise the police force in the State and to
+> involve the community in the oversight of the police force. c. Cause
+> investigations into cases of communal riots, lynchings and gang rapes
+> by a special wing of the State police under the direct command of the
+> State Headquarters of the police.
+
+### Unique popular words with BJP & Congress
+
+One of the popular words that seems curious from BJP’s manifesto is
+“forest”.
+
+<div id="cb15" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   slice(get_related_lines(&quot;forest&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)
 ```
-```
-## # A tibble: 9 x 3
-##   text                                                                page  line
-##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
-## 1 coordination with the private sector.                                 26     5
-## 2 forest and environment                                                26     6
-## 3 20 we have ensured speed and e ectiveness in issuing forest and e…    26     7
-## 4 the mission cities by at least 35% over the next ve years.            26    15
-## 5 and cooking gas connection in addition to houses and toilets, at …    26    18
-## 6 states is adequately protected and take steps to ensure the same.     26    43
-## 7 international financial services centre authority                     25     4
-## 8 act’ in consultation with the states to have a pro-people citizen…    24    33
-## 9 policing at par with its contemporaries anywhere in the world.        24    34
-```
-<p>An excerpt from BJP’s manifesto about forests as identified from above -</p>
-<blockquote>
-<p>We have ensured speed and effectiveness in issuing forest and environmental clearances for eligible projects due to which we have added around 9000 Sq. Kms to the forest cover of the country. We are committed to maintaining this pace through adoption of cleaner practises to make our nation a greener country.</p>
-</blockquote>
-<p>Now, one of the popular words that seems curious from Congress’ manifesto is “panchayat”.</p>
-```r
+
+</div>
+
+    ## # A tibble: 9 x 3
+    ##   text                                                                page  line
+    ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+    ## 1 coordination with the private sector.                                 26     5
+    ## 2 forest and environment                                                26     6
+    ## 3 20 we have ensured speed and e ectiveness in issuing forest and e…    26     7
+    ## 4 the mission cities by at least 35% over the next ve years.            26    15
+    ## 5 and cooking gas connection in addition to houses and toilets, at …    26    18
+    ## 6 states is adequately protected and take steps to ensure the same.     26    43
+    ## 7 international financial services centre authority                     25     4
+    ## 8 act’ in consultation with the states to have a pro-people citizen…    24    33
+    ## 9 policing at par with its contemporaries anywhere in the world.        24    34
+
+An excerpt from BJP’s manifesto about forests as identified from above -
+
+> We have ensured speed and effectiveness in issuing forest and
+> environmental clearances for eligible projects due to which we have
+> added around 9000 Sq. Kms to the forest cover of the country. We are
+> committed to maintaining this pace through adoption of cleaner
+> practises to make our nation a greener country.
+
+Now, one of the popular words that seems curious from Congress’
+manifesto is “panchayat”.
+
+<div id="cb17" class="sourceCode">
+
+``` sourcecode
 congress_content %&gt;% 
   slice(get_related_lines(&quot;panchayat&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)
 ```
-```
-## # A tibble: 9 x 3
-##   text                                                                page  line
-##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
-## 1 freedoms of the people.                                               19    47
-## 2 institutions                                                          17    40
-## 3 commissioners qualified persons drawn from dif-              cong…    17    58
-## 4 protect the freedom of journalists, uphold editorial independence…    17    57
-## 5 act. in accordance with the letter and spirit of the    07. rules…    17    56
-## 6 council of india act, 1978 to strengthen the system of self-regul…    17    55
-## 7 best way to correct the abuse of media freedom. we will amend the…    17    54
-## 8 act, 2005 in the light of its working in the last       06. congr…    17    53
-## 9 them accountable to parliament. we believe that self-regulation i…    17    52
-```
-<blockquote>
-<p>Congress was the proponent and author of the Constitution 73rd and 74th Amendments. Panchayati Raj lies at the core of good governance in our country, where the majority of citizens live outside metropolitan cities. Congress promises to take further measures to strengthen the concept of Local Government—Panchayats and Municipalities.</p>
-</blockquote>
-<p>With all the above analysis, we have developed some idea about the Anti-corruption and Good Governance ideologies of the 2 parties. In the next post, I’ll do a similar analysis for Inclusion and Diversity proposals by them.</p>
-<p>Stay Tuned!</p>
+
+</div>
+
+    ## # A tibble: 9 x 3
+    ##   text                                                                page  line
+    ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+    ## 1 freedoms of the people.                                               19    47
+    ## 2 institutions                                                          17    40
+    ## 3 commissioners qualified persons drawn from dif-              cong…    17    58
+    ## 4 protect the freedom of journalists, uphold editorial independence…    17    57
+    ## 5 act. in accordance with the letter and spirit of the    07. rules…    17    56
+    ## 6 council of india act, 1978 to strengthen the system of self-regul…    17    55
+    ## 7 best way to correct the abuse of media freedom. we will amend the…    17    54
+    ## 8 act, 2005 in the light of its working in the last       06. congr…    17    53
+    ## 9 them accountable to parliament. we believe that self-regulation i…    17    52
+
+> Congress was the proponent and author of the Constitution 73rd and
+> 74th Amendments. Panchayati Raj lies at the core of good governance in
+> our country, where the majority of citizens live outside metropolitan
+> cities. Congress promises to take further measures to strengthen the
+> concept of Local Government—Panchayats and Municipalities.
+
+With all the above analysis, we have developed some idea about the
+Anti-corruption and Good Governance ideologies of the 2 parties. In the
+next post, I’ll do a similar analysis for Inclusion and Diversity
+proposals by them.
+
+Stay Tuned!
+
 # References
-<ul>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/">Part 3 - Employment and Opportunities</a><br />
-</li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity/">Part 5 - Inclusion and Diversity</a></li>
-<li>For all the parts go to Project Summary Page - <a href="/2019/05/india-general-elections-2019-analysis/">India General Elections 2019 Analysis</a></li>
-</ul>
+
+- [Part 3 - Employment and
+  Opportunities](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/)  
+- [Part 5 - Inclusion and
+  Diversity](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity/)
+- For all the parts go to Project Summary Page - [India General
+  Elections 2019
+  Analysis](/2019/05/india-general-elections-2019-analysis/)

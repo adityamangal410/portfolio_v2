@@ -23,16 +23,26 @@ format:
 freeze: true
 output-file: nlp-with-disaster-tweets-part-1.html
 ---
-
-
-
-
 # Introduction
-<p>In this <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.<br />
-In this part 1 for data preparation, I will do some basic exploration and vectorize the given tweet text into <a href="https://nlp.stanford.edu/projects/glove/" target="_blank">glove</a> embedding vectors.</p>
+
+In this <a href="https://www.kaggle.com/c/nlp-getting-started"
+target="_blank">NLP getting started challenge</a> on kaggle, we are
+given tweets which are classified as 1 if they are about real disasters
+and 0 if not. The goal is to predict given the text of the tweets and
+some other metadata about the tweet, if its about a real disaster or
+not.  
+In this part 1 for data preparation, I will do some basic exploration
+and vectorize the given tweet text into
+<a href="https://nlp.stanford.edu/projects/glove/"
+target="_blank">glove</a> embedding vectors.
+
 # Analysis
+
 ## Load Libraries
-```r
+
+<div id="cb1" class="sourceCode">
+
+``` sourcecode
 rm(list = ls())
 library(tidyverse)
 library(ggplot2)
@@ -44,202 +54,142 @@ library(janitor)
 
 theme_set(theme_light())
 ```
+
+</div>
+
 ## Read Data
-```r
+
+<div id="cb2" class="sourceCode">
+
+``` sourcecode
 tweets &lt;- read_csv(&quot;../data/nlp_with_disaster_tweets/train.csv&quot;)
 tweets_test &lt;- read_csv(&quot;../data/nlp_with_disaster_tweets/test.csv&quot;)
 skim(tweets)
 ```
-<table>
-<caption><span id="tab:unnamed-chunk-2">Table 1: </span>Data summary</caption>
-<tbody>
-<tr class="odd">
-<td align="left">Name</td>
-<td align="left">tweets</td>
-</tr>
-<tr class="even">
-<td align="left">Number of rows</td>
-<td align="left">7613</td>
-</tr>
-<tr class="odd">
-<td align="left">Number of columns</td>
-<td align="left">5</td>
-</tr>
-<tr class="even">
-<td align="left">_______________________</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">Column type frequency:</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">character</td>
-<td align="left">3</td>
-</tr>
-<tr class="odd">
-<td align="left">numeric</td>
-<td align="left">2</td>
-</tr>
-<tr class="even">
-<td align="left">________________________</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">Group variables</td>
-<td align="left">None</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: character</strong></p>
-<table>
-<thead>
-<tr class="header">
-<th align="left">skim_variable</th>
-<th align="right">n_missing</th>
-<th align="right">complete_rate</th>
-<th align="right">min</th>
-<th align="right">max</th>
-<th align="right">empty</th>
-<th align="right">n_unique</th>
-<th align="right">whitespace</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">keyword</td>
-<td align="right">61</td>
-<td align="right">0.99</td>
-<td align="right">4</td>
-<td align="right">21</td>
-<td align="right">0</td>
-<td align="right">221</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="left">location</td>
-<td align="right">2534</td>
-<td align="right">0.67</td>
-<td align="right">1</td>
-<td align="right">49</td>
-<td align="right">0</td>
-<td align="right">3279</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="left">text</td>
-<td align="right">0</td>
-<td align="right">1.00</td>
-<td align="right">7</td>
-<td align="right">157</td>
-<td align="right">0</td>
-<td align="right">7503</td>
-<td align="right">0</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table>
-<thead>
-<tr class="header">
-<th align="left">skim_variable</th>
-<th align="right">n_missing</th>
-<th align="right">complete_rate</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">p0</th>
-<th align="right">p25</th>
-<th align="right">p50</th>
-<th align="right">p75</th>
-<th align="right">p100</th>
-<th align="left">hist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">id</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">5441.93</td>
-<td align="right">3137.12</td>
-<td align="right">1</td>
-<td align="right">2734</td>
-<td align="right">5408</td>
-<td align="right">8146</td>
-<td align="right">10873</td>
-<td align="left">▇▇▇▇▇</td>
-</tr>
-<tr class="even">
-<td align="left">target</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0.43</td>
-<td align="right">0.50</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="left">▇▁▁▁▆</td>
-</tr>
-</tbody>
-</table>
+
+</div>
+
+|                                                  |        |
+|:-------------------------------------------------|:-------|
+| Name                                             | tweets |
+| Number of rows                                   | 7613   |
+| Number of columns                                | 5      |
+| \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_   |        |
+| Column type frequency:                           |        |
+| character                                        | 3      |
+| numeric                                          | 2      |
+| \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ |        |
+| Group variables                                  | None   |
+
+<span id="tab:unnamed-chunk-2">Table 1: </span>Data summary
+
+**Variable type: character**
+
+| skim_variable | n_missing | complete_rate | min | max | empty | n_unique | whitespace |
+|:--------------|----------:|--------------:|----:|----:|------:|---------:|-----------:|
+| keyword       |        61 |          0.99 |   4 |  21 |     0 |      221 |          0 |
+| location      |      2534 |          0.67 |   1 |  49 |     0 |     3279 |          0 |
+| text          |         0 |          1.00 |   7 | 157 |     0 |     7503 |          0 |
+
+**Variable type: numeric**
+
+| skim_variable | n_missing | complete_rate | mean | sd | p0 | p25 | p50 | p75 | p100 | hist |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---|
+| id | 0 | 1 | 5441.93 | 3137.12 | 1 | 2734 | 5408 | 8146 | 10873 | ▇▇▇▇▇ |
+| target | 0 | 1 | 0.43 | 0.50 | 0 | 0 | 0 | 1 | 1 | ▇▁▁▁▆ |
+
 ## Getting glove embedding for tweet text and adding as features
-<p>The simple workflow for vectorizing tweet text into glove embeddings is as follows -</p>
-<ol style="list-style-type: decimal">
-<li>Tokenize incoming tweet texts in the training data.<br />
-</li>
-<li>Download and parse glove embeddings into an embedding matrix for the tokenized words.<br />
-</li>
-<li>Generate embeddings vector for tweets text in training data.<br />
-</li>
-<li>Generate embeddings vector for tweets text in test data.<br />
-</li>
-<li>Append to given tweets features and export.</li>
-</ol>
+
+The simple workflow for vectorizing tweet text into glove embeddings is
+as follows -
+
+1.  Tokenize incoming tweet texts in the training data.  
+2.  Download and parse glove embeddings into an embedding matrix for the
+    tokenized words.  
+3.  Generate embeddings vector for tweets text in training data.  
+4.  Generate embeddings vector for tweets text in test data.  
+5.  Append to given tweets features and export.
+
 ### Tokenize incoming tweet texts in the training data
-<p>Using keras’ text_tokenizer to tokenize the text in tweets dataset.</p>
-```r
+
+Using keras’ text_tokenizer to tokenize the text in tweets dataset.
+
+<div id="cb3" class="sourceCode">
+
+``` sourcecode
 text_tokenizer() %&gt;% 
   fit_text_tokenizer(tweets$text) -&gt; tokenizer
 
 num_words &lt;- length(tokenizer$word_index) + 1
 print(length(tokenizer$word_index))
 ```
-```
-## [1] 22700
-```
-<p>A total of 22700 unique words were assigned an index in the tokenization.<br />
-Using the above fit tokenizer, converting the text to actual sequences of indices.</p>
-```r
+
+</div>
+
+    ## [1] 22700
+
+A total of 22700 unique words were assigned an index in the
+tokenization.  
+Using the above fit tokenizer, converting the text to actual sequences
+of indices.
+
+<div id="cb5" class="sourceCode">
+
+``` sourcecode
 sequences &lt;- texts_to_sequences(tokenizer, tweets$text)
 
 summary(map_int(sequences, length))
 ```
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    1.00   13.00   17.00   16.84   21.00   33.00
-```
-```r
+
+</div>
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##    1.00   13.00   17.00   16.84   21.00   33.00
+
+<div id="cb7" class="sourceCode">
+
+``` sourcecode
 maxlen &lt;- max(map_int(sequences, length))
 print(maxlen)
 ```
-```
-## [1] 33
-```
-<p>Capping the maximum length of a tweets sequence to 33. This will translate all the tweets text sequences into a sequence of length 33. If the original sequence was longer, it will truncate from the beginning and if the original sequence is smaller, it will pad the sequence in the beginning to bring the final length to 33.</p>
-```r
+
+</div>
+
+    ## [1] 33
+
+Capping the maximum length of a tweets sequence to 33. This will
+translate all the tweets text sequences into a sequence of length 33. If
+the original sequence was longer, it will truncate from the beginning
+and if the original sequence is smaller, it will pad the sequence in the
+beginning to bring the final length to 33.
+
+<div id="cb9" class="sourceCode">
+
+``` sourcecode
 pad_sequences(sequences, maxlen = maxlen) -&gt; padded_sequences
 
 str(padded_sequences)
 ```
-```
-##  int [1:7613, 1:33] 0 0 0 0 0 0 0 0 0 0 ...
-```
-<p>Like we see above, for all the 7,613 tweets in the training data we have created a tokenized sequence of 33 elements each.</p>
+
+</div>
+
+    ##  int [1:7613, 1:33] 0 0 0 0 0 0 0 0 0 0 ...
+
+Like we see above, for all the 7,613 tweets in the training data we have
+created a tokenized sequence of 33 elements each.
+
 ### Download and parse glove embeddings into an embedding matrix for the tokenized words
-<p>Downloaded the pre-trained glove embeddings trained on 2 billion tweets from Stanford’s NLP projects page on <a href="https://nlp.stanford.edu/projects/glove/">Glove</a> and borrowing the code for parsing and generating glove embedding matrix from my <a href="https://adityamangal410.github.io/deepSentimentR/reference/index.html">deepSentimentR</a> package.</p>
-```r
+
+Downloaded the pre-trained glove embeddings trained on 2 billion tweets
+from Stanford’s NLP projects page on
+[Glove](https://nlp.stanford.edu/projects/glove/) and borrowing the code
+for parsing and generating glove embedding matrix from my
+[deepSentimentR](https://adityamangal410.github.io/deepSentimentR/reference/index.html)
+package.
+
+<div id="cb11" class="sourceCode">
+
+``` sourcecode
 parse_glove_embeddings &lt;- function(file_path) {
   lines &lt;- readLines(file_path)
   embeddings_index &lt;- new.env(hash = TRUE, parent = emptyenv())
@@ -270,10 +220,20 @@ generate_embedding_matrix &lt;- function(word_index, embedding_dim, max_words, g
   return(embedding_matrix)
 }
 ```
-```r
+
+</div>
+
+<div id="cb12" class="sourceCode">
+
+``` sourcecode
 embedding_dim &lt;- 25
 ```
-```r
+
+</div>
+
+<div id="cb13" class="sourceCode">
+
+``` sourcecode
 embedding_matrix &lt;- generate_embedding_matrix(tokenizer$word_index, 
                                               embedding_dim = embedding_dim, 
                                               max_words = num_words,
@@ -281,17 +241,35 @@ embedding_matrix &lt;- generate_embedding_matrix(tokenizer$word_index,
 
 saveRDS(embedding_matrix, &quot;../data/nlp_with_disaster_tweets/embedding_matrix_25d.rds&quot;)
 ```
-```r
+
+</div>
+
+<div id="cb14" class="sourceCode">
+
+``` sourcecode
 embedding_matrix &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/embedding_matrix_25d.rds&quot;)
 str(embedding_matrix)
 ```
-```
-##  num [1:22701, 1:25] 0 0.7864 0.4186 0.7086 -0.0102 ...
-```
-<p>Using only 25 dimensional embedding in order to keep the computations fast, we have created an embedding matrix which holds the 25 dimension values for the most popular 22700 words in our tweets text data.</p>
+
+</div>
+
+    ##  num [1:22701, 1:25] 0 0.7864 0.4186 0.7086 -0.0102 ...
+
+Using only 25 dimensional embedding in order to keep the computations
+fast, we have created an embedding matrix which holds the 25 dimension
+values for the most popular 22700 words in our tweets text data.
+
 ### Generate embeddings vector for tweets text in training data
-<p>Using the keras modelling framework to generate embeddings for the given training data. We basically create a simple sequential model with one embedding layer whose weights we will freeze based on our embedding matrix created above, and a flattening layer that will flatten the output into a 2D matrix of dimensions (7613, 33x25).</p>
-```r
+
+Using the keras modelling framework to generate embeddings for the given
+training data. We basically create a simple sequential model with one
+embedding layer whose weights we will freeze based on our embedding
+matrix created above, and a flattening layer that will flatten the
+output into a 2D matrix of dimensions (7613, 33x25).
+
+<div id="cb16" class="sourceCode">
+
+``` sourcecode
 keras_model_sequential() %&gt;% 
   layer_embedding(input_dim = num_words, output_dim = embedding_dim, 
                   input_length = maxlen, name = &quot;embedding&quot;) %&gt;% 
@@ -307,16 +285,35 @@ model_embedding %&gt;%
 
 str(tweets_embeddings)
 ```
-```
-##  num [1:7613, 1:825] 0 0 0 0 0 0 0 0 0 0 ...
-```
-<p>For each of the 7,613 padded tweet sequences of upto max length 33, we use the keras model to “predict” and populate the embedding for each of those 33 words in the sequence and susequently flatten those to create a single feature vector of 33x25=825 dimensions.</p>
+
+</div>
+
+    ##  num [1:7613, 1:825] 0 0 0 0 0 0 0 0 0 0 ...
+
+For each of the 7,613 padded tweet sequences of upto max length 33, we
+use the keras model to “predict” and populate the embedding for each of
+those 33 words in the sequence and susequently flatten those to create a
+single feature vector of 33x25=825 dimensions.
+
 ### Generate embeddings vector for tweets text in test data
-<p>Using the similar approach as above (i.e. tokenize, pad and vectorize using glove embeddings) on the test data, to generate similar embedding vector for text in the tweets test data. Note that, we use the previously fit text tokenizer on the train data to tokenize the test data.</p>
-```r
+
+Using the similar approach as above (i.e. tokenize, pad and vectorize
+using glove embeddings) on the test data, to generate similar embedding
+vector for text in the tweets test data. Note that, we use the
+previously fit text tokenizer on the train data to tokenize the test
+data.
+
+<div id="cb18" class="sourceCode">
+
+``` sourcecode
 sequences_test &lt;- texts_to_sequences(tokenizer, tweets_test$text)
 ```
-```r
+
+</div>
+
+<div id="cb19" class="sourceCode">
+
+``` sourcecode
 pad_sequences(sequences_test, maxlen = maxlen) -&gt; padded_sequences_test
 
 model_embedding %&gt;% 
@@ -324,12 +321,19 @@ model_embedding %&gt;%
 
 str(tweets_embeddings_test)
 ```
-```
-##  num [1:3263, 1:825] 0 0 0 0 0 0 0 0 0 0 ...
-```
-<p>We similarly get 825 embedding dimensions for 3,263 tweets in the test data.</p>
+
+</div>
+
+    ##  num [1:3263, 1:825] 0 0 0 0 0 0 0 0 0 0 ...
+
+We similarly get 825 embedding dimensions for 3,263 tweets in the test
+data.
+
 ### Append to given tweets features and export
-```r
+
+<div id="cb21" class="sourceCode">
+
+``` sourcecode
 tweets %&gt;% 
   bind_cols(as_tibble(tweets_embeddings)) %&gt;% 
   clean_names() -&gt; tweets_proc
@@ -338,14 +342,30 @@ tweets_test %&gt;%
   bind_cols(as_tibble(tweets_embeddings_test)) %&gt;% 
   clean_names() -&gt; tweets_test_proc
 ```
-```r
+
+</div>
+
+<div id="cb22" class="sourceCode">
+
+``` sourcecode
 saveRDS(tweets_proc, &quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot;)
 saveRDS(tweets_test_proc, &quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)
 ```
-<p>Exporting the appended feature set will help us work on this dataset for modelling. I will cover the modelling using the tidymodels framework in my upcoming posts.</p>
+
+</div>
+
+Exporting the appended feature set will help us work on this dataset for
+modelling. I will cover the modelling using the tidymodels framework in
+my upcoming posts.
+
 # References
-<ul>
-<li>Project Summary Page - <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with disaster tweets: Summary</a></li>
-<li>GloVe: Global Vectors for Word Representation - <a href="https://nlp.stanford.edu/projects/glove/" target="_blank">Stanford NLP Glove Project</a></li>
-<li>DeepSentimentR package - <a href="https://adityamangal410.github.io/deepSentimentR/index.html" target="_blank">deepSentimentR</a></li>
-</ul>
+
+- Project Summary Page -
+  <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with
+  disaster tweets: Summary</a>
+- GloVe: Global Vectors for Word Representation -
+  <a href="https://nlp.stanford.edu/projects/glove/"
+  target="_blank">Stanford NLP Glove Project</a>
+- DeepSentimentR package -
+  <a href="https://adityamangal410.github.io/deepSentimentR/index.html"
+  target="_blank">deepSentimentR</a>

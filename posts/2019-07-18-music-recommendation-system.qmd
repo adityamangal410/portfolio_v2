@@ -23,18 +23,19 @@ format:
 freeze: true
 output-file: music-recommendation-system.html
 ---
-
-
-<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
-<link href="/rmarkdown-libs/sequences/sequences.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/sunburst-binding/sunburst.js"></script>
-
-
 # Introduction
-<p>Music Artist Recommendation System using the <a href="https://grouplens.org/datasets/hetrec-2011/">Last.fm Dataset</a>. Exploratory data analysis.</p>
+
+Music Artist Recommendation System using the [Last.fm
+Dataset](https://grouplens.org/datasets/hetrec-2011/). Exploratory data
+analysis.
+
 # Analysis
+
 ## Load Libraries
-```r
+
+<div id="cb1" class="sourceCode">
+
+``` sourcecode
 rm(list = ls())
 library(tidyverse)
 library(tidylog)
@@ -47,109 +48,165 @@ library(htmlwidgets)
 
 theme_set(theme_light())
 ```
+
+</div>
+
 ## Obtain Data
-```r
+
+<div id="cb2" class="sourceCode">
+
+``` sourcecode
 artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/artists.dat&quot;)
 tags &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/tags.dat&quot;)
 ratings &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_artists.dat&quot;)
 friends &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_friends.dat&quot;)
 user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_taggedartists.dat&quot;)
 ```
-<p>Lets try and join all the data tables, into logical condensed tables.</p>
-```r
+
+</div>
+
+Lets try and join all the data tables, into logical condensed tables.
+
+<div id="cb3" class="sourceCode">
+
+``` sourcecode
 user_tagged_artists %&gt;% 
   left_join(tags, by = c(&quot;tagID&quot;)) %&gt;% 
   left_join(artists, by = c(&quot;artistID&quot; = &quot;id&quot;)) -&gt; metadata
 ```
-<p>We will work with the final above 3 dataframes, metadata, ratings and friends. Lets drop the rest of them.</p>
-```r
+
+</div>
+
+We will work with the final above 3 dataframes, metadata, ratings and
+friends. Lets drop the rest of them.
+
+<div id="cb4" class="sourceCode">
+
+``` sourcecode
 rm(artists, tags, user_tagged_artists)
 ```
-```r
+
+</div>
+
+<div id="cb5" class="sourceCode">
+
+``` sourcecode
 metadata %&gt;% 
   glimpse()
 ```
-```
-## Rows: 186,479
-## Columns: 10
-## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
-## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 73, 73…
-## $ tagID      &lt;dbl&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 20, 21…
-## $ day        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
-## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4…
-## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009…
-## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;female…
-## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morch…
-## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.last.fm/…
-## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;, &quot;htt…
-```
-```r
+
+</div>
+
+    ## Rows: 186,479
+    ## Columns: 10
+    ## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+    ## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 73, 73…
+    ## $ tagID      &lt;dbl&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 20, 21…
+    ## $ day        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+    ## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4…
+    ## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009…
+    ## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;female…
+    ## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morch…
+    ## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.last.fm/…
+    ## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;, &quot;htt…
+
+<div id="cb7" class="sourceCode">
+
+``` sourcecode
 friends %&gt;% 
   glimpse()
 ```
-```
-## Rows: 25,434
-## Columns: 2
-## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, …
-## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …
-```
-```r
+
+</div>
+
+    ## Rows: 25,434
+    ## Columns: 2
+    ## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, …
+    ## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …
+
+<div id="cb9" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   glimpse()
 ```
-```
-## Rows: 92,834
-## Columns: 3
-## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
-## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, …
-## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 4337, 41…
-```
+
+</div>
+
+    ## Rows: 92,834
+    ## Columns: 3
+    ## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
+    ## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, …
+    ## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 4337, 41…
+
 ## Scrub and Explore
+
 ### Ratings
-```r
+
+<div id="cb11" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   head()
 ```
-```
-## # A tibble: 6 x 3
-##   userID artistID weight
-##    &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
-## 1      2       51  13883
-## 2      2       52  11690
-## 3      2       53  11351
-## 4      2       54  10300
-## 5      2       55   8983
-## 6      2       56   6152
-```
-```r
+
+</div>
+
+    ## # A tibble: 6 x 3
+    ##   userID artistID weight
+    ##    &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+    ## 1      2       51  13883
+    ## 2      2       52  11690
+    ## 3      2       53  11351
+    ## 4      2       54  10300
+    ## 5      2       55   8983
+    ## 6      2       56   6152
+
+<div id="cb13" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   select_if(function(x) any(is.na(x))) %&gt;% 
   summarise_all(funs(sum(is.na(.))))
 ```
-```
-## # A tibble: 1 x 0
-```
-<p>Lets first make userID and artistID as factors.</p>
-```r
+
+</div>
+
+    ## # A tibble: 1 x 0
+
+Lets first make userID and artistID as factors.
+
+<div id="cb15" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID)) -&gt; ratings
 ```
-```r
+
+</div>
+
+<div id="cb16" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   summary()
 ```
-```
-##      userID         artistID         weight        
-##  2      :   50   89     :  611   Min.   :     1.0  
-##  3      :   50   289    :  522   1st Qu.:   107.0  
-##  4      :   50   288    :  484   Median :   260.0  
-##  5      :   50   227    :  480   Mean   :   745.2  
-##  6      :   50   300    :  473   3rd Qu.:   614.0  
-##  7      :   50   67     :  429   Max.   :352698.0  
-##  (Other):92534   (Other):89835
-```
-```r
+
+</div>
+
+    ##      userID         artistID         weight        
+    ##  2      :   50   89     :  611   Min.   :     1.0  
+    ##  3      :   50   289    :  522   1st Qu.:   107.0  
+    ##  4      :   50   288    :  484   Median :   260.0  
+    ##  5      :   50   227    :  480   Mean   :   745.2  
+    ##  6      :   50   300    :  473   3rd Qu.:   614.0  
+    ##  7      :   50   67     :  429   Max.   :352698.0  
+    ##  (Other):92534   (Other):89835
+
+<div id="cb18" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   mutate(z_score_weight = scale(weight)) %&gt;% 
   ggplot() -&gt; p
@@ -169,194 +226,261 @@ grid.arrange(p +
                scale_x_log10() + 
                labs(x = &quot;z-score(log(weight))&quot;, y = &quot;density&quot;, title = &quot;z-score(log(Weight)) Density Distribution&quot;))
 ```
-<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-12-1.png"
+width="768" />
+
+<div id="cb19" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   mutate(log_weight = log10(weight),
          z_score_log_weight = scale(log_weight)) %&gt;% 
   summary()
 ```
-```
-##      userID         artistID         weight           log_weight   
-##  2      :   50   89     :  611   Min.   :     1.0   Min.   :0.000  
-##  3      :   50   289    :  522   1st Qu.:   107.0   1st Qu.:2.029  
-##  4      :   50   288    :  484   Median :   260.0   Median :2.415  
-##  5      :   50   227    :  480   Mean   :   745.2   Mean   :2.375  
-##  6      :   50   300    :  473   3rd Qu.:   614.0   3rd Qu.:2.788  
-##  7      :   50   67     :  429   Max.   :352698.0   Max.   :5.547  
-##  (Other):92534   (Other):89835                                     
-##  z_score_log_weight.V1
-##  Min.   :-3.572957    
-##  1st Qu.:-0.519931    
-##  Median : 0.060154    
-##  Mean   : 0.000000    
-##  3rd Qu.: 0.621593    
-##  Max.   : 4.772614    
-## 
-```
-<p>Using scaled (i.e. z-score) of log10 of weight field as the rating.</p>
-```r
+
+</div>
+
+    ##      userID         artistID         weight           log_weight   
+    ##  2      :   50   89     :  611   Min.   :     1.0   Min.   :0.000  
+    ##  3      :   50   289    :  522   1st Qu.:   107.0   1st Qu.:2.029  
+    ##  4      :   50   288    :  484   Median :   260.0   Median :2.415  
+    ##  5      :   50   227    :  480   Mean   :   745.2   Mean   :2.375  
+    ##  6      :   50   300    :  473   3rd Qu.:   614.0   3rd Qu.:2.788  
+    ##  7      :   50   67     :  429   Max.   :352698.0   Max.   :5.547  
+    ##  (Other):92534   (Other):89835                                     
+    ##  z_score_log_weight.V1
+    ##  Min.   :-3.572957    
+    ##  1st Qu.:-0.519931    
+    ##  Median : 0.060154    
+    ##  Mean   : 0.000000    
+    ##  3rd Qu.: 0.621593    
+    ##  Max.   : 4.772614    
+    ## 
+
+Using scaled (i.e. z-score) of log10 of weight field as the rating.
+
+<div id="cb21" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   mutate(rating = scale(log10(weight))) -&gt; ratings
 ```
-```r
+
+</div>
+
+<div id="cb22" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   count(userID, sort = TRUE)
 ```
-```
-## # A tibble: 1,892 x 2
-##    userID     n
-##    &lt;fct&gt;  &lt;int&gt;
-##  1 2         50
-##  2 3         50
-##  3 4         50
-##  4 5         50
-##  5 6         50
-##  6 7         50
-##  7 8         50
-##  8 9         50
-##  9 10        50
-## 10 11        50
-## # … with 1,882 more rows
-```
-<p>Looks like a highly cleaned dataset, where every user has exactly 50 ratings (or user’s play counts of exactly 50 artists).</p>
-```r
+
+</div>
+
+    ## # A tibble: 1,892 x 2
+    ##    userID     n
+    ##    &lt;fct&gt;  &lt;int&gt;
+    ##  1 2         50
+    ##  2 3         50
+    ##  3 4         50
+    ##  4 5         50
+    ##  5 6         50
+    ##  6 7         50
+    ##  7 8         50
+    ##  8 9         50
+    ##  9 10        50
+    ## 10 11        50
+    ## # … with 1,882 more rows
+
+Looks like a highly cleaned dataset, where every user has exactly 50
+ratings (or user’s play counts of exactly 50 artists).
+
+<div id="cb24" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   count(artistID, sort = TRUE)
 ```
-```
-## # A tibble: 17,632 x 2
-##    artistID     n
-##    &lt;fct&gt;    &lt;int&gt;
-##  1 89         611
-##  2 289        522
-##  3 288        484
-##  4 227        480
-##  5 300        473
-##  6 67         429
-##  7 333        417
-##  8 292        407
-##  9 190        400
-## 10 498        399
-## # … with 17,622 more rows
-```
+
+</div>
+
+    ## # A tibble: 17,632 x 2
+    ##    artistID     n
+    ##    &lt;fct&gt;    &lt;int&gt;
+    ##  1 89         611
+    ##  2 289        522
+    ##  3 288        484
+    ##  4 227        480
+    ##  5 300        473
+    ##  6 67         429
+    ##  7 333        417
+    ##  8 292        407
+    ##  9 190        400
+    ## 10 498        399
+    ## # … with 17,622 more rows
+
 ### Friends
-```r
+
+<div id="cb26" class="sourceCode">
+
+``` sourcecode
 friends %&gt;% 
   glimpse()
 ```
-```
-## Rows: 25,434
-## Columns: 2
-## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, …
-## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …
-```
-```r
+
+</div>
+
+    ## Rows: 25,434
+    ## Columns: 2
+    ## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, …
+    ## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …
+
+<div id="cb28" class="sourceCode">
+
+``` sourcecode
 friends %&gt;% 
   select_if(function(x) any(is.na(x))) %&gt;% 
   summarise_all(funs(sum(is.na(.))))
 ```
-```
-## # A tibble: 1 x 0
-```
-```r
+
+</div>
+
+    ## # A tibble: 1 x 0
+
+<div id="cb30" class="sourceCode">
+
+``` sourcecode
 friends %&gt;% 
   mutate(userID = as.factor(userID),
          friendID = as.factor(friendID)) -&gt; friends
 ```
-```r
+
+</div>
+
+<div id="cb31" class="sourceCode">
+
+``` sourcecode
 friends %&gt;% 
   count(userID, sort = TRUE)
 ```
-```
-## # A tibble: 1,892 x 2
-##    userID     n
-##    &lt;fct&gt;  &lt;int&gt;
-##  1 1543     119
-##  2 1281     110
-##  3 831      106
-##  4 179       97
-##  5 1503      95
-##  6 1023      91
-##  7 405       90
-##  8 1895      90
-##  9 1300      89
-## 10 390       88
-## # … with 1,882 more rows
-```
+
+</div>
+
+    ## # A tibble: 1,892 x 2
+    ##    userID     n
+    ##    &lt;fct&gt;  &lt;int&gt;
+    ##  1 1543     119
+    ##  2 1281     110
+    ##  3 831      106
+    ##  4 179       97
+    ##  5 1503      95
+    ##  6 1023      91
+    ##  7 405       90
+    ##  8 1895      90
+    ##  9 1300      89
+    ## 10 390       88
+    ## # … with 1,882 more rows
+
 ### Metadata
-```r
+
+<div id="cb33" class="sourceCode">
+
+``` sourcecode
 metadata %&gt;% 
   glimpse()
 ```
-```
-## Rows: 186,479
-## Columns: 10
-## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
-## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 73, 73…
-## $ tagID      &lt;dbl&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 20, 21…
-## $ day        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
-## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4…
-## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009…
-## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;female…
-## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morch…
-## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.last.fm/…
-## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;, &quot;htt…
-```
-```r
+
+</div>
+
+    ## Rows: 186,479
+    ## Columns: 10
+    ## $ userID     &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+    ## $ artistID   &lt;dbl&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 73, 73…
+    ## $ tagID      &lt;dbl&gt; 13, 15, 18, 21, 41, 13, 14, 23, 40, 13, 14, 15, 18, 20, 21…
+    ## $ day        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+    ## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4…
+    ## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009…
+    ## $ tagValue   &lt;chr&gt; &quot;chillout&quot;, &quot;downtempo&quot;, &quot;electronic&quot;, &quot;trip-hop&quot;, &quot;female…
+    ## $ name       &lt;chr&gt; &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morcheeba&quot;, &quot;Morch…
+    ## $ url        &lt;chr&gt; &quot;http://www.last.fm/music/Morcheeba&quot;, &quot;http://www.last.fm/…
+    ## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;, &quot;htt…
+
+<div id="cb35" class="sourceCode">
+
+``` sourcecode
 metadata %&gt;% 
   select_if(function(x) any(is.na(x))) %&gt;% 
   summarise_all(funs(sum(is.na(.))))
 ```
-```
-## # A tibble: 1 x 3
-##    name   url pictureURL
-##   &lt;int&gt; &lt;int&gt;      &lt;int&gt;
-## 1 22951 22951      23024
-```
-<p>I’ll skip worrying about NA urls and pictureURLs for now. Lets explore the rows where name is NA.</p>
-```r
+
+</div>
+
+    ## # A tibble: 1 x 3
+    ##    name   url pictureURL
+    ##   &lt;int&gt; &lt;int&gt;      &lt;int&gt;
+    ## 1 22951 22951      23024
+
+I’ll skip worrying about NA urls and pictureURLs for now. Lets explore
+the rows where name is NA.
+
+<div id="cb37" class="sourceCode">
+
+``` sourcecode
 metadata %&gt;% 
   filter(is.na(name))
 ```
-```
-## # A tibble: 22,951 x 10
-##    userID artistID tagID   day month  year tagValue       name  url   pictureURL
-##     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     
-##  1      4     1713    18     1    11  2007 electronic     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  2      4     1745    18     1    10  2007 electronic     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  3      4     1810    72     1    12  2007 hard rock      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  4      4     1824    15     1     6  2007 downtempo      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  5      4     1870    92     1     3  2007 dope           &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  6      4     1873    78     1     3  2007 alternative r… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  7      4     1917     7     1     8  2007 gothic metal   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  8      4     2370    76     1     9  2007 progressive m… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  9      5     2786    96     1     4  2008 spring         &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-## 10      8    14103    24     1    11  2006 pop            &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-## # … with 22,941 more rows
-```
-```r
+
+</div>
+
+    ## # A tibble: 22,951 x 10
+    ##    userID artistID tagID   day month  year tagValue       name  url   pictureURL
+    ##     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     
+    ##  1      4     1713    18     1    11  2007 electronic     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+    ##  2      4     1745    18     1    10  2007 electronic     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+    ##  3      4     1810    72     1    12  2007 hard rock      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+    ##  4      4     1824    15     1     6  2007 downtempo      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+    ##  5      4     1870    92     1     3  2007 dope           &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+    ##  6      4     1873    78     1     3  2007 alternative r… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+    ##  7      4     1917     7     1     8  2007 gothic metal   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+    ##  8      4     2370    76     1     9  2007 progressive m… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+    ##  9      5     2786    96     1     4  2008 spring         &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+    ## 10      8    14103    24     1    11  2006 pop            &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+    ## # … with 22,941 more rows
+
+<div id="cb39" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   filter(artistID == 1713)
 ```
-```
-## # A tibble: 58 x 4
-##    userID artistID weight rating[,1]
-##    &lt;fct&gt;  &lt;fct&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-##  1 59     1713        610     0.617 
-##  2 62     1713        214    -0.0671
-##  3 99     1713        561     0.563 
-##  4 103    1713         23    -1.52  
-##  5 124    1713       1080     0.991 
-##  6 183    1713        161    -0.253 
-##  7 191    1713        107    -0.520 
-##  8 210    1713       7898     2.29  
-##  9 211    1713        709     0.716 
-## 10 216    1713        174    -0.202 
-## # … with 48 more rows
-```
-<p>Looks like even though we dont have the name of these artists, we have ratings for them in the ratings dataframe, so we’ll keep them.</p>
-```r
+
+</div>
+
+    ## # A tibble: 58 x 4
+    ##    userID artistID weight rating[,1]
+    ##    &lt;fct&gt;  &lt;fct&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+    ##  1 59     1713        610     0.617 
+    ##  2 62     1713        214    -0.0671
+    ##  3 99     1713        561     0.563 
+    ##  4 103    1713         23    -1.52  
+    ##  5 124    1713       1080     0.991 
+    ##  6 183    1713        161    -0.253 
+    ##  7 191    1713        107    -0.520 
+    ##  8 210    1713       7898     2.29  
+    ##  9 211    1713        709     0.716 
+    ## 10 216    1713        174    -0.202 
+    ## # … with 48 more rows
+
+Looks like even though we dont have the name of these artists, we have
+ratings for them in the ratings dataframe, so we’ll keep them.
+
+<div id="cb41" class="sourceCode">
+
+``` sourcecode
 metadata %&gt;% 
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID),
@@ -365,12 +489,24 @@ metadata %&gt;%
          name = as.factor(name)) %&gt;% 
   rename(artistName = name) -&gt; metadata
 ```
-<p>I dont think we will need the 2 URL columns for this study, dropping them for now.</p>
-```r
+
+</div>
+
+I dont think we will need the 2 URL columns for this study, dropping
+them for now.
+
+<div id="cb42" class="sourceCode">
+
+``` sourcecode
 metadata %&gt;% 
   select(-url, -pictureURL) -&gt; metadata
 ```
-```r
+
+</div>
+
+<div id="cb43" class="sourceCode">
+
+``` sourcecode
 metadata %&gt;% 
   filter(!is.na(artistName)) %&gt;% 
   count(artistName, sort = TRUE) %&gt;% 
@@ -389,8 +525,16 @@ metadata %&gt;%
        subtitle = &quot;Top 20 artists&quot;,
        caption = &quot;Based on data from the Last.fm dataset&quot;)
 ```
-<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-27-1.png"
+width="672" />
+
+<div id="cb44" class="sourceCode">
+
+``` sourcecode
 metadata %&gt;% 
   count(tagValue, sort = TRUE) %&gt;% 
   top_n(20, n) %&gt;% 
@@ -408,9 +552,21 @@ metadata %&gt;%
        subtitle = &quot;Top 20 Tags&quot;,
        caption = &quot;Based on data from the Last.fm dataset&quot;)
 ```
-<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
-<p>Looks like few of the most popular Artists in this dataset are Britney Spears, Lady Gaga and Christina Aguilera and as expected, Rock and Pop are the most popular tags. Lets see which are the most popular artists in the top most popular tags.</p>
-```r
+
+</div>
+
+<img
+src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-28-1.png"
+width="672" />
+
+Looks like few of the most popular Artists in this dataset are Britney
+Spears, Lady Gaga and Christina Aguilera and as expected, Rock and Pop
+are the most popular tags. Lets see which are the most popular artists
+in the top most popular tags.
+
+<div id="cb45" class="sourceCode">
+
+``` sourcecode
 topTags &lt;- metadata %&gt;% 
   count(tagValue) %&gt;% 
   top_n(5, n) %&gt;% 
@@ -432,33 +588,66 @@ snb &lt;- htmlwidgets::prependContent(snb, htmltools::h2(&quot;Sunburst of most 
 snb &lt;- htmlwidgets::prependContent(snb, htmltools::h5(&quot;Hover over to the see the artists and tags&quot;))
 snb
 ```
+
+</div>
+
 ## Sunburst of most popular artists in 5 most popular tags
+
 ##### Hover over to the see the artists and tags
-<div class="sunburst html-widget" id="htmlwidget-1" style="width:672px;height:480px; position:relative;">
+
+<div id="htmlwidget-1" class="sunburst html-widget"
+style="width:672px;height:480px; position:relative;">
+
 <div>
+
 <div class="sunburst-main">
-<div class="sunburst-sequence"></div>
+
+<div class="sunburst-sequence">
+
+</div>
+
 <div class="sunburst-chart">
-<div class="sunburst-explanation" style="visibility:hidden;"></div>
+
+<div class="sunburst-explanation" style="visibility:hidden;">
+
+</div>
+
 <div class="sunburst-sidebar">
-<input type="checkbox" class="sunburst-togglelegend" style="visibility:hidden;">Legend</input>
-<div class="sunburst-legend" style="visibility:hidden;"></div>
+
+Legend
+
+<div class="sunburst-legend" style="visibility:hidden;">
+
 </div>
+
 </div>
-<script type="application/json" data-for="htmlwidget-1">{"x":{"data":{"children":[{"name":"pop","children":[{"name":"Britney Spears","size":108,"colname":"X2"},{"name":"Lady Gaga","size":99,"colname":"X2"},{"name":"Christina Aguilera","size":83,"colname":"X2"},{"name":"Madonna","size":78,"colname":"X2"},{"name":"Katy Perry","size":68,"colname":"X2"}],"colname":"X1"},{"name":"electronic","children":[{"name":"Depeche Mode","size":68,"colname":"X2"},{"name":"Björk","size":54,"colname":"X2"},{"name":"Lady Gaga","size":51,"colname":"X2"},{"name":"Daft Punk","size":39,"colname":"X2"},{"name":"Massive Attack","size":37,"colname":"X2"}],"colname":"X1"},{"name":"rock","children":[{"name":"The Beatles","size":67,"colname":"X2"},{"name":"Muse","size":65,"colname":"X2"},{"name":"Paramore","size":58,"colname":"X2"},{"name":"U2","size":52,"colname":"X2"},{"name":"Linkin Park","size":48,"colname":"X2"},{"name":"Radiohead","size":48,"colname":"X2"}],"colname":"X1"},{"name":"alternative","children":[{"name":"Radiohead","size":64,"colname":"X2"},{"name":"Muse","size":62,"colname":"X2"},{"name":"Placebo","size":48,"colname":"X2"},{"name":"Björk","size":46,"colname":"X2"},{"name":"Paramore","size":46,"colname":"X2"}],"colname":"X1"},{"name":"indie","children":[{"name":"The Killers","size":49,"colname":"X2"},{"name":"Franz Ferdinand","size":43,"colname":"X2"},{"name":"Arctic Monkeys","size":41,"colname":"X2"},{"name":"Muse","size":39,"colname":"X2"},{"name":"Radiohead","size":39,"colname":"X2"}],"colname":"X1"}],"name":"root"},"options":{"legendOrder":null,"colors":null,"valueField":"size","percent":true,"count":false,"explanation":null,"breadcrumb":[],"legend":false,"sortFunction":null,"sumNodes":true}},"evals":[],"jsHooks":[]}</script>
-<p>Alright, so we know the most popular artists in each popular tag as provided by the user. Don’t worry, Beatles is right up there in the “rock” tag! :)</p>
+
 </div>
+
+Alright, so we know the most popular artists in each popular tag as
+provided by the user. Don’t worry, Beatles is right up there in the
+“rock” tag! :)
+
 </div>
+
 </div>
+
+</div>
+
 # Summary
-<p>In this post, we</p>
-<ul>
-<li>Downloaded and merged the dataset</li>
-<li>Analyzed and explored the dataset</li>
-<li>Visualized the most import data points in the dataset.</li>
-</ul>
-<p>I think I will wrap up the exploration phase for now. Lets export the data so we can model it in a later post.</p>
-```r
+
+In this post, we
+
+- Downloaded and merged the dataset
+- Analyzed and explored the dataset
+- Visualized the most import data points in the dataset.
+
+I think I will wrap up the exploration phase for now. Lets export the
+data so we can model it in a later post.
+
+<div id="cb46" class="sourceCode">
+
+``` sourcecode
 ratings %&gt;% 
   write_csv(&quot;../data/hetrec2011-lastfm-2k/ratings_clean.csv&quot;)
 friends %&gt;% 
@@ -466,8 +655,10 @@ friends %&gt;%
 metadata %&gt;% 
   write_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)
 ```
+
+</div>
+
 # References
-<ol style="list-style-type: decimal">
-<li><a href="https://grouplens.org/datasets/hetrec-2011/">Data reference</a></li>
-<li><a href="https://www.data-to-viz.com/">Visualization reference</a></li>
-</ol>
+
+1.  [Data reference](https://grouplens.org/datasets/hetrec-2011/)
+2.  [Visualization reference](https://www.data-to-viz.com/)

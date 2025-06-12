@@ -21,29 +21,55 @@ format:
 freeze: true
 output-file: nlp-with-disaster-tweets.html
 ---
-
-
-
-
 # Project Summary
-<p>With this project, I’ll apply and practice various NLP techniques, along with trying my hands on the <a href="https://github.com/tidymodels/tidymodels" target="_blank">tidymodels framework</a>.
-I will use the <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle for its dataset and also evaluating model performance using submissions.</p>
+
+With this project, I’ll apply and practice various NLP techniques, along
+with trying my hands on the
+<a href="https://github.com/tidymodels/tidymodels"
+target="_blank">tidymodels framework</a>. I will use the
+<a href="https://www.kaggle.com/c/nlp-getting-started"
+target="_blank">NLP getting started challenge</a> on kaggle for its
+dataset and also evaluating model performance using submissions.
+
 # Project Goals
-<ol style="list-style-type: decimal">
-<li><p>Apply and improve NLP skills in R &amp; Python.</p></li>
-<li><p>Learn and apply tidymodels modelling framework to do reproducible and effective science.</p></li>
-<li><p>Focus more on model explainability and relative comparison of different algorithms.</p></li>
-<li><p>Improve skills in PyTorch deep learning framework for model training and prediction.</p></li>
-</ol>
+
+1.  Apply and improve NLP skills in R & Python.
+
+2.  Learn and apply tidymodels modelling framework to do reproducible
+    and effective science.
+
+3.  Focus more on model explainability and relative comparison of
+    different algorithms.
+
+4.  Improve skills in PyTorch deep learning framework for model training
+    and prediction.
+
 # Series
-<p>The following series of posts tackle the above project goals sequentially</p>
-<ul>
-<li>Project Part 1 - <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP with Disaster Tweets: Part 1 Data Preparation</a><br />
-</li>
-<li>Project Part 2 - <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">NLP with Disaster Tweets: Part 2 Nearest Neighbor Models</a></li>
-<li>Project Part 3 - <a href="/2020/04/nlp-with-disaster-tweets-part-3-linear-models/" target="_blank">NLP with Disaster Tweets: Part 3 Linear Models</a></li>
-<li>Project Part 4 - <a href="/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/" target="_blank">NLP with Disaster Tweets: Part 4 Tree-based Models</a></li>
-<li>Project Part 5 - <a href="/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/" target="_blank">NLP with Disaster Tweets: Part 5 Deep Learning Data Preparation</a></li>
-<li>Project Part 6 - <a href="/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/" target="_blank">NLP with Disaster Tweets: Part 6 Multi Layer Perceptron</a></li>
-<li>Project Part 7 - <a href="/2020/09/nlp-with-disaster-tweets-part-7-vanilla-rnn-and-gru.en-us/" target="_blank">NLP with Disaster Tweets: Part 7 Vanilla RNN and GRU</a></li>
-</ul>
+
+The following series of posts tackle the above project goals
+sequentially
+
+- Project Part 1 -
+  <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP
+  with Disaster Tweets: Part 1 Data Preparation</a>  
+- Project Part 2 - <a
+  href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/"
+  target="_blank">NLP with Disaster Tweets: Part 2 Nearest Neighbor
+  Models</a>
+- Project Part 3 -
+  <a href="/2020/04/nlp-with-disaster-tweets-part-3-linear-models/"
+  target="_blank">NLP with Disaster Tweets: Part 3 Linear Models</a>
+- Project Part 4 - <a
+  href="/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/"
+  target="_blank">NLP with Disaster Tweets: Part 4 Tree-based Models</a>
+- Project Part 5 - <a
+  href="/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/"
+  target="_blank">NLP with Disaster Tweets: Part 5 Deep Learning Data
+  Preparation</a>
+- Project Part 6 - <a
+  href="/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/"
+  target="_blank">NLP with Disaster Tweets: Part 6 Multi Layer
+  Perceptron</a>
+- Project Part 7 - <a
+  href="/2020/09/nlp-with-disaster-tweets-part-7-vanilla-rnn-and-gru.en-us/"
+  target="_blank">NLP with Disaster Tweets: Part 7 Vanilla RNN and GRU</a>

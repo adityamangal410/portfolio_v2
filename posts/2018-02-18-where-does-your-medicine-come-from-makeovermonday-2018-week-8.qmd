@@ -25,122 +25,195 @@ format:
 freeze: true
 output-file: where-does-your-medicine-come-from-makeovermonday-2018-week-8.html
 ---
-
-
-
-
 # Introduction
-<p>Goal of this Visualization task is to create a visualization for the <a href="https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1" target="_blank">Drug and Medicine Exports data for different countries.</a></p>
-<p>In this blog post, I’m trying to find the leading countries in Export across these 5 years.</p>
+
+Goal of this Visualization task is to create a visualization for the <a
+href="https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1%7C%7C%7C%7C%7C3004%7C%7C%7C4%7C1%7C1%7C2%7C2%7C1%7C2%7C1%7C1"
+target="_blank">Drug and Medicine Exports data for different
+countries.</a>
+
+In this blog post, I’m trying to find the leading countries in Export
+across these 5 years.
+
 # Analysis
+
 ## Cleaning up workspace and loading required libraries
-```r
+
+<div id="cb1" class="sourceCode">
+
+``` sourcecode
 rm(list = ls())
 ```
-```r
+
+</div>
+
+<div id="cb2" class="sourceCode">
+
+``` sourcecode
 library(tidyverse) #Data Wrangling
 library(&quot;httr&quot;)
 library(readxl) #Data Ingestion
 library(ggplot2) #Data Visualization
 ```
+
+</div>
+
 ## Obtaining Data
-<p>Reading and viewing the dataset</p>
-```r
+
+Reading and viewing the dataset
+
+<div id="cb3" class="sourceCode">
+
+``` sourcecode
 GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.xlsx&quot;)))
 ```
-```r
+
+</div>
+
+<div id="cb4" class="sourceCode">
+
+``` sourcecode
 drugs &lt;- read_excel(tf)
 ```
-```r
+
+</div>
+
+<div id="cb5" class="sourceCode">
+
+``` sourcecode
 drugs
 ```
-```
-## # A tibble: 1,100 x 3
-##    Exporter                  Year `Exports (USD)`
-##    &lt;chr&gt;                    &lt;dbl&gt;           &lt;dbl&gt;
-##  1 World                     2013    326445385000
-##  2 Germany                   2013     48493611000
-##  3 Switzerland               2013     32337891000
-##  4 Belgium                   2013     33329615000
-##  5 France                    2013     27848920000
-##  6 United States of America  2013     23098676000
-##  7 United Kingdom            2013     20885936000
-##  8 Ireland                   2013     18152573000
-##  9 Italy                     2013     20898532000
-## 10 Netherlands               2013     13480651000
-## # … with 1,090 more rows
-```
-<p>Summarizing and getting stats to better understand the dataset</p>
-```r
+
+</div>
+
+    ## # A tibble: 1,100 x 3
+    ##    Exporter                  Year `Exports (USD)`
+    ##    &lt;chr&gt;                    &lt;dbl&gt;           &lt;dbl&gt;
+    ##  1 World                     2013    326445385000
+    ##  2 Germany                   2013     48493611000
+    ##  3 Switzerland               2013     32337891000
+    ##  4 Belgium                   2013     33329615000
+    ##  5 France                    2013     27848920000
+    ##  6 United States of America  2013     23098676000
+    ##  7 United Kingdom            2013     20885936000
+    ##  8 Ireland                   2013     18152573000
+    ##  9 Italy                     2013     20898532000
+    ## 10 Netherlands               2013     13480651000
+    ## # … with 1,090 more rows
+
+Summarizing and getting stats to better understand the dataset
+
+<div id="cb7" class="sourceCode">
+
+``` sourcecode
 drugs %&gt;% 
   glimpse()
 ```
-```
-## Rows: 1,100
-## Columns: 3
-## $ Exporter        &lt;chr&gt; &quot;World&quot;, &quot;Germany&quot;, &quot;Switzerland&quot;, &quot;Belgium&quot;, &quot;France…
-## $ Year            &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013,…
-## $ `Exports (USD)` &lt;dbl&gt; 326445385000, 48493611000, 32337891000, 33329615000, …
-```
-```r
+
+</div>
+
+    ## Rows: 1,100
+    ## Columns: 3
+    ## $ Exporter        &lt;chr&gt; &quot;World&quot;, &quot;Germany&quot;, &quot;Switzerland&quot;, &quot;Belgium&quot;, &quot;France…
+    ## $ Year            &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013,…
+    ## $ `Exports (USD)` &lt;dbl&gt; 326445385000, 48493611000, 32337891000, 33329615000, …
+
+<div id="cb9" class="sourceCode">
+
+``` sourcecode
 drugs %&gt;% 
   summary()
 ```
-```
-##    Exporter              Year      Exports (USD)      
-##  Length:1100        Min.   :2013   Min.   :0.000e+00  
-##  Class :character   1st Qu.:2014   1st Qu.:1.212e+05  
-##  Mode  :character   Median :2015   Median :7.393e+06  
-##                     Mean   :2015   Mean   :3.315e+09  
-##                     3rd Qu.:2016   3rd Qu.:3.293e+08  
-##                     Max.   :2017   Max.   :3.405e+11  
-##                                    NA&#39;s   :266
-```
+
+</div>
+
+    ##    Exporter              Year      Exports (USD)      
+    ##  Length:1100        Min.   :2013   Min.   :0.000e+00  
+    ##  Class :character   1st Qu.:2014   1st Qu.:1.212e+05  
+    ##  Mode  :character   Median :2015   Median :7.393e+06  
+    ##                     Mean   :2015   Mean   :3.315e+09  
+    ##                     3rd Qu.:2016   3rd Qu.:3.293e+08  
+    ##                     Max.   :2017   Max.   :3.405e+11  
+    ##                                    NA&#39;s   :266
+
 ## Scrubbing data
-<p>Removing rows with NA for the purposes of this visualization</p>
-```r
+
+Removing rows with NA for the purposes of this visualization
+
+<div id="cb11" class="sourceCode">
+
+``` sourcecode
 drugs = drugs %&gt;% 
   filter(!is.na(`Exports (USD)`))
 ```
-<p>Let’s see overall which are the Countries with highest export over these 5 years.</p>
-```r
+
+</div>
+
+Let’s see overall which are the Countries with highest export over these
+5 years.
+
+<div id="cb12" class="sourceCode">
+
+``` sourcecode
 drugs %&gt;% 
   group_by(Exporter) %&gt;% 
   summarise(TotalExport = sum(`Exports (USD)`)) %&gt;% 
   arrange(desc(TotalExport))
 ```
-```
-## # A tibble: 220 x 2
-##    Exporter                   TotalExport
-##    &lt;chr&gt;                            &lt;dbl&gt;
-##  1 World                    1309425248000
-##  2 Germany                   197463838000
-##  3 Switzerland               183296295000
-##  4 France                    123482590000
-##  5 Belgium                   117396245000
-##  6 United States of America  114868001000
-##  7 United Kingdom            110713945000
-##  8 Ireland                    96686923000
-##  9 Italy                      76012918000
-## 10 Netherlands                59659401000
-## # … with 210 more rows
-```
+
+</div>
+
+    ## # A tibble: 220 x 2
+    ##    Exporter                   TotalExport
+    ##    &lt;chr&gt;                            &lt;dbl&gt;
+    ##  1 World                    1309425248000
+    ##  2 Germany                   197463838000
+    ##  3 Switzerland               183296295000
+    ##  4 France                    123482590000
+    ##  5 Belgium                   117396245000
+    ##  6 United States of America  114868001000
+    ##  7 United Kingdom            110713945000
+    ##  8 Ireland                    96686923000
+    ##  9 Italy                      76012918000
+    ## 10 Netherlands                59659401000
+    ## # … with 210 more rows
+
 ## Exploring Data
-<p>Lets plot the countries which were among the top 5 exporters each year and each of their performance over these 5 years.</p>
-```r
+
+Lets plot the countries which were among the top 5 exporters each year
+and each of their performance over these 5 years.
+
+<div id="cb14" class="sourceCode">
+
+``` sourcecode
 top5ExportersByYear = drugs %&gt;% 
   filter(Exporter!=&quot;World&quot;) %&gt;% 
   group_by(Year) %&gt;% 
   top_n(5, `Exports (USD)`) %&gt;% 
   ungroup()
 ```
-```r
+
+</div>
+
+<div id="cb15" class="sourceCode">
+
+``` sourcecode
 g = ggplot(data = top5ExportersByYear, aes(x = Year, y = `Exports (USD)`))
 g + geom_line(aes(color = Exporter)) + labs(title = &#39;Trend for top 5 exporters in the world over the years&#39;)
 ```
-<p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Evaluating Top 10 exporters per Year. Excluding 2017 since we do not have numbers for total export in the world.</p>
-```r
+
+</div>
+
+<img
+src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-4-1.png"
+width="672" />
+
+Evaluating Top 10 exporters per Year. Excluding 2017 since we do not
+have numbers for total export in the world.
+
+<div id="cb16" class="sourceCode">
+
+``` sourcecode
 getTop10ForYear = function(df){
   top10ForYear = df %&gt;% 
     filter(Exporter!=&quot;World&quot;) %&gt;% 
@@ -159,24 +232,31 @@ yearlyTop10s = drugs %&gt;%
   do(getTop10ForYear(.))
 yearlyTop10s
 ```
-```
-## # A tibble: 44 x 3
-##    Exporter                  Year `Exports (USD)`
-##    &lt;chr&gt;                    &lt;dbl&gt;           &lt;dbl&gt;
-##  1 Germany                   2013     48493611000
-##  2 Switzerland               2013     32337891000
-##  3 Belgium                   2013     33329615000
-##  4 France                    2013     27848920000
-##  5 United States of America  2013     23098676000
-##  6 United Kingdom            2013     20885936000
-##  7 Ireland                   2013     18152573000
-##  8 Italy                     2013     20898532000
-##  9 Netherlands               2013     13480651000
-## 10 India                     2013     10313989000
-## # … with 34 more rows
-```
-<p>Writing function to plot a Donut Chart for each year showing percentage export contribution for top 10 exporters of that year as compared to all others.</p>
-```r
+
+</div>
+
+    ## # A tibble: 44 x 3
+    ##    Exporter                  Year `Exports (USD)`
+    ##    &lt;chr&gt;                    &lt;dbl&gt;           &lt;dbl&gt;
+    ##  1 Germany                   2013     48493611000
+    ##  2 Switzerland               2013     32337891000
+    ##  3 Belgium                   2013     33329615000
+    ##  4 France                    2013     27848920000
+    ##  5 United States of America  2013     23098676000
+    ##  6 United Kingdom            2013     20885936000
+    ##  7 Ireland                   2013     18152573000
+    ##  8 Italy                     2013     20898532000
+    ##  9 Netherlands               2013     13480651000
+    ## 10 India                     2013     10313989000
+    ## # … with 34 more rows
+
+Writing function to plot a Donut Chart for each year showing percentage
+export contribution for top 10 exporters of that year as compared to all
+others.
+
+<div id="cb18" class="sourceCode">
+
+``` sourcecode
 plotTop10 = function(df){
   YEAR = df %&gt;% select(Year) %&gt;% unique() %&gt;% .$Year
   plotTitle = paste(&quot;World Medicine Export in&quot;, YEAR, sep = &quot; &quot;)
@@ -204,21 +284,58 @@ plotTop10 = function(df){
   return(p)
 }
 ```
-<p>Plotting the donuts for each year</p>
-```r
+
+</div>
+
+Plotting the donuts for each year
+
+<div id="cb19" class="sourceCode">
+
+``` sourcecode
 plotTop10(yearlyTop10s %&gt;% filter(Year==2013))
 ```
-<p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-1.png"
+width="672" />
+
+<div id="cb20" class="sourceCode">
+
+``` sourcecode
 plotTop10(yearlyTop10s %&gt;% filter(Year==2014))
 ```
-<p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-2.png"
+width="672" />
+
+<div id="cb21" class="sourceCode">
+
+``` sourcecode
 plotTop10(yearlyTop10s %&gt;% filter(Year==2015))
 ```
-<p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
-```r
+
+</div>
+
+<img
+src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-3.png"
+width="672" />
+
+<div id="cb22" class="sourceCode">
+
+``` sourcecode
 plotTop10(yearlyTop10s %&gt;% filter(Year==2016))
 ```
-<p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
-<p>As can be seen Germany remains the biggest exporter of Drugs and Medicines over the past 5 years.</p>
+
+</div>
+
+<img
+src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-4.png"
+width="672" />
+
+As can be seen Germany remains the biggest exporter of Drugs and
+Medicines over the past 5 years.

@@ -31,16 +31,22 @@ format:
 freeze: true
 output-file: india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security.html
 ---
-
-
-
-
 # Introduction
-<p>With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.<br />
-In this part 6, I’ll explore the National Security discussions in both manifestos.</p>
+
+With India’s 2019 General Elections around the corner, I thought it’d be
+a good idea to analyse the election manifestos of its 2 biggest
+political parties, BJP and Congress. Let’s use text mining to understand
+what each party promises and prioritizes.  
+In this part 6, I’ll explore the National Security discussions in both
+manifestos.
+
 # Analysis
+
 ## Load libraries
-```r
+
+<div id="cb1" class="sourceCode">
+
+``` sourcecode
 rm(list = ls())
 library(tidyverse)
 library(pdftools)
@@ -58,22 +64,42 @@ library(ggraph)
 theme_set(theme_light())
 use_condaenv(&quot;stanford-nlp&quot;)
 ```
+
+</div>
+
 ## Read cleaned data
-```r
+
+<div id="cb2" class="sourceCode">
+
+``` sourcecode
 bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clean.csv&quot;)
 congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)
 ```
+
+</div>
+
 ## National Security
-<p>This topic is covered congress’ manifesto from Pages 13 to 16 of the pdf and in that of bjp’s from pages 11 to 12 and 38 to 39.</p>
-```r
+
+This topic is covered congress’ manifesto from Pages 13 to 16 of the pdf
+and in that of bjp’s from pages 11 to 12 and 38 to 39.
+
+<div id="cb3" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   filter(between(page, 11, 12) | between(page, 38, 39)) -&gt; bjp_content
 
 congress_content %&gt;% 
   filter(between(page, 13, 16)) -&gt; congress_content
 ```
+
+</div>
+
 ## Most Popular Words
-```r
+
+<div id="cb4" class="sourceCode">
+
+``` sourcecode
 plot_most_popular_words &lt;- function(df, 
                                     min_count = 15,
                                     stop_words_list = stop_words) {
@@ -97,12 +123,22 @@ plot_most_popular_words &lt;- function(df,
   return(p)
 }
 ```
-```r
+
+</div>
+
+<div id="cb5" class="sourceCode">
+
+``` sourcecode
 custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;), 
                                           lexicon = rep(&quot;custom&quot;, 5)), 
                                stop_words)
 ```
-```r
+
+</div>
+
+<div id="cb6" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   plot_most_popular_words(min_count = 6,
                           stop_words_list = custom_stop_words) + 
@@ -123,9 +159,18 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
 ```
-<p><img src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security_files/figure-html/unnamed-chunk-6-1.png" width="1344" /></p>
+
+</div>
+
+<img
+src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security_files/figure-html/unnamed-chunk-6-1.png"
+width="1344" />
+
 ## Common correlated words
-```r
+
+<div id="cb7" class="sourceCode">
+
+``` sourcecode
 plot_common_correlated_words &lt;- function(df,
                                          counts_quantile = 0.7,
                                          correlation_threshold = 0.25,
@@ -150,7 +195,12 @@ plot_common_correlated_words &lt;- function(df,
   return(p)
 }
 ```
-```r
+
+</div>
+
+<div id="cb8" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   plot_common_correlated_words(stop_words_list = custom_stop_words,
                                counts_quantile = 0.85) + 
@@ -171,11 +221,24 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
 ```
-<p><img src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
+
+</div>
+
+<img
+src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security_files/figure-html/unnamed-chunk-8-1.png"
+width="1152" />
+
 ## Basic Search Engine
-<p>Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
-Using python’s scikit-learn for this.</p>
-```python
+
+Lets build a cosine-similarity based simple search engine (instead of
+the basic keyword-based search that comes with the pdf document), in
+order to make these documents more easily searchable and gain context
+using most related lines in the manifestos for a given query. Using
+python’s scikit-learn for this.
+
+<div id="cb9" class="sourceCode">
+
+``` sourcecode
 from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
 
@@ -198,112 +261,173 @@ def get_related_lines(query, party=&quot;bjp&quot;):
   cosine_sim = linear_kernel(vector_query, vector_train).flatten()
   return cosine_sim.argsort()[:-10:-1]
 ```
-```r
+
+</div>
+
+<div id="cb10" class="sourceCode">
+
+``` sourcecode
 get_related_lines &lt;- py_to_r(py$get_related_lines)
 ```
-### Common Popular Words with both BJP &amp; Congress
-<p>As we see from the plot above, one of the most popular words in both BJP and Congress’ is “terrorism”. Lets see, what each of them have planned to combat terrorism. First, BJP.</p>
-```r
+
+</div>
+
+### Common Popular Words with both BJP & Congress
+
+As we see from the plot above, one of the most popular words in both BJP
+and Congress’ is “terrorism”. Lets see, what each of them have planned
+to combat terrorism. First, BJP.
+
+<div id="cb11" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   slice(get_related_lines(&quot;terrorism&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)
 ```
-```
-## # A tibble: 9 x 3
-##   text                                                                page  line
-##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
-## 1 of nations against international terrorism’ as a voluntary multi-…    38    26
-## 2 tolerance’ against terrorism and extremism and will continue to f…    11     7
-## 3 security paradigm of india in the last ve years. looking ahead, w…    11     3
-## 4 information and services for indians living abroad.                   38    21
-## 5 surgical strikes and the air strikes carried out recently. we wil…    11     6
-## 6 deeper multilateral co-operation                                      38    28
-## 7 and organizations on the global stage. to ensure the same, we wil…    38    25
-## 8 04 we are commi ed to taking concrete steps on international foru…    38    23
-## 9 - shri narendra modi                                                  39    13
-```
-<p>This is the excerpt that we find from page 38, as we dug up based on above results -</p>
-<blockquote>
-<p>We are committed to taking concrete steps on international forums against countries and organizations supporting terrorism, and we will take all necessary measures to isolate such countries and organizations on the global stage. To ensure the same, we will work towards establishing a ‘Comity of Nations Against International Terrorism’ as a voluntary multi-lateral forum based on the principles of the draft Comprehensive Convention on International Terrorism.</p>
-</blockquote>
-<p>Now, Congress.</p>
-```r
+
+</div>
+
+    ## # A tibble: 9 x 3
+    ##   text                                                                page  line
+    ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+    ## 1 of nations against international terrorism’ as a voluntary multi-…    38    26
+    ## 2 tolerance’ against terrorism and extremism and will continue to f…    11     7
+    ## 3 security paradigm of india in the last ve years. looking ahead, w…    11     3
+    ## 4 information and services for indians living abroad.                   38    21
+    ## 5 surgical strikes and the air strikes carried out recently. we wil…    11     6
+    ## 6 deeper multilateral co-operation                                      38    28
+    ## 7 and organizations on the global stage. to ensure the same, we wil…    38    25
+    ## 8 04 we are commi ed to taking concrete steps on international foru…    38    23
+    ## 9 - shri narendra modi                                                  39    13
+
+This is the excerpt that we find from page 38, as we dug up based on
+above results -
+
+> We are committed to taking concrete steps on international forums
+> against countries and organizations supporting terrorism, and we will
+> take all necessary measures to isolate such countries and
+> organizations on the global stage. To ensure the same, we will work
+> towards establishing a ‘Comity of Nations Against International
+> Terrorism’ as a voluntary multi-lateral forum based on the principles
+> of the draft Comprehensive Convention on International Terrorism.
+
+Now, Congress.
+
+<div id="cb13" class="sourceCode">
+
+``` sourcecode
 congress_content %&gt;% 
   slice(get_related_lines(&quot;terrorism&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)
 ```
-```
-## # A tibble: 9 x 3
-##   text                                                                page  line
-##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
-## 1 to detect and punish violators and instigators.                       14    53
-## 2 02. the most serious threats to internal security                     14    50
-## 3 streets with a sense of impunity.                                     14    68
-## 4 a. we promise an uncompromising approach and                          14    65
-## 5 hubs. congress had also proposed to establish                   f…    14    39
-## 6 citizen and for every visitor to india.                          …    14    34
-## 7 sis and quick response. congress had put in place           c. in…    14    37
-## 8 of india and ensure the safety of our people.               statu…    14    13
-## 9 03. the concept of national security in the 21st century        d…    14    14
-```
-<p>One of the excerpts from page 14 related to above results -</p>
-<blockquote>
-<p>The concept of national security in the 21st century has expanded beyond defence of the territory to include data security, cyber security, financial security, communication security and security of trade routes. Congress promises to evolve suitable policies to address each of these subjects.</p>
-</blockquote>
-### Unique popular words with BJP &amp; Congress
-<p>One of the popular words that seems curious from BJP’s manifesto is “police”.</p>
-```r
+
+</div>
+
+    ## # A tibble: 9 x 3
+    ##   text                                                                page  line
+    ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+    ## 1 to detect and punish violators and instigators.                       14    53
+    ## 2 02. the most serious threats to internal security                     14    50
+    ## 3 streets with a sense of impunity.                                     14    68
+    ## 4 a. we promise an uncompromising approach and                          14    65
+    ## 5 hubs. congress had also proposed to establish                   f…    14    39
+    ## 6 citizen and for every visitor to india.                          …    14    34
+    ## 7 sis and quick response. congress had put in place           c. in…    14    37
+    ## 8 of india and ensure the safety of our people.               statu…    14    13
+    ## 9 03. the concept of national security in the 21st century        d…    14    14
+
+One of the excerpts from page 14 related to above results -
+
+> The concept of national security in the 21st century has expanded
+> beyond defence of the territory to include data security, cyber
+> security, financial security, communication security and security of
+> trade routes. Congress promises to evolve suitable policies to address
+> each of these subjects.
+
+### Unique popular words with BJP & Congress
+
+One of the popular words that seems curious from BJP’s manifesto is
+“police”.
+
+<div id="cb15" class="sourceCode">
+
+``` sourcecode
 bjp_content %&gt;% 
   slice(get_related_lines(&quot;police&quot;, party = &quot;bjp&quot;)) %&gt;% 
   select(text, page, line)
 ```
-```
-## # A tibble: 9 x 3
-##   text                                                                page  line
-##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
-## 1 06 we will provide assistance to the states to upgrade their poli…    11    30
-## 2 nancial suppo for higher education, for housing and for sta ing a…    11    25
-## 3 modernization of police forces’. we will encourage expedited poli…    11    31
-## 4 modernization of police forces                                        11    26
-## 5 challenges.                                                           11    29
-## 6 11 a er e ectively strengthening coastal security through impleme…    12    11
-## 7 - shri narendra modi                                                  39    13
-## 8 10 we have completed building six integrated check-posts with ano…    12     5
-## 9 border areas in the country’s development and progress.               12     4
-```
-<p>An excerpt from BJP’s manifesto about police forces as identified from above -</p>
-<blockquote>
-<p>We will provide assistance to the states to upgrade their police forces through the ‘Scheme for Modernization of Police Forces’. We will encourage expedited police reforms in the states so as to enable the State police forces to deal with new types of crimes like cyber crime and help them to be more sensitive to the citizens, especially the weak and vulnerable sections of the society.</p>
-</blockquote>
-<p>Now, one of the popular words that seems curious from Congress’ manifesto is “border”.</p>
-```r
+
+</div>
+
+    ## # A tibble: 9 x 3
+    ##   text                                                                page  line
+    ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+    ## 1 06 we will provide assistance to the states to upgrade their poli…    11    30
+    ## 2 nancial suppo for higher education, for housing and for sta ing a…    11    25
+    ## 3 modernization of police forces’. we will encourage expedited poli…    11    31
+    ## 4 modernization of police forces                                        11    26
+    ## 5 challenges.                                                           11    29
+    ## 6 11 a er e ectively strengthening coastal security through impleme…    12    11
+    ## 7 - shri narendra modi                                                  39    13
+    ## 8 10 we have completed building six integrated check-posts with ano…    12     5
+    ## 9 border areas in the country’s development and progress.               12     4
+
+An excerpt from BJP’s manifesto about police forces as identified from
+above -
+
+> We will provide assistance to the states to upgrade their police
+> forces through the ‘Scheme for Modernization of Police Forces’. We
+> will encourage expedited police reforms in the states so as to enable
+> the State police forces to deal with new types of crimes like cyber
+> crime and help them to be more sensitive to the citizens, especially
+> the weak and vulnerable sections of the society.
+
+Now, one of the popular words that seems curious from Congress’
+manifesto is “border”.
+
+<div id="cb17" class="sourceCode">
+
+``` sourcecode
 congress_content %&gt;% 
   slice(get_related_lines(&quot;border&quot;, party = &quot;congress&quot;)) %&gt;% 
   select(text, page, line)
 ```
-```
-## # A tibble: 9 x 3
-##   text                                                                page  line
-##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
-## 1 26                                                               …    14    75
-## 2 bilities of the force and to improve the welfare of our jawans.       15     6
-## 3 forces—bsf, ssb, itbp and assam rifles—and                 roads …    15     8
-## 4 streets with a sense of impunity.                                     14    68
-## 5 and bsf. every effort will be made to induct more          06. we…    15    17
-## 6 post them on or close to the border to prevent             india-…    15     9
-## 7 between 2 border outposts will be reduced. the                   …    15    14
-## 8 and living conditions for the forces. the distance               …    15    13
-## 9 02. we will construct modern, well-equipped inte-              di…    15    11
-```
-<blockquote>
-<p>We will accelerate the construction of border roads along all borders of India, especially, the India-China border. We will enhance the capacity of the Border Roads Organisation and create separate divisions to build roads along the India-China and the India-Myanmar borders.</p>
-</blockquote>
-<p>With all the above analysis, we have developed some idea about the National Security goals of the 2 parties. In the next post, I’ll do a similar analysis for Education Healthcare and other miscellaneous proposals by them.</p>
-<p>Stay Tuned!</p>
+
+</div>
+
+    ## # A tibble: 9 x 3
+    ##   text                                                                page  line
+    ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+    ## 1 26                                                               …    14    75
+    ## 2 bilities of the force and to improve the welfare of our jawans.       15     6
+    ## 3 forces—bsf, ssb, itbp and assam rifles—and                 roads …    15     8
+    ## 4 streets with a sense of impunity.                                     14    68
+    ## 5 and bsf. every effort will be made to induct more          06. we…    15    17
+    ## 6 post them on or close to the border to prevent             india-…    15     9
+    ## 7 between 2 border outposts will be reduced. the                   …    15    14
+    ## 8 and living conditions for the forces. the distance               …    15    13
+    ## 9 02. we will construct modern, well-equipped inte-              di…    15    11
+
+> We will accelerate the construction of border roads along all borders
+> of India, especially, the India-China border. We will enhance the
+> capacity of the Border Roads Organisation and create separate
+> divisions to build roads along the India-China and the India-Myanmar
+> borders.
+
+With all the above analysis, we have developed some idea about the
+National Security goals of the 2 parties. In the next post, I’ll do a
+similar analysis for Education Healthcare and other miscellaneous
+proposals by them.
+
+Stay Tuned!
+
 # References
-<ul>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity/">Part 5 - Inclusion and Diversity</a><br />
-</li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc/">Part 7 - Education, Healthcare and Miscellaneous</a></li>
-<li>For all the parts go to Project Summary Page - <a href="/2019/05/india-general-elections-2019-analysis/">India General Elections 2019 Analysis</a></li>
-</ul>
+
+- [Part 5 - Inclusion and
+  Diversity](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity/)  
+- [Part 7 - Education, Healthcare and
+  Miscellaneous](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc/)
+- For all the parts go to Project Summary Page - [India General
+  Elections 2019
+  Analysis](/2019/05/india-general-elections-2019-analysis/)
