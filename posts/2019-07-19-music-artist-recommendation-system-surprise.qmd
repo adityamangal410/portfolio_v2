@@ -26,7 +26,8 @@ output-file: music-artist-recommendation-system-surprise.html
 <p>Music Artist Recommendation System using the <a href="https://grouplens.org/datasets/hetrec-2011/">Last.fm Dataset</a>. Recommenders using Python’s Surprise Library.</p>
 # Modelling
 ## Load Libraries
-<pre class="r"><code>rm(list = ls())
+```r
+rm(list = ls())
 library(tidyverse)
 library(tidylog)
 library(lubridate)
@@ -36,49 +37,67 @@ library(reticulate)
 
 theme_set(theme_light())
 # use_condaenv(&quot;py-portfolioV2&quot;)
-use_condaenv(&quot;stanford-nlp&quot;)</code></pre>
+use_condaenv(&quot;stanford-nlp&quot;)
+```
 ## Obtain Data
-<pre class="r"><code>ratings &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/ratings_clean.csv&quot;)
+```r
+ratings &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/ratings_clean.csv&quot;)
 ratings %&gt;% 
-  glimpse()</code></pre>
-<pre><code>## Rows: 92,834
+  glimpse()
+```
+```
+## Rows: 92,834
 ## Columns: 4
 ## $ userID   &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
 ## $ artistID &lt;dbl&gt; 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, …
 ## $ weight   &lt;dbl&gt; 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 4337, 41…
-## $ rating   &lt;dbl&gt; 2.659038, 2.546706, 2.527479, 2.463997, 2.374611, 2.127279, …</code></pre>
-<pre class="r"><code>ratings %&gt;% 
+## $ rating   &lt;dbl&gt; 2.659038, 2.546706, 2.527479, 2.463997, 2.374611, 2.127279, …
+```
+```r
+ratings %&gt;% 
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID)) -&gt; ratings
 ratings %&gt;% 
-  summary()</code></pre>
-<pre><code>##      userID         artistID         weight             rating        
+  summary()
+```
+```
+##      userID         artistID         weight             rating        
 ##  2      :   50   89     :  611   Min.   :     1.0   Min.   :-3.57296  
 ##  3      :   50   289    :  522   1st Qu.:   107.0   1st Qu.:-0.51993  
 ##  4      :   50   288    :  484   Median :   260.0   Median : 0.06015  
 ##  5      :   50   227    :  480   Mean   :   745.2   Mean   : 0.00000  
 ##  6      :   50   300    :  473   3rd Qu.:   614.0   3rd Qu.: 0.62159  
 ##  7      :   50   67     :  429   Max.   :352698.0   Max.   : 4.77261  
-##  (Other):92534   (Other):89835</code></pre>
-<pre class="r"><code>friends &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/friends_clean.csv&quot;,
+##  (Other):92534   (Other):89835
+```
+```r
+friends &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/friends_clean.csv&quot;,
                     col_types = cols(&quot;userID&quot; = col_factor(),
                                   &quot;friendID&quot; = col_factor()))
 friends %&gt;% 
-  glimpse()</code></pre>
-<pre><code>## Rows: 25,434
+  glimpse()
+```
+```
+## Rows: 25,434
 ## Columns: 2
 ## $ userID   &lt;fct&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, …
-## $ friendID &lt;fct&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …</code></pre>
-<pre class="r"><code>metadata &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)
+## $ friendID &lt;fct&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …
+```
+```r
+metadata &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)
 metadata %&gt;% 
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID),
          tagID = as.factor(tagID),
          tagValue = as.factor(tagValue),
-         artistName = as.factor(artistName)) -&gt; metadata</code></pre>
-<pre class="r"><code>metadata %&gt;% 
-  glimpse()</code></pre>
-<pre><code>## Rows: 186,479
+         artistName = as.factor(artistName)) -&gt; metadata
+```
+```r
+metadata %&gt;% 
+  glimpse()
+```
+```
+## Rows: 186,479
 ## Columns: 8
 ## $ userID     &lt;fct&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
 ## $ artistID   &lt;fct&gt; 52, 52, 52, 52, 52, 63, 63, 63, 63, 73, 73, 73, 73, 73, 73…
@@ -87,12 +106,16 @@ metadata %&gt;%
 ## $ month      &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4…
 ## $ year       &lt;dbl&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009…
 ## $ tagValue   &lt;fct&gt; chillout, downtempo, electronic, trip-hop, female vovalist…
-## $ artistName &lt;fct&gt; Morcheeba, Morcheeba, Morcheeba, Morcheeba, Morcheeba, Eni…</code></pre>
-<pre class="r"><code>metadata %&gt;% 
+## $ artistName &lt;fct&gt; Morcheeba, Morcheeba, Morcheeba, Morcheeba, Morcheeba, Eni…
+```
+```r
+metadata %&gt;% 
   group_by(artistID) %&gt;% 
   summarise(num_tags = n_distinct(tagID)) %&gt;% 
-  arrange(desc(num_tags))</code></pre>
-<pre><code>## # A tibble: 12,523 x 2
+  arrange(desc(num_tags))
+```
+```
+## # A tibble: 12,523 x 2
 ##    artistID num_tags
 ##    &lt;fct&gt;       &lt;int&gt;
 ##  1 289           329
@@ -105,8 +128,11 @@ metadata %&gt;%
 ##  8 288           183
 ##  9 227           178
 ## 10 55            173
-## # … with 12,513 more rows</code></pre>
+## # … with 12,513 more rows
+```
 # Python Surprise
-<pre class="python"><code>import surprise
+```python
+import surprise
 from surprise import SVD, Dataset, Reader, accuracy
-from surprise.model_selection import cross_validate, train_test_split</code></pre>
+from surprise.model_selection import cross_validate, train_test_split
+```

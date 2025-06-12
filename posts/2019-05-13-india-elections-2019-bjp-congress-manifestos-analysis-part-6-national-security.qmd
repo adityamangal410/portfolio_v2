@@ -40,7 +40,8 @@ output-file: india-elections-2019-bjp-congress-manifestos-analysis-part-6-nation
 In this part 6, I’ll explore the National Security discussions in both manifestos.</p>
 # Analysis
 ## Load libraries
-<pre class="r"><code>rm(list = ls())
+```r
+rm(list = ls())
 library(tidyverse)
 library(pdftools)
 library(tidylog)
@@ -55,19 +56,25 @@ library(igraph)
 library(ggraph)
 
 theme_set(theme_light())
-use_condaenv(&quot;stanford-nlp&quot;)</code></pre>
+use_condaenv(&quot;stanford-nlp&quot;)
+```
 ## Read cleaned data
-<pre class="r"><code>bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clean.csv&quot;)
-congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)</code></pre>
+```r
+bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clean.csv&quot;)
+congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)
+```
 ## National Security
 <p>This topic is covered congress’ manifesto from Pages 13 to 16 of the pdf and in that of bjp’s from pages 11 to 12 and 38 to 39.</p>
-<pre class="r"><code>bjp_content %&gt;% 
+```r
+bjp_content %&gt;% 
   filter(between(page, 11, 12) | between(page, 38, 39)) -&gt; bjp_content
 
 congress_content %&gt;% 
-  filter(between(page, 13, 16)) -&gt; congress_content</code></pre>
+  filter(between(page, 13, 16)) -&gt; congress_content
+```
 ## Most Popular Words
-<pre class="r"><code>plot_most_popular_words &lt;- function(df, 
+```r
+plot_most_popular_words &lt;- function(df, 
                                     min_count = 15,
                                     stop_words_list = stop_words) {
   df %&gt;% 
@@ -88,11 +95,15 @@ congress_content %&gt;%
           legend.position=&quot;none&quot;) -&gt; p
   
   return(p)
-}</code></pre>
-<pre class="r"><code>custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;), 
+}
+```
+```r
+custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;), 
                                           lexicon = rep(&quot;custom&quot;, 5)), 
-                               stop_words)</code></pre>
-<pre class="r"><code>bjp_content %&gt;% 
+                               stop_words)
+```
+```r
+bjp_content %&gt;% 
   plot_most_popular_words(min_count = 6,
                           stop_words_list = custom_stop_words) + 
   labs(x = &quot;&quot;,
@@ -110,10 +121,12 @@ congress_content %&gt;%
        subtitle = &quot;Words occurring more than 10 times&quot;,
        caption = &quot;Based on election 2019 manifesto from inc.in&quot;) -&gt; p_congress
 
-grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))</code></pre>
+grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
+```
 <p><img src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security_files/figure-html/unnamed-chunk-6-1.png" width="1344" /></p>
 ## Common correlated words
-<pre class="r"><code>plot_common_correlated_words &lt;- function(df,
+```r
+plot_common_correlated_words &lt;- function(df,
                                          counts_quantile = 0.7,
                                          correlation_threshold = 0.25,
                                          stop_words_list = stop_words) {
@@ -135,8 +148,10 @@ grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))</code></pre>
     theme_void() -&gt; p
   
   return(p)
-}</code></pre>
-<pre class="r"><code>bjp_content %&gt;% 
+}
+```
+```r
+bjp_content %&gt;% 
   plot_common_correlated_words(stop_words_list = custom_stop_words,
                                counts_quantile = 0.85) + 
   labs(x = &quot;&quot;,
@@ -154,12 +169,14 @@ congress_content %&gt;%
        subtitle = &quot;Per page correlation higher than 0.25&quot;,
        caption = &quot;Based on election 2019 manifesto from inc.in&quot;) -&gt; p_congress
 
-grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))</code></pre>
+grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
+```
 <p><img src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
 ## Basic Search Engine
 <p>Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
 Using python’s scikit-learn for this.</p>
-<pre class="python"><code>from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
 
 stopwords = ENGLISH_STOP_WORDS
@@ -179,14 +196,20 @@ def get_related_lines(query, party=&quot;bjp&quot;):
     vector_train = vector_train_congress
   vector_query = vectorizer.transform([query])
   cosine_sim = linear_kernel(vector_query, vector_train).flatten()
-  return cosine_sim.argsort()[:-10:-1]</code></pre>
-<pre class="r"><code>get_related_lines &lt;- py_to_r(py$get_related_lines)</code></pre>
+  return cosine_sim.argsort()[:-10:-1]
+```
+```r
+get_related_lines &lt;- py_to_r(py$get_related_lines)
+```
 ### Common Popular Words with both BJP &amp; Congress
 <p>As we see from the plot above, one of the most popular words in both BJP and Congress’ is “terrorism”. Lets see, what each of them have planned to combat terrorism. First, BJP.</p>
-<pre class="r"><code>bjp_content %&gt;% 
+```r
+bjp_content %&gt;% 
   slice(get_related_lines(&quot;terrorism&quot;, party = &quot;bjp&quot;)) %&gt;% 
-  select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
+  select(text, page, line)
+```
+```
+## # A tibble: 9 x 3
 ##   text                                                                page  line
 ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 of nations against international terrorism’ as a voluntary multi-…    38    26
@@ -197,16 +220,20 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 ## 6 deeper multilateral co-operation                                      38    28
 ## 7 and organizations on the global stage. to ensure the same, we wil…    38    25
 ## 8 04 we are commi ed to taking concrete steps on international foru…    38    23
-## 9 - shri narendra modi                                                  39    13</code></pre>
+## 9 - shri narendra modi                                                  39    13
+```
 <p>This is the excerpt that we find from page 38, as we dug up based on above results -</p>
 <blockquote>
 <p>We are committed to taking concrete steps on international forums against countries and organizations supporting terrorism, and we will take all necessary measures to isolate such countries and organizations on the global stage. To ensure the same, we will work towards establishing a ‘Comity of Nations Against International Terrorism’ as a voluntary multi-lateral forum based on the principles of the draft Comprehensive Convention on International Terrorism.</p>
 </blockquote>
 <p>Now, Congress.</p>
-<pre class="r"><code>congress_content %&gt;% 
+```r
+congress_content %&gt;% 
   slice(get_related_lines(&quot;terrorism&quot;, party = &quot;congress&quot;)) %&gt;% 
-  select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
+  select(text, page, line)
+```
+```
+## # A tibble: 9 x 3
 ##   text                                                                page  line
 ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 to detect and punish violators and instigators.                       14    53
@@ -217,17 +244,21 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 ## 6 citizen and for every visitor to india.                          …    14    34
 ## 7 sis and quick response. congress had put in place           c. in…    14    37
 ## 8 of india and ensure the safety of our people.               statu…    14    13
-## 9 03. the concept of national security in the 21st century        d…    14    14</code></pre>
+## 9 03. the concept of national security in the 21st century        d…    14    14
+```
 <p>One of the excerpts from page 14 related to above results -</p>
 <blockquote>
 <p>The concept of national security in the 21st century has expanded beyond defence of the territory to include data security, cyber security, financial security, communication security and security of trade routes. Congress promises to evolve suitable policies to address each of these subjects.</p>
 </blockquote>
 ### Unique popular words with BJP &amp; Congress
 <p>One of the popular words that seems curious from BJP’s manifesto is “police”.</p>
-<pre class="r"><code>bjp_content %&gt;% 
+```r
+bjp_content %&gt;% 
   slice(get_related_lines(&quot;police&quot;, party = &quot;bjp&quot;)) %&gt;% 
-  select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
+  select(text, page, line)
+```
+```
+## # A tibble: 9 x 3
 ##   text                                                                page  line
 ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 06 we will provide assistance to the states to upgrade their poli…    11    30
@@ -238,16 +269,20 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 ## 6 11 a er e ectively strengthening coastal security through impleme…    12    11
 ## 7 - shri narendra modi                                                  39    13
 ## 8 10 we have completed building six integrated check-posts with ano…    12     5
-## 9 border areas in the country’s development and progress.               12     4</code></pre>
+## 9 border areas in the country’s development and progress.               12     4
+```
 <p>An excerpt from BJP’s manifesto about police forces as identified from above -</p>
 <blockquote>
 <p>We will provide assistance to the states to upgrade their police forces through the ‘Scheme for Modernization of Police Forces’. We will encourage expedited police reforms in the states so as to enable the State police forces to deal with new types of crimes like cyber crime and help them to be more sensitive to the citizens, especially the weak and vulnerable sections of the society.</p>
 </blockquote>
 <p>Now, one of the popular words that seems curious from Congress’ manifesto is “border”.</p>
-<pre class="r"><code>congress_content %&gt;% 
+```r
+congress_content %&gt;% 
   slice(get_related_lines(&quot;border&quot;, party = &quot;congress&quot;)) %&gt;% 
-  select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
+  select(text, page, line)
+```
+```
+## # A tibble: 9 x 3
 ##   text                                                                page  line
 ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 26                                                               …    14    75
@@ -258,7 +293,8 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 ## 6 post them on or close to the border to prevent             india-…    15     9
 ## 7 between 2 border outposts will be reduced. the                   …    15    14
 ## 8 and living conditions for the forces. the distance               …    15    13
-## 9 02. we will construct modern, well-equipped inte-              di…    15    11</code></pre>
+## 9 02. we will construct modern, well-equipped inte-              di…    15    11
+```
 <blockquote>
 <p>We will accelerate the construction of border roads along all borders of India, especially, the India-China border. We will enhance the capacity of the Border Roads Organisation and create separate divisions to build roads along the India-China and the India-Myanmar borders.</p>
 </blockquote>

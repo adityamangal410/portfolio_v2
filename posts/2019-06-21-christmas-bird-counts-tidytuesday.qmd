@@ -33,18 +33,23 @@ output-file: christmas-bird-counts-tidytuesday.html
 <p>Working on the weekly social data project <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-18">Tidy Tuesday</a>.</p>
 # Analysis
 ## Load libraries
-<pre class="r"><code>rm(list = ls())
+```r
+rm(list = ls())
 library(tidyverse)
 library(lubridate)
 library(ggplot2)
 library(gganimate)
 library(gridExtra)
 library(scales)
-theme_set(theme_light())</code></pre>
-<pre class="r"><code>bird_counts &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-18/bird_counts.csv&quot;)
+theme_set(theme_light())
+```
+```r
+bird_counts &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-18/bird_counts.csv&quot;)
 
-bird_counts</code></pre>
-<pre><code>## # A tibble: 18,706 x 6
+bird_counts
+```
+```
+## # A tibble: 18,706 x 6
 ##     year species    species_latin  how_many_counted total_hours how_many_counte…
 ##    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
 ##  1  1921 American … Botaurus lent…                0           8            0    
@@ -57,10 +62,14 @@ bird_counts</code></pre>
 ##  8  1921 American … Turdus migrat…                1           8            0.125
 ##  9  1921 American … Picoides dors…                0           8            0    
 ## 10  1921 American … Spizelloides …               12           8            1.5  
-## # … with 18,696 more rows</code></pre>
-<pre class="r"><code>bird_counts %&gt;% 
-  summary</code></pre>
-<pre><code>##       year        species          species_latin      how_many_counted 
+## # … with 18,696 more rows
+```
+```r
+bird_counts %&gt;% 
+  summary
+```
+```
+##       year        species          species_latin      how_many_counted 
 ##  Min.   :1921   Length:18706       Length:18706       Min.   :    0.0  
 ##  1st Qu.:1947   Class :character   Class :character   1st Qu.:    0.0  
 ##  Median :1970   Mode  :character   Mode  :character   Median :    0.0  
@@ -75,9 +84,11 @@ bird_counts</code></pre>
 ##  Mean   :170.8   Mean   :  1.336         
 ##  3rd Qu.:203.8   3rd Qu.:  0.051         
 ##  Max.   :251.0   Max.   :439.024         
-##  NA&#39;s   :3781    NA&#39;s   :3781</code></pre>
+##  NA&#39;s   :3781    NA&#39;s   :3781
+```
 ## Which are the 5 most common birds over years?
-<pre class="r"><code>bird_counts %&gt;% 
+```r
+bird_counts %&gt;% 
   group_by(year) %&gt;% 
   mutate(rank = min_rank(-how_many_counted) * 1) %&gt;% 
   ungroup() %&gt;% 
@@ -111,12 +122,15 @@ bird_counts</code></pre>
         axis.text.y = element_blank(),
         plot.margin = margin(1,1,1,4,&quot;cm&quot;)) + 
   transition_states(year, transition_length = 4, state_length = 1) + 
-  ease_aes(&#39;cubic-in-out&#39;) -&gt; p</code></pre>
-<pre class="r"><code>p %&gt;% 
+  ease_aes(&#39;cubic-in-out&#39;) -&gt; p
+```
+```r
+p %&gt;% 
   animate(fps = 5,
           nframes = 200,
           duration = 30,
           width = 800,
           height = 600,
-          renderer = gifski_renderer(&quot;../data/christmas_bird_counts/most_common.gif&quot;))</code></pre>
+          renderer = gifski_renderer(&quot;../data/christmas_bird_counts/most_common.gif&quot;))
+```
 <p><img src="/post/2019-06-21-christmas-bird-counts-tidytuesday_files/figure-html/unnamed-chunk-5-1.gif" /><!-- --></p>

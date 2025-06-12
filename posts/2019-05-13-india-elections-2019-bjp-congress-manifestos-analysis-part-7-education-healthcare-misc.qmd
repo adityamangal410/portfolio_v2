@@ -40,7 +40,8 @@ output-file: india-elections-2019-bjp-congress-manifestos-analysis-part-7-educat
 In this part 7, I’ll explore the Education, Health Care and other miscellaneous discussions in both manifestos.</p>
 # Analysis
 ## Load libraries
-<pre class="r"><code>rm(list = ls())
+```r
+rm(list = ls())
 library(tidyverse)
 library(pdftools)
 library(tidylog)
@@ -55,19 +56,25 @@ library(igraph)
 library(ggraph)
 
 theme_set(theme_light())
-use_condaenv(&quot;stanford-nlp&quot;)</code></pre>
+use_condaenv(&quot;stanford-nlp&quot;)
+```
 ## Read cleaned data
-<pre class="r"><code>bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clean.csv&quot;)
-congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)</code></pre>
+```r
+bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clean.csv&quot;)
+congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)
+```
 ## Education, Health Care and Miscellaneous
 <p>This topic is covered congress’ manifesto from Pages 24 to 27 of the pdf and in that of bjp’s from pages 23 and 29 to 30 and 36 to 37.</p>
-<pre class="r"><code>bjp_content %&gt;% 
+```r
+bjp_content %&gt;% 
   filter(between(page, 23, 23) | between(page, 29, 30) | between(page, 36, 37)) -&gt; bjp_content
 
 congress_content %&gt;% 
-  filter(between(page, 24, 27)) -&gt; congress_content</code></pre>
+  filter(between(page, 24, 27)) -&gt; congress_content
+```
 ## Most Popular Words
-<pre class="r"><code>plot_most_popular_words &lt;- function(df, 
+```r
+plot_most_popular_words &lt;- function(df, 
                                     min_count = 15,
                                     stop_words_list = stop_words) {
   df %&gt;% 
@@ -88,11 +95,15 @@ congress_content %&gt;%
           legend.position=&quot;none&quot;) -&gt; p
   
   return(p)
-}</code></pre>
-<pre class="r"><code>custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;), 
+}
+```
+```r
+custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;), 
                                           lexicon = rep(&quot;custom&quot;, 5)), 
-                               stop_words)</code></pre>
-<pre class="r"><code>bjp_content %&gt;% 
+                               stop_words)
+```
+```r
+bjp_content %&gt;% 
   plot_most_popular_words(min_count = 7,
                           stop_words_list = custom_stop_words) + 
   labs(x = &quot;&quot;,
@@ -110,10 +121,12 @@ congress_content %&gt;%
        subtitle = &quot;Words occurring more than 12 times&quot;,
        caption = &quot;Based on election 2019 manifesto from inc.in&quot;) -&gt; p_congress
 
-grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))</code></pre>
+grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
+```
 <p><img src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc_files/figure-html/unnamed-chunk-6-1.png" width="1344" /></p>
 ## Common correlated words
-<pre class="r"><code>plot_common_correlated_words &lt;- function(df,
+```r
+plot_common_correlated_words &lt;- function(df,
                                          counts_quantile = 0.7,
                                          correlation_threshold = 0.25,
                                          stop_words_list = stop_words) {
@@ -135,8 +148,10 @@ grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))</code></pre>
     theme_void() -&gt; p
   
   return(p)
-}</code></pre>
-<pre class="r"><code>bjp_content %&gt;% 
+}
+```
+```r
+bjp_content %&gt;% 
   plot_common_correlated_words(stop_words_list = custom_stop_words,
                                counts_quantile = 0.85) + 
   labs(x = &quot;&quot;,
@@ -154,12 +169,14 @@ congress_content %&gt;%
        subtitle = &quot;Per page correlation higher than 0.25&quot;,
        caption = &quot;Based on election 2019 manifesto from inc.in&quot;) -&gt; p_congress
 
-grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))</code></pre>
+grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
+```
 <p><img src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
 ## Basic Search Engine
 <p>Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
 Using python’s scikit-learn for this.</p>
-<pre class="python"><code>from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
 
 stopwords = ENGLISH_STOP_WORDS
@@ -179,14 +196,20 @@ def get_related_lines(query, party=&quot;bjp&quot;):
     vector_train = vector_train_congress
   vector_query = vectorizer.transform([query])
   cosine_sim = linear_kernel(vector_query, vector_train).flatten()
-  return cosine_sim.argsort()[:-10:-1]</code></pre>
-<pre class="r"><code>get_related_lines &lt;- py_to_r(py$get_related_lines)</code></pre>
+  return cosine_sim.argsort()[:-10:-1]
+```
+```r
+get_related_lines &lt;- py_to_r(py$get_related_lines)
+```
 ### Common Popular Words with both BJP &amp; Congress
 <p>As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto is “children”. Lets see, what each of them have planned for the children of our country. First, BJP.</p>
-<pre class="r"><code>bjp_content %&gt;% 
+```r
+bjp_content %&gt;% 
   slice(get_related_lines(&quot;children&quot;, party = &quot;bjp&quot;)) %&gt;% 
-  select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
+  select(text, page, line)
+```
+```
+## # A tibble: 9 x 3
 ##   text                                                                page  line
 ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 facilitate them to unleash their talent. for this, we will initia…    29    12
@@ -197,16 +220,20 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 ## 6 learning. we have already identi ed learning outcomes for various…    29     8
 ## 7 code, drawing upon the best traditions and harmonizing them with …    37    10
 ## 8 optimally bene t from the education system.                           29     5
-## 9 ve years will be to ensure that children achieve these learning o…    29     9</code></pre>
+## 9 ve years will be to ensure that children achieve these learning o…    29     9
+```
 <p>This is the excerpt that we find from page 29, as we dug up based on above results -</p>
 <blockquote>
 <p>We consider it our duty to provide a conducive environment for talented children in our country to facilitate them to unleash their talent. For this, we will initiate a ‘Prime Minister Innovative Learning Program’ to bring together such children for a certain period in a year in one place from all over the country and provide them with facilities and resources for them to excel. This would instill a culture of lateral thinking and innovation among them.</p>
 </blockquote>
 <p>Now, Congress.</p>
-<pre class="r"><code>congress_content %&gt;% 
+```r
+congress_content %&gt;% 
   slice(get_related_lines(&quot;children&quot;, party = &quot;congress&quot;)) %&gt;% 
-  select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
+  select(text, page, line)
+```
+```
+## # A tibble: 9 x 3
 ##   text                                                                page  line
 ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 49    environment and climate change                                  26    19
@@ -217,17 +244,21 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 ## 6 them through mobile fair price shops.                       and t…    26     6
 ## 7 45      education                                                     25     1
 ## 8 ucation and poor learning outcomes as reported           10.  mos…    25    18
-## 9 system of education revolves. teacher training           11.  con…    25    23</code></pre>
+## 9 system of education revolves. teacher training           11.  con…    25    23
+```
 <p>One of the excerpts from page 25 related to above results -</p>
 <blockquote>
 <p>Congress promises that school education from Class I to Class XII in public schools shall be compulsory and free. Suitable amendments will be made in the Right to Education Act, 2009. We will end the practice of charging special fees for different purposes in public schools.</p>
 </blockquote>
 ### Unique popular words with BJP &amp; Congress
 <p>One of the popular words that seems curious from BJP’s manifesto is “yoga”.</p>
-<pre class="r"><code>bjp_content %&gt;% 
+```r
+bjp_content %&gt;% 
   slice(get_related_lines(&quot;yoga&quot;, party = &quot;bjp&quot;)) %&gt;% 
-  select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
+  select(text, page, line)
+```
+```
+## # A tibble: 9 x 3
 ##   text                                                                page  line
 ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 spiritual rejuvenation across the globe and will continue to work…    36    34
@@ -238,16 +269,20 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 ## 6 code, drawing upon the best traditions and harmonizing them with …    37    10
 ## 7 02 we consider it our duty to provide a conducive environment for…    29    11
 ## 8 ve years will be to ensure that children achieve these learning o…    29     9
-## 9 learning. we have already identi ed learning outcomes for various…    29     8</code></pre>
+## 9 learning. we have already identi ed learning outcomes for various…    29     8
+```
 <p>An excerpt from BJP’s manifesto about use of yoga as identified from above -</p>
 <blockquote>
 <p>We will further continue our efforts to promote Yoga globally as the world celebrates 21st June as the International Yoga Day. We will promote Yoga as a vital method to achieve physical wellness and spiritual rejuvenation across the globe and will continue to work towards training of Yoga practitioners. We will undertake a rapid expansion of Yoga health hubs, Yoga tourism and research in Yoga.</p>
 </blockquote>
 <p>Now, one of the popular words that seems curious from Congress’ manifesto is “sports”.</p>
-<pre class="r"><code>congress_content %&gt;% 
+```r
+congress_content %&gt;% 
   slice(get_related_lines(&quot;sports&quot;, party = &quot;congress&quot;)) %&gt;% 
-  select(text, page, line)</code></pre>
-<pre><code>## # A tibble: 9 x 3
+  select(text, page, line)
+```
+```
+## # A tibble: 9 x 3
 ##   text                                                                page  line
 ##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 that will place india at the forefront of                        …    27    25
@@ -258,7 +293,8 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 ## 6 congress affirms its belief that india has the potential to becom…    27    24
 ## 7 disaster management act, 2005 and incorporate                 inf…    27    45
 ## 8 07. we will ensure that there is at least 1 community                 27    39
-## 9 01. congress promises to re-visit the national                05.…    27    44</code></pre>
+## 9 01. congress promises to re-visit the national                05.…    27    44
+```
 <blockquote>
 <p>Congress will take suitable measures to ensure that the Constitution of each sports body is in accordance with certain norms and principles, that elections are held according to them, and that there is adequate representation in each sports body for active players, former players and women.</p>
 </blockquote>
