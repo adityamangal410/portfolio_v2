@@ -24,12 +24,9 @@ freeze: true
 output-file: nlp-with-disaster-tweets-part-2-nearest-neighbor-models.html
 ---
 
-
-
-
 # Introduction
-<p>In this <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.<br />
-In this part 2 for Nearest Neighbor Modelling, I will use the processed data generated in <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">Part 1</a> to train nearest neighbor models in order to predict if a tweet is about a real disaster or not using the tidymodels framework.</p>
+In this NLP getting started challenge on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
+In this part 2 for Nearest Neighbor Modelling, I will use the processed data generated in Part 1 to train nearest neighbor models in order to predict if a tweet is about a real disaster or not using the tidymodels framework.
 # Analysis
 ## Load Libraries
 ```r
@@ -47,14 +44,14 @@ tweets &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot
 tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)
 ```
 ```r
-tweets %&gt;% 
+tweets %&gt;%
   dim
 ```
 ```
 ## [1] 7613  830
 ```
 ```r
-tweets_final %&gt;% 
+tweets_final %&gt;%
   dim
 ```
 ```
@@ -62,12 +59,12 @@ tweets_final %&gt;%
 ```
 ## Feature preprocessing and engineering
 ```r
-tweets %&gt;% 
+tweets %&gt;%
   mutate(target = as.factor(target),
          id = as.character(id)) -&gt; tweets
 ```
 ```r
-tweets %&gt;% 
+tweets %&gt;%
   count(target, sort = T)
 ```
 ```
@@ -78,7 +75,7 @@ tweets %&gt;%
 ## 2 1       3271
 ```
 ### Split data
-<p>Splitting the data into 3 sets. A test set of 10% data, a cross validation set of 20% data and a training set of 70% data. Training and validation sets will be used for training, tuning and validating performance of models and comparing among them. Test set will only be used for final estimation of the model performance on unknown data.</p>
+Splitting the data into 3 sets. A test set of 10% data, a cross validation set of 20% data and a training set of 70% data. Training and validation sets will be used for training, tuning and validating performance of models and comparing among them. Test set will only be used for final estimation of the model performance on unknown data.
 ```r
 set.seed(42)
 tweets_split &lt;- initial_split(tweets, prop = 0.1, strata = target)
@@ -110,58 +107,58 @@ dim(tweets_test)
 ## [1] 763 830
 ```
 ### Preparation Recipe
-<p>I will use the recipe package from tidymodels to generate a recipe for data preprocessing and feature engineering.</p>
+I will use the recipe package from tidymodels to generate a recipe for data preprocessing and feature engineering.
 ```r
-recipe(target ~ ., data = tweets_train) %&gt;% 
-  update_role(id, new_role = &quot;ID&quot;) %&gt;% 
-  step_rm(location, keyword) %&gt;% 
+recipe(target ~ ., data = tweets_train) %&gt;%
+  update_role(id, new_role = &quot;ID&quot;) %&gt;%
+  step_rm(location, keyword) %&gt;%
   step_mutate(len = str_length(text),
-              num_hashtags = str_count(text, &quot;#&quot;)) %&gt;% 
-  step_rm(text) %&gt;% 
-  step_zv(all_numeric(), -all_outcomes()) %&gt;% 
-  step_normalize(all_numeric(), -all_outcomes())  %&gt;% 
+              num_hashtags = str_count(text, &quot;#&quot;)) %&gt;%
+  step_rm(text) %&gt;%
+  step_zv(all_numeric(), -all_outcomes()) %&gt;%
+  step_normalize(all_numeric(), -all_outcomes())  %&gt;%
   step_pca(all_predictors(), -len, -num_hashtags, threshold = 0.80)-&gt; tweets_recipe
 ```
-<p>Note above</p>
-<ul>
-<li>We use the training dataset to create the recipe<br />
-</li>
-<li>We won’t use ‘id’ field as a predictor, only as an identifier.<br />
-</li>
-<li>For current analysis, we will drop the location and keyword features.<br />
-</li>
-<li>Creating a length feature to model the tweet length and another feature to store the number of hashtags in the tweet.<br />
-</li>
-<li>Getting rid of the text field since we have generated all the features from it that we wanted for now.<br />
-</li>
-<li>Removing all predictors with zero variance.<br />
-</li>
-<li>Normalizing all features i.e. centering and scaling.<br />
-</li>
-<li>Adding dimensionality reduction using PCA to keep 80% variance and reduce the number of features while still keeping our custom features.</li>
-</ul>
+Note above
+
+We use the training dataset to create the recipe
+
+We won’t use ‘id’ field as a predictor, only as an identifier.
+
+For current analysis, we will drop the location and keyword features.
+
+Creating a length feature to model the tweet length and another feature to store the number of hashtags in the tweet.
+
+Getting rid of the text field since we have generated all the features from it that we wanted for now.
+
+Removing all predictors with zero variance.
+
+Normalizing all features i.e. centering and scaling.
+
+- Adding dimensionality reduction using PCA to keep 80% variance and reduce the number of features while still keeping our custom features.
+
 ```r
-tweets_prep &lt;- tweets_recipe %&gt;% 
-  prep(training = tweets_train, 
+tweets_prep &lt;- tweets_recipe %&gt;%
+  prep(training = tweets_train,
        strings_as_factors = FALSE)
 ```
 ## Modelling
 ### Baseline model
-<p>I will first create a baseline model to beat. In this case, we can predict randomly in the ratio of target counts and evaluate the model performance accordingly.</p>
+I will first create a baseline model to beat. In this case, we can predict randomly in the ratio of target counts and evaluate the model performance accordingly.
 ```r
-tweets_prep %&gt;% 
-  juice() %&gt;% 
-  count(target) %&gt;% 
-  mutate(prob = n/sum(n)) %&gt;% 
+tweets_prep %&gt;%
+  juice() %&gt;%
+  count(target) %&gt;%
+  mutate(prob = n/sum(n)) %&gt;%
   pull(prob) -&gt; probs
 ```
 ```r
 set.seed(42)
-tweets_prep %&gt;% 
-  bake(new_data = tweets_cv) %&gt;% 
-  mutate(predicted_target = as.factor(sample(0:1, 
-                                             size = nrow(tweets_cv), 
-                                             prob = probs, replace = T))) %&gt;% 
+tweets_prep %&gt;%
+  bake(new_data = tweets_cv) %&gt;%
+  mutate(predicted_target = as.factor(sample(0:1,
+                                             size = nrow(tweets_cv),
+                                             prob = probs, replace = T))) %&gt;%
   accuracy(target, predicted_target)
 ```
 ```
@@ -172,11 +169,11 @@ tweets_prep %&gt;%
 ```
 ```r
 set.seed(42)
-tweets_prep %&gt;% 
-  bake(new_data = tweets_cv) %&gt;% 
-  mutate(predicted_target = as.factor(sample(0:1, 
-                                             size = nrow(tweets_cv), 
-                                             prob = probs, replace = T))) %&gt;% 
+tweets_prep %&gt;%
+  bake(new_data = tweets_cv) %&gt;%
+  mutate(predicted_target = as.factor(sample(0:1,
+                                             size = nrow(tweets_cv),
+                                             prob = probs, replace = T))) %&gt;%
   f_meas(target, predicted_target)
 ```
 ```
@@ -185,14 +182,14 @@ tweets_prep %&gt;%
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
 ## 1 f_meas  binary         0.581
 ```
-<p>Like, we see above, we have a baseline f1 score of 0.5812. We need to build and train a model that beats this baseline.</p>
+Like, we see above, we have a baseline f1 score of 0.5812. We need to build and train a model that beats this baseline.
 ```r
 set.seed(42)
-tweets_prep %&gt;% 
-  bake(new_data = tweets_test) %&gt;% 
-  mutate(predicted_target = as.factor(sample(0:1, 
-                                             size = nrow(tweets_test), 
-                                             prob = probs, replace = T))) %&gt;% 
+tweets_prep %&gt;%
+  bake(new_data = tweets_test) %&gt;%
+  mutate(predicted_target = as.factor(sample(0:1,
+                                             size = nrow(tweets_test),
+                                             prob = probs, replace = T))) %&gt;%
   accuracy(target, predicted_target)
 ```
 ```
@@ -203,11 +200,11 @@ tweets_prep %&gt;%
 ```
 ```r
 set.seed(42)
-tweets_prep %&gt;% 
-  bake(new_data = tweets_test) %&gt;% 
-  mutate(predicted_target = as.factor(sample(0:1, 
-                                             size = nrow(tweets_test), 
-                                             prob = probs, replace = T))) %&gt;% 
+tweets_prep %&gt;%
+  bake(new_data = tweets_test) %&gt;%
+  mutate(predicted_target = as.factor(sample(0:1,
+                                             size = nrow(tweets_test),
+                                             prob = probs, replace = T))) %&gt;%
   f_meas(target, predicted_target)
 ```
 ```
@@ -216,38 +213,38 @@ tweets_prep %&gt;%
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
 ## 1 f_meas  binary         0.574
 ```
-<p><em>Generating submission file</em></p>
+Generating submission file
 ```r
 set.seed(42)
-tweets_prep %&gt;% 
-  bake(new_data = tweets_final) %&gt;% 
-  mutate(target = as.factor(sample(0:1, 
-                                   size = nrow(tweets_final), 
-                                   prob = probs, replace = T))) %&gt;% 
-  select(id, target) %&gt;% 
+tweets_prep %&gt;%
+  bake(new_data = tweets_final) %&gt;%
+  mutate(target = as.factor(sample(0:1,
+                                   size = nrow(tweets_final),
+                                   prob = probs, replace = T))) %&gt;%
+  select(id, target) %&gt;%
   write_csv(&quot;../data/nlp_with_disaster_tweets/submissions/baseline_cvf_57_testf_57.csv&quot;)
 ```
 ### K-Nearest Neighbor model
-<p>Let’s build a basic KNN model with some default number of neighbors to see how the modelling is done in this framework and checkout how the modelling output looks like.</p>
+Let’s build a basic KNN model with some default number of neighbors to see how the modelling is done in this framework and checkout how the modelling output looks like.
 #### Basic
 ```r
-knn_spec &lt;- nearest_neighbor(neighbors = 3) %&gt;% 
-  set_engine(&quot;kknn&quot;) %&gt;% 
+knn_spec &lt;- nearest_neighbor(neighbors = 3) %&gt;%
+  set_engine(&quot;kknn&quot;) %&gt;%
   set_mode(&quot;classification&quot;)
 
-wf &lt;- workflow() %&gt;% 
+wf &lt;- workflow() %&gt;%
   add_recipe(tweets_recipe)
 ```
 ```r
-knn_fit &lt;- wf %&gt;% 
-  add_model(knn_spec) %&gt;% 
+knn_fit &lt;- wf %&gt;%
+  add_model(knn_spec) %&gt;%
   fit(data = tweets_train)
 
 saveRDS(knn_fit, &quot;../data/nlp_with_disaster_tweets/knn/knn_basic_fit.rds&quot;)
 ```
 ```r
 knn_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_basic_fit.rds&quot;)
-knn_fit %&gt;% 
+knn_fit %&gt;%
   pull_workflow_fit() -&gt; wf_fit
 
 wf_fit$fit$MISCLASS
@@ -256,16 +253,16 @@ wf_fit$fit$MISCLASS
 ##     optimal
 ## 3 0.3521021
 ```
-<p>The above shows a simple K-nearest neighbors model using the “kknn” engine. Gives about 0.3521021 of minimal misclassification.
-Let’s try and tune the number of neighbors (k) and see if we can interpret the underlying problem space.</p>
+The above shows a simple K-nearest neighbors model using the “kknn” engine. Gives about 0.3521021 of minimal misclassification.
+Let’s try and tune the number of neighbors (k) and see if we can interpret the underlying problem space.
 #### Tuning number of neighbors
-<p>Using 5-fold cross validation and values of K going from 1 to 100.</p>
+Using 5-fold cross validation and values of K going from 1 to 100.
 ```r
 set.seed(1234)
 folds &lt;- vfold_cv(tweets_train, strata = target, v = 5, repeats = 1)
 
-tune_spec &lt;- nearest_neighbor(neighbors = tune()) %&gt;% 
-  set_mode(&quot;classification&quot;) %&gt;% 
+tune_spec &lt;- nearest_neighbor(neighbors = tune()) %&gt;%
+  set_mode(&quot;classification&quot;) %&gt;%
   set_engine(&quot;kknn&quot;)
 
 neighbor_grid &lt;- expand.grid(neighbors = seq(1,100, by = 1))
@@ -273,7 +270,6 @@ neighbor_grid &lt;- expand.grid(neighbors = seq(1,100, by = 1))
 ```r
 set.seed(1234)
 doParallel::registerDoParallel(cores = parallel::detectCores(logical = FALSE))
-
 
 knn_grid &lt;- tune_grid(
   wf %&gt;% add_model(tune_spec),
@@ -289,7 +285,7 @@ saveRDS(knn_grid, &quot;../data/nlp_with_disaster_tweets/knn/knn_grid.rds&quot;)
 ```r
 knn_grid &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_grid.rds&quot;)
 
-knn_grid %&gt;% 
+knn_grid %&gt;%
   collect_metrics()
 ```
 ```
@@ -309,28 +305,28 @@ knn_grid %&gt;%
 ## # … with 290 more rows
 ```
 ```r
-knn_grid %&gt;% 
-  collect_metrics() %&gt;% 
+knn_grid %&gt;%
+  collect_metrics() %&gt;%
   mutate(flexibility = 1/neighbors,
-         .metric = str_to_title(str_replace_all(.metric, &quot;_&quot;, &quot; &quot;))) %&gt;% 
-  ggplot(aes(flexibility, mean, color = .metric)) + 
+         .metric = str_to_title(str_replace_all(.metric, &quot;_&quot;, &quot; &quot;))) %&gt;%
+  ggplot(aes(flexibility, mean, color = .metric)) +
   geom_errorbar(aes(ymin = mean - std_err,
-                    ymax = mean + std_err), alpha = 0.5) + 
-  geom_line(size = 1.5) + 
-  facet_wrap(~.metric, scales = &quot;free&quot;, nrow = 3) + 
-  scale_x_log10() + 
-  theme(legend.position = &quot;none&quot;) + 
+                    ymax = mean + std_err), alpha = 0.5) +
+  geom_line(size = 1.5) +
+  facet_wrap(~.metric, scales = &quot;free&quot;, nrow = 3) +
+  scale_x_log10() +
+  theme(legend.position = &quot;none&quot;) +
   labs(title = &quot;Model performance against model flexibility&quot;,
        subtitle = &quot;F1-score peaks around lower flexibility values&quot;,
        x = &quot;Model flexibility i.e. Log(1/NumberOfNeighbors)&quot;,
        y = &quot;Mean metric value&quot;)
 ```
-<p><img src="/post/2020-02-20-nlp-with-disaster-tweets-part-2-nearest-neighbor-models_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
-<p>As we see in the plot above, the f1-score increases on the evaluation set until around K=20 and then starts falling down. We plot the flexibility (i.e. 1/NumberOfNeighbors) to visualize how the model performance varies as the model flexibility increases. The KNN model with K=1 will be highly flexible and thus have high variance, whereas K=100 would lead to a much stricter model which is less flexible and might suffer from bias.<br />
-Looks like our underlying problem stays much closer to being flexible than strict (since optimal K looks to be around 20). We should remember this fact for picking further models for experimentation.</p>
-<p>Let’s pickout the best parameter K based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset.</p>
+
+As we see in the plot above, the f1-score increases on the evaluation set until around K=20 and then starts falling down. We plot the flexibility (i.e. 1/NumberOfNeighbors) to visualize how the model performance varies as the model flexibility increases. The KNN model with K=1 will be highly flexible and thus have high variance, whereas K=100 would lead to a much stricter model which is less flexible and might suffer from bias.
+Looks like our underlying problem stays much closer to being flexible than strict (since optimal K looks to be around 20). We should remember this fact for picking further models for experimentation.
+Let’s pickout the best parameter K based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset.
 ```r
-knn_grid %&gt;% 
+knn_grid %&gt;%
   select_best(&quot;f_meas&quot;) -&gt; highest_f_meas
 
 final_knn &lt;- finalize_workflow(
@@ -339,7 +335,7 @@ final_knn &lt;- finalize_workflow(
 )
 ```
 ```r
-last_fit(final_knn, 
+last_fit(final_knn,
          tweets_split,
          metrics = metric_set(accuracy, roc_auc, f_meas)) -&gt; knn_last_fit
 
@@ -347,7 +343,7 @@ saveRDS(knn_last_fit, &quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rd
 ```
 ```r
 knn_last_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;)
-knn_last_fit %&gt;% 
+knn_last_fit %&gt;%
   collect_metrics()
 ```
 ```
@@ -358,14 +354,14 @@ knn_last_fit %&gt;%
 ## 2 f_meas   binary         0.756
 ## 3 roc_auc  binary         0.687
 ```
-<p>Our final fit knn model with K=25 gives an f1-score of 0.7560538, which is much higher than our baseline model on the same CV dataset.</p>
+Our final fit knn model with K=25 gives an f1-score of 0.7560538, which is much higher than our baseline model on the same CV dataset.
 # Summary
-<p>We can hence learn quite a few things about our underlying problem space by using this basic modelling algorithm K-nearest neighbors and use our learning in further model selection and tuning and also generate a fairly robust model that predicts quite effectively as compared to the baseline model.<br />
-Also, this tidymodels framework provides a good modelling structure which can be easily reproduced and used to train a variety of models. In the next part of this series, I will work on another classic modelling algorithm, Lasso Regression, where we will also see if we can identify if there any of these features are much more important than the others and if our 2 custom features are useful.</p>
+We can hence learn quite a few things about our underlying problem space by using this basic modelling algorithm K-nearest neighbors and use our learning in further model selection and tuning and also generate a fairly robust model that predicts quite effectively as compared to the baseline model.
+Also, this tidymodels framework provides a good modelling structure which can be easily reproduced and used to train a variety of models. In the next part of this series, I will work on another classic modelling algorithm, Lasso Regression, where we will also see if we can identify if there any of these features are much more important than the others and if our 2 custom features are useful.
 # References
-<ul>
-<li>Project Summary Page - <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with disaster tweets: Summary</a></li>
-<li>Project Part 1 - <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP with Disaster Tweets: Part 1 Data Preparation</a></li>
-<li>Lasso Regression using <a href="https://juliasilge.com/blog/lasso-the-office/" target="_blank">Tidymodels by Julia Silge</a>.</li>
-<li>Introduction to Statistical Learning - <a href="https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370" target="_blank">Book</a></li>
-</ul>
+
+- Project Summary Page - NLP with disaster tweets: Summary
+- Project Part 1 - NLP with Disaster Tweets: Part 1 Data Preparation
+- Lasso Regression using Tidymodels by Julia Silge.
+- Introduction to Statistical Learning - Book
+

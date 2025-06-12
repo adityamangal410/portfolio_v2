@@ -30,12 +30,9 @@ freeze: true
 output-file: india-elections-2019-bjp-vs-congress-manifestos-analysis.html
 ---
 
-
-
-
 # Introduction
-<p>With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.<br />
-In this part 1, I’ll collect and clean data and setup the ground work for the project.</p>
+With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.
+In this part 1, I’ll collect and clean data and setup the ground work for the project.
 # Analysis
 ## Load libraries
 ```r
@@ -57,20 +54,20 @@ theme_set(theme_light())
 use_python(&quot;~/anaconda3/bin/python&quot;)
 ```
 ## Downloading Manifestos
-<p>BJP’s Manifesto available at their website - <a href="https://www.bjp.org/manifestoPDF/BJP-Election-english-2019.pdf">bjp.org</a></p>
+BJP’s Manifesto available at their website - bjp.org
 ```r
 bjp_txt &lt;- pdf_text(&quot;~/Downloads/BJP-Election-english-2019.pdf&quot;)
 
 tibble(
   page = 1:length(bjp_txt),
   text = bjp_txt
-  ) %&gt;% 
-  separate_rows(text, sep = &quot;\n&quot;) %&gt;% 
-  group_by(page) %&gt;% 
-  mutate(line = row_number()) %&gt;% 
-  ungroup() %&gt;% 
+  ) %&gt;%
+  separate_rows(text, sep = &quot;\n&quot;) %&gt;%
+  group_by(page) %&gt;%
+  mutate(line = row_number()) %&gt;%
+  ungroup() %&gt;%
   select(page, line, text) -&gt; bjp
-bjp %&gt;% 
+bjp %&gt;%
   glimpse()
 ```
 ```
@@ -80,7 +77,7 @@ bjp %&gt;%
 ## $ line &lt;int&gt; 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18…
 ## $ text &lt;chr&gt; &quot;&quot;, &quot;                                           Table of Content…
 ```
-<p>Congress’ manifesto available at their website - <a href="https://manifesto.inc.in/pdf/english.pdf">inc.in</a></p>
+Congress’ manifesto available at their website - inc.in
 ```r
 download.file(&quot;https://manifesto.inc.in/pdf/english.pdf&quot;, &quot;~/Downloads/congress.pdf&quot;)
 ```
@@ -91,13 +88,13 @@ congress_txt &lt;- pdf_text(&quot;~/Downloads/congress.pdf&quot;)
 tibble(
   page = 1:length(congress_txt),
   text = congress_txt
-  ) %&gt;% 
-  separate_rows(text, sep = &quot;\n&quot;) %&gt;% 
-  group_by(page) %&gt;% 
-  mutate(line = row_number()) %&gt;% 
-  ungroup() %&gt;% 
+  ) %&gt;%
+  separate_rows(text, sep = &quot;\n&quot;) %&gt;%
+  group_by(page) %&gt;%
+  mutate(line = row_number()) %&gt;%
+  ungroup() %&gt;%
   select(page, line, text) -&gt; congress
-congress %&gt;% 
+congress %&gt;%
   glimpse()
 ```
 ```
@@ -109,42 +106,42 @@ congress %&gt;%
 ```
 ## Cleaning
 ### Page range
-<p>As we see from the 2 documents, first few pages contain Title and Index of the manifestos, and then moves on to the notes from the Party Leaders. The actual plans for development and work starts from page 11 in BJP’s manifesto and page 7 in Congress’. Filtering out all the other pages for exploration</p>
+As we see from the 2 documents, first few pages contain Title and Index of the manifestos, and then moves on to the notes from the Party Leaders. The actual plans for development and work starts from page 11 in BJP’s manifesto and page 7 in Congress’. Filtering out all the other pages for exploration
 ```r
-bjp %&gt;% 
+bjp %&gt;%
   filter(page &gt;= 11) -&gt; bjp_content
 ```
 ```r
-congress %&gt;% 
+congress %&gt;%
   filter(page &gt;= 7) -&gt; congress_content
 ```
 ### Text NA
-<p>Dropping all the rows where we dont have any text.</p>
+Dropping all the rows where we dont have any text.
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   filter(!is.na(text)) -&gt; bjp_content
-congress_content %&gt;% 
+congress_content %&gt;%
   filter(!is.na(text)) -&gt; congress_content
 ```
 ### Normalize
-<p>Normalizing text lines.</p>
+Normalizing text lines.
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   unnest_tokens(text, text, token = &quot;lines&quot;) -&gt; bjp_content
-congress_content %&gt;% 
+congress_content %&gt;%
   unnest_tokens(text, text, token = &quot;lines&quot;) -&gt; congress_content
 ```
-<p>I’ll take a deep dive into individual topics of the manifestos in separate blog posts. For now, I will export our cleaned and normalized data for future analysis.</p>
+I’ll take a deep dive into individual topics of the manifestos in separate blog posts. For now, I will export our cleaned and normalized data for future analysis.
 ## Export Data
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   write_csv(&quot;../data/indian_election_2019/bjp_manifesto_clean.csv&quot;)
-congress_content %&gt;% 
+congress_content %&gt;%
   write_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)
 ```
-<p>Stay Tuned!</p>
+Stay Tuned!
 # References
-<ul>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/">Part 2 Economic Growth</a></li>
-<li>For all the parts go to Project Summary Page - <a href="/2019/05/india-general-elections-2019-analysis/">India General Elections 2019 Analysis</a></li>
-</ul>
+
+- Part 2 Economic Growth
+- For all the parts go to Project Summary Page - India General Elections 2019 Analysis
+

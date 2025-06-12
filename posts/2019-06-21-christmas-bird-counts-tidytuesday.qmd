@@ -25,12 +25,9 @@ freeze: true
 output-file: christmas-bird-counts-tidytuesday.html
 ---
 
-
-
-
 # Introduction
-<p>Visualizing bird watching data as collected in Hamilton area of Ontario during Christmas time since 1921.</p>
-<p>Working on the weekly social data project <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-18">Tidy Tuesday</a>.</p>
+Visualizing bird watching data as collected in Hamilton area of Ontario during Christmas time since 1921.
+Working on the weekly social data project Tidy Tuesday.
 # Analysis
 ## Load libraries
 ```r
@@ -52,80 +49,80 @@ bird_counts
 ## # A tibble: 18,706 x 6
 ##     year species    species_latin  how_many_counted total_hours how_many_counte…
 ##    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
-##  1  1921 American … Botaurus lent…                0           8            0    
-##  2  1921 American … Anas rubripes                 0           8            0    
-##  3  1921 American … Fulica americ…                0           8            0    
-##  4  1921 American … Corvus brachy…                0           8            0    
-##  5  1921 American … Spinus tristis                0           8            0    
-##  6  1921 American … Falco sparver…                0           8            0    
-##  7  1921 American … Anthus rubesc…                0           8            0    
+##  1  1921 American … Botaurus lent…                0           8            0
+##  2  1921 American … Anas rubripes                 0           8            0
+##  3  1921 American … Fulica americ…                0           8            0
+##  4  1921 American … Corvus brachy…                0           8            0
+##  5  1921 American … Spinus tristis                0           8            0
+##  6  1921 American … Falco sparver…                0           8            0
+##  7  1921 American … Anthus rubesc…                0           8            0
 ##  8  1921 American … Turdus migrat…                1           8            0.125
-##  9  1921 American … Picoides dors…                0           8            0    
-## 10  1921 American … Spizelloides …               12           8            1.5  
+##  9  1921 American … Picoides dors…                0           8            0
+## 10  1921 American … Spizelloides …               12           8            1.5
 ## # … with 18,696 more rows
 ```
 ```r
-bird_counts %&gt;% 
+bird_counts %&gt;%
   summary
 ```
 ```
-##       year        species          species_latin      how_many_counted 
-##  Min.   :1921   Length:18706       Length:18706       Min.   :    0.0  
-##  1st Qu.:1947   Class :character   Class :character   1st Qu.:    0.0  
-##  Median :1970   Mode  :character   Mode  :character   Median :    0.0  
-##  Mean   :1970                                         Mean   :  193.5  
-##  3rd Qu.:1994                                         3rd Qu.:    5.0  
-##  Max.   :2017                                         Max.   :73000.0  
-##                                                                        
+##       year        species          species_latin      how_many_counted
+##  Min.   :1921   Length:18706       Length:18706       Min.   :    0.0
+##  1st Qu.:1947   Class :character   Class :character   1st Qu.:    0.0
+##  Median :1970   Mode  :character   Mode  :character   Median :    0.0
+##  Mean   :1970                                         Mean   :  193.5
+##  3rd Qu.:1994                                         3rd Qu.:    5.0
+##  Max.   :2017                                         Max.   :73000.0
+##
 ##   total_hours    how_many_counted_by_hour
-##  Min.   :  8.0   Min.   :  0.000         
-##  1st Qu.:149.5   1st Qu.:  0.000         
-##  Median :171.0   Median :  0.000         
-##  Mean   :170.8   Mean   :  1.336         
-##  3rd Qu.:203.8   3rd Qu.:  0.051         
-##  Max.   :251.0   Max.   :439.024         
+##  Min.   :  8.0   Min.   :  0.000
+##  1st Qu.:149.5   1st Qu.:  0.000
+##  Median :171.0   Median :  0.000
+##  Mean   :170.8   Mean   :  1.336
+##  3rd Qu.:203.8   3rd Qu.:  0.051
+##  Max.   :251.0   Max.   :439.024
 ##  NA&#39;s   :3781    NA&#39;s   :3781
 ```
 ## Which are the 5 most common birds over years?
 ```r
-bird_counts %&gt;% 
-  group_by(year) %&gt;% 
-  mutate(rank = min_rank(-how_many_counted) * 1) %&gt;% 
-  ungroup() %&gt;% 
-  filter(rank &lt;= 5) %&gt;% 
-  ggplot(aes(rank, 
+bird_counts %&gt;%
+  group_by(year) %&gt;%
+  mutate(rank = min_rank(-how_many_counted) * 1) %&gt;%
+  ungroup() %&gt;%
+  filter(rank &lt;= 5) %&gt;%
+  ggplot(aes(rank,
              group = species,
-             fill = as.factor(species), 
+             fill = as.factor(species),
              color = as.factor(species))) +
   geom_tile(aes(y = how_many_counted/2,
                 height = how_many_counted,
                 width = 0.9),
-            alpha = 0.8, 
-            color = NA) + 
+            alpha = 0.8,
+            color = NA) +
   geom_text(aes(y = 0,
                 label = paste(species, &quot; &quot;)),
-            vjust = 0.2, 
-            hjust = 1) + 
+            vjust = 0.2,
+            hjust = 1) +
   coord_flip(clip = &quot;off&quot;,
-             expand = FALSE) + 
-  scale_y_continuous(labels = scales::comma) + 
-  scale_x_reverse() + 
+             expand = FALSE) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_reverse() +
   guides(color = FALSE,
-         fill = FALSE) + 
+         fill = FALSE) +
   labs(title = &#39;{closest_state}&#39;,
        subtitle = &quot;Which are the 5 most common birds over years? Birds seen in the Hamilton area of Ontario during Christmas since 1921&quot;,
        caption = &quot;Based on data from @BirdsCanada&quot;,
        x = &quot;&quot;,
-       y = &quot;Sights per year&quot;) + 
+       y = &quot;Sights per year&quot;) +
   theme(plot.title = element_text(hjust = 0, size = 22),
         axis.ticks.y = element_blank(),
         axis.text.y = element_blank(),
-        plot.margin = margin(1,1,1,4,&quot;cm&quot;)) + 
-  transition_states(year, transition_length = 4, state_length = 1) + 
+        plot.margin = margin(1,1,1,4,&quot;cm&quot;)) +
+  transition_states(year, transition_length = 4, state_length = 1) +
   ease_aes(&#39;cubic-in-out&#39;) -&gt; p
 ```
 ```r
-p %&gt;% 
+p %&gt;%
   animate(fps = 5,
           nframes = 200,
           duration = 30,
@@ -133,4 +130,4 @@ p %&gt;%
           height = 600,
           renderer = gifski_renderer(&quot;../data/christmas_bird_counts/most_common.gif&quot;))
 ```
-<p><img src="/post/2019-06-21-christmas-bird-counts-tidytuesday_files/figure-html/unnamed-chunk-5-1.gif" /><!-- --></p>
+

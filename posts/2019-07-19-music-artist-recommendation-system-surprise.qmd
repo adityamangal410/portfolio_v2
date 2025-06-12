@@ -19,11 +19,8 @@ freeze: true
 output-file: music-artist-recommendation-system-surprise.html
 ---
 
-
-
-
 # Introduction
-<p>Music Artist Recommendation System using the <a href="https://grouplens.org/datasets/hetrec-2011/">Last.fm Dataset</a>. Recommenders using Python’s Surprise Library.</p>
+Music Artist Recommendation System using the Last.fm Dataset. Recommenders using Python’s Surprise Library.
 # Modelling
 ## Load Libraries
 ```r
@@ -42,7 +39,7 @@ use_condaenv(&quot;stanford-nlp&quot;)
 ## Obtain Data
 ```r
 ratings &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/ratings_clean.csv&quot;)
-ratings %&gt;% 
+ratings %&gt;%
   glimpse()
 ```
 ```
@@ -54,27 +51,27 @@ ratings %&gt;%
 ## $ rating   &lt;dbl&gt; 2.659038, 2.546706, 2.527479, 2.463997, 2.374611, 2.127279, …
 ```
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID)) -&gt; ratings
-ratings %&gt;% 
+ratings %&gt;%
   summary()
 ```
 ```
-##      userID         artistID         weight             rating        
-##  2      :   50   89     :  611   Min.   :     1.0   Min.   :-3.57296  
-##  3      :   50   289    :  522   1st Qu.:   107.0   1st Qu.:-0.51993  
-##  4      :   50   288    :  484   Median :   260.0   Median : 0.06015  
-##  5      :   50   227    :  480   Mean   :   745.2   Mean   : 0.00000  
-##  6      :   50   300    :  473   3rd Qu.:   614.0   3rd Qu.: 0.62159  
-##  7      :   50   67     :  429   Max.   :352698.0   Max.   : 4.77261  
+##      userID         artistID         weight             rating
+##  2      :   50   89     :  611   Min.   :     1.0   Min.   :-3.57296
+##  3      :   50   289    :  522   1st Qu.:   107.0   1st Qu.:-0.51993
+##  4      :   50   288    :  484   Median :   260.0   Median : 0.06015
+##  5      :   50   227    :  480   Mean   :   745.2   Mean   : 0.00000
+##  6      :   50   300    :  473   3rd Qu.:   614.0   3rd Qu.: 0.62159
+##  7      :   50   67     :  429   Max.   :352698.0   Max.   : 4.77261
 ##  (Other):92534   (Other):89835
 ```
 ```r
 friends &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/friends_clean.csv&quot;,
                     col_types = cols(&quot;userID&quot; = col_factor(),
                                   &quot;friendID&quot; = col_factor()))
-friends %&gt;% 
+friends %&gt;%
   glimpse()
 ```
 ```
@@ -85,7 +82,7 @@ friends %&gt;%
 ```
 ```r
 metadata &lt;- read_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)
-metadata %&gt;% 
+metadata %&gt;%
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID),
          tagID = as.factor(tagID),
@@ -93,7 +90,7 @@ metadata %&gt;%
          artistName = as.factor(artistName)) -&gt; metadata
 ```
 ```r
-metadata %&gt;% 
+metadata %&gt;%
   glimpse()
 ```
 ```
@@ -109,9 +106,9 @@ metadata %&gt;%
 ## $ artistName &lt;fct&gt; Morcheeba, Morcheeba, Morcheeba, Morcheeba, Morcheeba, Eni…
 ```
 ```r
-metadata %&gt;% 
-  group_by(artistID) %&gt;% 
-  summarise(num_tags = n_distinct(tagID)) %&gt;% 
+metadata %&gt;%
+  group_by(artistID) %&gt;%
+  summarise(num_tags = n_distinct(tagID)) %&gt;%
   arrange(desc(num_tags))
 ```
 ```

@@ -32,12 +32,9 @@ freeze: true
 output-file: india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance.html
 ---
 
-
-
-
 # Introduction
-<p>With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.<br />
-In this part 4, I’ll explore the Anti-corruption and Good Governance discussions in both manifestos.</p>
+With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.
+In this part 4, I’ll explore the Anti-corruption and Good Governance discussions in both manifestos.
 # Analysis
 ## Load libraries
 ```r
@@ -64,57 +61,57 @@ bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clea
 congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)
 ```
 ## Anti-Corruption and Good Governance
-<p>This topic is covered congress’ manifesto from Pages 17 to 19 of the pdf and in that of bjp’s from pages 24 to 26.</p>
+This topic is covered congress’ manifesto from Pages 17 to 19 of the pdf and in that of bjp’s from pages 24 to 26.
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   filter(between(page, 24, 26)) -&gt; bjp_content
 
-congress_content %&gt;% 
+congress_content %&gt;%
   filter(between(page, 17, 19)) -&gt; congress_content
 ```
 ## Most Popular Words
 ```r
-plot_most_popular_words &lt;- function(df, 
+plot_most_popular_words &lt;- function(df,
                                     min_count = 15,
                                     stop_words_list = stop_words) {
-  df %&gt;% 
-    unnest_tokens(word, text) %&gt;% 
-    anti_join(stop_words_list) %&gt;% 
+  df %&gt;%
+    unnest_tokens(word, text) %&gt;%
+    anti_join(stop_words_list) %&gt;%
     mutate(word = str_extract(word, &quot;[a-z&#39;]+&quot;)) %&gt;%
-    filter(!is.na(word)) %&gt;% 
-    count(word, sort = TRUE) %&gt;% 
+    filter(!is.na(word)) %&gt;%
+    count(word, sort = TRUE) %&gt;%
     filter(str_length(word) &gt; 1,
-           n &gt; min_count) %&gt;% 
+           n &gt; min_count) %&gt;%
     mutate(word = reorder(word, n)) %&gt;%
     ggplot( aes(x=word, y=n)) +
     geom_segment( aes(x=word, xend=word, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
     geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
-    coord_flip() + 
+    coord_flip() +
     theme(panel.grid.minor.y = element_blank(),
           panel.grid.major.y = element_blank(),
           legend.position=&quot;none&quot;) -&gt; p
-  
+
   return(p)
 }
 ```
 ```r
-custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;), 
-                                          lexicon = rep(&quot;custom&quot;, 5)), 
+custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;),
+                                          lexicon = rep(&quot;custom&quot;, 5)),
                                stop_words)
 ```
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   plot_most_popular_words(min_count = 6,
-                          stop_words_list = custom_stop_words) + 
+                          stop_words_list = custom_stop_words) +
   labs(x = &quot;&quot;,
        y = &quot;Number of Occurences&quot;,
        title = &quot;Most popular words related to Anti-Corrution and Good Governance in BJP&#39;s Manifesto&quot;,
        subtitle = &quot;Words occurring more than 6 times&quot;,
        caption = &quot;Based on election 2019 manifesto from bjp.org&quot;) -&gt; p_bjp
 
-congress_content %&gt;% 
+congress_content %&gt;%
   plot_most_popular_words(min_count = 8,
-                          stop_words_list = custom_stop_words) + 
+                          stop_words_list = custom_stop_words) +
   labs(x = &quot;&quot;,
        y = &quot;Number of Occurences&quot;,
        title = &quot;Most popular words related to Anti-Corrution and Good Governance in Congress&#39; Manifesto&quot;,
@@ -123,7 +120,7 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
 ```
-<p><img src="/post/2019-05-11-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-6-1.png" width="1344" /></p>
+
 ## Common correlated words
 ```r
 plot_common_correlated_words &lt;- function(df,
@@ -131,38 +128,38 @@ plot_common_correlated_words &lt;- function(df,
                                          correlation_threshold = 0.25,
                                          stop_words_list = stop_words) {
   set.seed(123)
-  df %&gt;% 
-    unnest_tokens(word, text) %&gt;% 
-    anti_join(stop_words_list) %&gt;% 
-    add_count(word) %&gt;% 
-    filter(n &gt; stats::quantile(n, counts_quantile)) %&gt;% 
-    pairwise_cor(word, page, sort = TRUE) %&gt;% 
+  df %&gt;%
+    unnest_tokens(word, text) %&gt;%
+    anti_join(stop_words_list) %&gt;%
+    add_count(word) %&gt;%
+    filter(n &gt; stats::quantile(n, counts_quantile)) %&gt;%
+    pairwise_cor(word, page, sort = TRUE) %&gt;%
     filter(correlation &gt; correlation_threshold,
          !str_detect(item1, &quot;\\d&quot;),
-         !str_detect(item2, &quot;\\d&quot;)) %&gt;% 
+         !str_detect(item2, &quot;\\d&quot;)) %&gt;%
     graph_from_data_frame() %&gt;%
     ggraph(layout = &quot;fr&quot;) +
     geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
     geom_node_point(color = &quot;lightblue&quot;, size = 5) +
     geom_node_text(aes(label = name), repel = TRUE) +
     theme_void() -&gt; p
-  
+
   return(p)
 }
 ```
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.75) + 
+                               counts_quantile = 0.75) +
   labs(x = &quot;&quot;,
        y = &quot;&quot;,
        title = &quot;Commonly Occurring Correlated Words in BJP&#39;s Manifesto&quot;,
        subtitle = &quot;Per page correlation higher than 0.25&quot;,
        caption = &quot;Based on election 2019 manifesto from bjp.org&quot;) -&gt; p_bjp
 
-congress_content %&gt;% 
+congress_content %&gt;%
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.75) + 
+                               counts_quantile = 0.75) +
   labs(x = &quot;&quot;,
        y = &quot;&quot;,
        title = &quot;Commonly Occurring Correlated Words in Congress&#39;s Manifesto&quot;,
@@ -171,10 +168,10 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
 ```
-<p><img src="/post/2019-05-11-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
+
 ## Basic Search Engine
-<p>Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
-Using python’s scikit-learn for this.</p>
+Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
+Using python’s scikit-learn for this.
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
@@ -202,10 +199,10 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 get_related_lines &lt;- py_to_r(py$get_related_lines)
 ```
 ### Common Popular Words with both BJP &amp; Congress
-<p>As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto is “police”. Lets see, what each of them have planned for our police force. First, BJP.</p>
+As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto is “police”. Lets see, what each of them have planned for our police force. First, BJP.
 ```r
-bjp_content %&gt;% 
-  slice(get_related_lines(&quot;police&quot;, party = &quot;bjp&quot;)) %&gt;% 
+bjp_content %&gt;%
+  slice(get_related_lines(&quot;police&quot;, party = &quot;bjp&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -222,14 +219,14 @@ bjp_content %&gt;%
 ## 8 09 in order to establish india as a hub of nancial services, we w…    25     5
 ## 9 act’ in consultation with the states to have a pro-people citizen…    24    33
 ```
-<p>This is the excerpt that we find from page 24, as we dug up based on above results -</p>
-<blockquote>
-<p>Police is the most basic and key functionary affecting the people’s life. An effective policing and peaceful law and order is the key to growth and development. Our present police and policing is based upon the colonial police force and there is a need to change and transform the police according to the challenges of the 21st century.Therefore, we will bring Police Reform. We will formulate a ‘Model Police Act’ in consultation with the States to have a pro-people citizen friendly police. This will take the Indian policing at par with its contemporaries anywhere in the world.</p>
-</blockquote>
-<p>Now, Congress.</p>
+This is the excerpt that we find from page 24, as we dug up based on above results -
+
+Police is the most basic and key functionary affecting the people’s life. An effective policing and peaceful law and order is the key to growth and development. Our present police and policing is based upon the colonial police force and there is a need to change and transform the police according to the challenges of the 21st century.Therefore, we will bring Police Reform. We will formulate a ‘Model Police Act’ in consultation with the States to have a pro-people citizen friendly police. This will take the Indian policing at par with its contemporaries anywhere in the world.
+
+Now, Congress.
 ```r
-congress_content %&gt;% 
-  slice(get_related_lines(&quot;police&quot;, party = &quot;congress&quot;)) %&gt;% 
+congress_content %&gt;%
+  slice(get_related_lines(&quot;police&quot;, party = &quot;congress&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -246,19 +243,19 @@ congress_content %&gt;%
 ## 8 during custody or interrogation and punish cases                t…    19    33
 ## 9 (that defines the offence of ‘sedition’) that has       08. amend…    19    24
 ```
-<p>One of the excerpts from page 19 related to above results -</p>
-<blockquote>
-<p>Provisions will be made in the Model Police Act to:
+One of the excerpts from page 19 related to above results -
+
+Provisions will be made in the Model Police Act to:
 a. Make the State police force accountable to an independent Police Accountability Commission as well as to give an annual report to the State Legislature.
 b. Decentralise the police force in the State and to involve the community in the oversight of the
 police force.
-c. Cause investigations into cases of communal riots, lynchings and gang rapes by a special wing of the State police under the direct command of the State Headquarters of the police.</p>
-</blockquote>
+c. Cause investigations into cases of communal riots, lynchings and gang rapes by a special wing of the State police under the direct command of the State Headquarters of the police.
+
 ### Unique popular words with BJP &amp; Congress
-<p>One of the popular words that seems curious from BJP’s manifesto is “forest”.</p>
+One of the popular words that seems curious from BJP’s manifesto is “forest”.
 ```r
-bjp_content %&gt;% 
-  slice(get_related_lines(&quot;forest&quot;, party = &quot;bjp&quot;)) %&gt;% 
+bjp_content %&gt;%
+  slice(get_related_lines(&quot;forest&quot;, party = &quot;bjp&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -275,14 +272,14 @@ bjp_content %&gt;%
 ## 8 act’ in consultation with the states to have a pro-people citizen…    24    33
 ## 9 policing at par with its contemporaries anywhere in the world.        24    34
 ```
-<p>An excerpt from BJP’s manifesto about forests as identified from above -</p>
-<blockquote>
-<p>We have ensured speed and effectiveness in issuing forest and environmental clearances for eligible projects due to which we have added around 9000 Sq. Kms to the forest cover of the country. We are committed to maintaining this pace through adoption of cleaner practises to make our nation a greener country.</p>
-</blockquote>
-<p>Now, one of the popular words that seems curious from Congress’ manifesto is “panchayat”.</p>
+An excerpt from BJP’s manifesto about forests as identified from above -
+
+We have ensured speed and effectiveness in issuing forest and environmental clearances for eligible projects due to which we have added around 9000 Sq. Kms to the forest cover of the country. We are committed to maintaining this pace through adoption of cleaner practises to make our nation a greener country.
+
+Now, one of the popular words that seems curious from Congress’ manifesto is “panchayat”.
 ```r
-congress_content %&gt;% 
-  slice(get_related_lines(&quot;panchayat&quot;, party = &quot;congress&quot;)) %&gt;% 
+congress_content %&gt;%
+  slice(get_related_lines(&quot;panchayat&quot;, party = &quot;congress&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -299,15 +296,15 @@ congress_content %&gt;%
 ## 8 act, 2005 in the light of its working in the last       06. congr…    17    53
 ## 9 them accountable to parliament. we believe that self-regulation i…    17    52
 ```
-<blockquote>
-<p>Congress was the proponent and author of the Constitution 73rd and 74th Amendments. Panchayati Raj lies at the core of good governance in our country, where the majority of citizens live outside metropolitan cities. Congress promises to take further measures to strengthen the concept of Local Government—Panchayats and Municipalities.</p>
-</blockquote>
-<p>With all the above analysis, we have developed some idea about the Anti-corruption and Good Governance ideologies of the 2 parties. In the next post, I’ll do a similar analysis for Inclusion and Diversity proposals by them.</p>
-<p>Stay Tuned!</p>
+
+Congress was the proponent and author of the Constitution 73rd and 74th Amendments. Panchayati Raj lies at the core of good governance in our country, where the majority of citizens live outside metropolitan cities. Congress promises to take further measures to strengthen the concept of Local Government—Panchayats and Municipalities.
+
+With all the above analysis, we have developed some idea about the Anti-corruption and Good Governance ideologies of the 2 parties. In the next post, I’ll do a similar analysis for Inclusion and Diversity proposals by them.
+Stay Tuned!
 # References
-<ul>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/">Part 3 - Employment and Opportunities</a><br />
-</li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity/">Part 5 - Inclusion and Diversity</a></li>
-<li>For all the parts go to Project Summary Page - <a href="/2019/05/india-general-elections-2019-analysis/">India General Elections 2019 Analysis</a></li>
-</ul>
+
+Part 3 - Employment and Opportunities
+
+- Part 5 - Inclusion and Diversity
+- For all the parts go to Project Summary Page - India General Elections 2019 Analysis
+

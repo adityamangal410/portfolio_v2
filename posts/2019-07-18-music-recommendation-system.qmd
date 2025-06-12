@@ -24,14 +24,8 @@ freeze: true
 output-file: music-recommendation-system.html
 ---
 
-
-<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
-<link href="/rmarkdown-libs/sequences/sequences.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/sunburst-binding/sunburst.js"></script>
-
-
 # Introduction
-<p>Music Artist Recommendation System using the <a href="https://grouplens.org/datasets/hetrec-2011/">Last.fm Dataset</a>. Exploratory data analysis.</p>
+Music Artist Recommendation System using the Last.fm Dataset. Exploratory data analysis.
 # Analysis
 ## Load Libraries
 ```r
@@ -55,18 +49,18 @@ ratings &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_artists.dat&quot;
 friends &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_friends.dat&quot;)
 user_tagged_artists &lt;- read_tsv(&quot;../data/hetrec2011-lastfm-2k/user_taggedartists.dat&quot;)
 ```
-<p>Lets try and join all the data tables, into logical condensed tables.</p>
+Lets try and join all the data tables, into logical condensed tables.
 ```r
-user_tagged_artists %&gt;% 
-  left_join(tags, by = c(&quot;tagID&quot;)) %&gt;% 
+user_tagged_artists %&gt;%
+  left_join(tags, by = c(&quot;tagID&quot;)) %&gt;%
   left_join(artists, by = c(&quot;artistID&quot; = &quot;id&quot;)) -&gt; metadata
 ```
-<p>We will work with the final above 3 dataframes, metadata, ratings and friends. Lets drop the rest of them.</p>
+We will work with the final above 3 dataframes, metadata, ratings and friends. Lets drop the rest of them.
 ```r
 rm(artists, tags, user_tagged_artists)
 ```
 ```r
-metadata %&gt;% 
+metadata %&gt;%
   glimpse()
 ```
 ```
@@ -84,7 +78,7 @@ metadata %&gt;%
 ## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;, &quot;htt…
 ```
 ```r
-friends %&gt;% 
+friends %&gt;%
   glimpse()
 ```
 ```
@@ -94,7 +88,7 @@ friends %&gt;%
 ## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …
 ```
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   glimpse()
 ```
 ```
@@ -107,7 +101,7 @@ ratings %&gt;%
 ## Scrub and Explore
 ### Ratings
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   head()
 ```
 ```
@@ -122,85 +116,85 @@ ratings %&gt;%
 ## 6      2       56   6152
 ```
 ```r
-ratings %&gt;% 
-  select_if(function(x) any(is.na(x))) %&gt;% 
+ratings %&gt;%
+  select_if(function(x) any(is.na(x))) %&gt;%
   summarise_all(funs(sum(is.na(.))))
 ```
 ```
 ## # A tibble: 1 x 0
 ```
-<p>Lets first make userID and artistID as factors.</p>
+Lets first make userID and artistID as factors.
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID)) -&gt; ratings
 ```
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   summary()
 ```
 ```
-##      userID         artistID         weight        
-##  2      :   50   89     :  611   Min.   :     1.0  
-##  3      :   50   289    :  522   1st Qu.:   107.0  
-##  4      :   50   288    :  484   Median :   260.0  
-##  5      :   50   227    :  480   Mean   :   745.2  
-##  6      :   50   300    :  473   3rd Qu.:   614.0  
-##  7      :   50   67     :  429   Max.   :352698.0  
+##      userID         artistID         weight
+##  2      :   50   89     :  611   Min.   :     1.0
+##  3      :   50   289    :  522   1st Qu.:   107.0
+##  4      :   50   288    :  484   Median :   260.0
+##  5      :   50   227    :  480   Mean   :   745.2
+##  6      :   50   300    :  473   3rd Qu.:   614.0
+##  7      :   50   67     :  429   Max.   :352698.0
 ##  (Other):92534   (Other):89835
 ```
 ```r
-ratings %&gt;% 
-  mutate(z_score_weight = scale(weight)) %&gt;% 
+ratings %&gt;%
+  mutate(z_score_weight = scale(weight)) %&gt;%
   ggplot() -&gt; p
 
-grid.arrange(p + 
+grid.arrange(p +
                geom_density(aes(x = weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7) +
-               labs(x = &quot;weight&quot;, y = &quot;density&quot;, title = &quot;Weight Density Distribution&quot;), 
-             p + 
+               labs(x = &quot;weight&quot;, y = &quot;density&quot;, title = &quot;Weight Density Distribution&quot;),
+             p +
                geom_density(aes(x = weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7)+
-               scale_x_log10() + 
+               scale_x_log10() +
                labs(x = &quot;log(weight)&quot;, y = &quot;density&quot;, title = &quot;log(Weight) Density Distribution&quot;),
-             p + 
+             p +
                geom_density(aes(x = z_score_weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7)+
                labs(x = &quot;z-score(weight)&quot;, y = &quot;density&quot;, title = &quot;z-score(Weight) Density Distribution&quot;),
-             p + 
+             p +
                geom_density(aes(x = z_score_weight), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.7)+
-               scale_x_log10() + 
+               scale_x_log10() +
                labs(x = &quot;z-score(log(weight))&quot;, y = &quot;density&quot;, title = &quot;z-score(log(Weight)) Density Distribution&quot;))
 ```
-<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
+
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   mutate(log_weight = log10(weight),
-         z_score_log_weight = scale(log_weight)) %&gt;% 
+         z_score_log_weight = scale(log_weight)) %&gt;%
   summary()
 ```
 ```
-##      userID         artistID         weight           log_weight   
-##  2      :   50   89     :  611   Min.   :     1.0   Min.   :0.000  
-##  3      :   50   289    :  522   1st Qu.:   107.0   1st Qu.:2.029  
-##  4      :   50   288    :  484   Median :   260.0   Median :2.415  
-##  5      :   50   227    :  480   Mean   :   745.2   Mean   :2.375  
-##  6      :   50   300    :  473   3rd Qu.:   614.0   3rd Qu.:2.788  
-##  7      :   50   67     :  429   Max.   :352698.0   Max.   :5.547  
-##  (Other):92534   (Other):89835                                     
+##      userID         artistID         weight           log_weight
+##  2      :   50   89     :  611   Min.   :     1.0   Min.   :0.000
+##  3      :   50   289    :  522   1st Qu.:   107.0   1st Qu.:2.029
+##  4      :   50   288    :  484   Median :   260.0   Median :2.415
+##  5      :   50   227    :  480   Mean   :   745.2   Mean   :2.375
+##  6      :   50   300    :  473   3rd Qu.:   614.0   3rd Qu.:2.788
+##  7      :   50   67     :  429   Max.   :352698.0   Max.   :5.547
+##  (Other):92534   (Other):89835
 ##  z_score_log_weight.V1
-##  Min.   :-3.572957    
-##  1st Qu.:-0.519931    
-##  Median : 0.060154    
-##  Mean   : 0.000000    
-##  3rd Qu.: 0.621593    
-##  Max.   : 4.772614    
-## 
+##  Min.   :-3.572957
+##  1st Qu.:-0.519931
+##  Median : 0.060154
+##  Mean   : 0.000000
+##  3rd Qu.: 0.621593
+##  Max.   : 4.772614
+##
 ```
-<p>Using scaled (i.e. z-score) of log10 of weight field as the rating.</p>
+Using scaled (i.e. z-score) of log10 of weight field as the rating.
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   mutate(rating = scale(log10(weight))) -&gt; ratings
 ```
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   count(userID, sort = TRUE)
 ```
 ```
@@ -219,9 +213,9 @@ ratings %&gt;%
 ## 10 11        50
 ## # … with 1,882 more rows
 ```
-<p>Looks like a highly cleaned dataset, where every user has exactly 50 ratings (or user’s play counts of exactly 50 artists).</p>
+Looks like a highly cleaned dataset, where every user has exactly 50 ratings (or user’s play counts of exactly 50 artists).
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   count(artistID, sort = TRUE)
 ```
 ```
@@ -242,7 +236,7 @@ ratings %&gt;%
 ```
 ### Friends
 ```r
-friends %&gt;% 
+friends %&gt;%
   glimpse()
 ```
 ```
@@ -252,20 +246,20 @@ friends %&gt;%
 ## $ friendID &lt;dbl&gt; 275, 428, 515, 761, 831, 909, 1209, 1210, 1230, 1327, 1585, …
 ```
 ```r
-friends %&gt;% 
-  select_if(function(x) any(is.na(x))) %&gt;% 
+friends %&gt;%
+  select_if(function(x) any(is.na(x))) %&gt;%
   summarise_all(funs(sum(is.na(.))))
 ```
 ```
 ## # A tibble: 1 x 0
 ```
 ```r
-friends %&gt;% 
+friends %&gt;%
   mutate(userID = as.factor(userID),
          friendID = as.factor(friendID)) -&gt; friends
 ```
 ```r
-friends %&gt;% 
+friends %&gt;%
   count(userID, sort = TRUE)
 ```
 ```
@@ -286,7 +280,7 @@ friends %&gt;%
 ```
 ### Metadata
 ```r
-metadata %&gt;% 
+metadata %&gt;%
   glimpse()
 ```
 ```
@@ -304,8 +298,8 @@ metadata %&gt;%
 ## $ pictureURL &lt;chr&gt; &quot;http://userserve-ak.last.fm/serve/252/46005111.png&quot;, &quot;htt…
 ```
 ```r
-metadata %&gt;% 
-  select_if(function(x) any(is.na(x))) %&gt;% 
+metadata %&gt;%
+  select_if(function(x) any(is.na(x))) %&gt;%
   summarise_all(funs(sum(is.na(.))))
 ```
 ```
@@ -314,72 +308,72 @@ metadata %&gt;%
 ##   &lt;int&gt; &lt;int&gt;      &lt;int&gt;
 ## 1 22951 22951      23024
 ```
-<p>I’ll skip worrying about NA urls and pictureURLs for now. Lets explore the rows where name is NA.</p>
+I’ll skip worrying about NA urls and pictureURLs for now. Lets explore the rows where name is NA.
 ```r
-metadata %&gt;% 
+metadata %&gt;%
   filter(is.na(name))
 ```
 ```
 ## # A tibble: 22,951 x 10
 ##    userID artistID tagID   day month  year tagValue       name  url   pictureURL
-##     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     
-##  1      4     1713    18     1    11  2007 electronic     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  2      4     1745    18     1    10  2007 electronic     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  3      4     1810    72     1    12  2007 hard rock      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  4      4     1824    15     1     6  2007 downtempo      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  5      4     1870    92     1     3  2007 dope           &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  6      4     1873    78     1     3  2007 alternative r… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  7      4     1917     7     1     8  2007 gothic metal   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  8      4     2370    76     1     9  2007 progressive m… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-##  9      5     2786    96     1     4  2008 spring         &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
-## 10      8    14103    24     1    11  2006 pop            &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;      
+##     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+##  1      4     1713    18     1    11  2007 electronic     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;
+##  2      4     1745    18     1    10  2007 electronic     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;
+##  3      4     1810    72     1    12  2007 hard rock      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;
+##  4      4     1824    15     1     6  2007 downtempo      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;
+##  5      4     1870    92     1     3  2007 dope           &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;
+##  6      4     1873    78     1     3  2007 alternative r… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;
+##  7      4     1917     7     1     8  2007 gothic metal   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;
+##  8      4     2370    76     1     9  2007 progressive m… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;
+##  9      5     2786    96     1     4  2008 spring         &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;
+## 10      8    14103    24     1    11  2006 pop            &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;
 ## # … with 22,941 more rows
 ```
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   filter(artistID == 1713)
 ```
 ```
 ## # A tibble: 58 x 4
 ##    userID artistID weight rating[,1]
 ##    &lt;fct&gt;  &lt;fct&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-##  1 59     1713        610     0.617 
+##  1 59     1713        610     0.617
 ##  2 62     1713        214    -0.0671
-##  3 99     1713        561     0.563 
-##  4 103    1713         23    -1.52  
-##  5 124    1713       1080     0.991 
-##  6 183    1713        161    -0.253 
-##  7 191    1713        107    -0.520 
-##  8 210    1713       7898     2.29  
-##  9 211    1713        709     0.716 
-## 10 216    1713        174    -0.202 
+##  3 99     1713        561     0.563
+##  4 103    1713         23    -1.52
+##  5 124    1713       1080     0.991
+##  6 183    1713        161    -0.253
+##  7 191    1713        107    -0.520
+##  8 210    1713       7898     2.29
+##  9 211    1713        709     0.716
+## 10 216    1713        174    -0.202
 ## # … with 48 more rows
 ```
-<p>Looks like even though we dont have the name of these artists, we have ratings for them in the ratings dataframe, so we’ll keep them.</p>
+Looks like even though we dont have the name of these artists, we have ratings for them in the ratings dataframe, so we’ll keep them.
 ```r
-metadata %&gt;% 
+metadata %&gt;%
   mutate(userID = as.factor(userID),
          artistID = as.factor(artistID),
          tagID = as.factor(tagID),
          tagValue = as.factor(tagValue),
-         name = as.factor(name)) %&gt;% 
+         name = as.factor(name)) %&gt;%
   rename(artistName = name) -&gt; metadata
 ```
-<p>I dont think we will need the 2 URL columns for this study, dropping them for now.</p>
+I dont think we will need the 2 URL columns for this study, dropping them for now.
 ```r
-metadata %&gt;% 
+metadata %&gt;%
   select(-url, -pictureURL) -&gt; metadata
 ```
 ```r
-metadata %&gt;% 
-  filter(!is.na(artistName)) %&gt;% 
-  count(artistName, sort = TRUE) %&gt;% 
-  top_n(20, n) %&gt;% 
+metadata %&gt;%
+  filter(!is.na(artistName)) %&gt;%
+  count(artistName, sort = TRUE) %&gt;%
+  top_n(20, n) %&gt;%
   mutate(artistName = reorder(artistName, n)) %&gt;%
   ggplot( aes(x=artistName, y=n)) +
   geom_segment( aes(x=artistName, xend=artistName, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
   geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
-  coord_flip() + 
+  coord_flip() +
   theme(panel.grid.minor.y = element_blank(),
         panel.grid.major.y = element_blank(),
         legend.position=&quot;none&quot;) +
@@ -389,16 +383,16 @@ metadata %&gt;%
        subtitle = &quot;Top 20 artists&quot;,
        caption = &quot;Based on data from the Last.fm dataset&quot;)
 ```
-<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+
 ```r
-metadata %&gt;% 
-  count(tagValue, sort = TRUE) %&gt;% 
-  top_n(20, n) %&gt;% 
+metadata %&gt;%
+  count(tagValue, sort = TRUE) %&gt;%
+  top_n(20, n) %&gt;%
   mutate(tagValue = reorder(tagValue, n)) %&gt;%
   ggplot( aes(x=tagValue, y=n)) +
   geom_segment( aes(x=tagValue, xend=tagValue, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
   geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
-  coord_flip() + 
+  coord_flip() +
   theme(panel.grid.minor.y = element_blank(),
         panel.grid.major.y = element_blank(),
         legend.position=&quot;none&quot;) +
@@ -408,24 +402,24 @@ metadata %&gt;%
        subtitle = &quot;Top 20 Tags&quot;,
        caption = &quot;Based on data from the Last.fm dataset&quot;)
 ```
-<p><img src="/post/2019-07-18-music-recommendation-system_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
-<p>Looks like few of the most popular Artists in this dataset are Britney Spears, Lady Gaga and Christina Aguilera and as expected, Rock and Pop are the most popular tags. Lets see which are the most popular artists in the top most popular tags.</p>
+
+Looks like few of the most popular Artists in this dataset are Britney Spears, Lady Gaga and Christina Aguilera and as expected, Rock and Pop are the most popular tags. Lets see which are the most popular artists in the top most popular tags.
 ```r
-topTags &lt;- metadata %&gt;% 
-  count(tagValue) %&gt;% 
-  top_n(5, n) %&gt;% 
-  select(tagValue) %&gt;% 
+topTags &lt;- metadata %&gt;%
+  count(tagValue) %&gt;%
+  top_n(5, n) %&gt;%
+  select(tagValue) %&gt;%
   pull()
 
-metadata %&gt;% 
+metadata %&gt;%
   filter(tagValue %in% topTags,
-         !is.na(artistName)) %&gt;% 
-  count(tagValue, artistName, sort = TRUE) %&gt;% 
-  group_by(tagValue) %&gt;% 
-  top_n(5, n) %&gt;% 
-  ungroup() %&gt;% 
-  mutate(path = paste(tagValue, artistName, sep = &quot;-&quot;)) %&gt;% 
-  select(path, n) %&gt;% 
+         !is.na(artistName)) %&gt;%
+  count(tagValue, artistName, sort = TRUE) %&gt;%
+  group_by(tagValue) %&gt;%
+  top_n(5, n) %&gt;%
+  ungroup() %&gt;%
+  mutate(path = paste(tagValue, artistName, sep = &quot;-&quot;)) %&gt;%
+  select(path, n) %&gt;%
   sunburst(legend = FALSE) -&gt; snb
 
 snb &lt;- htmlwidgets::prependContent(snb, htmltools::h2(&quot;Sunburst of most popular artists in 5 most popular tags&quot;))
@@ -434,40 +428,30 @@ snb
 ```
 ## Sunburst of most popular artists in 5 most popular tags
 ##### Hover over to the see the artists and tags
-<div class="sunburst html-widget" id="htmlwidget-1" style="width:672px;height:480px; position:relative;">
-<div>
-<div class="sunburst-main">
-<div class="sunburst-sequence"></div>
-<div class="sunburst-chart">
-<div class="sunburst-explanation" style="visibility:hidden;"></div>
-<div class="sunburst-sidebar">
-<input type="checkbox" class="sunburst-togglelegend" style="visibility:hidden;">Legend</input>
-<div class="sunburst-legend" style="visibility:hidden;"></div>
-</div>
-</div>
-<script type="application/json" data-for="htmlwidget-1">{"x":{"data":{"children":[{"name":"pop","children":[{"name":"Britney Spears","size":108,"colname":"X2"},{"name":"Lady Gaga","size":99,"colname":"X2"},{"name":"Christina Aguilera","size":83,"colname":"X2"},{"name":"Madonna","size":78,"colname":"X2"},{"name":"Katy Perry","size":68,"colname":"X2"}],"colname":"X1"},{"name":"electronic","children":[{"name":"Depeche Mode","size":68,"colname":"X2"},{"name":"Björk","size":54,"colname":"X2"},{"name":"Lady Gaga","size":51,"colname":"X2"},{"name":"Daft Punk","size":39,"colname":"X2"},{"name":"Massive Attack","size":37,"colname":"X2"}],"colname":"X1"},{"name":"rock","children":[{"name":"The Beatles","size":67,"colname":"X2"},{"name":"Muse","size":65,"colname":"X2"},{"name":"Paramore","size":58,"colname":"X2"},{"name":"U2","size":52,"colname":"X2"},{"name":"Linkin Park","size":48,"colname":"X2"},{"name":"Radiohead","size":48,"colname":"X2"}],"colname":"X1"},{"name":"alternative","children":[{"name":"Radiohead","size":64,"colname":"X2"},{"name":"Muse","size":62,"colname":"X2"},{"name":"Placebo","size":48,"colname":"X2"},{"name":"Björk","size":46,"colname":"X2"},{"name":"Paramore","size":46,"colname":"X2"}],"colname":"X1"},{"name":"indie","children":[{"name":"The Killers","size":49,"colname":"X2"},{"name":"Franz Ferdinand","size":43,"colname":"X2"},{"name":"Arctic Monkeys","size":41,"colname":"X2"},{"name":"Muse","size":39,"colname":"X2"},{"name":"Radiohead","size":39,"colname":"X2"}],"colname":"X1"}],"name":"root"},"options":{"legendOrder":null,"colors":null,"valueField":"size","percent":true,"count":false,"explanation":null,"breadcrumb":[],"legend":false,"sortFunction":null,"sumNodes":true}},"evals":[],"jsHooks":[]}</script>
-<p>Alright, so we know the most popular artists in each popular tag as provided by the user. Don’t worry, Beatles is right up there in the “rock” tag! :)</p>
-</div>
-</div>
-</div>
+
+Legend
+
+{"x":{"data":{"children":[{"name":"pop","children":[{"name":"Britney Spears","size":108,"colname":"X2"},{"name":"Lady Gaga","size":99,"colname":"X2"},{"name":"Christina Aguilera","size":83,"colname":"X2"},{"name":"Madonna","size":78,"colname":"X2"},{"name":"Katy Perry","size":68,"colname":"X2"}],"colname":"X1"},{"name":"electronic","children":[{"name":"Depeche Mode","size":68,"colname":"X2"},{"name":"Björk","size":54,"colname":"X2"},{"name":"Lady Gaga","size":51,"colname":"X2"},{"name":"Daft Punk","size":39,"colname":"X2"},{"name":"Massive Attack","size":37,"colname":"X2"}],"colname":"X1"},{"name":"rock","children":[{"name":"The Beatles","size":67,"colname":"X2"},{"name":"Muse","size":65,"colname":"X2"},{"name":"Paramore","size":58,"colname":"X2"},{"name":"U2","size":52,"colname":"X2"},{"name":"Linkin Park","size":48,"colname":"X2"},{"name":"Radiohead","size":48,"colname":"X2"}],"colname":"X1"},{"name":"alternative","children":[{"name":"Radiohead","size":64,"colname":"X2"},{"name":"Muse","size":62,"colname":"X2"},{"name":"Placebo","size":48,"colname":"X2"},{"name":"Björk","size":46,"colname":"X2"},{"name":"Paramore","size":46,"colname":"X2"}],"colname":"X1"},{"name":"indie","children":[{"name":"The Killers","size":49,"colname":"X2"},{"name":"Franz Ferdinand","size":43,"colname":"X2"},{"name":"Arctic Monkeys","size":41,"colname":"X2"},{"name":"Muse","size":39,"colname":"X2"},{"name":"Radiohead","size":39,"colname":"X2"}],"colname":"X1"}],"name":"root"},"options":{"legendOrder":null,"colors":null,"valueField":"size","percent":true,"count":false,"explanation":null,"breadcrumb":[],"legend":false,"sortFunction":null,"sumNodes":true}},"evals":[],"jsHooks":[]}
+Alright, so we know the most popular artists in each popular tag as provided by the user. Don’t worry, Beatles is right up there in the “rock” tag! :)
+
 # Summary
-<p>In this post, we</p>
-<ul>
-<li>Downloaded and merged the dataset</li>
-<li>Analyzed and explored the dataset</li>
-<li>Visualized the most import data points in the dataset.</li>
-</ul>
-<p>I think I will wrap up the exploration phase for now. Lets export the data so we can model it in a later post.</p>
+In this post, we
+
+- Downloaded and merged the dataset
+- Analyzed and explored the dataset
+- Visualized the most import data points in the dataset.
+
+I think I will wrap up the exploration phase for now. Lets export the data so we can model it in a later post.
 ```r
-ratings %&gt;% 
+ratings %&gt;%
   write_csv(&quot;../data/hetrec2011-lastfm-2k/ratings_clean.csv&quot;)
-friends %&gt;% 
+friends %&gt;%
   write_csv(&quot;../data/hetrec2011-lastfm-2k/friends_clean.csv&quot;)
-metadata %&gt;% 
+metadata %&gt;%
   write_csv(&quot;../data/hetrec2011-lastfm-2k/metadata_clean.csv&quot;)
 ```
 # References
-<ol style="list-style-type: decimal">
-<li><a href="https://grouplens.org/datasets/hetrec-2011/">Data reference</a></li>
-<li><a href="https://www.data-to-viz.com/">Visualization reference</a></li>
-</ol>
+
+- Data reference
+- Visualization reference
+

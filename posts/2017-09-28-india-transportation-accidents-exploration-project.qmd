@@ -24,15 +24,12 @@ freeze: true
 output-file: india-transportation-accidents-exploration-project.html
 ---
 
-
-
-
 # Project Summary
-<p>With this project I will try to visualize and understand the traffic accident data for India as publicly accessible <a href="https://data.gov.in/">here</a>.</p>
+With this project I will try to visualize and understand the traffic accident data for India as publicly accessible here.
 # Project Goals
-<ol style="list-style-type: decimal">
-<li><p>Visualize traffic information and find trends</p></li>
-<li><p>Find outliers and see if any valuable info can be dugout for each state or overall.</p></li>
-<li><p>Try to predict number of accidents or other useful information.</p></li>
-</ol>
-<p>I’ll put out notebooks related to the work as separate articles.</p>
+
+- Visualize traffic information and find trends
+- Find outliers and see if any valuable info can be dugout for each state or overall.
+- Try to predict number of accidents or other useful information.
+
+I’ll put out notebooks related to the work as separate articles.

@@ -23,31 +23,27 @@ freeze: true
 output-file: india-general-elections-2019-analysis.html
 ---
 
-
-
-
 # Project Summary
-<p>With a whole lot of buzz in India (and world) about the 2019 General Elections in India, I thought it would be a good idea to do some election analysis of these pivotal elections in India’s history. I’ll start with analyzing the 2019 Election Manifestos of the 2 biggest political parties in India, the <a href="https://www.bjp.org">Bhartiya Janta Party</a> and the <a href="https://www.inc.in">Indian National Congress</a>.</p>
+With a whole lot of buzz in India (and world) about the 2019 General Elections in India, I thought it would be a good idea to do some election analysis of these pivotal elections in India’s history. I’ll start with analyzing the 2019 Election Manifestos of the 2 biggest political parties in India, the Bhartiya Janta Party and the Indian National Congress.
 # Project Goals
-<ol style="list-style-type: decimal">
-<li><p>Data collection and cleaning for the election manifestos of the 2 parties.</p></li>
-<li><p>Take a deep dive into the following 6 crucial sections of these manifestos for these elections -</p></li>
-</ol>
-<ul>
-<li>Economic Growth</li>
-<li>Employment and opportunities</li>
-<li>Anti-corruption and Good Governance</li>
-<li>Inclusion and Diversity</li>
-<li>National Security</li>
-<li>Education, Healthcare and Misc.</li>
-</ul>
-<p>In the next series of posts I’ll roughly follow the above steps and link them here to this master project summary page. Here goes -</p>
-<ol style="list-style-type: decimal">
-<li><a href="/2019/05/india-elections-2019-bjp-vs-congress-manifestos-analysis/">Part 1 - Data Collection and Cleaning</a></li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/">Part 2 - Economic Growth</a></li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/">Part 3 - Employment and Opportunities</a></li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance/">Part 4 - Anti-Corruption and Good Governance</a></li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity/">Part 5 - Inclusion and Diversity</a></li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security/">Part 6 - National Security</a></li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc/">Part 7 - Education, Healthcare and Miscellaneous</a></li>
-</ol>
+
+- Data collection and cleaning for the election manifestos of the 2 parties.
+- Take a deep dive into the following 6 crucial sections of these manifestos for these elections -
+
+- Economic Growth
+- Employment and opportunities
+- Anti-corruption and Good Governance
+- Inclusion and Diversity
+- National Security
+- Education, Healthcare and Misc.
+
+In the next series of posts I’ll roughly follow the above steps and link them here to this master project summary page. Here goes -
+
+- Part 1 - Data Collection and Cleaning
+- Part 2 - Economic Growth
+- Part 3 - Employment and Opportunities
+- Part 4 - Anti-Corruption and Good Governance
+- Part 5 - Inclusion and Diversity
+- Part 6 - National Security
+- Part 7 - Education, Healthcare and Miscellaneous
+

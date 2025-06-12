@@ -23,15 +23,12 @@ freeze: true
 output-file: music-artist-recommendation-system-project.html
 ---
 
-
-
-
 # Project Summary
-<p>Recommendation systems are all around us, from Netflix’s amazing video recommender system to Amazon’s product recommendation system and many many more. I have always been curious about the science and effort that goes into building one and combining it with another one of my favorite topics, Music, would make it one of the more interesting projects that I try my hands on. Let’s see if we can build a music artist recommendation system that is similar to the ones built by Spotify or Amazon Music. I will use the <a href="https://grouplens.org/datasets/hetrec-2011/">Last.fm Dataset</a> provided by GroupLens and works towards building a music artist recommendation system.</p>
+Recommendation systems are all around us, from Netflix’s amazing video recommender system to Amazon’s product recommendation system and many many more. I have always been curious about the science and effort that goes into building one and combining it with another one of my favorite topics, Music, would make it one of the more interesting projects that I try my hands on. Let’s see if we can build a music artist recommendation system that is similar to the ones built by Spotify or Amazon Music. I will use the Last.fm Dataset provided by GroupLens and works towards building a music artist recommendation system.
 # Project Goals
-<ol style="list-style-type: decimal">
-<li><p>Exploratory data analysis of the Last.fm dataset.</p></li>
-<li><p>Build Content-based and Collaborative filtering based recommendation system to recommend music artists to users.</p></li>
-<li><p>Generate a hybrid recommender that combines all previously trained recommenders and provides recommendations.</p></li>
-</ol>
-<p>In the next series of posts I’ll roughly follow the above steps.</p>
+
+- Exploratory data analysis of the Last.fm dataset.
+- Build Content-based and Collaborative filtering based recommendation system to recommend music artists to users.
+- Generate a hybrid recommender that combines all previously trained recommenders and provides recommendations.
+
+In the next series of posts I’ll roughly follow the above steps.

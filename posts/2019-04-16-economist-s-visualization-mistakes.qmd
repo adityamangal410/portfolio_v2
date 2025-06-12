@@ -24,14 +24,11 @@ keywords:
 - R
 ---
 
-
-
-
 # Introduction
-<p>From the article on <a href="https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368">Mistakes, we’ve drawn a few</a> -</p>
-<p>“At The Economist, we take data visualisation seriously. Every week we publish around 40 charts across print, the website and our apps. With every single one, we try our best to visualise the numbers accurately and in a way that best supports the story. But sometimes we get it wrong. We can do better in future if we learn from our mistakes — and other people may be able to learn from them, too.”</p>
-<p>Here I will try and draw the improved plots as suggested by the article on economist or make a version I think is best.
-All this done towards the weekly social data project <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-04-16">Tidy Tuesday</a>.</p>
+From the article on Mistakes, we’ve drawn a few -
+“At The Economist, we take data visualisation seriously. Every week we publish around 40 charts across print, the website and our apps. With every single one, we try our best to visualise the numbers accurately and in a way that best supports the story. But sometimes we get it wrong. We can do better in future if we learn from our mistakes — and other people may be able to learn from them, too.”
+Here I will try and draw the improved plots as suggested by the article on economist or make a version I think is best.
+All this done towards the weekly social data project Tidy Tuesday.
 # Analysis
 ## Load libraries
 ```r
@@ -61,18 +58,18 @@ corbyn
 ## 6 Saving Labour                   56
 ```
 ```r
-corbyn %&gt;% 
-  mutate(pct_likes = avg_facebook_likes/sum(avg_facebook_likes)) %&gt;% 
-  ggplot(aes(political_group, pct_likes, fill = &quot;red&quot;)) + 
+corbyn %&gt;%
+  mutate(pct_likes = avg_facebook_likes/sum(avg_facebook_likes)) %&gt;%
+  ggplot(aes(political_group, pct_likes, fill = &quot;red&quot;)) +
   geom_col(show.legend = FALSE) +
-  scale_y_continuous(labels = percent_format()) + 
-  coord_flip() + 
+  scale_y_continuous(labels = percent_format()) +
+  coord_flip() +
   labs(y = &quot;% of likes over the political groups&quot;,
        x = &quot;Political Group&quot;,
        title = &quot;Percentage of Average Facebook likes for different political groups&quot;,
        caption = &quot;Based on data from The Economist about political left in Britain&quot;)
 ```
-<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+
 ## Analyzing decline of dog weights
 ```r
 dogs &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/dogs.csv&quot;)
@@ -95,10 +92,10 @@ dogs
 ## 10  2015       18.1     42.5
 ```
 ```r
-dogs %&gt;% 
+dogs %&gt;%
   mutate(year = as.factor(year),
-         weight_to_neck = avg_weight/avg_neck) %&gt;% 
-  ggplot(aes(x = year, y = weight_to_neck)) + 
+         weight_to_neck = avg_weight/avg_neck) %&gt;%
+  ggplot(aes(x = year, y = weight_to_neck)) +
   geom_line(aes(group = 1)) +
   geom_point() +
   labs(x = &quot;Year&quot;,
@@ -106,7 +103,7 @@ dogs %&gt;%
        title = &quot;Average Weight to Neck Ratio over Years&quot;,
        caption = &quot;Based on data from The Economist&quot;)
 ```
-<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+
 ## Analyzing Brexit data
 ```r
 brexit &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/brexit.csv&quot;)
@@ -130,14 +127,14 @@ brexit
 ## # … with 75 more rows
 ```
 ```r
-brexit %&gt;% 
-  mutate(date = dmy(date)) %&gt;% 
-  ggplot(aes(x = date)) + 
-  geom_smooth(aes(y = percent_responding_right, colour = &quot;percent_responding_right&quot;), se = FALSE) + 
+brexit %&gt;%
+  mutate(date = dmy(date)) %&gt;%
+  ggplot(aes(x = date)) +
+  geom_smooth(aes(y = percent_responding_right, colour = &quot;percent_responding_right&quot;), se = FALSE) +
   geom_point(aes(y = percent_responding_right, colour = &quot;percent_responding_right&quot;)) +
   geom_smooth(aes(y = percent_responding_wrong, colour = &quot;percent_responding_wrong&quot;), se = FALSE) +
-  geom_point(aes(y = percent_responding_wrong, colour = &quot;percent_responding_wrong&quot;)) + 
-  scale_color_manual(labels = c(&quot;Right&quot;, &quot;Wrong&quot;), values = c(&quot;blue&quot;, &quot;red&quot;)) + 
+  geom_point(aes(y = percent_responding_wrong, colour = &quot;percent_responding_wrong&quot;)) +
+  scale_color_manual(labels = c(&quot;Right&quot;, &quot;Wrong&quot;), values = c(&quot;blue&quot;, &quot;red&quot;)) +
   labs(x = &quot;Date&quot;,
        y = &quot;Response Percentage&quot;,
        title = &quot;Response behaviour of people about Brexit over time on the question&quot;,
@@ -145,7 +142,7 @@ brexit %&gt;%
        caption = &quot;Based on data from The Economist&quot;,
        color = &quot;Response&quot;)
 ```
-<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+
 ## Analyzing US trade deficit
 ```r
 trade &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/trade.csv&quot;)
@@ -157,37 +154,37 @@ trade
 ##     year trade_deficit manufacture_employment
 ##    &lt;dbl&gt;         &lt;dbl&gt;                  &lt;dbl&gt;
 ##  1  1995      -3.38e10              17244583.
-##  2  1996      -3.95e10              17236750 
+##  2  1996      -3.95e10              17236750
 ##  3  1997      -4.97e10              17417833.
-##  4  1998      -5.69e10              17560000 
+##  4  1998      -5.69e10              17560000
 ##  5  1999      -6.87e10              17322667.
-##  6  2000      -8.38e10              17265250 
+##  6  2000      -8.38e10              17265250
 ##  7  2001      -8.31e10              16440583.
 ##  8  2002      -1.03e11              15256833.
-##  9  2003      -1.24e11              14508500 
-## 10  2004      -1.62e11              14314750 
+##  9  2003      -1.24e11              14508500
+## 10  2004      -1.62e11              14314750
 ## # … with 12 more rows
 ```
 ```r
-trade %&gt;% 
+trade %&gt;%
   mutate(year = as.factor(year),
          trade_deficit = trade_deficit/1000000000,
          manufacture_employment = manufacture_employment/1000000) -&gt; trade
 
-trade %&gt;% 
-  ggplot(aes(x = year, y = trade_deficit, fill = &quot;trade_deficit&quot;)) + 
-  geom_col(show.legend = FALSE) + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+trade %&gt;%
+  ggplot(aes(x = year, y = trade_deficit, fill = &quot;trade_deficit&quot;)) +
+  geom_col(show.legend = FALSE) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = &quot;Year&quot;,
        y = &quot;Trade Deficit in billions&quot;,
        title = &quot;US Trade Deficit over years&quot;,
        caption = &quot;Based on data from The Economist&quot;) -&gt; p1
 
-trade %&gt;% 
-  ggplot(aes(x = year, y = manufacture_employment, color = &quot;manufacture_employment&quot;)) + 
-  geom_line(aes(group = 1), show.legend = FALSE) + 
-  geom_point(show.legend = FALSE) + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+trade %&gt;%
+  ggplot(aes(x = year, y = manufacture_employment, color = &quot;manufacture_employment&quot;)) +
+  geom_line(aes(group = 1), show.legend = FALSE) +
+  geom_point(show.legend = FALSE) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = &quot;Year&quot;,
        y = &quot;Manufacturing Employment in millions&quot;,
        title = &quot;Manufacturing Employment over years&quot;,
@@ -195,7 +192,7 @@ trade %&gt;%
 
 grid.arrange(p1, p2, nrow = 1)
 ```
-<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+
 ## Analyzing pension benefits
 ```r
 pensions &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/pensions.csv&quot;)
@@ -206,31 +203,31 @@ pensions
 ## # A tibble: 35 x 3
 ##    country        pop_65_percent gov_spend_percent_gdp
 ##    &lt;chr&gt;                   &lt;dbl&gt;                 &lt;dbl&gt;
-##  1 Australia               15.0                   5.2 
-##  2 Austria                 18.8                  13.9 
-##  3 Belgium                 18.2                  10.4 
-##  4 Brazil                   7.84                 12   
+##  1 Australia               15.0                   5.2
+##  2 Austria                 18.8                  13.9
+##  3 Belgium                 18.2                  10.4
+##  4 Brazil                   7.84                 12
 ##  5 Canada                  16.1                   4.31
 ##  6 Chile                   11                     3.25
 ##  7 Czech Republic          18.1                   9.09
 ##  8 Denmark                 19.0                   8.45
 ##  9 Estonia                 18.8                   6.99
-## 10 Finland                 20.5                  11.4 
+## 10 Finland                 20.5                  11.4
 ## # … with 25 more rows
 ```
 ```r
-pensions %&gt;% 
-  mutate(spend_per_head = gov_spend_percent_gdp/pop_65_percent) %&gt;% 
-  ggplot(aes(x = pop_65_percent, y = gov_spend_percent_gdp, color = country, size = spend_per_head)) + 
-  geom_point(show.legend = FALSE) + 
-  geom_text(aes(label = country), hjust = -0.15, vjust = 0, show.legend = FALSE) + 
+pensions %&gt;%
+  mutate(spend_per_head = gov_spend_percent_gdp/pop_65_percent) %&gt;%
+  ggplot(aes(x = pop_65_percent, y = gov_spend_percent_gdp, color = country, size = spend_per_head)) +
+  geom_point(show.legend = FALSE) +
+  geom_text(aes(label = country), hjust = -0.15, vjust = 0, show.legend = FALSE) +
   labs(x = &quot;Percent of population aged 65 or older&quot;,
        y = &quot;Percent of government spending on pension benefits as percent of GDP&quot;,
        title = &quot;Government Spend vs. Population over 65&quot;,
        subtitle = &quot;Size of point represents the spend per head&quot;,
        caption = &quot;Based on data from The Economist&quot;)
 ```
-<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+
 ## Analyzing EU balance
 ```r
 eu_balance &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/eu_balance.csv&quot;)
@@ -241,29 +238,29 @@ eu_balance
 ## # A tibble: 266 x 4
 ##    country account_type  year   value
 ##    &lt;chr&gt;   &lt;chr&gt;        &lt;dbl&gt;   &lt;dbl&gt;
-##  1 Belgium current       2009  -3755 
-##  2 Germany current       2009 141234 
-##  3 Estonia current       2009    360 
+##  1 Belgium current       2009  -3755
+##  2 Germany current       2009 141234
+##  3 Estonia current       2009    360
 ##  4 Ireland current       2009  -7912.
-##  5 Greece  current       2009 -29323 
-##  6 Spain   current       2009 -46191 
-##  7 France  current       2009 -10652 
-##  8 Italy   current       2009 -29717 
-##  9 Cyprus  current       2009  -1431 
-## 10 Latvia  current       2009   1463 
+##  5 Greece  current       2009 -29323
+##  6 Spain   current       2009 -46191
+##  7 France  current       2009 -10652
+##  8 Italy   current       2009 -29717
+##  9 Cyprus  current       2009  -1431
+## 10 Latvia  current       2009   1463
 ## # … with 256 more rows
 ```
 ```r
-eu_balance %&gt;% 
+eu_balance %&gt;%
   mutate(year = as.factor(year),
          account_type = as.factor(account_type),
-         country = as.factor(country)) %&gt;% 
-  group_by(year, account_type) %&gt;% 
-  mutate(perc = value/sum(value)) %&gt;% 
-  top_n(5, perc) %&gt;% 
-  ungroup() %&gt;% 
+         country = as.factor(country)) %&gt;%
+  group_by(year, account_type) %&gt;%
+  mutate(perc = value/sum(value)) %&gt;%
+  top_n(5, perc) %&gt;%
+  ungroup() %&gt;%
   ggplot(aes(x = year, y = value, fill = country)) +
-  geom_col() + 
+  geom_col() +
   facet_wrap(~account_type) +
   labs(x = &quot;Year&quot;,
        y = &quot;Value in billions of euros&quot;,
@@ -271,7 +268,7 @@ eu_balance %&gt;%
        subtitle = &quot;Based on percentage of balances&quot;,
        caption = &quot;Based on data from The Economist&quot;)
 ```
-<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+
 ## Analyzing papers published
 ```r
 women_research &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/women_research.csv&quot;)
@@ -291,15 +288,15 @@ women_research
 ##  7 EU28           Health sciences          0.48
 ##  8 France         Health sciences          0.48
 ##  9 Canada         Health sciences          0.49
-## 10 Australia      Health sciences          0.5 
+## 10 Australia      Health sciences          0.5
 ## # … with 50 more rows
 ```
 ```r
-women_research %&gt;% 
-  ggplot(aes(x = field, y = percent_women, color = country, size = percent_women)) + 
-  geom_point() + 
+women_research %&gt;%
+  ggplot(aes(x = field, y = percent_women, color = country, size = percent_women)) +
+  geom_point() +
   scale_size(guide = &quot;none&quot;) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x = &quot;Field of study&quot;,
        y = &quot;Percentage of Women&quot;,
        title = &quot;Women among researchers with papers published 2011-15 as % of total by field of study for 12 countries&quot;,
@@ -307,4 +304,4 @@ women_research %&gt;%
        color = &quot;Country&quot;,
        caption = &quot;Based on data from The Economist&quot;)
 ```
-<p><img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-15-1.png" width="960" /></p>
+
