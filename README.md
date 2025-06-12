@@ -50,6 +50,14 @@ output-file: my-first-post.html
 
 Use this field for new posts instead of the legacy `slug` setting.
 
+### Metadata keywords
+
+Posts can include a `keywords` entry in the YAML header. Quarto displays these
+terms on the article page and embeds them in the HTML for search engines.
+Older posts also used a `tags` list. Those values have been merged into
+`keywords` so everything appears in one place. New posts should only specify
+`keywords`.
+
 ### Jupyter Notebook (`.ipynb`)
 
 1. Create a new notebook under `posts/` with a descriptive name, e.g.

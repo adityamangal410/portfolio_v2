@@ -3,16 +3,15 @@ title: 'Where Does Your Medicine Come From?: MakeOverMonday 2018 Week 8'
 author: Aditya Mangal
 date: '2018-02-18'
 categories:
-  - MakeOverMonday
-tags:
-  - DataAnalysis
-  - DataScience
-  - MakeOverMonday
-  - Medicine
-  - Visualizations
-  - R
+- MakeOverMonday
 keywords:
-  - tech
+- tech
+- DataAnalysis
+- DataScience
+- MakeOverMonday
+- Medicine
+- Visualizations
+- R
 summary: Goal of this Visualization task is to create a visualization for the [Drug
   and Medicine Exports data for different countries.](https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1)
 readingtime: '5'

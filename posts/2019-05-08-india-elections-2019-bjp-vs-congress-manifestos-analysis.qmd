@@ -3,17 +3,16 @@ title: 'India Elections 2019: BJP & Congress Manifestos'' Analysis - Part 1 Data
 author: Aditya Mangal
 date: '2019-05-08'
 categories:
-  - Projects
-tags:
-  - DataAnalysis
-  - DataScience
-  - India
-  - Python
-  - R
-  - TextMining
-  - Visualizations
+- Projects
 keywords:
-  - tech
+- tech
+- DataAnalysis
+- DataScience
+- India
+- Python
+- R
+- TextMining
+- Visualizations
 summary: With India's 2019 General Elections around the corner, I thought it'd be
   a good idea to analyse the election manifestos of its 2 biggest political parties,
   BJP and Congress. In this part 1, I'll collect and clean data and setup the ground

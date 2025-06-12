@@ -3,15 +3,14 @@ title: 'NLP with Disaster Tweets: Part 6 Multi Layer Perceptron'
 author: Aditya Mangal
 date: '2020-09-02'
 categories:
-  - Projects
-tags:
-  - DataScience
-  - DeepLearning
-  - NLP
-  - Python
-  - TextMining
+- Projects
 keywords:
-  - tech
+- tech
+- DataScience
+- DeepLearning
+- NLP
+- Python
+- TextMining
 summary: Multi Layer Perceptron using PyTorch
 readingtime: '8'
 draft: false

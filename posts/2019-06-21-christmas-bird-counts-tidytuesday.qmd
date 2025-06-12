@@ -3,15 +3,15 @@ title: 'Christmas Bird Counts: TidyTuesday'
 author: Aditya Mangal
 date: '2019-06-21'
 categories:
-  - TidyTuesday
-tags:
-  - DataAnalysis
-  - R
-  - Visualizations
-  - TidyTuesday
+- TidyTuesday
 keywords:
-  - tech
-summary: Visualizing bird watching data as collected in Hamilton area of Ontario during Christmas time since 1921
+- tech
+- DataAnalysis
+- R
+- Visualizations
+- TidyTuesday
+summary: Visualizing bird watching data as collected in Hamilton area of Ontario during
+  Christmas time since 1921
 readingtime: '10'
 draft: false
 coverImage: https://lh3.googleusercontent.com/K6bZi7jApSS0bpjxtxuRF5HrpBw5YLUDiWlnVFrIhjY3Wqzrt6PzprlbEzRjDLZ11sStS6eISkmeg6nk44ZVV-X4g4ZFYx3QO7njbWd_NfEg_89NjdKOU__H9qWTbotQe34RmZyZd3_cw5UK00Fmf3LbTQnlUpmIam5EIy9T9m-Yweq09kxPPmjKTQmuZxx3wDzfNFgBHJ5B_FjQ4_NHnKnsWWHcjnR9TXrZ6GHtYt0sNSiMVvFki1KsTO3qxtl6Ecas-PrNgC8cXgiqp-Oe_U56KavqjDyyKmMEOJRRbi1SurquuqyLyCuZqWJQabQx4EXOMVwf53RoC38juXtfZZnpM6YAPnPdaWhjGXS1IcR7jXFelru9QGaPk_qTgc7l_3ysvStoig8Xfzbae2TTVK8z9YepwoT_JmbWIpmpTvr9ad6qMngMq6LPy-hAV4dvYDif4u3b3GY4pz68qKPfd0W1BnA7a7HG0iBIMsAhkd9lWhH629M6_p4FUNW1fm9pIzItMp9BIqZoe7ECmqmJgAdZTtXvTUY9B5rJC7Yazh5JKeuF3Q9dgx9u2kEq9YDk5GOD5ULkBv5cDNTBL9B-0KAvLkaagqGXhuHzFDTJvqssUEBHUdNeeNZBuEllc_6KhGkL_FXV4n-TJF3sWmpwkBExY8y7Px1n2_OGZvSY6jcIR_VTKtpYh_spyQtu-KNTwfvXW6BgyckPWQQekz0VqX3OaA=w2748-h1832-no

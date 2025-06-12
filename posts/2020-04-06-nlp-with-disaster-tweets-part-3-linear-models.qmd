@@ -3,14 +3,13 @@ title: 'NLP with Disaster Tweets: Part 3 Linear Models'
 author: Aditya Mangal
 date: '2020-04-06'
 categories:
-  - Projects
-tags:
-  - DataAnalysis
-  - DataScience
-  - NLP
-  - TextMining
+- Projects
 keywords:
-  - tech
+- tech
+- DataAnalysis
+- DataScience
+- NLP
+- TextMining
 summary: NLP and Tidymodelling in R
 readingtime: '15'
 draft: false

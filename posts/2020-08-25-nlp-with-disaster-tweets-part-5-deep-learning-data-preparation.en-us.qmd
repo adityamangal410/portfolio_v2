@@ -3,14 +3,13 @@ title: 'NLP with Disaster Tweets: Part 5 Deep Learning Data Preparation'
 author: Aditya Mangal
 date: '2020-08-25'
 categories:
-  - Projects
-tags:
-  - DataScience
-  - DeepLearning
-  - NLP
-  - TextMining
+- Projects
 keywords:
-  - tech
+- tech
+- DataScience
+- DeepLearning
+- NLP
+- TextMining
 summary: Data preparation for deep learning using PyTorch
 readingtime: '8'
 draft: false

@@ -3,13 +3,12 @@ title: Music Artist Recommendation System - EDA
 author: Aditya Mangal
 date: '2019-07-18'
 categories:
-  - Projects
-tags:
-  - DataAnalysis
-  - DataScience
-  - Visualizations
+- Projects
 keywords:
-  - tech
+- tech
+- DataAnalysis
+- DataScience
+- Visualizations
 summary: Music Artist Recommendation System using the [Last.fm Dataset](https://grouplens.org/datasets/hetrec-2011/).
   Exploratory data analysis.
 readingtime: '15'

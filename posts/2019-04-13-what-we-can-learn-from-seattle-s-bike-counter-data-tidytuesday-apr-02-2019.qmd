@@ -1,23 +1,27 @@
 ---
-title: 'What we can learn from Seattle’s bike-counter data: TidyTuesday Apr 02 2019'
+title: "What we can learn from Seattle\u2019s bike-counter data: TidyTuesday Apr 02\
+  \ 2019"
 author: Aditya Mangal
 date: '2019-04-13'
 categories:
-  - TidyTuesday
-tags:
-  - DataAnalysis
-  - DataScience
-  - TidyTuesday
-  - Visualizations
-  - Transportation
-summary: "While millions of public dollars are going for bike lanes in Seattle, the city's data collection on actual bike-lane ridership is scattered and incomplete. Given they're the best the public can get, here's what those numbers can tell us about who's riding where."
-readingtime: "10"
+- TidyTuesday
+summary: While millions of public dollars are going for bike lanes in Seattle, the
+  city's data collection on actual bike-lane ridership is scattered and incomplete.
+  Given they're the best the public can get, here's what those numbers can tell us
+  about who's riding where.
+readingtime: '10'
 draft: true
 format:
   html:
     theme: distill
 freeze: true
 output-file: what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019.html
+keywords:
+- DataAnalysis
+- DataScience
+- TidyTuesday
+- Visualizations
+- Transportation
 ---
 
 
