@@ -78,3 +78,9 @@
   justify-content: center;
 }
 
+
+/* Ensure images fit within blog post content */
+img {
+  max-width: 100%;
+  height: auto;
+}
