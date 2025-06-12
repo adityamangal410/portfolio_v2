@@ -26,21 +26,9 @@ freeze: true
 output-file: the-winter-olympics-makeovermonday-2018-week7.html
 ---
 
-
-<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
-<script src="/rmarkdown-libs/jquery/jquery.min.js"></script>
-<link href="/rmarkdown-libs/leaflet/leaflet.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/leaflet/leaflet.js"></script>
-<link href="/rmarkdown-libs/leafletfix/leafletfix.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/Proj4Leaflet/proj4-compressed.js"></script>
-<script src="/rmarkdown-libs/Proj4Leaflet/proj4leaflet.js"></script>
-<link href="/rmarkdown-libs/rstudio_leaflet/rstudio_leaflet.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/leaflet-binding/leaflet.js"></script>
-
-
 # Introduction
-<p>Goal of this Visualization task is to create an alternative visualization to the <a href="https://public.tableau.com/views/TheWinterOlympics/TheWinterOlympics?:embed=y&:showVizHome=no" target="_blank">Tableau’s visualization for Winter Olympics data for different countries</a></p>
-<p>In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.</p>
+Goal of this Visualization task is to create an alternative visualization to the [Tableau’s visualization for Winter Olympics data for different countries](https://public.tableau.com/views/TheWinterOlympics/TheWinterOlympics?:embed=y&:showVizHome=no)
+In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
 # Analysis
 ## Cleaning up workspace and loading required libraries
 ```r
@@ -57,7 +45,7 @@ library(rgdal)
 library(stringr)
 ```
 ## Obtaining Data
-<p>Reading and viewing the dataset</p>
+Reading and viewing the dataset
 ```r
 GET(&quot;https://query.data.world/s/n5nc32oqhtb25hdt3vsa24rd4scs2w&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.xlsx&quot;)))
 ```
@@ -70,22 +58,22 @@ olympics
 ```
 ## # A tibble: 2,865 x 9
 ##     Year Sport Event Country Gender `Medal Rank` Medal `Name of Athlet…
-##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;           
-##  1  1924 Bobs… Men&#39;… Switze… Men               1 gold  Switzerland-1   
-##  2  1924 Bobs… Men&#39;… Britain Men               2 silv… Britain-1       
-##  3  1924 Bobs… Men&#39;… Belgium Men               3 bron… Belgium-1       
-##  4  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug   
+##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;
+##  1  1924 Bobs… Men&#39;… Switze… Men               1 gold  Switzerland-1
+##  2  1924 Bobs… Men&#39;… Britain Men               2 silv… Britain-1
+##  3  1924 Bobs… Men&#39;… Belgium Men               3 bron… Belgium-1
+##  4  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug
 ##  5  1924 Cros… Men&#39;… Norway  Men               2 silv… Johan GrÃ¸ttums…
-##  6  1924 Cros… Men&#39;… Finland Men               3 bron… Tapani Niku     
-##  7  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug   
+##  6  1924 Cros… Men&#39;… Finland Men               3 bron… Tapani Niku
+##  7  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug
 ##  8  1924 Cros… Men&#39;… Norway  Men               2 silv… Thoralf StrÃ¸ms…
 ##  9  1924 Cros… Men&#39;… Norway  Men               3 bron… Johan GrÃ¸ttums…
-## 10  1924 Curl… Men&#39;… Britain Men               1 gold  Britain         
+## 10  1924 Curl… Men&#39;… Britain Men               1 gold  Britain
 ## # … with 2,855 more rows, and 1 more variable: `Age of Athlete` &lt;dbl&gt;
 ```
-<p>Summarizing and getting stats to better understand the dataset</p>
+Summarizing and getting stats to better understand the dataset
 ```r
-olympics %&gt;% 
+olympics %&gt;%
   glimpse()
 ```
 ```
@@ -102,43 +90,43 @@ olympics %&gt;%
 ## $ `Age of Athlete`          &lt;dbl&gt; NA, NA, NA, 29, 24, 28, 29, 27, 24, NA, NA,…
 ```
 ```r
-olympics %&gt;% 
+olympics %&gt;%
   summary()
 ```
 ```
-##       Year         Sport              Event             Country         
-##  Min.   :1924   Length:2865        Length:2865        Length:2865       
-##  1st Qu.:1972   Class :character   Class :character   Class :character  
-##  Median :1992   Mode  :character   Mode  :character   Mode  :character  
-##  Mean   :1986                                                           
-##  3rd Qu.:2006                                                           
-##  Max.   :2014                                                           
-##                                                                         
+##       Year         Sport              Event             Country
+##  Min.   :1924   Length:2865        Length:2865        Length:2865
+##  1st Qu.:1972   Class :character   Class :character   Class :character
+##  Median :1992   Mode  :character   Mode  :character   Mode  :character
+##  Mean   :1986
+##  3rd Qu.:2006
+##  Max.   :2014
+##
 ##     Gender            Medal Rank       Medal           Name of Athlete or Team
-##  Length:2865        Min.   :1.000   Length:2865        Length:2865            
-##  Class :character   1st Qu.:1.000   Class :character   Class :character       
-##  Mode  :character   Median :2.000   Mode  :character   Mode  :character       
-##                     Mean   :1.996                                             
-##                     3rd Qu.:3.000                                             
-##                     Max.   :3.000                                             
-##                                                                               
-##  Age of Athlete 
-##  Min.   :14.00  
-##  1st Qu.:22.00  
-##  Median :25.00  
-##  Mean   :25.15  
-##  3rd Qu.:28.00  
-##  Max.   :42.00  
+##  Length:2865        Min.   :1.000   Length:2865        Length:2865
+##  Class :character   1st Qu.:1.000   Class :character   Class :character
+##  Mode  :character   Median :2.000   Mode  :character   Mode  :character
+##                     Mean   :1.996
+##                     3rd Qu.:3.000
+##                     Max.   :3.000
+##
+##  Age of Athlete
+##  Min.   :14.00
+##  1st Qu.:22.00
+##  Median :25.00
+##  Mean   :25.15
+##  3rd Qu.:28.00
+##  Max.   :42.00
 ##  NA&#39;s   :692
 ```
 ## Scrubbing data
-<p>As per the dataset requirement, East and West Germany are to be grouped with Germany and Soviet Union and the 1992 Unified Team needs to be combined with Russia</p>
+As per the dataset requirement, East and West Germany are to be grouped with Germany and Soviet Union and the 1992 Unified Team needs to be combined with Russia
 ```r
-olympics = olympics %&gt;% 
+olympics = olympics %&gt;%
   mutate(Country = recode(Country, &quot;Soviet Union&quot; = &quot;Russia&quot;, &quot;Unified Team&quot; = &quot;Russia&quot;,
                           &quot;East Germany&quot; = &quot;Germany&quot;, &quot;West Germany&quot; = &quot;Germany&quot;))
 ```
-<p>Reading in the ISO-3166 country codes dataset in order to generate the choropleth</p>
+Reading in the ISO-3166 country codes dataset in order to generate the choropleth
 ```r
 countryCodes = read_csv(&quot;https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv&quot;)
 ```
@@ -148,109 +136,109 @@ countryCodes
 ```
 ## # A tibble: 249 x 11
 ##    name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##    &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
+##    &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
 ##  1 Afgh… AF        AFG       004            ISO 3166-2:… Asia   Southern As…
 ##  2 Ålan… AX        ALA       248            ISO 3166-2:… Europe Northern Eu…
 ##  3 Alba… AL        ALB       008            ISO 3166-2:… Europe Southern Eu…
 ##  4 Alge… DZ        DZA       012            ISO 3166-2:… Africa Northern Af…
-##  5 Amer… AS        ASM       016            ISO 3166-2:… Ocean… Polynesia   
+##  5 Amer… AS        ASM       016            ISO 3166-2:… Ocean… Polynesia
 ##  6 Ando… AD        AND       020            ISO 3166-2:… Europe Southern Eu…
 ##  7 Ango… AO        AGO       024            ISO 3166-2:… Africa Sub-Saharan…
 ##  8 Angu… AI        AIA       660            ISO 3166-2:… Ameri… Latin Ameri…
-##  9 Anta… AQ        ATA       010            ISO 3166-2:… &lt;NA&gt;   &lt;NA&gt;        
+##  9 Anta… AQ        ATA       010            ISO 3166-2:… &lt;NA&gt;   &lt;NA&gt;
 ## 10 Anti… AG        ATG       028            ISO 3166-2:… Ameri… Latin Ameri…
 ## # … with 239 more rows, and 4 more variables: `intermediate-region` &lt;chr&gt;,
 ## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
 ## #   `intermediate-region-code` &lt;chr&gt;
 ```
-<p>Joining the 2 datasets and verifying if any country name mismatch happening in the 2.</p>
+Joining the 2 datasets and verifying if any country name mismatch happening in the 2.
 ```r
-olympics %&gt;% 
-  left_join(countryCodes, by=c(&quot;Country&quot; = &quot;name&quot;)) %&gt;% 
-  filter(is.na(`alpha-3`)) %&gt;% 
-  select(Country) %&gt;% 
+olympics %&gt;%
+  left_join(countryCodes, by=c(&quot;Country&quot; = &quot;name&quot;)) %&gt;%
+  filter(is.na(`alpha-3`)) %&gt;%
+  select(Country) %&gt;%
   unique()
 ```
 ```
 ## # A tibble: 8 x 1
-##   Country       
-##   &lt;chr&gt;         
-## 1 Britain       
-## 2 United States 
+##   Country
+##   &lt;chr&gt;
+## 1 Britain
+## 2 United States
 ## 3 Czechoslovakia
-## 4 Russia        
-## 5 North Korea   
-## 6 Yugoslavia    
-## 7 South Korea   
+## 4 Russia
+## 5 North Korea
+## 6 Yugoslavia
+## 7 South Korea
 ## 8 Czech Republic
 ```
-<p>Looks like above 7 countries do not have a corresponding entry in the countryCodes dataset.
-Lets try to find out the corresponding names for each of the 7 in the countryCodes dataset.</p>
+Looks like above 7 countries do not have a corresponding entry in the countryCodes dataset.
+Lets try to find out the corresponding names for each of the 7 in the countryCodes dataset.
 ```r
-countryCodes %&gt;% 
+countryCodes %&gt;%
   filter(str_detect(str_to_lower(name), &quot;britain&quot;)) #United Kingdom of Great Britain and Northern Ireland
 ```
 ```
 ## # A tibble: 1 x 11
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
+##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
 ## 1 Unit… GB        GBR       826            ISO 3166-2:… Europe Northern Eu…
 ## # … with 4 more variables: `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
 ## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;
 ```
 ```r
-countryCodes %&gt;% 
+countryCodes %&gt;%
   filter(str_detect(str_to_lower(name), &quot;states&quot;)) #United States of America
 ```
 ```
 ## # A tibble: 3 x 11
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
-## 1 Micr… FM        FSM       583            ISO 3166-2:… Ocean… Micronesia  
+##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
+## 1 Micr… FM        FSM       583            ISO 3166-2:… Ocean… Micronesia
 ## 2 Unit… US        USA       840            ISO 3166-2:… Ameri… Northern Am…
-## 3 Unit… UM        UMI       581            ISO 3166-2:… Ocean… Micronesia  
+## 3 Unit… UM        UMI       581            ISO 3166-2:… Ocean… Micronesia
 ## # … with 4 more variables: `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
 ## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;
 ```
 ```r
-countryCodes %&gt;% 
+countryCodes %&gt;%
   filter(str_detect(str_to_lower(name), &quot;czech&quot;)) #Czech Republic
 ```
 ```
 ## # A tibble: 1 x 11
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
+##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
 ## 1 Czec… CZ        CZE       203            ISO 3166-2:… Europe Eastern Eur…
 ## # … with 4 more variables: `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
 ## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;
 ```
 ```r
-countryCodes %&gt;% 
+countryCodes %&gt;%
   filter(str_detect(str_to_lower(name), &quot;russia&quot;)) #Russian Federation
 ```
 ```
 ## # A tibble: 1 x 11
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
+##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
 ## 1 Russ… RU        RUS       643            ISO 3166-2:… Europe Eastern Eur…
 ## # … with 4 more variables: `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
 ## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;
 ```
 ```r
-countryCodes %&gt;% 
+countryCodes %&gt;%
   filter(str_detect(str_to_lower(name), &quot;korea&quot;)) #Korea (Democratic People&#39;s Republic of) = North Korea, Korea (Republic of) = South Korea
 ```
 ```
 ## # A tibble: 2 x 11
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;       
+##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
 ## 1 Kore… KP        PRK       408            ISO 3166-2:… Asia   Eastern Asia
 ## 2 Kore… KR        KOR       410            ISO 3166-2:… Asia   Eastern Asia
 ## # … with 4 more variables: `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
 ## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;
 ```
 ```r
-countryCodes %&gt;% 
+countryCodes %&gt;%
   filter(str_detect(str_to_lower(name), &quot;yugo&quot;)) #Macedonia (the former Yugoslav Republic of)
 ```
 ```
@@ -260,9 +248,9 @@ countryCodes %&gt;%
 ## #   `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
 ## #   `intermediate-region-code` &lt;chr&gt;
 ```
-<p>Renaming mismatched countries in olympic dataset based on countryCodes dataset.</p>
+Renaming mismatched countries in olympic dataset based on countryCodes dataset.
 ```r
-olympics = olympics %&gt;% 
+olympics = olympics %&gt;%
   mutate(Country = recode(Country,
                           &quot;Britain&quot; = &quot;United Kingdom of Great Britain and Northern Ireland&quot;,
                           &quot;United States&quot; = &quot;United States of America&quot;,
@@ -272,37 +260,37 @@ olympics = olympics %&gt;%
                           &quot;South Korea&quot; = &quot;Korea (Republic of)&quot;,
                           &quot;Yugoslavia&quot; = &quot;Macedonia (the former Yugoslav Republic of)&quot;))
 ```
-<p>Joining and viewing the 2 datasets</p>
+Joining and viewing the 2 datasets
 ```r
-olympics = olympics %&gt;% 
+olympics = olympics %&gt;%
   left_join(countryCodes, by=c(&quot;Country&quot; = &quot;name&quot;))
 olympics
 ```
 ```
 ## # A tibble: 2,865 x 19
 ##     Year Sport Event Country Gender `Medal Rank` Medal `Name of Athlet…
-##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;           
-##  1  1924 Bobs… Men&#39;… Switze… Men               1 gold  Switzerland-1   
-##  2  1924 Bobs… Men&#39;… United… Men               2 silv… Britain-1       
-##  3  1924 Bobs… Men&#39;… Belgium Men               3 bron… Belgium-1       
-##  4  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug   
+##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;
+##  1  1924 Bobs… Men&#39;… Switze… Men               1 gold  Switzerland-1
+##  2  1924 Bobs… Men&#39;… United… Men               2 silv… Britain-1
+##  3  1924 Bobs… Men&#39;… Belgium Men               3 bron… Belgium-1
+##  4  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug
 ##  5  1924 Cros… Men&#39;… Norway  Men               2 silv… Johan GrÃ¸ttums…
-##  6  1924 Cros… Men&#39;… Finland Men               3 bron… Tapani Niku     
-##  7  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug   
+##  6  1924 Cros… Men&#39;… Finland Men               3 bron… Tapani Niku
+##  7  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug
 ##  8  1924 Cros… Men&#39;… Norway  Men               2 silv… Thoralf StrÃ¸ms…
 ##  9  1924 Cros… Men&#39;… Norway  Men               3 bron… Johan GrÃ¸ttums…
-## 10  1924 Curl… Men&#39;… United… Men               1 gold  Britain         
+## 10  1924 Curl… Men&#39;… United… Men               1 gold  Britain
 ## # … with 2,855 more rows, and 11 more variables: `Age of Athlete` &lt;dbl&gt;,
 ## #   `alpha-2` &lt;chr&gt;, `alpha-3` &lt;chr&gt;, `country-code` &lt;chr&gt;, `iso_3166-2` &lt;chr&gt;,
 ## #   region &lt;chr&gt;, `sub-region` &lt;chr&gt;, `intermediate-region` &lt;chr&gt;,
 ## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
 ## #   `intermediate-region-code` &lt;chr&gt;
 ```
-<p>Aggregating per country to find the total number of medals for each country and its corresponding alpha-3 code.</p>
+Aggregating per country to find the total number of medals for each country and its corresponding alpha-3 code.
 ```r
-TotalMedalsPerCountry = olympics %&gt;% 
-  group_by(Country, `alpha-3`) %&gt;% 
-  summarise(TotalMedals = n()) %&gt;% 
+TotalMedalsPerCountry = olympics %&gt;%
+  group_by(Country, `alpha-3`) %&gt;%
+  summarise(TotalMedals = n()) %&gt;%
   rename(Code = `alpha-3`)
 TotalMedalsPerCountry
 ```
@@ -322,9 +310,9 @@ TotalMedalsPerCountry
 ## 10 Denmark        DNK             1
 ## # … with 29 more rows
 ```
-<p>Lets see the top countries based on total number of medals</p>
+Lets see the top countries based on total number of medals
 ```r
-TotalMedalsPerCountry %&gt;% 
+TotalMedalsPerCountry %&gt;%
   arrange(desc(TotalMedals))
 ```
 ```
@@ -343,15 +331,15 @@ TotalMedalsPerCountry %&gt;%
 ## 10 Italy                    ITA           114
 ## # … with 29 more rows
 ```
-<p>Germany obtained the most number of medals (377) closely followed by Russia with (341)</p>
+Germany obtained the most number of medals (377) closely followed by Russia with (341)
 ## Exploring Data
-<p>Lets plot the above data on a map using leaflet.</p>
-<p>Loading shape file data set from <a href="http://thematicmapping.org/downloads/world_borders.php">World Borders Dataset</a>.</p>
+Lets plot the above data on a map using leaflet.
+Loading shape file data set from [World Borders Dataset](http://thematicmapping.org/downloads/world_borders.php).
 ```r
 shape = readOGR(&quot;~/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp&quot;)
 ```
 ```
-## OGR data source with driver: ESRI Shapefile 
+## OGR data source with driver: ESRI Shapefile
 ## Source: &quot;/Users/amangal/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp&quot;, layer: &quot;TM_WORLD_BORDERS_SIMPL-0.3&quot;
 ## with 246 features
 ## It has 11 fields
@@ -361,28 +349,27 @@ shape = readOGR(&quot;~/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SI
 names(shape)
 ```
 ```
-##  [1] &quot;FIPS&quot;      &quot;ISO2&quot;      &quot;ISO3&quot;      &quot;UN&quot;        &quot;NAME&quot;      &quot;AREA&quot;     
+##  [1] &quot;FIPS&quot;      &quot;ISO2&quot;      &quot;ISO3&quot;      &quot;UN&quot;        &quot;NAME&quot;      &quot;AREA&quot;
 ##  [7] &quot;POP2005&quot;   &quot;REGION&quot;    &quot;SUBREGION&quot; &quot;LON&quot;       &quot;LAT&quot;
 ```
 ```r
-TotalMedalsPerCountry = TotalMedalsPerCountry %&gt;% 
-  left_join(tbl_df(shape@data), by = c(&quot;Code&quot;=&quot;ISO3&quot;)) %&gt;% 
+TotalMedalsPerCountry = TotalMedalsPerCountry %&gt;%
+  left_join(tbl_df(shape@data), by = c(&quot;Code&quot;=&quot;ISO3&quot;)) %&gt;%
   na.omit()
 
-TotalMedalsPerCountry = TotalMedalsPerCountry %&gt;% 
+TotalMedalsPerCountry = TotalMedalsPerCountry %&gt;%
   mutate(label = str_c(sep = &quot; - &quot;, NAME, &quot;TotalMedals&quot;, TotalMedals))
 ```
 ```r
 bins = c(0, 10, 20, 30, 50, 100, 150, 200, 300, Inf)
 pal = colorBin(&quot;RdYlGn&quot;, domain = TotalMedalsPerCountry$TotalMedals, bins = bins)
 
-TotalMedalsPerCountry %&gt;% 
-  leaflet() %&gt;% 
-  addTiles() %&gt;% 
-  setView(53.019815, 1.369002, zoom = 1) %&gt;% 
+TotalMedalsPerCountry %&gt;%
+  leaflet() %&gt;%
+  addTiles() %&gt;%
+  setView(53.019815, 1.369002, zoom = 1) %&gt;%
   addCircles(~LON, ~LAT, label = ~label, color = ~pal(TotalMedals), weight = 10)
 ```
-<div id="htmlwidget-1" style="width:672px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addCircles","args":[[-24.973,47.683,53.54,50.643,42.761,59.081,33.42,45.723,56.058,58.674,64.504,46.565,51.11,47.07,42.7,36.491,48.16,39.778,56.858,47.153,49.771,52.077,-42.634,61.152,52.125,45.844,61.988,48.707,46.124,40.227,62.011,46.861,49.016,53,39.622,41.75],[136.189,14.912,28.047,4.664,25.231,-109.433,106.514,16.693,9.264,25.793,26.272,2.55,9.851,19.134,12.8,139.068,67.301,126.451,25.641,9.555,6.088,5.389,172.235,8.74,19.401,24.969,96.689,19.491,14.827,-3.649,15.27,7.908,31.388,-1.6,-98.606,63.17],10,null,null,{"interactive":true,"className":"","stroke":true,"color":["#F46D43","#66BD63","#F46D43","#D73027","#D73027","#A6D96A","#FFFFBF","#F46D43","#D73027","#D73027","#A6D96A","#D9EF8B","#1A9850","#D73027","#D9EF8B","#FEE08B","#D73027","#D73027","#D73027","#D73027","#D73027","#D9EF8B","#D73027","#1A9850","#FDAE61","#D73027","#1A9850","#D73027","#F46D43","#D73027","#D9EF8B","#D9EF8B","#D73027","#FDAE61","#66BD63","#D73027"],"weight":10,"opacity":0.5,"fill":true,"fillColor":["#F46D43","#66BD63","#F46D43","#D73027","#D73027","#A6D96A","#FFFFBF","#F46D43","#D73027","#D73027","#A6D96A","#D9EF8B","#1A9850","#D73027","#D9EF8B","#FEE08B","#D73027","#D73027","#D73027","#D73027","#D73027","#D9EF8B","#D73027","#1A9850","#FDAE61","#D73027","#1A9850","#D73027","#F46D43","#D73027","#D9EF8B","#D9EF8B","#D73027","#FDAE61","#66BD63","#D73027"],"fillOpacity":0.2},null,null,["Australia - TotalMedals - 12","Austria - TotalMedals - 218","Belarus - TotalMedals - 15","Belgium - TotalMedals - 5","Bulgaria - TotalMedals - 6","Canada - TotalMedals - 170","China - TotalMedals - 53","Croatia - TotalMedals - 11","Denmark - TotalMedals - 1","Estonia - TotalMedals - 7","Finland - TotalMedals - 161","France - TotalMedals - 109","Germany - TotalMedals - 377","Hungary - TotalMedals - 6","Italy - TotalMedals - 114","Japan - TotalMedals - 45","Kazakhstan - TotalMedals - 7","Korea, Democratic People's Republic of - TotalMedals - 2","Latvia - TotalMedals - 7","Liechtenstein - TotalMedals - 9","Luxembourg - TotalMedals - 2","Netherlands - TotalMedals - 110","New Zealand - TotalMedals - 1","Norway - TotalMedals - 329","Poland - TotalMedals - 20","Romania - TotalMedals - 1","Russia - TotalMedals - 341","Slovakia - TotalMedals - 5","Slovenia - TotalMedals - 15","Spain - TotalMedals - 2","Sweden - TotalMedals - 144","Switzerland - TotalMedals - 138","Ukraine - TotalMedals - 7","United Kingdom - TotalMedals - 26","United States - TotalMedals - 282","Uzbekistan - TotalMedals - 1"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null,null]}],"setView":[[1.369002,53.019815],1,[]],"limits":{"lat":[-42.634,64.504],"lng":[-109.433,172.235]}},"evals":[],"jsHooks":[]}</script>
-<p>As can be clearly seen above, Norway and USA closely followed in the total medals ranking.
-Visualizing data on a map can provide a clear view of the overall data.</p>
+
+As can be clearly seen above, Norway and USA closely followed in the total medals ranking.
+Visualizing data on a map can provide a clear view of the overall data.

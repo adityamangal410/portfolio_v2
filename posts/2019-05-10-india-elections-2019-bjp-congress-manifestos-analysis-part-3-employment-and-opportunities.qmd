@@ -32,12 +32,9 @@ freeze: true
 output-file: india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities.html
 ---
 
-
-
-
 # Introduction
-<p>With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.<br />
-In this part 3, I’ll explore the Employment and opportunities discussions in both manifestos.</p>
+With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.
+In this part 3, I’ll explore the Employment and opportunities discussions in both manifestos.
 # Analysis
 ## Load libraries
 ```r
@@ -64,57 +61,57 @@ bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clea
 congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)
 ```
 ## Employment and Opportunities
-<p>This topic is covered congress’ manifesto from Pages 6 to 8 of the pdf and in that of bjp’s from pages 20 to 22 and 27 to 28.</p>
+This topic is covered congress’ manifesto from Pages 6 to 8 of the pdf and in that of bjp’s from pages 20 to 22 and 27 to 28.
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   filter(between(page, 20, 22) | between(page, 27, 28)) -&gt; bjp_content
 
-congress_content %&gt;% 
+congress_content %&gt;%
   filter(between(page, 6, 8)) -&gt; congress_content
 ```
 ## Most Popular Words
 ```r
-plot_most_popular_words &lt;- function(df, 
+plot_most_popular_words &lt;- function(df,
                                     min_count = 15,
                                     stop_words_list = stop_words) {
-  df %&gt;% 
-    unnest_tokens(word, text) %&gt;% 
-    anti_join(stop_words_list) %&gt;% 
+  df %&gt;%
+    unnest_tokens(word, text) %&gt;%
+    anti_join(stop_words_list) %&gt;%
     mutate(word = str_extract(word, &quot;[a-z&#39;]+&quot;)) %&gt;%
-    filter(!is.na(word)) %&gt;% 
-    count(word, sort = TRUE) %&gt;% 
+    filter(!is.na(word)) %&gt;%
+    count(word, sort = TRUE) %&gt;%
     filter(str_length(word) &gt; 1,
-           n &gt; min_count) %&gt;% 
+           n &gt; min_count) %&gt;%
     mutate(word = reorder(word, n)) %&gt;%
     ggplot( aes(x=word, y=n)) +
     geom_segment( aes(x=word, xend=word, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
     geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
-    coord_flip() + 
+    coord_flip() +
     theme(panel.grid.minor.y = element_blank(),
           panel.grid.major.y = element_blank(),
           legend.position=&quot;none&quot;) -&gt; p
-  
+
   return(p)
 }
 ```
 ```r
-custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;), 
-                                          lexicon = rep(&quot;custom&quot;, 5)), 
+custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;),
+                                          lexicon = rep(&quot;custom&quot;, 5)),
                                stop_words)
 ```
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   plot_most_popular_words(min_count = 6,
-                          stop_words_list = custom_stop_words) + 
+                          stop_words_list = custom_stop_words) +
   labs(x = &quot;&quot;,
        y = &quot;Number of Occurences&quot;,
        title = &quot;Most popular words related to Employment and Opportunities in BJP&#39;s Manifesto&quot;,
        subtitle = &quot;Words occurring more than 6 times&quot;,
        caption = &quot;Based on election 2019 manifesto from bjp.org&quot;) -&gt; p_bjp
 
-congress_content %&gt;% 
+congress_content %&gt;%
   plot_most_popular_words(min_count = 7,
-                          stop_words_list = custom_stop_words) + 
+                          stop_words_list = custom_stop_words) +
   labs(x = &quot;&quot;,
        y = &quot;Number of Occurences&quot;,
        title = &quot;Most popular words related to Employment and Opportunities in Congress&#39; Manifesto&quot;,
@@ -123,7 +120,7 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
 ```
-<p><img src="/post/2019-05-10-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-6-1.png" width="1344" /></p>
+<img src="/post/2019-05-10-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-6-1.png" width="1344" />
 ## Common correlated words
 ```r
 plot_common_correlated_words &lt;- function(df,
@@ -131,38 +128,38 @@ plot_common_correlated_words &lt;- function(df,
                                          correlation_threshold = 0.25,
                                          stop_words_list = stop_words) {
   set.seed(123)
-  df %&gt;% 
-    unnest_tokens(word, text) %&gt;% 
-    anti_join(stop_words_list) %&gt;% 
-    add_count(word) %&gt;% 
-    filter(n &gt; stats::quantile(n, counts_quantile)) %&gt;% 
-    pairwise_cor(word, page, sort = TRUE) %&gt;% 
+  df %&gt;%
+    unnest_tokens(word, text) %&gt;%
+    anti_join(stop_words_list) %&gt;%
+    add_count(word) %&gt;%
+    filter(n &gt; stats::quantile(n, counts_quantile)) %&gt;%
+    pairwise_cor(word, page, sort = TRUE) %&gt;%
     filter(correlation &gt; correlation_threshold,
          !str_detect(item1, &quot;\\d&quot;),
-         !str_detect(item2, &quot;\\d&quot;)) %&gt;% 
+         !str_detect(item2, &quot;\\d&quot;)) %&gt;%
     graph_from_data_frame() %&gt;%
     ggraph(layout = &quot;fr&quot;) +
     geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
     geom_node_point(color = &quot;lightblue&quot;, size = 5) +
     geom_node_text(aes(label = name), repel = TRUE) +
     theme_void() -&gt; p
-  
+
   return(p)
 }
 ```
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.85) + 
+                               counts_quantile = 0.85) +
   labs(x = &quot;&quot;,
        y = &quot;&quot;,
        title = &quot;Commonly Occurring Correlated Words in BJP&#39;s Manifesto&quot;,
        subtitle = &quot;Per page correlation higher than 0.25&quot;,
        caption = &quot;Based on election 2019 manifesto from bjp.org&quot;) -&gt; p_bjp
 
-congress_content %&gt;% 
+congress_content %&gt;%
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.7) + 
+                               counts_quantile = 0.7) +
   labs(x = &quot;&quot;,
        y = &quot;&quot;,
        title = &quot;Commonly Occurring Correlated Words in Congress&#39;s Manifesto&quot;,
@@ -171,10 +168,10 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
 ```
-<p><img src="/post/2019-05-10-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
+<img src="/post/2019-05-10-india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities_files/figure-html/unnamed-chunk-8-1.png" width="1152" />
 ## Basic Search Engine
-<p>Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
-Using python’s scikit-learn for this.</p>
+Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
+Using python’s scikit-learn for this.
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
@@ -202,10 +199,10 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 get_related_lines &lt;- py_to_r(py$get_related_lines)
 ```
 ### Common Popular Words with both BJP &amp; Congress
-<p>As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto for Employment and Opportunities is “electricity”. Lets see, what each of them have planned for that. First, BJP.</p>
+As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto for Employment and Opportunities is “electricity”. Lets see, what each of them have planned for that. First, BJP.
 ```r
-bjp_content %&gt;% 
-  slice(get_related_lines(&quot;electricity&quot;, party = &quot;bjp&quot;)) %&gt;% 
+bjp_content %&gt;%
+  slice(get_related_lines(&quot;electricity&quot;, party = &quot;bjp&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -222,17 +219,17 @@ bjp_content %&gt;%
 ## 8 speed of constructing rural roads has doubled and 90% of rural ro…    20     7
 ## 9 approach the issue of water management holistically and ensure be…    21     4
 ```
-<p>This is the excerpt that we find from page 22, as we dug up based on above results -</p>
+This is the excerpt that we find from page 22, as we dug up based on above results -
 <blockquote>
-<p>Now, we will work towards:<br />
-- Ensuring a right mix of energy which leads towards a cleaner environment.<br />
-- Supplying quality electricity to all consumers.<br />
-- Making the state electricity entities financially sound and administratively more efficient.</p>
+Now, we will work towards:
+- Ensuring a right mix of energy which leads towards a cleaner environment.
+- Supplying quality electricity to all consumers.
+- Making the state electricity entities financially sound and administratively more efficient.
 </blockquote>
-<p>Now, Congress.</p>
+Now, Congress.
 ```r
-congress_content %&gt;% 
-  slice(get_related_lines(&quot;electricity&quot;, party = &quot;congress&quot;)) %&gt;% 
+congress_content %&gt;%
+  slice(get_related_lines(&quot;electricity&quot;, party = &quot;congress&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -249,15 +246,15 @@ congress_content %&gt;%
 ## 8 and in local bodies.                                    11. we pr…     7    32
 ## 9 04. we will work with state governments to create               a…     7    33
 ```
-<p>One of the full excerpts from page 8 related to above results -</p>
+One of the full excerpts from page 8 related to above results -
 <blockquote>
-<p>Congress promises to enhance availability of, and access to, electricity in rural areas by encour- aging investment in off-grid renewable power generation with ownership and revenues vesting in local bodies. Every village and every home will be electrified in the true sense. In the long term, we aim to substitute LPG used in homes by electricity and solar energy.</p>
+Congress promises to enhance availability of, and access to, electricity in rural areas by encour- aging investment in off-grid renewable power generation with ownership and revenues vesting in local bodies. Every village and every home will be electrified in the true sense. In the long term, we aim to substitute LPG used in homes by electricity and solar energy.
 </blockquote>
 ### Unique popular words with BJP &amp; Congress
-<p>One of the popular words that seems curious from BJP’s manifesto is “youth”. Let’s see what BJP has planned for the youth employment opportunities.</p>
+One of the popular words that seems curious from BJP’s manifesto is “youth”. Let’s see what BJP has planned for the youth employment opportunities.
 ```r
-bjp_content %&gt;% 
-  slice(get_related_lines(&quot;youth&quot;, party = &quot;bjp&quot;)) %&gt;% 
+bjp_content %&gt;%
+  slice(get_related_lines(&quot;youth&quot;, party = &quot;bjp&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -274,14 +271,14 @@ bjp_content %&gt;%
 ## 8 take advantage of the oppo unities available in domestic and fore…    27     8
 ## 9 greater civic engagement of the youth.                                27    25
 ```
-<p>An excerpt from BJP’s manifesto about youth employment opportunities as identified from above -</p>
+An excerpt from BJP’s manifesto about youth employment opportunities as identified from above -
 <blockquote>
-<p>We will incentivise and reward self-organized groups of youth who adopt social assets like schools, hospitals, lakes, public gardens etc. and ensure their maintenance and cleanliness to encourage greater civic engagement of the youth.</p>
+We will incentivise and reward self-organized groups of youth who adopt social assets like schools, hospitals, lakes, public gardens etc. and ensure their maintenance and cleanliness to encourage greater civic engagement of the youth.
 </blockquote>
-<p>Now, one of the popular words that seems curious from Congress’ manifesto is “tourism”.</p>
+Now, one of the popular words that seems curious from Congress’ manifesto is “tourism”.
 ```r
-congress_content %&gt;% 
-  slice(get_related_lines(&quot;tourism&quot;, party = &quot;congress&quot;)) %&gt;% 
+congress_content %&gt;%
+  slice(get_related_lines(&quot;tourism&quot;, party = &quot;congress&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -299,15 +296,15 @@ congress_content %&gt;%
 ## 9 05. application fees for government examinations                b…     7    38
 ```
 <blockquote>
-<p>Tourism creates jobs. Congress promises an ade- quately capitalised Tourism Development Bank to provide low-cost, long-term funds for invest- ment in tourism-related businesses. We will also offer lower rates of corporate and personal income tax on tourism-related business income.</p>
+Tourism creates jobs. Congress promises an ade- quately capitalised Tourism Development Bank to provide low-cost, long-term funds for invest- ment in tourism-related businesses. We will also offer lower rates of corporate and personal income tax on tourism-related business income.
 </blockquote>
-<p>A surprisingly large amount of mention of the word “business”/“businesses” in this section of Congress’ manifesto.</p>
-<p>With all the above analysis, we have developed some idea about the Employment and Opportunities plans of the 2 parties. In the next post, I’ll do a similar analysis for Anti-Corruption and Good Governance proposals by them.</p>
-<p>Stay Tuned!</p>
+A surprisingly large amount of mention of the word “business”/“businesses” in this section of Congress’ manifesto.
+With all the above analysis, we have developed some idea about the Employment and Opportunities plans of the 2 parties. In the next post, I’ll do a similar analysis for Anti-Corruption and Good Governance proposals by them.
+Stay Tuned!
 # References
-<ul>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/">Part 2 - Economic Growth</a><br />
-</li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance/">Part 4 - Anti-Corruption and Good Governance</a></li>
-<li>For all the parts go to Project Summary Page - <a href="/2019/05/india-general-elections-2019-analysis/">India General Elections 2019 Analysis</a></li>
-</ul>
+
+- [Part 2 - Economic Growth](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/)
+
+- [Part 4 - Anti-Corruption and Good Governance](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance/)
+- For all the parts go to Project Summary Page - [India General Elections 2019 Analysis](/2019/05/india-general-elections-2019-analysis/)
+

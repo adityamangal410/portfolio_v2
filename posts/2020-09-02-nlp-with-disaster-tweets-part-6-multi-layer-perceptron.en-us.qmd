@@ -25,30 +25,27 @@ freeze: true
 output-file: nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us.html
 ---
 
-
-
-
 # Introduction
-<p>In this <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.<br />
-In this part 6 for building Multi Layer Perceptron, I will use the data module generated in <a href="/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/" target="_blank">Part 5</a> to create a Multi Layer Perceptron model to predict if the tweet is about a real disaster. Following up from the previous <a href="/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/" target="_blank">Part 4</a> about tree-based models, I will generate the prediction output of this model on the validation set and compare results.</p>
+In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
+In this part 6 for building Multi Layer Perceptron, I will use the data module generated in [Part 5](/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/) to create a Multi Layer Perceptron model to predict if the tweet is about a real disaster. Following up from the previous [Part 4](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/) about tree-based models, I will generate the prediction output of this model on the validation set and compare results.
 # Classifier Class
-<div class="figure">
+
 <img src="https://lh3.googleusercontent.com/UjkRMf-8bTQjE3bFfik8N4no1aH7m7J0PgZEmjuUh4uSLXpLsvSRy_lgOHsRkbPnLQ1CYLPjX6WwEZQpeAuikZi_hfSqKoYw6afUzPYuteoVf9wGmeVXJE7snQMi5oiG1sAuvNwYRJbyy7CuqdOhQSplrfMjJBwNT8xPanGEHwqdaHOiBuVyWr5yYNkJpwcbNbvlI542gq0ZBE5rYe1o4kiTmTwTpi8HaEJ8qjEbXamTDQQtEYiFcmsqBcCOl2uBLhbCtSAXJvz6WV2fN04x6QoGUaVz4ohQDYSYnkdSVWY4FcCAWMl7IrQJnhkZNTF33DWr9MXEtVEFVEVp6qOqMb0qwwPGwP08HMOrK2wPLVjhXRd_flitm3a3qhqMDp0kyjycW5ZAdELWoBycSpdWHIAmev2AP3iDOkmfYUsJTTjK2nHazbEw1pIXKgnkdV4-SS-0xpW04iTtXaTPLaG9IVYOH92cR1LitfmZTJVnF4MxzDveqGQQWcTmZSfuvuNzAImvagx6KTTaQ_peIzsRzeo_LcDZHC2xrDLXoinEknvrNt4VhahVMD5C7Mq4fpVePqROTvfiB1jNbIXmovZPetmjESLt0egU-vPYq4gZbJvTmRrSOV2v4SH1kCKZQOnIkD72JnA-BDcSNGyuB_kmFUqSSEx9gcSyZPTa1VYdBy9rSauEPnWl08BY5cnreQ=w600-h331-no" alt="" />
-<p class="caption">Mutli-Layer Perceptron Pictorial representation from <a href="https://www.tutorialspoint.com/tensorflow/tensorflow_multi_layer_perceptron_learning.htm" class="uri">https://www.tutorialspoint.com/tensorflow/tensorflow_multi_layer_perceptron_learning.htm</a></p>
-<p>Above pictorial representation shows a simple multi-layer perceptron with 2 hidden layers. We will essentially build the same for our usecase with a few more layers and additional bells and whistles related to network regularization.</p>
-<p>I will be using the <a href="https://github.com/PyTorchLightning/pytorch-lightning" target="_blank">pytorch-lightning</a> framework to build a classifier class.<br />
-In a deep learning training pipeline we need to configure the following 5 essential components -</p>
-<ul>
-<li><strong>Network architecture</strong> - We define exactly how is the network structured. The architecture would vary based on if the network we are trying to build is a perceptron or a Convolutional network or a Recurrent network or any other form of network. We also define different architecture parameters like the number of layers in the network and the number of neurons in each hidden layer of the fully connected network or the number of channels in case of a convolutional network.</li>
-<li><strong>Loss function</strong> - The loss function would calculate the loss of the prediction from the ground truth. This loss value’s gradient is then backpropogated through the network in order to update the network weights and come up with a lower loss value in subsequent iterations.<br />
-</li>
-<li><strong>Optimizer</strong> - Optimizers update the weight parameters to minimize the loss function. In its simplest form, we multiply our preconfigured constant learning rate to the gradient of each parameter in the network to update it. Fancier optimizers update the learning rate, bring in momentum etc. but essentially accomplish the same goal of updating the weights to minimize loss.</li>
-<li><strong>Forward Pass</strong> - This method defines how the training batch will forward pass through the Network by using parameter weights and activation functions (and dropout/batch norms) and finally generate the prediction output.</li>
-<li><strong>Training Step / Val Step / Test Step</strong> - We configure specific to each phase (train/val/test) how exactly we will compute and report the loss.</li>
-</ul>
-<p>That’s it! Rest everything related to epoch loop, checkpointing, logging, book-keeping are handled by PyTorch Lightning so we do not need to implement that specifically (as we would have if we were to use vanilla PyTorch. example <a href="/2020/05/from-tensorflow-to-pytorch.en-us" target="_blank">here</a>). In the rest of the post I will mainly discuss the above 5 components specific to building a Multi Layer Perceptron for our Disaster Tweets usecase.</p>
+<p class="caption">Mutli-Layer Perceptron Pictorial representation from [https://www.tutorialspoint.com/tensorflow/tensorflow_multi_layer_perceptron_learning.htm](https://www.tutorialspoint.com/tensorflow/tensorflow_multi_layer_perceptron_learning.htm)
+Above pictorial representation shows a simple multi-layer perceptron with 2 hidden layers. We will essentially build the same for our usecase with a few more layers and additional bells and whistles related to network regularization.
+I will be using the [pytorch-lightning](https://github.com/PyTorchLightning/pytorch-lightning) framework to build a classifier class.
+In a deep learning training pipeline we need to configure the following 5 essential components -
+
+- **Network architecture** - We define exactly how is the network structured. The architecture would vary based on if the network we are trying to build is a perceptron or a Convolutional network or a Recurrent network or any other form of network. We also define different architecture parameters like the number of layers in the network and the number of neurons in each hidden layer of the fully connected network or the number of channels in case of a convolutional network.
+- **Loss function** - The loss function would calculate the loss of the prediction from the ground truth. This loss value’s gradient is then backpropogated through the network in order to update the network weights and come up with a lower loss value in subsequent iterations.
+
+- **Optimizer** - Optimizers update the weight parameters to minimize the loss function. In its simplest form, we multiply our preconfigured constant learning rate to the gradient of each parameter in the network to update it. Fancier optimizers update the learning rate, bring in momentum etc. but essentially accomplish the same goal of updating the weights to minimize loss.
+- **Forward Pass** - This method defines how the training batch will forward pass through the Network by using parameter weights and activation functions (and dropout/batch norms) and finally generate the prediction output.
+- **Training Step / Val Step / Test Step** - We configure specific to each phase (train/val/test) how exactly we will compute and report the loss.
+
+That’s it! Rest everything related to epoch loop, checkpointing, logging, book-keeping are handled by PyTorch Lightning so we do not need to implement that specifically (as we would have if we were to use vanilla PyTorch. example [here](/2020/05/from-tensorflow-to-pytorch.en-us)). In the rest of the post I will mainly discuss the above 5 components specific to building a Multi Layer Perceptron for our Disaster Tweets usecase.
 ## Network Architecture and Loss Function
-<p>A multi layer perceptron is a simple neural network where neurons in each layer are fully connected to all the neurons in the next layer. Weights are applied to each input feature by a linear transform along with a bias and non-linearity is introduced via the activation function. Let’s see how our network architecture and loss function look.</p>
+A multi layer perceptron is a simple neural network where neurons in each layer are fully connected to all the neurons in the next layer. Weights are applied to each input feature by a linear transform along with a bias and non-linearity is introduced via the activation function. Let’s see how our network architecture and loss function look.
 ```python
 import pytorch_lightning as pl
 
@@ -88,18 +85,18 @@ class DisasterTweetsClassifierMLP(pl.LightningModule):
         )
         self.loss = torch.nn.CrossEntropyLoss(reduction=&#39;none&#39;)
 ```
-<ul>
-<li>We are using the LightningModule abstraction provided by PyTorch Lightning to create our training module.</li>
-<li>First we do some housekeeping by saving all the hyperparameters that are passed to our module.</li>
-<li>As we discussed in my previous post about <a href="/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/" target="_blank">data preparation</a>, we will use pretrained glove embeddings to embed our vectorized tweets into lower dimensional vectors. For this we use the <code>torch.nn.Embedding</code> layer with pretrained embeddings supplied as initial weights.</li>
-<li>Next we define our <code>fc</code> (fully connected) network, using the <code>torch.nn.Sequential</code> syntactic sugar provided by PyTorch. In here we have 5 fully connected layers of 128, 64, 32, 16 and 2 neurons respectively. Each of these layers use linear transform (therefore <code>torch.nn.Linear</code>) to transform its input from one dimension to another.</li>
-<li>In order to regularize the network so it doesn’t overfit our training data we are using Dropout, this will randomly drop output of certain nodes/neurons based on given dropout probability. <a href="https://machinelearningmastery.com/dropout-for-regularizing-deep-neural-networks/" target="_blank">Here</a> is an excellent post on Dropout if you are curious.</li>
-<li>In order to stabilize the learning process and reduce the number of training epochs required for the network to converge, we are also using batch normalization via <code>torch.nn.BatchNorm1d</code>. This will standardize (0 mean and 1 standard deviation) the inputs to a layer for each batch. <a href="https://machinelearningmastery.com/batch-normalization-for-training-of-deep-neural-networks/" target="_blank">Here</a> is an excellent post on Batch Normalization if you are curious.</li>
-<li>We apply <strong>ReLU</strong> activation to the output of each layer which provides us with our non-linearity. It will keep the output as is if it is positive or else make it zero.</li>
-<li>Finally, the last layer will provide 2 outputs, one for each of our classes (disaster or not). We can transform it to probability by using softmax to see what’s the predicted probability of each class.<br />
-</li>
-<li>Loss Function - We are using the <strong>Cross Entropy Loss</strong> function here. My favorite explanation for this loss is <a href="https://gombru.github.io/2018/05/23/cross_entropy_loss/" target="_blank">this</a> post that does a beautiful job of explaining how exactly it is computed and how its gradient is calculated. The reason for passing ‘reduction=none’ in the loss function will become clear in the section below about training/val step.</li>
-</ul>
+
+- We are using the LightningModule abstraction provided by PyTorch Lightning to create our training module.
+- First we do some housekeeping by saving all the hyperparameters that are passed to our module.
+- As we discussed in my previous post about [data preparation](/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/), we will use pretrained glove embeddings to embed our vectorized tweets into lower dimensional vectors. For this we use the <code>torch.nn.Embedding</code> layer with pretrained embeddings supplied as initial weights.
+- Next we define our <code>fc</code> (fully connected) network, using the <code>torch.nn.Sequential</code> syntactic sugar provided by PyTorch. In here we have 5 fully connected layers of 128, 64, 32, 16 and 2 neurons respectively. Each of these layers use linear transform (therefore <code>torch.nn.Linear</code>) to transform its input from one dimension to another.
+- In order to regularize the network so it doesn’t overfit our training data we are using Dropout, this will randomly drop output of certain nodes/neurons based on given dropout probability. [Here](https://machinelearningmastery.com/dropout-for-regularizing-deep-neural-networks/) is an excellent post on Dropout if you are curious.
+- In order to stabilize the learning process and reduce the number of training epochs required for the network to converge, we are also using batch normalization via <code>torch.nn.BatchNorm1d</code>. This will standardize (0 mean and 1 standard deviation) the inputs to a layer for each batch. [Here](https://machinelearningmastery.com/batch-normalization-for-training-of-deep-neural-networks/) is an excellent post on Batch Normalization if you are curious.
+- We apply **ReLU** activation to the output of each layer which provides us with our non-linearity. It will keep the output as is if it is positive or else make it zero.
+- Finally, the last layer will provide 2 outputs, one for each of our classes (disaster or not). We can transform it to probability by using softmax to see what’s the predicted probability of each class.
+
+- Loss Function - We are using the **Cross Entropy Loss** function here. My favorite explanation for this loss is [this](https://gombru.github.io/2018/05/23/cross_entropy_loss/) post that does a beautiful job of explaining how exactly it is computed and how its gradient is calculated. The reason for passing ‘reduction=none’ in the loss function will become clear in the section below about training/val step.
+
 ## Optimizer
 ```python
 class DisasterTweetsClassifierMLP(pl.LightningModule):
@@ -108,7 +105,7 @@ class DisasterTweetsClassifierMLP(pl.LightningModule):
                                 lr=self.hparams.learning_rate,
                                 weight_decay=self.hparams.weight_decay)
 ```
-<p>We are using the <strong>Adam</strong> optimizer for optimizer our network parameters which is a good default optimizer as it combines advantages of 2 other well known optimizers AdaGrad and RMSProp. <a href="https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/" target="_blank">Here</a> is a gentle introduction on Adam optimizer. We pass in all our network parameters, the provided learning rate and weight decay hyper parameters to <code>torch.optim.Adam</code>.</p>
+We are using the **Adam** optimizer for optimizer our network parameters which is a good default optimizer as it combines advantages of 2 other well known optimizers AdaGrad and RMSProp. [Here](https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/) is a gentle introduction on Adam optimizer. We pass in all our network parameters, the provided learning rate and weight decay hyper parameters to <code>torch.optim.Adam</code>.
 ## Forward Method
 ```python
 class DisasterTweetsClassifierMLP(pl.LightningModule):
@@ -118,8 +115,8 @@ class DisasterTweetsClassifierMLP(pl.LightningModule):
 
         return output
 ```
-<p>In the forward pass through the network, we first generate the embeddings for our batch and also flatten it. For example, if we had batch size as 8 and each of the 8 samples were of normalized length 70, then the <code>self.emb</code> embedding layer will transform it to a tensor <code>8 x 70 x 25</code> (if we were to use 25 dimensional glove embeddings). i.e. it’ll extract the 25-dimensional embedding for each of 70 words in our 8 samples. Then the <code>view(batch.size(0), -1)</code> will flatten it such that the tensor will transform from <code>8 x 70 x 25</code> to <code>8 x 1750</code> (i.e. it’ll append the embedding vectors of all 70 words in the sample for all 8 samples).<br />
-This flattened vector then gets passed through our <code>fc</code> fully connected layer and generates the output which gets returned.</p>
+In the forward pass through the network, we first generate the embeddings for our batch and also flatten it. For example, if we had batch size as 8 and each of the 8 samples were of normalized length 70, then the <code>self.emb</code> embedding layer will transform it to a tensor <code>8 x 70 x 25</code> (if we were to use 25 dimensional glove embeddings). i.e. it’ll extract the 25-dimensional embedding for each of 70 words in our 8 samples. Then the <code>view(batch.size(0), -1)</code> will flatten it such that the tensor will transform from <code>8 x 70 x 25</code> to <code>8 x 1750</code> (i.e. it’ll append the embedding vectors of all 70 words in the sample for all 8 samples).
+This flattened vector then gets passed through our <code>fc</code> fully connected layer and generates the output which gets returned.
 ## Training Step / Val Step / Test Step
 ```python
 class DisasterTweetsClassifierMLP(pl.LightningModule):
@@ -128,7 +125,7 @@ class DisasterTweetsClassifierMLP(pl.LightningModule):
         loss = self.loss(y_pred, batch[&#39;y_target&#39;]).mean()
         return {&#39;loss&#39;: loss, &#39;log&#39;: {&#39;train_loss&#39;: loss}}
 ```
-<p>In our training step, one batch of training dataset is passed to the class (i.e. the forward method). The output is then passed, along with the true target values, to our loss function. We return the mean cross entropy loss across all samples in the batch. Note that, we also pass a <code>log</code> field in our response which is used by our logger utility for training instrumentation. In our case, we use the Tensorboard Logger (more about that ahead).</p>
+In our training step, one batch of training dataset is passed to the class (i.e. the forward method). The output is then passed, along with the true target values, to our loss function. We return the mean cross entropy loss across all samples in the batch. Note that, we also pass a <code>log</code> field in our response which is used by our logger utility for training instrumentation. In our case, we use the Tensorboard Logger (more about that ahead).
 ```python
 class DisasterTweetsClassifierMLP(pl.LightningModule):
   def validation_step(self, batch, batch_idx):
@@ -136,18 +133,18 @@ class DisasterTweetsClassifierMLP(pl.LightningModule):
         loss = self.loss(y_pred, batch[&#39;y_target&#39;])
         acc = (y_pred.argmax(-1) == batch[&#39;y_target&#39;]).float()
         return {&#39;loss&#39;: loss, &#39;acc&#39;: acc}
-        
+
   def validation_epoch_end(self, outputs):
         loss = torch.cat([o[&#39;loss&#39;] for o in outputs], 0).mean()
         acc = torch.cat([o[&#39;acc&#39;] for o in outputs], 0).mean()
         out = {&#39;val_loss&#39;: loss, &#39;val_acc&#39;: acc}
         return {**out, &#39;log&#39;: out}
 ```
-<p>We have split the validation step in 2 methods. The <code>validation_step</code> and the <code>validation_epoch_end</code>. Since we want to summarize the loss for the entire validation dataset and not just for each individual validation batch, we only return the individual losses of each sample in the batch from our validation_step method (similar to how we computed in training step) and do the aggregation in the <code>validation_epoch_end</code> method, which as the name suggests runs after the validation epoch is over. Here, we see the reason for passing <code>reduction=none</code> in our loss function instantiation. Since, we don’t allow the loss function to do reduction, and handle it manually ourselves, we can use the same function for both train and validation steps. As we noted earlier, training loss gets computed over each batch and gets backpropogated, however validation loss is computed over the entire validation dataset and reported. We also compute accuracy on our validation set for reporting purposes.</p>
-<p>The test step is exactly identical to the validation step (Mutatis mutandis). i.e. Test dataset used instead of validation dataset.</p>
-</div>
+We have split the validation step in 2 methods. The <code>validation_step</code> and the <code>validation_epoch_end</code>. Since we want to summarize the loss for the entire validation dataset and not just for each individual validation batch, we only return the individual losses of each sample in the batch from our validation_step method (similar to how we computed in training step) and do the aggregation in the <code>validation_epoch_end</code> method, which as the name suggests runs after the validation epoch is over. Here, we see the reason for passing <code>reduction=none</code> in our loss function instantiation. Since, we don’t allow the loss function to do reduction, and handle it manually ourselves, we can use the same function for both train and validation steps. As we noted earlier, training loss gets computed over each batch and gets backpropogated, however validation loss is computed over the entire validation dataset and reported. We also compute accuracy on our validation set for reporting purposes.
+The test step is exactly identical to the validation step (Mutatis mutandis). i.e. Test dataset used instead of validation dataset.
+
 # The Training Routine
-<p>With all the above work, our network is all set and ready to train. Let’s discuss the training routine which remains mostly same across different networks. It majorly has class object creation, logger configuration and running the <code>fit</code> method on our trainer.</p>
+With all the above work, our network is all set and ready to train. Let’s discuss the training routine which remains mostly same across different networks. It majorly has class object creation, logger configuration and running the <code>fit</code> method on our trainer.
 ```python
 if __name__ == &#39;__main__&#39;:
   pl.seed_everything(42)
@@ -175,19 +172,19 @@ if __name__ == &#39;__main__&#39;:
                                                         name=&#39;disaster_tweets_mlp_glove&#39;))
   trainer.fit(model, dm)
 ```
-<ul>
-<li>We first seed everything so we can have reproducible results.</li>
-<li>Next, we create an object of our DisasterTweetsDataModule passing all the required params and also call it’s setup method. (For more context checkout my previous post <a href="/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/" target="_blank">Part 5</a>).</li>
-<li>We create our DisasterTweetsClassifierMLP model object which holds all the above code related to the network, loss, optimizer etc.</li>
-<li>After that we instantiate the <code>Trainer</code> object provided by PyTorch Lightning, which runs our entire training pipeline and provides a lot of other functionality like logging and early stopping. For now, we have enabled the default early stopping callback, which will stop the training if we do not see <code>val_loss</code> decreasing for 3 consecutive epochs.</li>
-<li>We also configure the TensorBoard Logger that will help visualize and monitor the training routine.</li>
-<li>Finally, we call the <code>fit</code> method of the trainer with the Model object and the Lightning Data Module object.</li>
-</ul>
+
+- We first seed everything so we can have reproducible results.
+- Next, we create an object of our DisasterTweetsDataModule passing all the required params and also call it’s setup method. (For more context checkout my previous post [Part 5](/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/)).
+- We create our DisasterTweetsClassifierMLP model object which holds all the above code related to the network, loss, optimizer etc.
+- After that we instantiate the <code>Trainer</code> object provided by PyTorch Lightning, which runs our entire training pipeline and provides a lot of other functionality like logging and early stopping. For now, we have enabled the default early stopping callback, which will stop the training if we do not see <code>val_loss</code> decreasing for 3 consecutive epochs.
+- We also configure the TensorBoard Logger that will help visualize and monitor the training routine.
+- Finally, we call the <code>fit</code> method of the trainer with the Model object and the Lightning Data Module object.
+
 # Inference and Results
-<div class="figure">
+
 <img src="https://lh3.googleusercontent.com/pw/ACtC-3cxsz2O5JYhPo9QiqUx6DfcWzA6MuP6mOSS9eVw-lSuK0NhaagIN1NxnZQwEy-GDwldRy-UqDBsZV1nDKtbzbHRwvaP1gXhuFomirKsCaED29flV6r7tP8tH5dAmrpa5oF0EuIQZJXCUvMQzG5adFtGKQ=w452-h1044-no?authuser=0" alt="" />
-<p class="caption">Training Routine Plots in Tensorboard</p>
-<p>The above plots show the training routine visualizations in Tensorboard. We see the validation loss continuously decreases until around epoch=13 where it starts saturating and our early stopping callback gets triggered and stops the training.</p>
+<p class="caption">Training Routine Plots in Tensorboard
+The above plots show the training routine visualizations in Tensorboard. We see the validation loss continuously decreases until around epoch=13 where it starts saturating and our early stopping callback gets triggered and stops the training.
 ```python
 def predict_target(text, classifier, vectorizer, max_seq_length):
     text_vector, _ = vectorizer.vectorize(text, max_seq_length)
@@ -197,20 +194,20 @@ def predict_target(text, classifier, vectorizer, max_seq_length):
 
     return {&#39;pred&#39;: target.item(), &#39;probability&#39;: probability.item()}
 ```
-<p>We can use the above method to run the trained model on new incoming text and generate predictions. When we run prediction on our validation dataset we get an accuracy score of <code>0.7835232252410167</code> and F1-score of <code>0.7507568113017156</code>. F1-score for the best tuned Gradient Boosted Tree model that we got in <a href="/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/#gradient-boosted-trees-using-xgboost" target="_blank">Part 4</a> was <code>0.8107538</code>, which is much higher than our multi-layer perceptron. However, note that this is just the default performance of this Network Architecture on our validation set with single constant values for our different hyperparameters like batch size, learning rate, hidden layers etc. We can do a full hyperparameter sweep and tune this network to get an optimal performance number (coming up in a future post).</p>
-</div>
+We can use the above method to run the trained model on new incoming text and generate predictions. When we run prediction on our validation dataset we get an accuracy score of <code>0.7835232252410167</code> and F1-score of <code>0.7507568113017156</code>. F1-score for the best tuned Gradient Boosted Tree model that we got in [Part 4](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/#gradient-boosted-trees-using-xgboost) was <code>0.8107538</code>, which is much higher than our multi-layer perceptron. However, note that this is just the default performance of this Network Architecture on our validation set with single constant values for our different hyperparameters like batch size, learning rate, hidden layers etc. We can do a full hyperparameter sweep and tune this network to get an optimal performance number (coming up in a future post).
+
 # Summary
-<p>In this part of the series, we built a multi-layer perceptron neural network architecture to predict if a tweet is about a real disaster using the PyTorch Lightning framework. We built this on top of the Lightning Data Module that we discussed in the previous post of this series. We can see that we get a good solid baseline performance from this network and can hopefully with further hyperparameter tuning improve it. The full code for this post can be viewed on my github <a href="https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/3.2-am-pl-mlp-glove-disaster-tweets.py" target="_blank">here</a>. In the next part, I will build a Recurrent Neural Network for this task using our same underlying data module. Hope to see you there.</p>
+In this part of the series, we built a multi-layer perceptron neural network architecture to predict if a tweet is about a real disaster using the PyTorch Lightning framework. We built this on top of the Lightning Data Module that we discussed in the previous post of this series. We can see that we get a good solid baseline performance from this network and can hopefully with further hyperparameter tuning improve it. The full code for this post can be viewed on my github [here](https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/3.2-am-pl-mlp-glove-disaster-tweets.py). In the next part, I will build a Recurrent Neural Network for this task using our same underlying data module. Hope to see you there.
 # References
-<ul>
-<li>Project Summary Page - <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with disaster tweets: Summary</a></li>
-<li>Project Part 1 - <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP with Disaster Tweets: Part 1 Data Preparation</a></li>
-<li>Project Part 2 - <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">NLP with Disaster Tweets: Part 2 Nearest Neighbor Models</a></li>
-<li>Project Part 3 - <a href="/2020/04/nlp-with-disaster-tweets-part-3-linear-models/" target="_blank">NLP with Disaster Tweets: Part 3 Linear Models</a></li>
-<li>Project Part 4 - <a href="/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/" target="_blank">NLP with Disaster Tweets: Part 4 Tree-based Models</a></li>
-<li>Project Part 5 - <a href="/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/" target="_blank">NLP with Disaster Tweets: Part 5 Deep Learning Data Preparation</a></li>
-<li>PyTorch - <a href="https://pytorch.org/docs/stable/index.html" target="_blank">Docs</a></li>
-<li>PyTorch Lightning - <a href="https://pytorch-lightning.readthedocs.io/en/latest/" target="_blank">Docs</a></li>
-<li>Natural Language Processing with PyTorch - <a href="https://learning.oreilly.com/library/view/natural-language-processing/9781491978221/" target="_blank">ebook</a></li>
-<li>Full DisasterTweetsClassifierMLP implementation - <a href="https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/3.2-am-pl-mlp-glove-disaster-tweets.py" target="_blank">github</a></li>
-</ul>
+
+- Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
+- Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/)
+- Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/)
+- Project Part 3 - [NLP with Disaster Tweets: Part 3 Linear Models](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/)
+- Project Part 4 - [NLP with Disaster Tweets: Part 4 Tree-based Models](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/)
+- Project Part 5 - [NLP with Disaster Tweets: Part 5 Deep Learning Data Preparation](/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/)
+- PyTorch - [Docs](https://pytorch.org/docs/stable/index.html)
+- PyTorch Lightning - [Docs](https://pytorch-lightning.readthedocs.io/en/latest/)
+- Natural Language Processing with PyTorch - [ebook](https://learning.oreilly.com/library/view/natural-language-processing/9781491978221/)
+- Full DisasterTweetsClassifierMLP implementation - [github](https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/3.2-am-pl-mlp-glove-disaster-tweets.py)
+

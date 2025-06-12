@@ -24,14 +24,11 @@ keywords:
 - Transportation
 ---
 
-
-
-
 ## Introduction
-<p>From the article on <a href="https://www.seattletimes.com/seattle-news/transportation/what-we-can-learn-from-seattles-bike-counter-data/">Seattle Times</a> -</p>
-<p>“While millions of public dollars are going for bike lanes in Seattle, the city’s data collection on actual bike-lane ridership is scattered and incomplete. Given they’re the best the public can get, here’s what those numbers can tell us about who’s riding where.”</p>
+From the article on [Seattle Times](https://www.seattletimes.com/seattle-news/transportation/what-we-can-learn-from-seattles-bike-counter-data/) -
+“While millions of public dollars are going for bike lanes in Seattle, the city’s data collection on actual bike-lane ridership is scattered and incomplete. Given they’re the best the public can get, here’s what those numbers can tell us about who’s riding where.”
 ## Analysis
-<p>Following along the <a href="https://www.youtube.com/watch?v=sBho2GJE5lc">screencast</a> from <a href="https://twitter.com/drob">David Robinson</a></p>
+Following along the [screencast](https://www.youtube.com/watch?v=sBho2GJE5lc) from [David Robinson](https://twitter.com/drob)
 ```r
 library(tidyverse)
 library(lubridate)
@@ -41,9 +38,9 @@ theme_set(theme_light())
 ```r
 bike_traffic_raw &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-02/bike_traffic.csv&quot;, col_types = cols(bike_count = col_double(), ped_count = col_logical()))
 
-bike_traffic &lt;- bike_traffic_raw %&gt;% 
-  mutate(date = mdy_hms(date)) %&gt;% 
-  filter(bike_count &lt; 2000) %&gt;% 
+bike_traffic &lt;- bike_traffic_raw %&gt;%
+  mutate(date = mdy_hms(date)) %&gt;%
+  filter(bike_count &lt; 2000) %&gt;%
   select(-ped_count)
 
 bike_traffic
@@ -65,7 +62,7 @@ bike_traffic
 ## # … with 509,072 more rows
 ```
 ```r
-bike_traffic %&gt;% 
+bike_traffic %&gt;%
   count(crossing, direction)
 ```
 ```
@@ -87,48 +84,48 @@ bike_traffic %&gt;%
 ## 13 Sealth Trail                             South     16054
 ```
 ```r
-bike_traffic %&gt;% 
-  ggplot(aes(date)) + 
+bike_traffic %&gt;%
+  ggplot(aes(date)) +
   geom_histogram() +
   facet_wrap(~ crossing)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 ```r
-bike_traffic %&gt;% 
-  ggplot(aes(date)) + 
+bike_traffic %&gt;%
+  ggplot(aes(date)) +
   geom_histogram() +
   facet_grid(crossing ~ direction)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 ### When in the day do we see bikers?
 ```r
-bike_traffic %&gt;% 
-  group_by(hour = hour(date)) %&gt;% 
-  summarise(bike_count = sum(bike_count, na.rm = TRUE)) %&gt;% 
-  ggplot(aes(hour, bike_count)) + 
-  geom_line() + 
+bike_traffic %&gt;%
+  group_by(hour = hour(date)) %&gt;%
+  summarise(bike_count = sum(bike_count, na.rm = TRUE)) %&gt;%
+  ggplot(aes(hour, bike_count)) +
+  geom_line() +
   geom_point()
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-6-1.png" width="672" />
 ```r
-bike_traffic %&gt;% 
+bike_traffic %&gt;%
   group_by(hour = hour(date),
-           crossing) %&gt;% 
-  summarise(bike_count = sum(bike_count, na.rm = TRUE)) %&gt;% 
-  ggplot(aes(hour, bike_count, color = crossing)) + 
-  geom_line() + 
+           crossing) %&gt;%
+  summarise(bike_count = sum(bike_count, na.rm = TRUE)) %&gt;%
+  ggplot(aes(hour, bike_count, color = crossing)) +
+  geom_line() +
   geom_point()
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 ```r
-bike_traffic %&gt;% 
+bike_traffic %&gt;%
   group_by(crossing,
-           hour = hour(date)) %&gt;% 
-  summarise(bike_count = sum(bike_count, na.rm = TRUE)) %&gt;% 
-  mutate(pct_bike = bike_count/sum(bike_count)) %&gt;% 
-  ggplot(aes(hour, pct_bike, color = crossing)) + 
-  geom_line() + 
-  geom_point() + 
+           hour = hour(date)) %&gt;%
+  summarise(bike_count = sum(bike_count, na.rm = TRUE)) %&gt;%
+  mutate(pct_bike = bike_count/sum(bike_count)) %&gt;%
+  ggplot(aes(hour, pct_bike, color = crossing)) +
+  geom_line() +
+  geom_point() +
   scale_y_continuous(labels = percent_format()) +
   labs(title = &quot;When in the day do people bike through these Seattle crossings?&quot;,
        subtitle = &quot;Based on crossings from 2014 - Feb 2019&quot;,
@@ -136,26 +133,26 @@ bike_traffic %&gt;%
        x = &quot;Time of day (local time)&quot;,
        y = &quot;% of bike crossings that happen in this hour&quot;)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-8-1.png" width="672" />
 ```r
-bike_traffic %&gt;% 
-  mutate(hour = hour(date), 
+bike_traffic %&gt;%
+  mutate(hour = hour(date),
          time_window = case_when(
            between(hour, 7, 10) ~ &quot;Morning Commute&quot;,
            between(hour, 11, 15) ~ &quot;Midday&quot;,
            between(hour, 16, 18) ~ &quot;Evening Commute&quot;,
            TRUE ~ &quot;Night&quot;
-         )) %&gt;% 
-  group_by(crossing, 
-           time_window) %&gt;% 
+         )) %&gt;%
+  group_by(crossing,
+           time_window) %&gt;%
   summarise(number_missing = sum(is.na(bike_count)),
-            bike_count = sum(bike_count, na.rm = TRUE)) %&gt;% 
+            bike_count = sum(bike_count, na.rm = TRUE)) %&gt;%
   mutate(pct_bike = bike_count/sum(bike_count)) -&gt; bike_by_time_window
 
-bike_by_time_window %&gt;% 
-  select(-number_missing, -bike_count) %&gt;% 
-  spread(time_window, pct_bike) %&gt;% 
-  mutate(TotalCommute = `Evening Commute` + `Morning Commute`) %&gt;% 
+bike_by_time_window %&gt;%
+  select(-number_missing, -bike_count) %&gt;%
+  spread(time_window, pct_bike) %&gt;%
+  mutate(TotalCommute = `Evening Commute` + `Morning Commute`) %&gt;%
   arrange(desc(TotalCommute))
 ```
 ```
@@ -171,110 +168,110 @@ bike_by_time_window %&gt;%
 ## 7 NW 58th St Greenw…            0.240  0.364            0.202 0.194        0.442
 ```
 ```r
-bike_by_time_window %&gt;% 
-  ggplot(aes(time_window, pct_bike)) + 
-  geom_col() + 
+bike_by_time_window %&gt;%
+  ggplot(aes(time_window, pct_bike)) +
+  geom_col() +
   coord_flip() +
   facet_wrap(~ crossing)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-10-1.png" width="672" />
 ```r
-bike_by_time_window %&gt;% 
-  group_by(crossing) %&gt;% 
+bike_by_time_window %&gt;%
+  group_by(crossing) %&gt;%
   summarise(total_bikes = sum(bike_count),
-            pct_commute = sum(bike_count[str_detect(time_window, &quot;Commute&quot;)]) / total_bikes) %&gt;% 
-  ggplot(aes(total_bikes, pct_commute)) + 
-  geom_point() + 
+            pct_commute = sum(bike_count[str_detect(time_window, &quot;Commute&quot;)]) / total_bikes) %&gt;%
+  ggplot(aes(total_bikes, pct_commute)) +
+  geom_point() +
   scale_x_log10()
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 ```r
-bike_traffic %&gt;% 
+bike_traffic %&gt;%
   group_by(crossing,
            weekday = wday(date, label = TRUE),
-        hour = hour(date))  %&gt;% 
-  summarise(total_bikes = sum(bike_count, na.rm = TRUE)) %&gt;% 
-  group_by(crossing) %&gt;% 
-  mutate(pct_bike = total_bikes/sum(total_bikes)) %&gt;% 
-  ggplot(aes(hour, pct_bike, color = crossing)) + 
-  geom_line(show.legend = FALSE) + 
-  facet_grid(crossing ~ weekday) + 
-  scale_y_continuous(labels = percent_format()) + 
+        hour = hour(date))  %&gt;%
+  summarise(total_bikes = sum(bike_count, na.rm = TRUE)) %&gt;%
+  group_by(crossing) %&gt;%
+  mutate(pct_bike = total_bikes/sum(total_bikes)) %&gt;%
+  ggplot(aes(hour, pct_bike, color = crossing)) +
+  geom_line(show.legend = FALSE) +
+  facet_grid(crossing ~ weekday) +
+  scale_y_continuous(labels = percent_format()) +
   labs(x = &quot;Time of week&quot;,
        y = &quot;% of bike crossings happening in this hour&quot;,
        title = &quot;When in the week do people in Seattle bike?&quot;,
        subtitle = &quot;Based on crossings from 2014-Feb 2019&quot;)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-12-1.png" width="672" />
 ```r
-bike_traffic %&gt;% 
-  filter(date &lt; &quot;2018-01-01&quot;) %&gt;% 
+bike_traffic %&gt;%
+  filter(date &lt; &quot;2018-01-01&quot;) %&gt;%
   group_by(crossing,
-           month = fct_relevel(month.name[month(date)], month.name)) %&gt;% 
-  summarise(total_bikes = sum(bike_count, na.rm = TRUE)) %&gt;% 
-  mutate(pct_bike = total_bikes/sum(total_bikes)) %&gt;% 
-  ggplot(aes(month, pct_bike, color = crossing, group = crossing)) + 
+           month = fct_relevel(month.name[month(date)], month.name)) %&gt;%
+  summarise(total_bikes = sum(bike_count, na.rm = TRUE)) %&gt;%
+  mutate(pct_bike = total_bikes/sum(total_bikes)) %&gt;%
+  ggplot(aes(month, pct_bike, color = crossing, group = crossing)) +
   geom_line() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-  expand_limits(y=0) + 
-  scale_y_continuous(labels = percent_format()) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  expand_limits(y=0) +
+  scale_y_continuous(labels = percent_format()) +
   labs(subtitle = &quot;Based on 2014-2017 bike crossings&quot;,
        title = &quot;What time of the year did people in Seattle bike?&quot;,
        y = &quot;% of yearly trips in this month&quot;,
        x = &quot;&quot;)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-13-1.png" width="672" />
 ### What directions do people commute by bike?
 ```r
-bike_traffic %&gt;% 
-  filter(crossing != &quot;MTS Trail&quot;) %&gt;% 
-  filter(!wday(date, label = TRUE) %in% c(&quot;Sat&quot;, &quot;Sun&quot;)) %&gt;% 
-  mutate(hour = hour(date), 
+bike_traffic %&gt;%
+  filter(crossing != &quot;MTS Trail&quot;) %&gt;%
+  filter(!wday(date, label = TRUE) %in% c(&quot;Sat&quot;, &quot;Sun&quot;)) %&gt;%
+  mutate(hour = hour(date),
          commute = case_when(
            between(hour, 7, 9) ~ &quot;Morning&quot;,
            between(hour, 16, 18) ~ &quot;Evening&quot;
-         )) %&gt;% 
-  filter(!is.na(commute)) %&gt;% 
+         )) %&gt;%
+  filter(!is.na(commute)) %&gt;%
   group_by(crossing,
            direction,
-           commute) %&gt;% 
+           commute) %&gt;%
   summarise(bike_count = sum(bike_count, na.rm = TRUE)) -&gt; bike_by_time_window_commute
 
-bike_by_time_window_commute %&gt;% 
-  spread(commute, bike_count) %&gt;% 
-  mutate(ratio = Evening/Morning) %&gt;% 
+bike_by_time_window_commute %&gt;%
+  spread(commute, bike_count) %&gt;%
+  mutate(ratio = Evening/Morning) %&gt;%
   ggplot(aes(direction, ratio)) +
   geom_col() +
   scale_y_log10(breaks = c(.5, 1, 2, 4, 8),
                 labels = c(&quot;1/2&quot;, &quot;Same&quot;, &quot;2x&quot;, &quot;4x&quot;, &quot;8x&quot;)) +
   facet_wrap(~crossing, scales = &quot;free_x&quot;)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 ```r
-bike_traffic %&gt;% 
+bike_traffic %&gt;%
   filter(crossing != &quot;MTS Trail&quot;,
          !wday(date, label = TRUE) %in% c(&quot;Sat&quot;, &quot;Sun&quot;),
-         direction %in% c(&quot;North&quot;, &quot;South&quot;)) %&gt;% 
-  mutate(hour = hour(date)) %&gt;% 
+         direction %in% c(&quot;North&quot;, &quot;South&quot;)) %&gt;%
+  mutate(hour = hour(date)) %&gt;%
   group_by(crossing,
            direction,
-           hour) %&gt;% 
-  summarise(bike_count = sum(bike_count, na.rm = TRUE)) %&gt;% 
+           hour) %&gt;%
+  summarise(bike_count = sum(bike_count, na.rm = TRUE)) %&gt;%
   mutate(pct_bike = bike_count/sum(bike_count)) -&gt; bike_by_direction_hour_crossing
 
-bike_by_direction_hour_crossing %&gt;% 
-  group_by(crossing) %&gt;% 
-  mutate(average_hour = sum((hour*pct_bike)[direction == &quot;North&quot;])) %&gt;% 
-  ungroup() %&gt;% 
-  mutate(crossing = fct_reorder(crossing, average_hour)) %&gt;% 
-  ggplot(aes(hour, pct_bike, color = direction)) + 
-  geom_line() + 
-  facet_grid(crossing ~ .) + 
-  scale_y_continuous(labels = percent_format()) + 
+bike_by_direction_hour_crossing %&gt;%
+  group_by(crossing) %&gt;%
+  mutate(average_hour = sum((hour*pct_bike)[direction == &quot;North&quot;])) %&gt;%
+  ungroup() %&gt;%
+  mutate(crossing = fct_reorder(crossing, average_hour)) %&gt;%
+  ggplot(aes(hour, pct_bike, color = direction)) +
+  geom_line() +
+  facet_grid(crossing ~ .) +
+  scale_y_continuous(labels = percent_format()) +
   labs(x = &quot;Time of day&quot;,
        y = &quot;% of bike crossings happening in this hour&quot;,
        title = &quot;In which directions do people commute by bike?&quot;,
        subtitle = &quot;Based on weekday crossings at six Seattle locations from 2014-Feb 2019&quot;,
        color = &quot;Direction&quot;)
 ```
-<p><img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-15-1.png" width="672" />

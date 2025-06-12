@@ -24,12 +24,9 @@ freeze: true
 output-file: nlp-with-disaster-tweets-part-3-linear-models.html
 ---
 
-
-
-
 # Introduction
-<p>In this <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.<br />
-In this part 3 for Linear Modelling, I will use the processed data generated in <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">Part 1</a> to train logistic regression based model with regularization in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a> about Nearest Neighbors model, I will do a comparative study among these 2 modelling algorithms.</p>
+In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
+In this part 3 for Linear Modelling, I will use the processed data generated in [Part 1](/2020/02/nlp-with-disaster-tweets-part-1/) to train logistic regression based model with regularization in order to predict if a tweet is about a real disaster or not using the tidymodels framework. Following up from the previous [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/) about Nearest Neighbors model, I will do a comparative study among these 2 modelling algorithms.
 # Analysis
 ## Load Libraries
 ```r
@@ -49,23 +46,23 @@ tweets &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot
 tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)
 ```
 ```r
-tweets %&gt;% 
+tweets %&gt;%
   dim
 ```
 ```
 ## [1] 7613  830
 ```
 ```r
-tweets_final %&gt;% 
+tweets_final %&gt;%
   dim
 ```
 ```
 ## [1] 3263  829
 ```
 ## Feature preprocessing and engineering
-<p>I will use the same steps of feature preprocessing and engineering from <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a> here, in order to have an apples to apples comparison of the 2 models.</p>
+I will use the same steps of feature preprocessing and engineering from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/) here, in order to have an apples to apples comparison of the 2 models.
 ```r
-tweets %&gt;% 
+tweets %&gt;%
   mutate(target = as.factor(target),
          id = as.character(id)) -&gt; tweets
 
@@ -80,35 +77,35 @@ tweets_split &lt;- initial_split(tweets_train_cv, prop = 7/9, strata = target)
 tweets_train &lt;- training(tweets_split)
 tweets_cv &lt;- testing(tweets_split)
 
-recipe(target ~ ., data = tweets_train) %&gt;% 
-  update_role(id, new_role = &quot;ID&quot;) %&gt;% 
-  step_rm(location, keyword) %&gt;% 
+recipe(target ~ ., data = tweets_train) %&gt;%
+  update_role(id, new_role = &quot;ID&quot;) %&gt;%
+  step_rm(location, keyword) %&gt;%
   step_mutate(len = str_length(text),
-              num_hashtags = str_count(text, &quot;#&quot;)) %&gt;% 
-  step_rm(text) %&gt;% 
-  step_zv(all_numeric(), -all_outcomes()) %&gt;% 
-  step_normalize(all_numeric(), -all_outcomes())  %&gt;% 
+              num_hashtags = str_count(text, &quot;#&quot;)) %&gt;%
+  step_rm(text) %&gt;%
+  step_zv(all_numeric(), -all_outcomes()) %&gt;%
+  step_normalize(all_numeric(), -all_outcomes())  %&gt;%
   step_pca(all_predictors(), -len, -num_hashtags, threshold = 0.80)-&gt; tweets_recipe
 
-tweets_prep &lt;- tweets_recipe %&gt;% 
-  prep(training = tweets_train, 
+tweets_prep &lt;- tweets_recipe %&gt;%
+  prep(training = tweets_train,
        strings_as_factors = FALSE)
 ```
 ## Modelling
 ### Lasso Regression using glmnet
-<p>Let’s build a basic logistic regression model with some default value of regularization penalty.</p>
+Let’s build a basic logistic regression model with some default value of regularization penalty.
 #### Basic
 ```r
-lasso_spec &lt;- logistic_reg(penalty = 0.1, mixture = 1) %&gt;% 
-  set_engine(&quot;glmnet&quot;) %&gt;% 
-  set_mode(&quot;classification&quot;) 
+lasso_spec &lt;- logistic_reg(penalty = 0.1, mixture = 1) %&gt;%
+  set_engine(&quot;glmnet&quot;) %&gt;%
+  set_mode(&quot;classification&quot;)
 
-wf &lt;- workflow() %&gt;% 
+wf &lt;- workflow() %&gt;%
   add_recipe(tweets_recipe)
 ```
 ```r
-lasso_fit &lt;- wf %&gt;% 
-  add_model(lasso_spec) %&gt;% 
+lasso_fit &lt;- wf %&gt;%
+  add_model(lasso_spec) %&gt;%
   fit(data = tweets_train)
 
 saveRDS(lasso_fit, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_basic_fit.rds&quot;)
@@ -116,9 +113,9 @@ saveRDS(lasso_fit, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_basic_fit
 ```r
 lasso_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_basic_fit.rds&quot;)
 
-lasso_fit %&gt;% 
-  pull_workflow_fit() %&gt;% 
-  tidy() 
+lasso_fit %&gt;%
+  pull_workflow_fit() %&gt;%
+  tidy()
 ```
 ```
 ## # A tibble: 11,684 x 5
@@ -136,15 +133,15 @@ lasso_fit %&gt;%
 ## 10 (Intercept)     6  -0.288  0.0951  5.21e- 2
 ## # … with 11,674 more rows
 ```
-<p>Above we see the familiar output of glmnet. Now, Let’s try and tune the regularization penalty and visualize the results.</p>
+Above we see the familiar output of glmnet. Now, Let’s try and tune the regularization penalty and visualize the results.
 #### Tuning lasso penalty
-<p>Using 10-fold cross validation and a few different values of regularization penalty.</p>
+Using 10-fold cross validation and a few different values of regularization penalty.
 ```r
 set.seed(1234)
 folds &lt;- vfold_cv(tweets_train, strata = target, v = 10, repeats = 3)
 
-tune_spec &lt;- logistic_reg(penalty = tune(), mixture = 1) %&gt;% 
-  set_mode(&quot;classification&quot;) %&gt;% 
+tune_spec &lt;- logistic_reg(penalty = tune(), mixture = 1) %&gt;%
+  set_mode(&quot;classification&quot;) %&gt;%
   set_engine(&quot;glmnet&quot;)
 
 lambda_grid &lt;- grid_regular(penalty(), levels = 75)
@@ -167,7 +164,7 @@ saveRDS(lasso_grid, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_grid.rds
 ```r
 lasso_grid &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_grid.rds&quot;)
 
-lasso_grid %&gt;% 
+lasso_grid %&gt;%
   collect_metrics()
 ```
 ```
@@ -187,27 +184,27 @@ lasso_grid %&gt;%
 ## # … with 215 more rows
 ```
 ```r
-lasso_grid %&gt;% 
-  collect_metrics() %&gt;% 
+lasso_grid %&gt;%
+  collect_metrics() %&gt;%
   mutate(flexibility = 1/penalty,
-         .metric = str_to_title(str_replace_all(.metric, &quot;_&quot;, &quot; &quot;))) %&gt;% 
-  ggplot(aes(flexibility, mean, color = .metric)) + 
+         .metric = str_to_title(str_replace_all(.metric, &quot;_&quot;, &quot; &quot;))) %&gt;%
+  ggplot(aes(flexibility, mean, color = .metric)) +
   geom_errorbar(aes(ymin = mean - std_err,
-                    ymax = mean + std_err), alpha = 0.5) + 
-  geom_line(size = 1.5) + 
-  facet_wrap(~.metric, scales = &quot;free&quot;, nrow = 3) + 
-  scale_x_log10() + 
+                    ymax = mean + std_err), alpha = 0.5) +
+  geom_line(size = 1.5) +
+  facet_wrap(~.metric, scales = &quot;free&quot;, nrow = 3) +
+  scale_x_log10() +
   theme(legend.position = &quot;none&quot;) +
   labs(title = &quot;Model performance against model flexibility&quot;,
        subtitle = &quot;F1-score peaks around lower flexibility values&quot;,
        x = &quot;Model flexibility i.e. Log(1/penalty)&quot;,
        y = &quot;Mean metric value&quot;)
 ```
-<p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-11-1.png" width="672" />
-As we see in the plot above, the f1-score increases on the evaluation set until around penalty=0.005 and then starts falling down. We plot the flexibility (i.e. 1/penalty) to visualize how the model performance varies as the model flexibility increases. The Lasso Regression model with a lower penalty value will be highly flexible since it will not penalize the features weights by a lot and thus have high variance, whereas a higher penalty would lead to a much stricter model which is less flexible since a lot of feature weights will be moved to zero due to high penalty and therefore the model might suffer from bias.</p>
-<p>Let’s pickout the best parameter penalty based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset.</p>
+<img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+As we see in the plot above, the f1-score increases on the evaluation set until around penalty=0.005 and then starts falling down. We plot the flexibility (i.e. 1/penalty) to visualize how the model performance varies as the model flexibility increases. The Lasso Regression model with a lower penalty value will be highly flexible since it will not penalize the features weights by a lot and thus have high variance, whereas a higher penalty would lead to a much stricter model which is less flexible since a lot of feature weights will be moved to zero due to high penalty and therefore the model might suffer from bias.
+Let’s pickout the best parameter penalty based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset.
 ```r
-lasso_grid %&gt;% 
+lasso_grid %&gt;%
   select_best(&quot;f_meas&quot;) -&gt; highest_f_meas
 
 final_lasso &lt;- finalize_workflow(
@@ -216,7 +213,7 @@ final_lasso &lt;- finalize_workflow(
 )
 ```
 ```r
-last_fit(final_lasso, 
+last_fit(final_lasso,
          tweets_split,
          metrics = metric_set(accuracy, roc_auc, f_meas)) -&gt; lasso_last_fit
 
@@ -224,7 +221,7 @@ saveRDS(lasso_last_fit, &quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last
 ```
 ```r
 lasso_last_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds&quot;)
-lasso_last_fit %&gt;% 
+lasso_last_fit %&gt;%
   collect_metrics()
 ```
 ```
@@ -235,103 +232,103 @@ lasso_last_fit %&gt;%
 ## 2 f_meas   binary         0.806
 ## 3 roc_auc  binary         0.826
 ```
-<p>The f1-score metric on the validation set comes out to be 0.8058252 which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a>. Lets try and visualize the variable importance for different features that we used to train our model.</p>
+The f1-score metric on the validation set comes out to be 0.8058252 which is much higher compared to the baseline and also the K-Nearest Neighbor model that we built in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/). Lets try and visualize the variable importance for different features that we used to train our model.
 ```r
-lasso_last_fit$.workflow[[1]] %&gt;% 
-  pull_workflow_fit() %&gt;% 
-  vi(lambda = highest_f_meas$penalty) %&gt;% 
+lasso_last_fit$.workflow[[1]] %&gt;%
+  pull_workflow_fit() %&gt;%
+  vi(lambda = highest_f_meas$penalty) %&gt;%
   mutate(Importance = abs(Importance),
-         Variable = fct_reorder(Variable, Importance)) %&gt;% 
-  top_n(10, Importance) %&gt;% 
-  ggplot(aes(x = Importance, y = Variable, fill = Sign)) + 
-  geom_col() + 
-  scale_x_continuous(expand = c(0,0)) + 
+         Variable = fct_reorder(Variable, Importance)) %&gt;%
+  top_n(10, Importance) %&gt;%
+  ggplot(aes(x = Importance, y = Variable, fill = Sign)) +
+  geom_col() +
+  scale_x_continuous(expand = c(0,0)) +
   labs(y = NULL,
        x = &quot;Importance&quot;,
        title = &quot;Variable Importance plot&quot;,
        subtitle = &quot;&#39;len&#39; feature has high positive impact on disaster probability&quot;)
 ```
-<p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, as in the plot above, our custom feature “len” i.e. length of the tweets comes out as one of the most important features. The model gives a higher probability of a tweet being about a disaster if its longer in length, signifying that people tweeting about real disasters usually use a lot more words as compared to others.</p>
-<p>Let’s visualize how the coefficient estimates vary based on lambda for our 2 custom features, length of tweets and number of hashtags, and also for 1 other high coefficient feature in both positive and negative directions each.</p>
+<img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, as in the plot above, our custom feature “len” i.e. length of the tweets comes out as one of the most important features. The model gives a higher probability of a tweet being about a disaster if its longer in length, signifying that people tweeting about real disasters usually use a lot more words as compared to others.
+Let’s visualize how the coefficient estimates vary based on lambda for our 2 custom features, length of tweets and number of hashtags, and also for 1 other high coefficient feature in both positive and negative directions each.
 ```r
-lasso_last_fit$.workflow[[1]] %&gt;% 
-  pull_workflow_fit() %&gt;% 
-  tidy() %&gt;% 
-  filter(term %in% c(&quot;len&quot;, &quot;num_hashtags&quot;, &quot;PC009&quot;, &quot;PC026&quot;)) %&gt;% 
-  select(term, estimate, lambda) %&gt;% 
-  pivot_wider(names_from = term, values_from = estimate) %&gt;% 
-  replace_na(list(num_hashtags = 0, PC009 = 0, len = 0, PC026 = 0)) %&gt;% 
-  pivot_longer(names_to = &quot;term&quot;, values_to = &quot;estimate&quot;, cols = -lambda) %&gt;% 
-  ggplot(aes(x = lambda, y = estimate, color = term)) + 
-  geom_point() + 
+lasso_last_fit$.workflow[[1]] %&gt;%
+  pull_workflow_fit() %&gt;%
+  tidy() %&gt;%
+  filter(term %in% c(&quot;len&quot;, &quot;num_hashtags&quot;, &quot;PC009&quot;, &quot;PC026&quot;)) %&gt;%
+  select(term, estimate, lambda) %&gt;%
+  pivot_wider(names_from = term, values_from = estimate) %&gt;%
+  replace_na(list(num_hashtags = 0, PC009 = 0, len = 0, PC026 = 0)) %&gt;%
+  pivot_longer(names_to = &quot;term&quot;, values_to = &quot;estimate&quot;, cols = -lambda) %&gt;%
+  ggplot(aes(x = lambda, y = estimate, color = term)) +
+  geom_point() +
   geom_line() +
-  geom_abline(slope = 0, intercept = 0, linetype = 2, 
+  geom_abline(slope = 0, intercept = 0, linetype = 2,
             color = &#39;grey50&#39;) +
-  scale_x_log10() + 
+  scale_x_log10() +
   labs(x = &quot;Log (Penalty Parameter) &quot;,
        y = &quot;Coefficient Estimate&quot;,
        color = &quot;Feature&quot;,
        title = &quot;Feature coefficients against penalty parameter&quot;,
        subtitle = &quot;&#39;num_hashtags&#39; feature gets to zero coefficient very soon in comparison&quot;)
 ```
-<p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
-<p>All feature coefficients tend to move towards zero as we increase the lambda penalty parameter, some more quickly than others.</p>
+<img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-16-1.png" width="672" />
+All feature coefficients tend to move towards zero as we increase the lambda penalty parameter, some more quickly than others.
 ## Model Calibration
-<p>Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let’s compare our 2 models, lasso regression here and the best k-nearest neighbor model from <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a>, by plotting calibration plots for each of them.</p>
+Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let’s compare our 2 models, lasso regression here and the best k-nearest neighbor model from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/), by plotting calibration plots for each of them.
 ```r
-readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;% 
-  collect_predictions() %&gt;% 
-  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;% 
-  group_by(pred_bucket) %&gt;% 
+readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;%
+  collect_predictions() %&gt;%
+  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;%
+  group_by(pred_bucket) %&gt;%
   summarise(mean_truth = mean(as.numeric(as.character(target)))*100,
-            mean_pred = mean(`.pred_1`)*100) %&gt;% 
-  ungroup() %&gt;% 
+            mean_pred = mean(`.pred_1`)*100) %&gt;%
+  ungroup() %&gt;%
   ggplot(aes(x = mean_pred, y = mean_truth)) +
-  geom_point(color = &quot;#F8766D&quot;, size = 3) + 
+  geom_point(color = &quot;#F8766D&quot;, size = 3) +
   geom_line(color = &quot;#F8766D&quot;) +
   scale_x_continuous(limits = c(0, 100)) +
   scale_y_continuous(limits = c(0, 100)) +
-  geom_abline(slope = 1, intercept = 0, linetype = 2, 
+  geom_abline(slope = 1, intercept = 0, linetype = 2,
             color = &#39;grey50&#39;) +
   labs(x = &quot;Mean True Prediction&quot;,
        y = &quot;Mean Truth&quot;,
        title = &quot;Calibration Plot for K-nearest neighbors model&quot;,
        subtitle = &quot;Above the diagonal signifies under-forecast&quot;)
 ```
-<p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-17-1.png" width="672" />
 ```r
-lasso_last_fit %&gt;% 
-  collect_predictions() %&gt;% 
-  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;% 
-  group_by(pred_bucket) %&gt;% 
+lasso_last_fit %&gt;%
+  collect_predictions() %&gt;%
+  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;%
+  group_by(pred_bucket) %&gt;%
   summarise(mean_truth = mean(as.numeric(as.character(target)))*100,
-            mean_pred = mean(`.pred_1`)*100) %&gt;% 
-  ungroup() %&gt;% 
+            mean_pred = mean(`.pred_1`)*100) %&gt;%
+  ungroup() %&gt;%
   ggplot(aes(x = mean_pred, y = mean_truth)) +
-  geom_point(color = &quot;#F8766D&quot;, size = 3) + 
+  geom_point(color = &quot;#F8766D&quot;, size = 3) +
   geom_line(color = &quot;#F8766D&quot;) +
   scale_x_continuous(limits = c(0, 100)) +
   scale_y_continuous(limits = c(0, 100)) +
-  geom_abline(slope = 1, intercept = 0, linetype = 2, 
+  geom_abline(slope = 1, intercept = 0, linetype = 2,
             color = &#39;grey50&#39;) +
   labs(x = &quot;Mean True Prediction&quot;,
        y = &quot;Mean Truth&quot;,
        title = &quot;Calibration Plot for Lasso Regression model&quot;,
        subtitle = &quot;Close to the diagonal signifies well calibrated model&quot;)
 ```
-<p><img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
-<p>In general, closer the calibration curve to the diagonal, the better. When a model is well calibrated, the mean prediction probability will be equal to mean truth. Meaning the model is predicting the target in the same ratios as the actual truth values.<br />
-The KNN model calibration plot shows that the curve is above the diagonal, i.e. the model is frequently under estimating the predicted probabilities.<br />
-However, the lasso regression seems to be well calibrated out of the box. That’s a sign of good stable algorithm and training procedure.<br />
-Note that all the predicted probabilities here are calculated on the cross validation set.</p>
+<img src="/post/2020-04-06-nlp-with-disaster-tweets-part-3-linear-models_files/figure-html/unnamed-chunk-18-1.png" width="672" />
+In general, closer the calibration curve to the diagonal, the better. When a model is well calibrated, the mean prediction probability will be equal to mean truth. Meaning the model is predicting the target in the same ratios as the actual truth values.
+The KNN model calibration plot shows that the curve is above the diagonal, i.e. the model is frequently under estimating the predicted probabilities.
+However, the lasso regression seems to be well calibrated out of the box. That’s a sign of good stable algorithm and training procedure.
+Note that all the predicted probabilities here are calculated on the cross validation set.
 # Summary
-<p>In the next part of this series, I will start building models with a different class of function space, like piece-wise constant functions and linear combination of piece-wise constant functions classes i.e. simple decision trees and gradient boosted trees respectively. As we see in this blog post that the class of linear functions do give better performing models and we learnt our problem space to be leaning towards flexible models in <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a>, I expect to see better results for different, more flexible modelling approaches.</p>
+In the next part of this series, I will start building models with a different class of function space, like piece-wise constant functions and linear combination of piece-wise constant functions classes i.e. simple decision trees and gradient boosted trees respectively. As we see in this blog post that the class of linear functions do give better performing models and we learnt our problem space to be leaning towards flexible models in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/), I expect to see better results for different, more flexible modelling approaches.
 # References
-<ul>
-<li>Project Summary Page - <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with disaster tweets: Summary</a></li>
-<li>Project Part 1 - <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP with Disaster Tweets: Part 1 Data Preparation</a></li>
-<li>Project Part 2 - <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">NLP with Disaster Tweets: Part 2 Nearest Neighbor Models</a></li>
-<li>Lasso Regression using <a href="https://juliasilge.com/blog/lasso-the-office/" target="_blank">Tidymodels by Julia Silge</a>.</li>
-<li>Introduction to Statistical Learning - <a href="https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370" target="_blank">Book</a></li>
-</ul>
+
+- Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
+- Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/)
+- Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/)
+- Lasso Regression using [Tidymodels by Julia Silge](https://juliasilge.com/blog/lasso-the-office/).
+- Introduction to Statistical Learning - [Book](https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370)
+

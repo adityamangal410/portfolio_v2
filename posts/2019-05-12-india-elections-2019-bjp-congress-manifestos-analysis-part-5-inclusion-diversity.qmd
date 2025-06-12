@@ -32,12 +32,9 @@ freeze: true
 output-file: india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity.html
 ---
 
-
-
-
 # Introduction
-<p>With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.<br />
-In this part 5, I’ll explore the Inclusion and Diversity discussions in both manifestos.</p>
+With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.
+In this part 5, I’ll explore the Inclusion and Diversity discussions in both manifestos.
 # Analysis
 ## Load libraries
 ```r
@@ -64,57 +61,57 @@ bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clea
 congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)
 ```
 ## Inclusion and Diversity
-<p>This topic is covered congress’ manifesto from Pages 20 to 23 of the pdf and in that of bjp’s from pages 31 to 35.</p>
+This topic is covered congress’ manifesto from Pages 20 to 23 of the pdf and in that of bjp’s from pages 31 to 35.
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   filter(between(page, 31, 35)) -&gt; bjp_content
 
-congress_content %&gt;% 
+congress_content %&gt;%
   filter(between(page, 20, 23)) -&gt; congress_content
 ```
 ## Most Popular Words
 ```r
-plot_most_popular_words &lt;- function(df, 
+plot_most_popular_words &lt;- function(df,
                                     min_count = 15,
                                     stop_words_list = stop_words) {
-  df %&gt;% 
-    unnest_tokens(word, text) %&gt;% 
-    anti_join(stop_words_list) %&gt;% 
+  df %&gt;%
+    unnest_tokens(word, text) %&gt;%
+    anti_join(stop_words_list) %&gt;%
     mutate(word = str_extract(word, &quot;[a-z&#39;]+&quot;)) %&gt;%
-    filter(!is.na(word)) %&gt;% 
-    count(word, sort = TRUE) %&gt;% 
+    filter(!is.na(word)) %&gt;%
+    count(word, sort = TRUE) %&gt;%
     filter(str_length(word) &gt; 1,
-           n &gt; min_count) %&gt;% 
+           n &gt; min_count) %&gt;%
     mutate(word = reorder(word, n)) %&gt;%
     ggplot( aes(x=word, y=n)) +
     geom_segment( aes(x=word, xend=word, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
     geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
-    coord_flip() + 
+    coord_flip() +
     theme(panel.grid.minor.y = element_blank(),
           panel.grid.major.y = element_blank(),
           legend.position=&quot;none&quot;) -&gt; p
-  
+
   return(p)
 }
 ```
 ```r
-custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;), 
-                                          lexicon = rep(&quot;custom&quot;, 5)), 
+custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;),
+                                          lexicon = rep(&quot;custom&quot;, 5)),
                                stop_words)
 ```
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   plot_most_popular_words(min_count = 6,
-                          stop_words_list = custom_stop_words) + 
+                          stop_words_list = custom_stop_words) +
   labs(x = &quot;&quot;,
        y = &quot;Number of Occurences&quot;,
        title = &quot;Most popular words related to Inclusion &amp; Diversity in BJP&#39;s Manifesto&quot;,
        subtitle = &quot;Words occurring more than 6 times&quot;,
        caption = &quot;Based on election 2019 manifesto from bjp.org&quot;) -&gt; p_bjp
 
-congress_content %&gt;% 
+congress_content %&gt;%
   plot_most_popular_words(min_count = 10,
-                          stop_words_list = custom_stop_words) + 
+                          stop_words_list = custom_stop_words) +
   labs(x = &quot;&quot;,
        y = &quot;Number of Occurences&quot;,
        title = &quot;Most popular words related to Inclusion &amp; Diversity in Congress&#39; Manifesto&quot;,
@@ -123,7 +120,7 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
 ```
-<p><img src="/post/2019-05-12-india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity_files/figure-html/unnamed-chunk-6-1.png" width="1344" /></p>
+<img src="/post/2019-05-12-india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity_files/figure-html/unnamed-chunk-6-1.png" width="1344" />
 ## Common correlated words
 ```r
 plot_common_correlated_words &lt;- function(df,
@@ -131,38 +128,38 @@ plot_common_correlated_words &lt;- function(df,
                                          correlation_threshold = 0.25,
                                          stop_words_list = stop_words) {
   set.seed(123)
-  df %&gt;% 
-    unnest_tokens(word, text) %&gt;% 
-    anti_join(stop_words_list) %&gt;% 
-    add_count(word) %&gt;% 
-    filter(n &gt; stats::quantile(n, counts_quantile)) %&gt;% 
-    pairwise_cor(word, page, sort = TRUE) %&gt;% 
+  df %&gt;%
+    unnest_tokens(word, text) %&gt;%
+    anti_join(stop_words_list) %&gt;%
+    add_count(word) %&gt;%
+    filter(n &gt; stats::quantile(n, counts_quantile)) %&gt;%
+    pairwise_cor(word, page, sort = TRUE) %&gt;%
     filter(correlation &gt; correlation_threshold,
          !str_detect(item1, &quot;\\d&quot;),
-         !str_detect(item2, &quot;\\d&quot;)) %&gt;% 
+         !str_detect(item2, &quot;\\d&quot;)) %&gt;%
     graph_from_data_frame() %&gt;%
     ggraph(layout = &quot;fr&quot;) +
     geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
     geom_node_point(color = &quot;lightblue&quot;, size = 5) +
     geom_node_text(aes(label = name), repel = TRUE) +
     theme_void() -&gt; p
-  
+
   return(p)
 }
 ```
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.75) + 
+                               counts_quantile = 0.75) +
   labs(x = &quot;&quot;,
        y = &quot;&quot;,
        title = &quot;Commonly Occurring Correlated Words in BJP&#39;s Manifesto&quot;,
        subtitle = &quot;Per page correlation higher than 0.25&quot;,
        caption = &quot;Based on election 2019 manifesto from bjp.org&quot;) -&gt; p_bjp
 
-congress_content %&gt;% 
+congress_content %&gt;%
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.85) + 
+                               counts_quantile = 0.85) +
   labs(x = &quot;&quot;,
        y = &quot;&quot;,
        title = &quot;Commonly Occurring Correlated Words in Congress&#39;s Manifesto&quot;,
@@ -171,10 +168,10 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
 ```
-<p><img src="/post/2019-05-12-india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
+<img src="/post/2019-05-12-india-elections-2019-bjp-congress-manifestos-analysis-part-5-inclusion-diversity_files/figure-html/unnamed-chunk-8-1.png" width="1152" />
 ## Basic Search Engine
-<p>Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
-Using python’s scikit-learn for this.</p>
+Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
+Using python’s scikit-learn for this.
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
@@ -202,10 +199,10 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 get_related_lines &lt;- py_to_r(py$get_related_lines)
 ```
 ### Common Popular Words with both BJP &amp; Congress
-<p>As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto is “women”. Lets see, what each of them have planned for women in our country. First, BJP.</p>
+As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto is “women”. Lets see, what each of them have planned for women in our country. First, BJP.
 ```r
-bjp_content %&gt;% 
-  slice(get_related_lines(&quot;women&quot;, party = &quot;bjp&quot;)) %&gt;% 
+bjp_content %&gt;%
+  slice(get_related_lines(&quot;women&quot;, party = &quot;bjp&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -221,14 +218,14 @@ bjp_content %&gt;%
 ## 7 ensure improved health and social suppo system for these frontlin…    32     6
 ## 8 home ministry, and have made strict provisions for transferring t…    32     8
 ```
-<p>This is the excerpt that we find from page 32, as we dug up based on above results -</p>
+This is the excerpt that we find from page 32, as we dug up based on above results -
 <blockquote>
-<p>Women’s security will be given more priority. We have constituted the Women’s Security Division in the Home Ministry, and have made strict provisions for transferring the laws in order to prevent crimes against women, in particular in a time-bound investigation and trial for rape. In such cases, forensic facilities and fast track courts will be expanded to bring convicts to justice.</p>
+Women’s security will be given more priority. We have constituted the Women’s Security Division in the Home Ministry, and have made strict provisions for transferring the laws in order to prevent crimes against women, in particular in a time-bound investigation and trial for rape. In such cases, forensic facilities and fast track courts will be expanded to bring convicts to justice.
 </blockquote>
-<p>Now, Congress.</p>
+Now, Congress.
 ```r
-congress_content %&gt;% 
-  slice(get_related_lines(&quot;women&quot;, party = &quot;congress&quot;)) %&gt;% 
+congress_content %&gt;%
+  slice(get_related_lines(&quot;women&quot;, party = &quot;congress&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -245,15 +242,15 @@ congress_content %&gt;%
 ## 8 assemblies in the first session of the 17th lok sabha and in the …    20    47
 ## 9 05. we will repeal any provision of law that prohibits           …    21    26
 ```
-<p>One of the excerpts from page 21 related to above results -</p>
+One of the excerpts from page 21 related to above results -
 <blockquote>
-<p>We will stipulate that every Special Economic Zone shall have working women’s hostels and safe transport facilities to increase the participation of women in the labour force.</p>
+We will stipulate that every Special Economic Zone shall have working women’s hostels and safe transport facilities to increase the participation of women in the labour force.
 </blockquote>
 ### Unique popular words with BJP &amp; Congress
-<p>One of the popular words that seems curious from BJP’s manifesto is “families”.</p>
+One of the popular words that seems curious from BJP’s manifesto is “families”.
 ```r
-bjp_content %&gt;% 
-  slice(get_related_lines(&quot;families&quot;, party = &quot;bjp&quot;)) %&gt;% 
+bjp_content %&gt;%
+  slice(get_related_lines(&quot;families&quot;, party = &quot;bjp&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -270,14 +267,14 @@ bjp_content %&gt;%
 ## 8 13 we are commi ed to ensure the welfare of widows of defence per…    32    14
 ## 9 institution’s curriculum and training modules of public o ces.        32    13
 ```
-<p>An excerpt from BJP’s manifesto about poor families as identified from above -</p>
+An excerpt from BJP’s manifesto about poor families as identified from above -
 <blockquote>
-<p>We have been successful in extending the food security cover to over 80 crore people from poor and lower-middle-income families who are receiving food grains (wheat/rice/coarse grains) at highly subsidized prices. We will further widen this cover to provide subsidized sugar (at Rs. 13 per kg per family per month) to these families in line with our motto ‘Sabka Saath-Sabka Vikas’.</p>
+We have been successful in extending the food security cover to over 80 crore people from poor and lower-middle-income families who are receiving food grains (wheat/rice/coarse grains) at highly subsidized prices. We will further widen this cover to provide subsidized sugar (at Rs. 13 per kg per family per month) to these families in line with our motto ‘Sabka Saath-Sabka Vikas’.
 </blockquote>
-<p>Now, one of the popular words that seems curious from Congress’ manifesto is “tribes”.</p>
+Now, one of the popular words that seems curious from Congress’ manifesto is “tribes”.
 ```r
-congress_content %&gt;% 
-  slice(get_related_lines(&quot;tribes&quot;, party = &quot;congress&quot;)) %&gt;% 
+congress_content %&gt;%
+  slice(get_related_lines(&quot;tribes&quot;, party = &quot;congress&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -295,14 +292,14 @@ congress_content %&gt;%
 ## 9 social audit of policies and programmes for                           23     4
 ```
 <blockquote>
-<p>Congress promises a Special Census and the enumeration of Denotified and Semi-Nomadic Tribes and the integration of the data in the decennial census.</p>
+Congress promises a Special Census and the enumeration of Denotified and Semi-Nomadic Tribes and the integration of the data in the decennial census.
 </blockquote>
-<p>With all the above analysis, we have developed some idea about the Inclusion &amp; Diversity plans of the 2 parties. In the next post, I’ll do a similar analysis for National Security proposals by them.</p>
-<p>Stay Tuned!</p>
+With all the above analysis, we have developed some idea about the Inclusion &amp; Diversity plans of the 2 parties. In the next post, I’ll do a similar analysis for National Security proposals by them.
+Stay Tuned!
 # References
-<ul>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance/">Part 4 - Anti-Corruption and Good Governance</a><br />
-</li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security/">Part 6 - National Security</a></li>
-<li>For all the parts go to Project Summary Page - <a href="/2019/05/india-general-elections-2019-analysis/">India General Elections 2019 Analysis</a></li>
-</ul>
+
+- [Part 4 - Anti-Corruption and Good Governance](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-4-anti-corruption-and-good-governance/)
+
+- [Part 6 - National Security](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security/)
+- For all the parts go to Project Summary Page - [India General Elections 2019 Analysis](/2019/05/india-general-elections-2019-analysis/)
+

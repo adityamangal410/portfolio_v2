@@ -24,16 +24,13 @@ freeze: true
 output-file: nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us.html
 ---
 
-
-
-
 # Introduction
-<p>In this <a href="https://www.kaggle.com/c/nlp-getting-started" target="_blank">NLP getting started challenge</a> on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.<br />
-In this part 5 for Deep Learning data preparation, I will use the raw data with the splits generated in <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">Part 2</a> to create a single class of Data Module that holds all the preprocessing, vectorization and PyTorch DataLoaders implementation as preparation for use in future deep learning models using PyTorch. Following up from the previous <a href="/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/" target="_blank">Part 4</a> about tree-based models, I will move to creating Neural Networks to classify these tweets in upcoming posts.</p>
+In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
+In this part 5 for Deep Learning data preparation, I will use the raw data with the splits generated in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/) to create a single class of Data Module that holds all the preprocessing, vectorization and PyTorch DataLoaders implementation as preparation for use in future deep learning models using PyTorch. Following up from the previous [Part 4](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/) about tree-based models, I will move to creating Neural Networks to classify these tweets in upcoming posts.
 # Vocabulary, Vectorizer and More
-<p>I will be using the <a href="https://github.com/PyTorchLightning/pytorch-lightning#pytorch-lightning-masterclass" target="_blank">pytorch-lightning</a> framework to build a consistent DataModule class which will hold the logic of generating train, val and test datasets and creating corresponding data loaders that manage in-built batching and shuffling functionality. First things first, let’s start with the Vocabulary class.</p>
+I will be using the [pytorch-lightning](https://github.com/PyTorchLightning/pytorch-lightning#pytorch-lightning-masterclass) framework to build a consistent DataModule class which will hold the logic of generating train, val and test datasets and creating corresponding data loaders that manage in-built batching and shuffling functionality. First things first, let’s start with the Vocabulary class.
 ## Vocabulary
-<p>The vocabulary class will be responsible for converting the individual tokens (i.e. words) in our tweets to numerical indices. It is basically a simple dictionary with some sugar.</p>
+The vocabulary class will be responsible for converting the individual tokens (i.e. words) in our tweets to numerical indices. It is basically a simple dictionary with some sugar.
 ```python
 class Vocabulary:
     def __init__(self):
@@ -57,14 +54,14 @@ class Vocabulary:
             raise KeyError(&#39;the index {} is not in the vocab&#39;.format(index))
         return self._idx_to_token[index]
 ```
-<p>For any text vectorization task, along with transforming individual tokens into numerical indices, we will also need a few other things -</p>
-<ul>
-<li>Begin Token - A special token (<code>&lt;BEGIN&gt;</code>) that signifies the beginning of a new tweet.</li>
-<li>End Token - A special token (<code>&lt;END&gt;</code>) that signifies the end of a new tweet.</li>
-<li>Unknown Token - A special token (<code>&lt;UNK&gt;</code>) that signifies out-of-vocabulary words.</li>
-<li>Mask Token - A special token (<code>&lt;MASK&gt;</code>) that is used to make all the tweet vectors of same length by appending the mask token in the end.</li>
-</ul>
-<p>Let’s create a sequence vocabulary object which has these 4 special tokens by default in our vocabulary -</p>
+For any text vectorization task, along with transforming individual tokens into numerical indices, we will also need a few other things -
+
+- Begin Token - A special token (<code>&lt;BEGIN&gt;</code>) that signifies the beginning of a new tweet.
+- End Token - A special token (<code>&lt;END&gt;</code>) that signifies the end of a new tweet.
+- Unknown Token - A special token (<code>&lt;UNK&gt;</code>) that signifies out-of-vocabulary words.
+- Mask Token - A special token (<code>&lt;MASK&gt;</code>) that is used to make all the tweet vectors of same length by appending the mask token in the end.
+
+Let’s create a sequence vocabulary object which has these 4 special tokens by default in our vocabulary -
 ```python
 class SequenceVocabulary(Vocabulary):
     def __init__(self, unk_token=&quot;&lt;UNK&gt;&quot;, mask_token=&quot;&lt;MASK&gt;&quot;,
@@ -87,7 +84,7 @@ class SequenceVocabulary(Vocabulary):
             return self._token_to_idx[token]
 ```
 ## Vectorizer
-<p>Now that we have our vocabulary in place, we will need a vectorizer class that will, given a dataframe, create the exact vocabulary for the given dataset and also provide functionality to transform a single tweet text into a numerical vector representation.</p>
+Now that we have our vocabulary in place, we will need a vectorizer class that will, given a dataframe, create the exact vocabulary for the given dataset and also provide functionality to transform a single tweet text into a numerical vector representation.
 ```python
 class TweetsVectorizer:
     def __init__(self, text_vocab):
@@ -122,17 +119,17 @@ class TweetsVectorizer:
 
         return cls(text_vocab)
 ```
-<p>The TweetsVectorizer class above handles a couple of functionality -</p>
-<ul>
-<li>The <code>from_dataframe</code> method will take in the tweets dataframe and create the Sequence Vocabulary</li>
-<li>Each tweet text is split into tokens (by space) and token counts are generated.</li>
-<li>We add all the tokens with counts higher than the given cutoff to our text vocabulary.</li>
-<li>The <code>vectorize</code> method is the main method of use, that will vectorize a given tweet text using the previously created text vocabulary.</li>
-<li>First the <code>&lt;BEGIN&gt;</code> token index is added to the vector, then each of the word in the text is looked up using vocabulary and appended to the vector, and finally the <code>&lt;END&gt;</code> token index is appended.</li>
-<li>This vector is then normalized to a fixed length by appending <code>&lt;MASK&gt;</code> token indices in the end.</li>
-<li>Along with the final vector, we also return the actual length of the vector without any <code>&lt;MASK&gt;</code> token indices.</li>
-</ul>
-<p>As, an example if our vocabulary looks like as follows -</p>
+The TweetsVectorizer class above handles a couple of functionality -
+
+- The <code>from_dataframe</code> method will take in the tweets dataframe and create the Sequence Vocabulary
+- Each tweet text is split into tokens (by space) and token counts are generated.
+- We add all the tokens with counts higher than the given cutoff to our text vocabulary.
+- The <code>vectorize</code> method is the main method of use, that will vectorize a given tweet text using the previously created text vocabulary.
+- First the <code>&lt;BEGIN&gt;</code> token index is added to the vector, then each of the word in the text is looked up using vocabulary and appended to the vector, and finally the <code>&lt;END&gt;</code> token index is appended.
+- This vector is then normalized to a fixed length by appending <code>&lt;MASK&gt;</code> token indices in the end.
+- Along with the final vector, we also return the actual length of the vector without any <code>&lt;MASK&gt;</code> token indices.
+
+As, an example if our vocabulary looks like as follows -
 <table>
 <thead>
 <tr class="header">
@@ -184,17 +181,17 @@ class TweetsVectorizer:
 </tbody>
 </table>
 <hr />
-<p>The vectorize function will transform the tweet -</p>
+The vectorize function will transform the tweet -
 <blockquote>
-<p>the fire alarm went off</p>
+the fire alarm went off
 </blockquote>
-<p>to -</p>
+to -
 <blockquote>
-<p>[2, 4, 5, 6, 7, 8, 3, 0, 0, 0, 0, 0, 0, ….. 0]</p>
+[2, 4, 5, 6, 7, 8, 3, 0, 0, 0, 0, 0, 0, ….. 0]
 </blockquote>
-<p>with 0s appended in the end uptil the length of the longest tweet.</p>
+with 0s appended in the end uptil the length of the longest tweet.
 ## Dataset
-<p>Now we are ready to create the Dataset object for our data which is the abstraction provided by PyTorch for easy data transport and loading.</p>
+Now we are ready to create the Dataset object for our data which is the abstraction provided by PyTorch for easy data transport and loading.
 ```python
 from torch.utils.data import Dataset
 
@@ -220,16 +217,16 @@ class TweetsDataset(Dataset):
                 &#39;text&#39;: row.text,
                 &#39;x_length&#39;: vec_length}
 ```
-<ul>
-<li><code>load_dataset_and_make_vectorizer</code> method creates the vectorizer and dataset objects</li>
-<li>The train split of the tweets dataframe is used to create the vectorizer object. Both val and test splits will use this train vectorizer to handle vectorization.</li>
-<li>Max length of a tweet is calculated to be used for normalization of vectors.</li>
-<li><code>__getitem__</code> is the method that gets called during the model training cycle.</li>
-<li>It runs the vectorization and returns all the relevant fields.</li>
-</ul>
-<p>We will create 3 instances of the TweetsDataset class, one for each train, val and test splits. These will be used in the Data Module accordingly to load data via Data Loaders.</p>
+
+- <code>load_dataset_and_make_vectorizer</code> method creates the vectorizer and dataset objects
+- The train split of the tweets dataframe is used to create the vectorizer object. Both val and test splits will use this train vectorizer to handle vectorization.
+- Max length of a tweet is calculated to be used for normalization of vectors.
+- <code>__getitem__</code> is the method that gets called during the model training cycle.
+- It runs the vectorization and returns all the relevant fields.
+
+We will create 3 instances of the TweetsDataset class, one for each train, val and test splits. These will be used in the Data Module accordingly to load data via Data Loaders.
 ## Data Module
-<p>PyTorch Lightning provides a fantastic <a href="https://pytorch-lightning.readthedocs.io/en/latest/datamodules.html?highlight=datamodule" target="_blank">LightningDataModule</a> class that helps create a shareable, reusable object that encapsulates all the steps needed to process data.</p>
+PyTorch Lightning provides a fantastic [LightningDataModule](https://pytorch-lightning.readthedocs.io/en/latest/datamodules.html?highlight=datamodule) class that helps create a shareable, reusable object that encapsulates all the steps needed to process data.
 ```python
 import pytorch_lightning as pl
 
@@ -283,27 +280,27 @@ class DisasterTweetsDataModule(pl.LightningDataModule):
             num_workers=self.num_workers
         )
 ```
-<p>The above code shows the most important components of the LightningDataModule class.</p>
-<ul>
-<li>The <code>setup</code> method is the main method that runs all the data preprocessing and vectorization steps.</li>
-<li>First the dataframe is loaded from csv data path and 3 TweetsDataset objects are created, one for each train, val and test splits.</li>
-<li>As in the previous parts of this series, we will use Glove pre-trained embeddings to get low dimension embeddings for each of the words in our vocabulary. The setup function also loads these embeddings from file and creates the embedding matrix for all the words in our vocabulary.</li>
-<li>These pre-trained embeddings are returned as a 2-D tensor that we can use to initialize our embedding layer during modelling.</li>
-<li>Also note that we generate a xavier uniform embedding vector for words in our vocabulary that do not have a glove embedding.</li>
-<li>Finally, the <code>train_dataloader</code> function wraps the train dataset object in a DataLoader object provided by PyTorch. This will generate batches of data and is also configured to shuffle the data and drop records (if any) if they do not form a complete batch.</li>
-<li>Similarly, I have also added <code>val_dataloader</code> and <code>test_dataloader</code> methods (not shown here for brevity) that generate DataLoader objects for val and test Datasets respectively. PS, both of those will need to have shuffling and drop_last turned off.</li>
-</ul>
+The above code shows the most important components of the LightningDataModule class.
+
+- The <code>setup</code> method is the main method that runs all the data preprocessing and vectorization steps.
+- First the dataframe is loaded from csv data path and 3 TweetsDataset objects are created, one for each train, val and test splits.
+- As in the previous parts of this series, we will use Glove pre-trained embeddings to get low dimension embeddings for each of the words in our vocabulary. The setup function also loads these embeddings from file and creates the embedding matrix for all the words in our vocabulary.
+- These pre-trained embeddings are returned as a 2-D tensor that we can use to initialize our embedding layer during modelling.
+- Also note that we generate a xavier uniform embedding vector for words in our vocabulary that do not have a glove embedding.
+- Finally, the <code>train_dataloader</code> function wraps the train dataset object in a DataLoader object provided by PyTorch. This will generate batches of data and is also configured to shuffle the data and drop records (if any) if they do not form a complete batch.
+- Similarly, I have also added <code>val_dataloader</code> and <code>test_dataloader</code> methods (not shown here for brevity) that generate DataLoader objects for val and test Datasets respectively. PS, both of those will need to have shuffling and drop_last turned off.
+
 # Summary
-<p>In this part of the series, we have done our ground work for data preparation which we can use to jumpstart our Deep Learning modelling process. The full code for this class can be viewed on my github <a href="https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/disaster_tweets_data_module.py" target="_blank">here</a>. In the next part, I will start building a simple multi-layer perceptron using PyTorch Lightning and the DataModule class that we discussed in this part. See you there!</p>
+In this part of the series, we have done our ground work for data preparation which we can use to jumpstart our Deep Learning modelling process. The full code for this class can be viewed on my github [here](https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/disaster_tweets_data_module.py). In the next part, I will start building a simple multi-layer perceptron using PyTorch Lightning and the DataModule class that we discussed in this part. See you there!
 # References
-<ul>
-<li>Project Summary Page - <a href="/2020/02/nlp-with-disaster-tweets/" target="_blank">NLP with disaster tweets: Summary</a></li>
-<li>Project Part 1 - <a href="/2020/02/nlp-with-disaster-tweets-part-1/" target="_blank">NLP with Disaster Tweets: Part 1 Data Preparation</a></li>
-<li>Project Part 2 - <a href="/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/" target="_blank">NLP with Disaster Tweets: Part 2 Nearest Neighbor Models</a></li>
-<li>Project Part 3 - <a href="/2020/04/nlp-with-disaster-tweets-part-3-linear-models/" target="_blank">NLP with Disaster Tweets: Part 3 Linear Models</a></li>
-<li>Project Part 4 - <a href="/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/" target="_blank">NLP with Disaster Tweets: Part 4 Tree-based Models</a></li>
-<li>PyTorch - <a href="https://pytorch.org/docs/stable/index.html" target="_blank">Docs</a></li>
-<li>PyTorch Lightning - <a href="https://pytorch-lightning.readthedocs.io/en/latest/" target="_blank">Docs</a></li>
-<li>Natural Language Processing with PyTorch - <a href="https://learning.oreilly.com/library/view/natural-language-processing/9781491978221/" target="_blank">ebook</a></li>
-<li>Full DisasterTweetsDataModule implementation - <a href="https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/disaster_tweets_data_module.py" target="_blank">github</a></li>
-</ul>
+
+- Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
+- Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/)
+- Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/)
+- Project Part 3 - [NLP with Disaster Tweets: Part 3 Linear Models](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/)
+- Project Part 4 - [NLP with Disaster Tweets: Part 4 Tree-based Models](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/)
+- PyTorch - [Docs](https://pytorch.org/docs/stable/index.html)
+- PyTorch Lightning - [Docs](https://pytorch-lightning.readthedocs.io/en/latest/)
+- Natural Language Processing with PyTorch - [ebook](https://learning.oreilly.com/library/view/natural-language-processing/9781491978221/)
+- Full DisasterTweetsDataModule implementation - [github](https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/disaster_tweets_data_module.py)
+

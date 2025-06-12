@@ -31,12 +31,9 @@ freeze: true
 output-file: india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth.html
 ---
 
-
-
-
 # Introduction
-<p>With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.<br />
-In this part 2, I’ll explore the Economic Growth discussions in both manifestos.</p>
+With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.
+In this part 2, I’ll explore the Economic Growth discussions in both manifestos.
 # Analysis
 ## Load libraries
 ```r
@@ -63,59 +60,59 @@ bjp_content &lt;- read_csv(&quot;../data/indian_election_2019/bjp_manifesto_clea
 congress_content &lt;- read_csv(&quot;../data/indian_election_2019/congress_manifesto_clean.csv&quot;)
 ```
 ## Economic Growth
-<p>This topic is covered in congress’ manifesto from Pages 9 to 13 of the pdf and in that of bjp’s from pages 13 to 20.</p>
+This topic is covered in congress’ manifesto from Pages 9 to 13 of the pdf and in that of bjp’s from pages 13 to 20.
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   filter(page &gt;=13,
          page &lt;= 20) -&gt; bjp_content
 
-congress_content %&gt;% 
+congress_content %&gt;%
   filter(page &gt;=9,
          page &lt;= 13) -&gt; congress_content
 ```
 ## Most Popular Words
 ```r
-plot_most_popular_words &lt;- function(df, 
+plot_most_popular_words &lt;- function(df,
                                     min_count = 15,
                                     stop_words_list = stop_words) {
-  df %&gt;% 
-    unnest_tokens(word, text) %&gt;% 
-    anti_join(stop_words_list) %&gt;% 
+  df %&gt;%
+    unnest_tokens(word, text) %&gt;%
+    anti_join(stop_words_list) %&gt;%
     mutate(word = str_extract(word, &quot;[a-z&#39;]+&quot;)) %&gt;%
-    filter(!is.na(word)) %&gt;% 
-    count(word, sort = TRUE) %&gt;% 
+    filter(!is.na(word)) %&gt;%
+    count(word, sort = TRUE) %&gt;%
     filter(str_length(word) &gt; 1,
-           n &gt; min_count) %&gt;% 
+           n &gt; min_count) %&gt;%
     mutate(word = reorder(word, n)) %&gt;%
     ggplot( aes(x=word, y=n)) +
     geom_segment( aes(x=word, xend=word, y=0, yend=n), color=&quot;skyblue&quot;, size=1) +
     geom_point( color=&quot;blue&quot;, size=4, alpha=0.6) +
-    coord_flip() + 
+    coord_flip() +
     theme(panel.grid.minor.y = element_blank(),
           panel.grid.major.y = element_blank(),
           legend.position=&quot;none&quot;) -&gt; p
-  
+
   return(p)
 }
 ```
 ```r
-custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;), 
-                                          lexicon = rep(&quot;custom&quot;, 5)), 
+custom_stop_words &lt;- bind_rows(tibble(word = c(&quot;india&quot;, &quot;country&quot;, &quot;bjp&quot;, &quot;congress&quot;, &quot;government&quot;),
+                                          lexicon = rep(&quot;custom&quot;, 5)),
                                stop_words)
 ```
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   plot_most_popular_words(min_count = 8,
-                          stop_words_list = custom_stop_words) + 
+                          stop_words_list = custom_stop_words) +
   labs(x = &quot;&quot;,
        y = &quot;Number of Occurences&quot;,
        title = &quot;Most popular words related to Economy Growth in BJP&#39;s Manifesto&quot;,
        subtitle = &quot;Words occurring more than 8 times&quot;,
        caption = &quot;Based on election 2019 manifesto from bjp.org&quot;) -&gt; p_bjp
 
-congress_content %&gt;% 
+congress_content %&gt;%
   plot_most_popular_words(min_count = 10,
-                          stop_words_list = custom_stop_words) + 
+                          stop_words_list = custom_stop_words) +
   labs(x = &quot;&quot;,
        y = &quot;Number of Occurences&quot;,
        title = &quot;Most popular words related to Economy Growth in Congress&#39; Manifesto&quot;,
@@ -124,7 +121,7 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
 ```
-<p><img src="/post/2019-05-09-india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth_files/figure-html/unnamed-chunk-6-1.png" width="1344" /></p>
+<img src="/post/2019-05-09-india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth_files/figure-html/unnamed-chunk-6-1.png" width="1344" />
 ## Common correlated words
 ```r
 plot_common_correlated_words &lt;- function(df,
@@ -132,38 +129,38 @@ plot_common_correlated_words &lt;- function(df,
                                          correlation_threshold = 0.25,
                                          stop_words_list = stop_words) {
   set.seed(123)
-  df %&gt;% 
-    unnest_tokens(word, text) %&gt;% 
-    anti_join(stop_words_list) %&gt;% 
-    add_count(word) %&gt;% 
-    filter(n &gt; stats::quantile(n, counts_quantile)) %&gt;% 
-    pairwise_cor(word, page, sort = TRUE) %&gt;% 
+  df %&gt;%
+    unnest_tokens(word, text) %&gt;%
+    anti_join(stop_words_list) %&gt;%
+    add_count(word) %&gt;%
+    filter(n &gt; stats::quantile(n, counts_quantile)) %&gt;%
+    pairwise_cor(word, page, sort = TRUE) %&gt;%
     filter(correlation &gt; correlation_threshold,
          !str_detect(item1, &quot;\\d&quot;),
-         !str_detect(item2, &quot;\\d&quot;)) %&gt;% 
+         !str_detect(item2, &quot;\\d&quot;)) %&gt;%
     graph_from_data_frame() %&gt;%
     ggraph(layout = &quot;fr&quot;) +
     geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
     geom_node_point(color = &quot;lightblue&quot;, size = 5) +
     geom_node_text(aes(label = name), repel = TRUE) +
     theme_void() -&gt; p
-  
+
   return(p)
 }
 ```
 ```r
-bjp_content %&gt;% 
+bjp_content %&gt;%
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.85) + 
+                               counts_quantile = 0.85) +
   labs(x = &quot;&quot;,
        y = &quot;&quot;,
        title = &quot;Commonly Occurring Correlated Words in BJP&#39;s Manifesto&quot;,
        subtitle = &quot;Per page correlation higher than 0.25&quot;,
        caption = &quot;Based on election 2019 manifesto from bjp.org&quot;) -&gt; p_bjp
 
-congress_content %&gt;% 
+congress_content %&gt;%
   plot_common_correlated_words(stop_words_list = custom_stop_words,
-                               counts_quantile = 0.85) + 
+                               counts_quantile = 0.85) +
   labs(x = &quot;&quot;,
        y = &quot;&quot;,
        title = &quot;Commonly Occurring Correlated Words in Congress&#39;s Manifesto&quot;,
@@ -172,10 +169,10 @@ congress_content %&gt;%
 
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
 ```
-<p><img src="/post/2019-05-09-india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
+<img src="/post/2019-05-09-india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth_files/figure-html/unnamed-chunk-8-1.png" width="1152" />
 ## Basic Search Engine
-<p>Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
-Using python’s scikit-learn for this.</p>
+Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
+Using python’s scikit-learn for this.
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import linear_kernel
@@ -203,10 +200,10 @@ def get_related_lines(query, party=&quot;bjp&quot;):
 get_related_lines &lt;- py_to_r(py$get_related_lines)
 ```
 ### Common Popular Words with both BJP &amp; Congress
-<p>As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto for economy growth is “farmers”. Lets see, what each of them have planned for our farmers. First, BJP.</p>
+As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto for economy growth is “farmers”. Lets see, what each of them have planned for our farmers. First, BJP.
 ```r
-bjp_content %&gt;% 
-  slice(get_related_lines(&quot;farmer&quot;, party = &quot;bjp&quot;)) %&gt;% 
+bjp_content %&gt;%
+  slice(get_related_lines(&quot;farmer&quot;, party = &quot;bjp&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -223,16 +220,16 @@ bjp_content %&gt;%
 ## 8 shermen.                                                              15    15
 ## 9 29 we will bring all shermen under the ambit of all welfare progr…    15    16
 ```
-<p>This is the excerpt that we find from page 13, as we dug up based on above results -</p>
+This is the excerpt that we find from page 13, as we dug up based on above results -
 <blockquote>
-<p>Warehouse Network across the Country - We will build an efficient storage and transport mechanism for agricultural produce.<br />
-- Our Pradhan Mantri Krishi SAMPADA Yojana highlights our focus on warehousing as a means of increasing farmers’ income. To further expand the warehousing infrastructure in the country, we will establish a National Warehousing Grid along National Highways to ensure necessary logistical linkages for warehousing of agricultural produce.<br />
-- To enable the farmer to store the agri-produce near his village and sell at a remunerative price at an appropriate time, we will roll out a new Village Storage Scheme of agri-produce. We will provide farmers with loans at cheaper rates on the basis of storage receipt of the agri-produce.</p>
+Warehouse Network across the Country - We will build an efficient storage and transport mechanism for agricultural produce.
+- Our Pradhan Mantri Krishi SAMPADA Yojana highlights our focus on warehousing as a means of increasing farmers’ income. To further expand the warehousing infrastructure in the country, we will establish a National Warehousing Grid along National Highways to ensure necessary logistical linkages for warehousing of agricultural produce.
+- To enable the farmer to store the agri-produce near his village and sell at a remunerative price at an appropriate time, we will roll out a new Village Storage Scheme of agri-produce. We will provide farmers with loans at cheaper rates on the basis of storage receipt of the agri-produce.
 </blockquote>
-<p>Now, Congress.</p>
+Now, Congress.
 ```r
-congress_content %&gt;% 
-  slice(get_related_lines(&quot;farmer&quot;, party = &quot;congress&quot;)) %&gt;% 
+congress_content %&gt;%
+  slice(get_related_lines(&quot;farmer&quot;, party = &quot;congress&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -249,15 +246,15 @@ congress_content %&gt;%
 ## 8 congress economic philosophy is based on embracing the idea of an…    10    49
 ## 9 animal spirits of our entrepreneurs.                   will be su…    10    48
 ```
-<p>One of the full excerpts from page 9 related to above results -</p>
+One of the full excerpts from page 9 related to above results -
 <blockquote>
-<p>Congress promises to establish a permanent National Commission on Agricultural Devel- opment and Planning consisting of farmers, agricultural scientists and agricultural economists to examine and advise the government on how to make agriculture viable, competitive and remuner- ative. The recommendations of the Commission shall be ordinarily binding on the government. The Commission will subsume the existing Commission for Agricultural Costs and Prices and recommend appropriate minimum support prices.</p>
+Congress promises to establish a permanent National Commission on Agricultural Devel- opment and Planning consisting of farmers, agricultural scientists and agricultural economists to examine and advise the government on how to make agriculture viable, competitive and remuner- ative. The recommendations of the Commission shall be ordinarily binding on the government. The Commission will subsume the existing Commission for Agricultural Costs and Prices and recommend appropriate minimum support prices.
 </blockquote>
 ### Unique popular words with BJP &amp; Congress
-<p>One of the popular words that seems curious from BJP’s manifesto is “technology”. Let’s see what BJP has planned for the use of technology for economic growth.</p>
+One of the popular words that seems curious from BJP’s manifesto is “technology”. Let’s see what BJP has planned for the use of technology for economic growth.
 ```r
-bjp_content %&gt;% 
-  slice(get_related_lines(&quot;technology&quot;, party = &quot;bjp&quot;)) %&gt;% 
+bjp_content %&gt;%
+  slice(get_related_lines(&quot;technology&quot;, party = &quot;bjp&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -274,15 +271,15 @@ bjp_content %&gt;%
 ## 8 rental/custom hiring basis.                                           14    25
 ## 9 10 technology access and upgradation are key elements in the msme…    18    29
 ```
-<p>An excerpt from BJP’s manifesto about use of technology as identified from above -</p>
+An excerpt from BJP’s manifesto about use of technology as identified from above -
 <blockquote>
-<p>We will enable development of young agri-scientists to take advantage of Artificial Intelligence, Machine Learning, Blockchain Technology, Big Data Analytics etc. for more predictive and profitable precision agriculture.</p>
+We will enable development of young agri-scientists to take advantage of Artificial Intelligence, Machine Learning, Blockchain Technology, Big Data Analytics etc. for more predictive and profitable precision agriculture.
 </blockquote>
-<p>Suprising to see mention of plans for usage of Machine Learning and Blockchain in BJP’s manifesto.</p>
-<p>Now, one of the popular words that seems curious from Congress’ manifesto is “gst”.</p>
+Suprising to see mention of plans for usage of Machine Learning and Blockchain in BJP’s manifesto.
+Now, one of the popular words that seems curious from Congress’ manifesto is “gst”.
 ```r
-congress_content %&gt;% 
-  slice(get_related_lines(&quot;gst&quot;, party = &quot;congress&quot;)) %&gt;% 
+congress_content %&gt;%
+  slice(get_related_lines(&quot;gst&quot;, party = &quot;congress&quot;)) %&gt;%
   select(text, page, line)
 ```
 ```
@@ -300,18 +297,18 @@ congress_content %&gt;%
 ## 9 petroleum products, tobacco and liquor will be                        12    43
 ```
 <blockquote>
-<p>MSMEs were badly hit by demonetisation and a flawed GST. Congress promises to devise a rehabilitation plan for MSMEs that were severely affected and help them revive and grow.</p>
+MSMEs were badly hit by demonetisation and a flawed GST. Congress promises to devise a rehabilitation plan for MSMEs that were severely affected and help them revive and grow.
 </blockquote>
-<p>Congress is planning for a rehabilitation program for the Micro Small &amp; Medium Enterprises. They also have a plan to redefine MSMEs -</p>
+Congress is planning for a rehabilitation program for the Micro Small &amp; Medium Enterprises. They also have a plan to redefine MSMEs -
 <blockquote>
-<p>MSMEs account for 90 per cent of all employment outside agriculture. The definition of MSMEs based on capital employed is biased against labour. Congress will link the definition of MSME to employment. A business employing 10 persons or less will be ‘micro;’ between 11 and 100 will be ‘small;’ and between 101 and 500 will be ‘medium.’</p>
+MSMEs account for 90 per cent of all employment outside agriculture. The definition of MSMEs based on capital employed is biased against labour. Congress will link the definition of MSME to employment. A business employing 10 persons or less will be ‘micro;’ between 11 and 100 will be ‘small;’ and between 101 and 500 will be ‘medium.’
 </blockquote>
-<p>With all the above analysis, we have developed some idea about the economic growth plans of the 2 parties. In the next post, I’ll do a similar analysis for employment and opportunites proposals of them.</p>
-<p>Stay Tuned!</p>
+With all the above analysis, we have developed some idea about the economic growth plans of the 2 parties. In the next post, I’ll do a similar analysis for employment and opportunites proposals of them.
+Stay Tuned!
 # References
-<ul>
-<li><a href="/2019/05/india-elections-2019-bjp-vs-congress-manifestos-analysis/">Part 1 - Data Collection and Cleaning</a><br />
-</li>
-<li><a href="/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/">Part 3 - Employment and Opportunities</a></li>
-<li>For all the parts go to Project Summary Page - <a href="/2019/05/india-general-elections-2019-analysis/">India General Elections 2019 Analysis</a></li>
-</ul>
+
+- [Part 1 - Data Collection and Cleaning](/2019/05/india-elections-2019-bjp-vs-congress-manifestos-analysis/)
+
+- [Part 3 - Employment and Opportunities](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-3-employment-and-opportunities/)
+- For all the parts go to Project Summary Page - [India General Elections 2019 Analysis](/2019/05/india-general-elections-2019-analysis/)
+

@@ -23,22 +23,19 @@ freeze: true
 output-file: from-tensorflow-to-pytorch.en-us.html
 ---
 
-
-
-
 # Introduction
-<p>Recently I have been starting to learn and move towards PyTorch instead of Keras/Tensorflow, and I have to say I have been positively impressed by PyTorch’s neat API. However, I didn’t find a lot of articles around how to make that transition easy and I found myself going back and forth trying to lookup what are the corresponding layer functions or loss functions in PyTorch in comparison to tensorflow. This post is mostly to remind myself or anyone else who is making this transition by showing a basic deep learning toy example, which is written in both Tensorflow and PyTorch. It’ll be a quick small post and hopefully help anyone to quickly refer some basic Tensorflow vs. PyTorch functionality.</p>
-<p>Any neural network model training workflow follows the following basic steps -</p>
-<ol style="list-style-type: decimal">
-<li>Prepare data.</li>
-<li>Define network architecture</li>
-<li>Start an epoch and forward pass data through the laid out network.</li>
-<li>Calculate prediction from the network, and calculate the chosen loss metric using true value.</li>
-<li>Calculate gradient for each parameter in the network by backpropogating the loss.</li>
-<li>Use learning rate and the calculated gradient to calculate the new parameter values.</li>
-<li>Repeat step 2 above for another epoch.</li>
-</ol>
-<p>I will use the same above blueprint and build model in both these frameworks. Note that I am using Tensorflow’s <a href="https://www.tensorflow.org/tutorials/quickstart/beginner" target="_blank">quickstart tutorial</a> as the toy model and will build corresponding model in PyTorch.</p>
+Recently I have been starting to learn and move towards PyTorch instead of Keras/Tensorflow, and I have to say I have been positively impressed by PyTorch’s neat API. However, I didn’t find a lot of articles around how to make that transition easy and I found myself going back and forth trying to lookup what are the corresponding layer functions or loss functions in PyTorch in comparison to tensorflow. This post is mostly to remind myself or anyone else who is making this transition by showing a basic deep learning toy example, which is written in both Tensorflow and PyTorch. It’ll be a quick small post and hopefully help anyone to quickly refer some basic Tensorflow vs. PyTorch functionality.
+Any neural network model training workflow follows the following basic steps -
+
+- Prepare data.
+- Define network architecture
+- Start an epoch and forward pass data through the laid out network.
+- Calculate prediction from the network, and calculate the chosen loss metric using true value.
+- Calculate gradient for each parameter in the network by backpropogating the loss.
+- Use learning rate and the calculated gradient to calculate the new parameter values.
+- Repeat step 2 above for another epoch.
+
+I will use the same above blueprint and build model in both these frameworks. Note that I am using Tensorflow’s [quickstart tutorial](https://www.tensorflow.org/tutorials/quickstart/beginner) as the toy model and will build corresponding model in PyTorch.
 # Modelling
 ## Load Libraries
 ```r
@@ -69,7 +66,7 @@ x_train, x_test = x_train / 255.0, x_test / 255.0
 
 print(&#39;X_TRAIN: {0} Y_TRAIN: {1} \n X_TEST: {2} Y_TEST: {3}&#39;.format(x_train.shape, y_train.shape, x_test.shape, y_test.shape))
 ```
-<p>Using the classic MNIST dataset to predict the handwritten digit.</p>
+Using the classic MNIST dataset to predict the handwritten digit.
 ### Network Architecture
 ```python
 model = tf.keras.models.Sequential([
@@ -85,13 +82,13 @@ model.compile(optimizer=&#39;adam&#39;,
               loss=loss_fn,
               metrics=[&#39;accuracy&#39;])
 ```
-<p>In the above simple network, we first flatten the 2d image of the handwritten digits from 28x28 pixel values to single vector of 784 values. Next, we apply a fully connected dense layer with 128 hidden nodes and relu activation. Followed by a dropout layer with 20% dropout probability and then our final Dense layer that calculates the log-odds for each of the 10 digits.<br />
-Next we define our loss function, the categorical cross entropy function (with parameters that uses logits to calculate the loss value) and the Adam Optimizer that will help train the network more efficiently as compared to using a simple gradient descent optimizer.</p>
+In the above simple network, we first flatten the 2d image of the handwritten digits from 28x28 pixel values to single vector of 784 values. Next, we apply a fully connected dense layer with 128 hidden nodes and relu activation. Followed by a dropout layer with 20% dropout probability and then our final Dense layer that calculates the log-odds for each of the 10 digits.
+Next we define our loss function, the categorical cross entropy function (with parameters that uses logits to calculate the loss value) and the Adam Optimizer that will help train the network more efficiently as compared to using a simple gradient descent optimizer.
 ### Fit and evaluate
 ```python
 model.fit(x_train, y_train, epochs=5)
 ```
-<p>We train our model for 5 epochs above and evaluate below.</p>
+We train our model for 5 epochs above and evaluate below.
 ```python
 model.evaluate(x_test,  y_test, verbose=2)
 
@@ -102,8 +99,8 @@ probability_model = tf.keras.Sequential([
 
 probability_model(x_test[:3]).numpy()
 ```
-<p>In order to calculate predicted probability for each digit (instead of log-odds), we run our model output through a simple softmax function and display the predicted probabilities for the first 3 samples in the test data.</p>
-<p>Now moving on to PyTorch!</p>
+In order to calculate predicted probability for each digit (instead of log-odds), we run our model output through a simple softmax function and display the predicted probabilities for the first 3 samples in the test data.
+Now moving on to PyTorch!
 ## PyTorch
 ### Prep data
 ```python
@@ -118,7 +115,7 @@ x_test_torch = x_test_torch.float()
 y_train_torch = y_train_torch.long()
 y_test_torch = y_test_torch.long()
 ```
-<p>We are using the same MNIST dataset we used for building our Tensorflow example but converting it to PyTorch tensors and making sure they have the correct datatypes.</p>
+We are using the same MNIST dataset we used for building our Tensorflow example but converting it to PyTorch tensors and making sure they have the correct datatypes.
 ### Network Architecture
 ```python
 class Net(nn.Module):
@@ -134,14 +131,14 @@ class Net(nn.Module):
         x = self.drop(x)
         x = self.out(x)
         return x
-        
+
 torch_model = Net()
 
 loss_fn = nn.CrossEntropyLoss()
 optimizer = optim.Adam(torch_model.parameters(), lr = 0.001)
 ```
-<p>With PyTorch, we get to build the network architecture in a more object oriented fashion where we define each layer in the class constructor and a forward function that defines how the input data will pass forward through the network. Note that, we do not need to have a separate “Flatten” layer in PyTorch like we did in Tensorflow, we can just restructure the tensor using the “view” function to achieve the same effect.<br />
-We define the same loss function (CrossEntropyLoss), note however PyTorch’s CrossEntropyLoss function applies Softmax internally. We also initialize our Adam optimizer object.</p>
+With PyTorch, we get to build the network architecture in a more object oriented fashion where we define each layer in the class constructor and a forward function that defines how the input data will pass forward through the network. Note that, we do not need to have a separate “Flatten” layer in PyTorch like we did in Tensorflow, we can just restructure the tensor using the “view” function to achieve the same effect.
+We define the same loss function (CrossEntropyLoss), note however PyTorch’s CrossEntropyLoss function applies Softmax internally. We also initialize our Adam optimizer object.
 ### Fit and evaluate
 ```python
 torch_model.train()
@@ -149,7 +146,7 @@ for epoch in range(30):
     y_pred = torch_model(x_train_torch)
 
     loss = loss_fn(y_pred, y_train_torch)
-    
+
     if epoch%10 == 9:
         print(epoch, loss.item())
 
@@ -159,7 +156,7 @@ for epoch in range(30):
 
     optimizer.step()
 ```
-<p>We have a much more hands-on approach to fitting the network on the data. You can see the exact steps are similar to what we defined initially. This workflow gives a bit more control to the user (IMHO) while training the neural network.</p>
+We have a much more hands-on approach to fitting the network on the data. You can see the exact steps are similar to what we defined initially. This workflow gives a bit more control to the user (IMHO) while training the neural network.
 ```python
 torch_model.eval()
 preds = torch_model(x_test_torch).detach().numpy()
@@ -167,7 +164,7 @@ preds = torch_model(x_test_torch).detach().numpy()
 preds = np.argmax(preds, axis=1)
 np.mean(y_test_torch.numpy() == preds)
 ```
-<p>I also wanted to run this network through a simple gradient descent instead of a pre-built optimizer just out of curiosity to see how well it performs.</p>
+I also wanted to run this network through a simple gradient descent instead of a pre-built optimizer just out of curiosity to see how well it performs.
 ### Simple Gradient Descent
 ```python
 torch_model = Net()
@@ -188,18 +185,18 @@ for epoch in range(30):
     with torch.no_grad():
         for param in torch_model.parameters():
             param = -learning_rate * param.grad
-            
+
 torch_model.eval()
 preds = torch_model(x_test_torch).detach().numpy()
 
 preds = np.argmax(preds, axis=1)
 np.mean(y_test_torch.numpy() == preds)
 ```
-<p>So intead of using the adam optimizer, we manually use the learning rate and the computed gradient for each parameter and update the value for each param during an epoch. As we see the model doesn’t perform quite as well, but nevertheless we now know how we can use PyTorch’s cool API to fully control every aspect of training the neural network.</p>
+So intead of using the adam optimizer, we manually use the learning rate and the computed gradient for each parameter and update the value for each param during an epoch. As we see the model doesn’t perform quite as well, but nevertheless we now know how we can use PyTorch’s cool API to fully control every aspect of training the neural network.
 # Summary
-<p>In summary, I think both Tensorflow and PyTorch provide solid frameworks for training neural networks. If you prefer more intuitive, easy-to-use API Tensorflow should be the way to go and if you like a neat object-oriented, more fine-grained control API then PyTorch serves that purpose well.</p>
+In summary, I think both Tensorflow and PyTorch provide solid frameworks for training neural networks. If you prefer more intuitive, easy-to-use API Tensorflow should be the way to go and if you like a neat object-oriented, more fine-grained control API then PyTorch serves that purpose well.
 # References
-<ul>
-<li>Tensorflow’s <a href="https://www.tensorflow.org/tutorials/quickstart/beginner" target="_blank">quickstart tutorial</a></li>
-<li>PyTorch <a href="https://pytorch.org/docs/stable/index.html" target="_blank">docs</a></li>
-</ul>
+
+- Tensorflow’s [quickstart tutorial](https://www.tensorflow.org/tutorials/quickstart/beginner)
+- PyTorch [docs](https://pytorch.org/docs/stable/index.html)
+

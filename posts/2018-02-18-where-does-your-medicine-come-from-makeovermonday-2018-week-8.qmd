@@ -26,12 +26,9 @@ freeze: true
 output-file: where-does-your-medicine-come-from-makeovermonday-2018-week-8.html
 ---
 
-
-
-
 # Introduction
-<p>Goal of this Visualization task is to create a visualization for the <a href="https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1" target="_blank">Drug and Medicine Exports data for different countries.</a></p>
-<p>In this blog post, I’m trying to find the leading countries in Export across these 5 years.</p>
+Goal of this Visualization task is to create a visualization for the [Drug and Medicine Exports data for different countries.](https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1)
+In this blog post, I’m trying to find the leading countries in Export across these 5 years.
 # Analysis
 ## Cleaning up workspace and loading required libraries
 ```r
@@ -44,7 +41,7 @@ library(readxl) #Data Ingestion
 library(ggplot2) #Data Visualization
 ```
 ## Obtaining Data
-<p>Reading and viewing the dataset</p>
+Reading and viewing the dataset
 ```r
 GET(&quot;https://query.data.world/s/utmlfljjzc2naoeielefxsf4fh5qkf&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.xlsx&quot;)))
 ```
@@ -70,9 +67,9 @@ drugs
 ## 10 Netherlands               2013     13480651000
 ## # … with 1,090 more rows
 ```
-<p>Summarizing and getting stats to better understand the dataset</p>
+Summarizing and getting stats to better understand the dataset
 ```r
-drugs %&gt;% 
+drugs %&gt;%
   glimpse()
 ```
 ```
@@ -83,30 +80,30 @@ drugs %&gt;%
 ## $ `Exports (USD)` &lt;dbl&gt; 326445385000, 48493611000, 32337891000, 33329615000, …
 ```
 ```r
-drugs %&gt;% 
+drugs %&gt;%
   summary()
 ```
 ```
-##    Exporter              Year      Exports (USD)      
-##  Length:1100        Min.   :2013   Min.   :0.000e+00  
-##  Class :character   1st Qu.:2014   1st Qu.:1.212e+05  
-##  Mode  :character   Median :2015   Median :7.393e+06  
-##                     Mean   :2015   Mean   :3.315e+09  
-##                     3rd Qu.:2016   3rd Qu.:3.293e+08  
-##                     Max.   :2017   Max.   :3.405e+11  
+##    Exporter              Year      Exports (USD)
+##  Length:1100        Min.   :2013   Min.   :0.000e+00
+##  Class :character   1st Qu.:2014   1st Qu.:1.212e+05
+##  Mode  :character   Median :2015   Median :7.393e+06
+##                     Mean   :2015   Mean   :3.315e+09
+##                     3rd Qu.:2016   3rd Qu.:3.293e+08
+##                     Max.   :2017   Max.   :3.405e+11
 ##                                    NA&#39;s   :266
 ```
 ## Scrubbing data
-<p>Removing rows with NA for the purposes of this visualization</p>
+Removing rows with NA for the purposes of this visualization
 ```r
-drugs = drugs %&gt;% 
+drugs = drugs %&gt;%
   filter(!is.na(`Exports (USD)`))
 ```
-<p>Let’s see overall which are the Countries with highest export over these 5 years.</p>
+Let’s see overall which are the Countries with highest export over these 5 years.
 ```r
-drugs %&gt;% 
-  group_by(Exporter) %&gt;% 
-  summarise(TotalExport = sum(`Exports (USD)`)) %&gt;% 
+drugs %&gt;%
+  group_by(Exporter) %&gt;%
+  summarise(TotalExport = sum(`Exports (USD)`)) %&gt;%
   arrange(desc(TotalExport))
 ```
 ```
@@ -126,36 +123,36 @@ drugs %&gt;%
 ## # … with 210 more rows
 ```
 ## Exploring Data
-<p>Lets plot the countries which were among the top 5 exporters each year and each of their performance over these 5 years.</p>
+Lets plot the countries which were among the top 5 exporters each year and each of their performance over these 5 years.
 ```r
-top5ExportersByYear = drugs %&gt;% 
-  filter(Exporter!=&quot;World&quot;) %&gt;% 
-  group_by(Year) %&gt;% 
-  top_n(5, `Exports (USD)`) %&gt;% 
+top5ExportersByYear = drugs %&gt;%
+  filter(Exporter!=&quot;World&quot;) %&gt;%
+  group_by(Year) %&gt;%
+  top_n(5, `Exports (USD)`) %&gt;%
   ungroup()
 ```
 ```r
 g = ggplot(data = top5ExportersByYear, aes(x = Year, y = `Exports (USD)`))
 g + geom_line(aes(color = Exporter)) + labs(title = &#39;Trend for top 5 exporters in the world over the years&#39;)
 ```
-<p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Evaluating Top 10 exporters per Year. Excluding 2017 since we do not have numbers for total export in the world.</p>
+<img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+Evaluating Top 10 exporters per Year. Excluding 2017 since we do not have numbers for total export in the world.
 ```r
 getTop10ForYear = function(df){
-  top10ForYear = df %&gt;% 
-    filter(Exporter!=&quot;World&quot;) %&gt;% 
+  top10ForYear = df %&gt;%
+    filter(Exporter!=&quot;World&quot;) %&gt;%
     top_n(10, `Exports (USD)`)
-  
+
   othersExports = (df %&gt;% filter(Exporter==&quot;World&quot;) %&gt;% select(`Exports (USD)`)) - (top10ForYear %&gt;% summarise(Total = sum(`Exports (USD)`)))
-  
+
   YEAR = df %&gt;% select(Year) %&gt;% unique() %&gt;% .$Year
-  top10ForYear = top10ForYear %&gt;% 
+  top10ForYear = top10ForYear %&gt;%
     add_row(Exporter = &quot;Others&quot;, Year = YEAR, `Exports (USD)` = othersExports %&gt;% .$`Exports (USD)`)
   return(top10ForYear)
 }
-yearlyTop10s = drugs %&gt;% 
-  filter(Year != 2017) %&gt;% 
-  group_by(Year) %&gt;% 
+yearlyTop10s = drugs %&gt;%
+  filter(Year != 2017) %&gt;%
+  group_by(Year) %&gt;%
   do(getTop10ForYear(.))
 yearlyTop10s
 ```
@@ -175,25 +172,25 @@ yearlyTop10s
 ## 10 India                     2013     10313989000
 ## # … with 34 more rows
 ```
-<p>Writing function to plot a Donut Chart for each year showing percentage export contribution for top 10 exporters of that year as compared to all others.</p>
+Writing function to plot a Donut Chart for each year showing percentage export contribution for top 10 exporters of that year as compared to all others.
 ```r
 plotTop10 = function(df){
   YEAR = df %&gt;% select(Year) %&gt;% unique() %&gt;% .$Year
   plotTitle = paste(&quot;World Medicine Export in&quot;, YEAR, sep = &quot; &quot;)
-  
-  df = df %&gt;% 
+
+  df = df %&gt;%
     mutate(tot = sum(`Exports (USD)`),
            prop = round(100*`Exports (USD)`/tot,2))
-  
-  p = ggplot(df, aes(x=2, y=prop, fill=Exporter)) + 
-    geom_bar(stat=&quot;identity&quot;) + 
-    geom_text( aes(label = prop), position = position_stack(vjust = 0.5)) + 
+
+  p = ggplot(df, aes(x=2, y=prop, fill=Exporter)) +
+    geom_bar(stat=&quot;identity&quot;) +
+    geom_text( aes(label = prop), position = position_stack(vjust = 0.5)) +
     xlim(0.5, 2.5) +
     coord_polar(theta = &quot;y&quot;) +
-    labs(x=NULL, y=NULL) + 
-    labs(fill=&quot;&quot;) + 
-    ggtitle(plotTitle) + 
-    theme_bw() + 
+    labs(x=NULL, y=NULL) +
+    labs(fill=&quot;&quot;) +
+    ggtitle(plotTitle) +
+    theme_bw() +
     theme(plot.title = element_text(face=&quot;bold&quot;,family=c(&quot;sans&quot;),size=15),
           legend.text=element_text(size=10),
           axis.ticks=element_blank(),
@@ -204,21 +201,21 @@ plotTop10 = function(df){
   return(p)
 }
 ```
-<p>Plotting the donuts for each year</p>
+Plotting the donuts for each year
 ```r
 plotTop10(yearlyTop10s %&gt;% filter(Year==2013))
 ```
-<p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 ```r
 plotTop10(yearlyTop10s %&gt;% filter(Year==2014))
 ```
-<p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-2.png" width="672" />
 ```r
 plotTop10(yearlyTop10s %&gt;% filter(Year==2015))
 ```
-<p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
+<img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-3.png" width="672" />
 ```r
 plotTop10(yearlyTop10s %&gt;% filter(Year==2016))
 ```
-<p><img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
-<p>As can be seen Germany remains the biggest exporter of Drugs and Medicines over the past 5 years.</p>
+<img src="/post/2018-02-18-where-does-your-medicine-come-from-makeovermonday-2018-week-8_files/figure-html/unnamed-chunk-7-4.png" width="672" />
+As can be seen Germany remains the biggest exporter of Drugs and Medicines over the past 5 years.
