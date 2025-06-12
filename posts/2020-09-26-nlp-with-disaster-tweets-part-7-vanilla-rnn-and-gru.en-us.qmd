@@ -46,7 +46,7 @@ Let’s follow the same overall flow of modelling that we had in <a href="/2020/
 ## Network Architecture
 <p>The essential idea of a Recurrent Neural Network is to process the words (tokens) in an input sentence sequentially, by applying the same weights W repeatedly to the output of previous word. The output at each processed word is called the hidden state. It looks like the following pictorial representation.</p>
 <div class="figure">
-<img src="https://lh3.googleusercontent.com/pw/ACtC-3eaiycpvplnp4dqTjPVk3La1j605Lx0oqD3kbX_zgljdIqRAVKi_lvs1XQq9ET_PHfHEVpwrNMcx0YbWYy3KTTKkZnnECkoYtSud6OqrOQVjk-hLOxHOH3liJvkyiLhxLfjn0jCU6sVHRCEBGViLON5ew=w1423-h670-no?authuser=1" alt="" />
+<img src="https://lh3.googleusercontent.com/pw/ACtC-3eaiycpvplnp4dqTjPVk3La1j605Lx0oqD3kbX_zgljdIqRAVKi_lvs1XQq9ET_PHfHEVpwrNMcx0YbWYy3KTTKkZnnECkoYtSud6OqrOQVjk-hLOxHOH3liJvkyiLhxLfjn0jCU6sVHRCEBGViLON5ew=w1423-h670-no?authuser=1" alt="" style="max-width:100%" />
 <p class="caption">Recurrent Neural Network Pictorial representation from <a href="https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf" class="uri">https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf</a></p>
 ### Vanilla RNNs for Sentence Classification
 <p>In our usecase, we will use the above vanilla RNN to create a “Sentence Encoding” i.e. a vector of values that represent the given sentence and then pass that vector through another linear layer to make our final binary prediction of whether the given tweets is about a real disaster or not.</p>
@@ -114,11 +114,11 @@ class DisasterTweetsClassifierGRU(DisasterTweetsClassifierRNN):
 ## Forward Method
 <p>The simplest and most basic way to create a sentence encoding using the above RNN is by just using the final hidden state of the sentence as the Sentence Encoding. Pictorially it looks like this.</p>
 <div class="figure">
-<img src="https://lh3.googleusercontent.com/pw/ACtC-3fPQJK7h2FE2nDDMaJDF7_4kObyfuQVgJHeF_nDF4Zav0VOHN7klITJLoZ6NujDfDROUwd6dA9dbdWMdwX2rQ_KRBiOHdDj_53xm9B1b0J7wK5SRpJj1FCpRqPsBF757G0EtHWX67jt9ijNKHVyQBbURg=w1494-h937-no?authuser=1" alt="" />
+<img src="https://lh3.googleusercontent.com/pw/ACtC-3fPQJK7h2FE2nDDMaJDF7_4kObyfuQVgJHeF_nDF4Zav0VOHN7klITJLoZ6NujDfDROUwd6dA9dbdWMdwX2rQ_KRBiOHdDj_53xm9B1b0J7wK5SRpJj1FCpRqPsBF757G0EtHWX67jt9ijNKHVyQBbURg=w1494-h937-no?authuser=1" alt="" style="max-width:100%" />
 <p class="caption">Recurrent Neural Network used for Sentence Classification Basic - Pictorial representation from <a href="https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf" class="uri">https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf</a></p>
 <p>A usually better way is to do an element wise aggregation (max or mean) of all hidden states as theoretically it will contain information from all parts of the sentence while contributing to sentence encoding.</p>
 <div class="figure">
-<img src="https://lh3.googleusercontent.com/pw/ACtC-3dQIECTYZtxUJcxjj_ddSvc1Xj6fkDoSH_CPkjuGY-jpHh7Eicz0GHDFi58naBpwkOf_HG3PrMG0CvNbDt3Fieb76Xo3AqpmYeraKBq2Mspf3LwODe_8II2pgpHUbzzY0GAJM79M4evMd8Dy4CRKsjRcA=w1464-h939-no?authuser=1" alt="" />
+<img src="https://lh3.googleusercontent.com/pw/ACtC-3dQIECTYZtxUJcxjj_ddSvc1Xj6fkDoSH_CPkjuGY-jpHh7Eicz0GHDFi58naBpwkOf_HG3PrMG0CvNbDt3Fieb76Xo3AqpmYeraKBq2Mspf3LwODe_8II2pgpHUbzzY0GAJM79M4evMd8Dy4CRKsjRcA=w1464-h939-no?authuser=1" alt="" style="max-width:100%" />
 <p class="caption">Recurrent Neural Network used for Sentence Classification Aggregation - Pictorial representation from <a href="https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf" class="uri">https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf</a></p>
 </div>
 <p>The following forward method handles both of these usecases based on the given hyperparameters to the network.</p>
