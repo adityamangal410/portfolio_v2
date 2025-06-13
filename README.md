@@ -148,7 +148,8 @@ matches your local setup.
 
 Use `tools/compare_sites.py` to mirror two websites and diff the results. The
 script rewrites absolute URLs so domain differences are ignored but reports how
-many links changed.
+many links changed. Pass `-q` to show only which files differ instead of full
+context.
 
 ```bash
 python tools/compare_sites.py https://www.adityamangal.com https://example.netlify.app

@@ -49,6 +49,12 @@ def main():
     )
     p.add_argument("site1", help="Base site URL")
     p.add_argument("site2", help="Comparison site URL")
+    p.add_argument(
+        "-q",
+        "--summary",
+        action="store_true",
+        help="Only list which files differ instead of full context",
+    )
     args = p.parse_args()
 
     dirs = [tempfile.mkdtemp(), tempfile.mkdtemp()]
@@ -56,7 +62,11 @@ def main():
         download(args.site1, dirs[0])
         download(args.site2, dirs[1])
         link_diff = sanitize(dirs[0]) + sanitize(dirs[1])
-        run(["diff", "-r", dirs[0], dirs[1]], check=True, allow={0,1})
+        diff_cmd = ["diff", "-r"]
+        if args.summary:
+            diff_cmd.insert(1, "-q")
+        diff_cmd += [dirs[0], dirs[1]]
+        run(diff_cmd, check=True, allow={0,1})
         if link_diff:
             print(f"Ignored {link_diff} URL link differences due to domain changes")
     finally:
