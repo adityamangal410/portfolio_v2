@@ -47,7 +47,7 @@ library(stringr)
 ## Obtaining Data
 Reading and viewing the dataset
 ```r
-GET(&quot;https://query.data.world/s/n5nc32oqhtb25hdt3vsa24rd4scs2w&quot;, write_disk(tf &lt;- tempfile(fileext = &quot;.xlsx&quot;)))
+GET("https://query.data.world/s/n5nc32oqhtb25hdt3vsa24rd4scs2w", write_disk(tf <- tempfile(fileext = ".xlsx")))
 ```
 ```r
 olympics = read_excel(tf)
@@ -58,39 +58,39 @@ olympics
 ```
 ## # A tibble: 2,865 x 9
 ##     Year Sport Event Country Gender `Medal Rank` Medal `Name of Athlet…
-##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;
-##  1  1924 Bobs… Men&#39;… Switze… Men               1 gold  Switzerland-1
-##  2  1924 Bobs… Men&#39;… Britain Men               2 silv… Britain-1
-##  3  1924 Bobs… Men&#39;… Belgium Men               3 bron… Belgium-1
-##  4  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug
-##  5  1924 Cros… Men&#39;… Norway  Men               2 silv… Johan GrÃ¸ttums…
-##  6  1924 Cros… Men&#39;… Finland Men               3 bron… Tapani Niku
-##  7  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug
-##  8  1924 Cros… Men&#39;… Norway  Men               2 silv… Thoralf StrÃ¸ms…
-##  9  1924 Cros… Men&#39;… Norway  Men               3 bron… Johan GrÃ¸ttums…
-## 10  1924 Curl… Men&#39;… Britain Men               1 gold  Britain
-## # … with 2,855 more rows, and 1 more variable: `Age of Athlete` &lt;dbl&gt;
+##    <dbl> <chr> <chr> <chr>   <chr>         <dbl> <chr> <chr>
+##  1  1924 Bobs… Men'… Switze… Men               1 gold  Switzerland-1
+##  2  1924 Bobs… Men'… Britain Men               2 silv… Britain-1
+##  3  1924 Bobs… Men'… Belgium Men               3 bron… Belgium-1
+##  4  1924 Cros… Men'… Norway  Men               1 gold  Thorleif Haug
+##  5  1924 Cros… Men'… Norway  Men               2 silv… Johan GrÃ¸ttums…
+##  6  1924 Cros… Men'… Finland Men               3 bron… Tapani Niku
+##  7  1924 Cros… Men'… Norway  Men               1 gold  Thorleif Haug
+##  8  1924 Cros… Men'… Norway  Men               2 silv… Thoralf StrÃ¸ms…
+##  9  1924 Cros… Men'… Norway  Men               3 bron… Johan GrÃ¸ttums…
+## 10  1924 Curl… Men'… Britain Men               1 gold  Britain
+## # … with 2,855 more rows, and 1 more variable: `Age of Athlete` <dbl>
 ```
 Summarizing and getting stats to better understand the dataset
 ```r
-olympics %&gt;%
+olympics %>%
   glimpse()
 ```
 ```
 ## Rows: 2,865
 ## Columns: 9
-## $ Year                      &lt;dbl&gt; 1924, 1924, 1924, 1924, 1924, 1924, 1924, 1…
-## $ Sport                     &lt;chr&gt; &quot;Bobsled&quot;, &quot;Bobsled&quot;, &quot;Bobsled&quot;, &quot;Cross-Cou…
-## $ Event                     &lt;chr&gt; &quot;Men&#39;s Four/Five&quot;, &quot;Men&#39;s Four/Five&quot;, &quot;Men&#39;…
-## $ Country                   &lt;chr&gt; &quot;Switzerland&quot;, &quot;Britain&quot;, &quot;Belgium&quot;, &quot;Norwa…
-## $ Gender                    &lt;chr&gt; &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;Men&quot;, &quot;…
-## $ `Medal Rank`              &lt;dbl&gt; 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3…
-## $ Medal                     &lt;chr&gt; &quot;gold&quot;, &quot;silver&quot;, &quot;bronze&quot;, &quot;gold&quot;, &quot;silver…
-## $ `Name of Athlete or Team` &lt;chr&gt; &quot;Switzerland-1&quot;, &quot;Britain-1&quot;, &quot;Belgium-1&quot;, …
-## $ `Age of Athlete`          &lt;dbl&gt; NA, NA, NA, 29, 24, 28, 29, 27, 24, NA, NA,…
+## $ Year                      <dbl> 1924, 1924, 1924, 1924, 1924, 1924, 1924, 1…
+## $ Sport                     <chr> "Bobsled", "Bobsled", "Bobsled", "Cross-Cou…
+## $ Event                     <chr> "Men's Four/Five", "Men's Four/Five", "Men'…
+## $ Country                   <chr> "Switzerland", "Britain", "Belgium", "Norwa…
+## $ Gender                    <chr> "Men", "Men", "Men", "Men", "Men", "Men", "…
+## $ `Medal Rank`              <dbl> 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3…
+## $ Medal                     <chr> "gold", "silver", "bronze", "gold", "silver…
+## $ `Name of Athlete or Team` <chr> "Switzerland-1", "Britain-1", "Belgium-1", …
+## $ `Age of Athlete`          <dbl> NA, NA, NA, 29, 24, 28, 29, 27, 24, NA, NA,…
 ```
 ```r
-olympics %&gt;%
+olympics %>%
   summary()
 ```
 ```
@@ -117,18 +117,18 @@ olympics %&gt;%
 ##  Mean   :25.15
 ##  3rd Qu.:28.00
 ##  Max.   :42.00
-##  NA&#39;s   :692
+##  NA's   :692
 ```
 ## Scrubbing data
 As per the dataset requirement, East and West Germany are to be grouped with Germany and Soviet Union and the 1992 Unified Team needs to be combined with Russia
 ```r
-olympics = olympics %&gt;%
-  mutate(Country = recode(Country, &quot;Soviet Union&quot; = &quot;Russia&quot;, &quot;Unified Team&quot; = &quot;Russia&quot;,
-                          &quot;East Germany&quot; = &quot;Germany&quot;, &quot;West Germany&quot; = &quot;Germany&quot;))
+olympics = olympics %>%
+  mutate(Country = recode(Country, "Soviet Union" = "Russia", "Unified Team" = "Russia",
+                          "East Germany" = "Germany", "West Germany" = "Germany"))
 ```
 Reading in the ISO-3166 country codes dataset in order to generate the choropleth
 ```r
-countryCodes = read_csv(&quot;https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv&quot;)
+countryCodes = read_csv("https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv")
 ```
 ```r
 countryCodes
@@ -136,7 +136,7 @@ countryCodes
 ```
 ## # A tibble: 249 x 11
 ##    name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##    &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
+##    <chr> <chr>     <chr>     <chr>          <chr>        <chr>  <chr>
 ##  1 Afgh… AF        AFG       004            ISO 3166-2:… Asia   Southern As…
 ##  2 Ålan… AX        ALA       248            ISO 3166-2:… Europe Northern Eu…
 ##  3 Alba… AL        ALB       008            ISO 3166-2:… Europe Southern Eu…
@@ -145,24 +145,24 @@ countryCodes
 ##  6 Ando… AD        AND       020            ISO 3166-2:… Europe Southern Eu…
 ##  7 Ango… AO        AGO       024            ISO 3166-2:… Africa Sub-Saharan…
 ##  8 Angu… AI        AIA       660            ISO 3166-2:… Ameri… Latin Ameri…
-##  9 Anta… AQ        ATA       010            ISO 3166-2:… &lt;NA&gt;   &lt;NA&gt;
+##  9 Anta… AQ        ATA       010            ISO 3166-2:… <NA>   <NA>
 ## 10 Anti… AG        ATG       028            ISO 3166-2:… Ameri… Latin Ameri…
-## # … with 239 more rows, and 4 more variables: `intermediate-region` &lt;chr&gt;,
-## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
-## #   `intermediate-region-code` &lt;chr&gt;
+## # … with 239 more rows, and 4 more variables: `intermediate-region` <chr>,
+## #   `region-code` <chr>, `sub-region-code` <chr>,
+## #   `intermediate-region-code` <chr>
 ```
 Joining the 2 datasets and verifying if any country name mismatch happening in the 2.
 ```r
-olympics %&gt;%
-  left_join(countryCodes, by=c(&quot;Country&quot; = &quot;name&quot;)) %&gt;%
-  filter(is.na(`alpha-3`)) %&gt;%
-  select(Country) %&gt;%
+olympics %>%
+  left_join(countryCodes, by=c("Country" = "name")) %>%
+  filter(is.na(`alpha-3`)) %>%
+  select(Country) %>%
   unique()
 ```
 ```
 ## # A tibble: 8 x 1
 ##   Country
-##   &lt;chr&gt;
+##   <chr>
 ## 1 Britain
 ## 2 United States
 ## 3 Czechoslovakia
@@ -175,129 +175,129 @@ olympics %&gt;%
 Looks like above 7 countries do not have a corresponding entry in the countryCodes dataset.
 Lets try to find out the corresponding names for each of the 7 in the countryCodes dataset.
 ```r
-countryCodes %&gt;%
-  filter(str_detect(str_to_lower(name), &quot;britain&quot;)) #United Kingdom of Great Britain and Northern Ireland
+countryCodes %>%
+  filter(str_detect(str_to_lower(name), "britain")) #United Kingdom of Great Britain and Northern Ireland
 ```
 ```
 ## # A tibble: 1 x 11
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
+##   <chr> <chr>     <chr>     <chr>          <chr>        <chr>  <chr>
 ## 1 Unit… GB        GBR       826            ISO 3166-2:… Europe Northern Eu…
-## # … with 4 more variables: `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
-## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;
+## # … with 4 more variables: `intermediate-region` <chr>, `region-code` <chr>,
+## #   `sub-region-code` <chr>, `intermediate-region-code` <chr>
 ```
 ```r
-countryCodes %&gt;%
-  filter(str_detect(str_to_lower(name), &quot;states&quot;)) #United States of America
+countryCodes %>%
+  filter(str_detect(str_to_lower(name), "states")) #United States of America
 ```
 ```
 ## # A tibble: 3 x 11
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
+##   <chr> <chr>     <chr>     <chr>          <chr>        <chr>  <chr>
 ## 1 Micr… FM        FSM       583            ISO 3166-2:… Ocean… Micronesia
 ## 2 Unit… US        USA       840            ISO 3166-2:… Ameri… Northern Am…
 ## 3 Unit… UM        UMI       581            ISO 3166-2:… Ocean… Micronesia
-## # … with 4 more variables: `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
-## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;
+## # … with 4 more variables: `intermediate-region` <chr>, `region-code` <chr>,
+## #   `sub-region-code` <chr>, `intermediate-region-code` <chr>
 ```
 ```r
-countryCodes %&gt;%
-  filter(str_detect(str_to_lower(name), &quot;czech&quot;)) #Czech Republic
+countryCodes %>%
+  filter(str_detect(str_to_lower(name), "czech")) #Czech Republic
 ```
 ```
 ## # A tibble: 1 x 11
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
+##   <chr> <chr>     <chr>     <chr>          <chr>        <chr>  <chr>
 ## 1 Czec… CZ        CZE       203            ISO 3166-2:… Europe Eastern Eur…
-## # … with 4 more variables: `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
-## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;
+## # … with 4 more variables: `intermediate-region` <chr>, `region-code` <chr>,
+## #   `sub-region-code` <chr>, `intermediate-region-code` <chr>
 ```
 ```r
-countryCodes %&gt;%
-  filter(str_detect(str_to_lower(name), &quot;russia&quot;)) #Russian Federation
+countryCodes %>%
+  filter(str_detect(str_to_lower(name), "russia")) #Russian Federation
 ```
 ```
 ## # A tibble: 1 x 11
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
+##   <chr> <chr>     <chr>     <chr>          <chr>        <chr>  <chr>
 ## 1 Russ… RU        RUS       643            ISO 3166-2:… Europe Eastern Eur…
-## # … with 4 more variables: `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
-## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;
+## # … with 4 more variables: `intermediate-region` <chr>, `region-code` <chr>,
+## #   `sub-region-code` <chr>, `intermediate-region-code` <chr>
 ```
 ```r
-countryCodes %&gt;%
-  filter(str_detect(str_to_lower(name), &quot;korea&quot;)) #Korea (Democratic People&#39;s Republic of) = North Korea, Korea (Republic of) = South Korea
+countryCodes %>%
+  filter(str_detect(str_to_lower(name), "korea")) #Korea (Democratic People's Republic of) = North Korea, Korea (Republic of) = South Korea
 ```
 ```
 ## # A tibble: 2 x 11
 ##   name  `alpha-2` `alpha-3` `country-code` `iso_3166-2` region `sub-region`
-##   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;
+##   <chr> <chr>     <chr>     <chr>          <chr>        <chr>  <chr>
 ## 1 Kore… KP        PRK       408            ISO 3166-2:… Asia   Eastern Asia
 ## 2 Kore… KR        KOR       410            ISO 3166-2:… Asia   Eastern Asia
-## # … with 4 more variables: `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;,
-## #   `sub-region-code` &lt;chr&gt;, `intermediate-region-code` &lt;chr&gt;
+## # … with 4 more variables: `intermediate-region` <chr>, `region-code` <chr>,
+## #   `sub-region-code` <chr>, `intermediate-region-code` <chr>
 ```
 ```r
-countryCodes %&gt;%
-  filter(str_detect(str_to_lower(name), &quot;yugo&quot;)) #Macedonia (the former Yugoslav Republic of)
+countryCodes %>%
+  filter(str_detect(str_to_lower(name), "yugo")) #Macedonia (the former Yugoslav Republic of)
 ```
 ```
 ## # A tibble: 0 x 11
-## # … with 11 variables: name &lt;chr&gt;, `alpha-2` &lt;chr&gt;, `alpha-3` &lt;chr&gt;,
-## #   `country-code` &lt;chr&gt;, `iso_3166-2` &lt;chr&gt;, region &lt;chr&gt;, `sub-region` &lt;chr&gt;,
-## #   `intermediate-region` &lt;chr&gt;, `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
-## #   `intermediate-region-code` &lt;chr&gt;
+## # … with 11 variables: name <chr>, `alpha-2` <chr>, `alpha-3` <chr>,
+## #   `country-code` <chr>, `iso_3166-2` <chr>, region <chr>, `sub-region` <chr>,
+## #   `intermediate-region` <chr>, `region-code` <chr>, `sub-region-code` <chr>,
+## #   `intermediate-region-code` <chr>
 ```
 Renaming mismatched countries in olympic dataset based on countryCodes dataset.
 ```r
-olympics = olympics %&gt;%
+olympics = olympics %>%
   mutate(Country = recode(Country,
-                          &quot;Britain&quot; = &quot;United Kingdom of Great Britain and Northern Ireland&quot;,
-                          &quot;United States&quot; = &quot;United States of America&quot;,
-                          &quot;Czechoslovakia&quot; = &quot;Czech Republic&quot;,
-                          &quot;Russia&quot; = &quot;Russian Federation&quot;,
-                          &quot;North Korea&quot; = &quot;Korea (Democratic People&#39;s Republic of)&quot;,
-                          &quot;South Korea&quot; = &quot;Korea (Republic of)&quot;,
-                          &quot;Yugoslavia&quot; = &quot;Macedonia (the former Yugoslav Republic of)&quot;))
+                          "Britain" = "United Kingdom of Great Britain and Northern Ireland",
+                          "United States" = "United States of America",
+                          "Czechoslovakia" = "Czech Republic",
+                          "Russia" = "Russian Federation",
+                          "North Korea" = "Korea (Democratic People's Republic of)",
+                          "South Korea" = "Korea (Republic of)",
+                          "Yugoslavia" = "Macedonia (the former Yugoslav Republic of)"))
 ```
 Joining and viewing the 2 datasets
 ```r
-olympics = olympics %&gt;%
-  left_join(countryCodes, by=c(&quot;Country&quot; = &quot;name&quot;))
+olympics = olympics %>%
+  left_join(countryCodes, by=c("Country" = "name"))
 olympics
 ```
 ```
 ## # A tibble: 2,865 x 19
 ##     Year Sport Event Country Gender `Medal Rank` Medal `Name of Athlet…
-##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;
-##  1  1924 Bobs… Men&#39;… Switze… Men               1 gold  Switzerland-1
-##  2  1924 Bobs… Men&#39;… United… Men               2 silv… Britain-1
-##  3  1924 Bobs… Men&#39;… Belgium Men               3 bron… Belgium-1
-##  4  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug
-##  5  1924 Cros… Men&#39;… Norway  Men               2 silv… Johan GrÃ¸ttums…
-##  6  1924 Cros… Men&#39;… Finland Men               3 bron… Tapani Niku
-##  7  1924 Cros… Men&#39;… Norway  Men               1 gold  Thorleif Haug
-##  8  1924 Cros… Men&#39;… Norway  Men               2 silv… Thoralf StrÃ¸ms…
-##  9  1924 Cros… Men&#39;… Norway  Men               3 bron… Johan GrÃ¸ttums…
-## 10  1924 Curl… Men&#39;… United… Men               1 gold  Britain
-## # … with 2,855 more rows, and 11 more variables: `Age of Athlete` &lt;dbl&gt;,
-## #   `alpha-2` &lt;chr&gt;, `alpha-3` &lt;chr&gt;, `country-code` &lt;chr&gt;, `iso_3166-2` &lt;chr&gt;,
-## #   region &lt;chr&gt;, `sub-region` &lt;chr&gt;, `intermediate-region` &lt;chr&gt;,
-## #   `region-code` &lt;chr&gt;, `sub-region-code` &lt;chr&gt;,
-## #   `intermediate-region-code` &lt;chr&gt;
+##    <dbl> <chr> <chr> <chr>   <chr>         <dbl> <chr> <chr>
+##  1  1924 Bobs… Men'… Switze… Men               1 gold  Switzerland-1
+##  2  1924 Bobs… Men'… United… Men               2 silv… Britain-1
+##  3  1924 Bobs… Men'… Belgium Men               3 bron… Belgium-1
+##  4  1924 Cros… Men'… Norway  Men               1 gold  Thorleif Haug
+##  5  1924 Cros… Men'… Norway  Men               2 silv… Johan GrÃ¸ttums…
+##  6  1924 Cros… Men'… Finland Men               3 bron… Tapani Niku
+##  7  1924 Cros… Men'… Norway  Men               1 gold  Thorleif Haug
+##  8  1924 Cros… Men'… Norway  Men               2 silv… Thoralf StrÃ¸ms…
+##  9  1924 Cros… Men'… Norway  Men               3 bron… Johan GrÃ¸ttums…
+## 10  1924 Curl… Men'… United… Men               1 gold  Britain
+## # … with 2,855 more rows, and 11 more variables: `Age of Athlete` <dbl>,
+## #   `alpha-2` <chr>, `alpha-3` <chr>, `country-code` <chr>, `iso_3166-2` <chr>,
+## #   region <chr>, `sub-region` <chr>, `intermediate-region` <chr>,
+## #   `region-code` <chr>, `sub-region-code` <chr>,
+## #   `intermediate-region-code` <chr>
 ```
 Aggregating per country to find the total number of medals for each country and its corresponding alpha-3 code.
 ```r
-TotalMedalsPerCountry = olympics %&gt;%
-  group_by(Country, `alpha-3`) %&gt;%
-  summarise(TotalMedals = n()) %&gt;%
+TotalMedalsPerCountry = olympics %>%
+  group_by(Country, `alpha-3`) %>%
+  summarise(TotalMedals = n()) %>%
   rename(Code = `alpha-3`)
 TotalMedalsPerCountry
 ```
 ```
 ## # A tibble: 39 x 3
 ##    Country        Code  TotalMedals
-##    &lt;chr&gt;          &lt;chr&gt;       &lt;int&gt;
+##    <chr>          <chr>       <int>
 ##  1 Australia      AUS            12
 ##  2 Austria        AUT           218
 ##  3 Belarus        BLR            15
@@ -306,19 +306,19 @@ TotalMedalsPerCountry
 ##  6 Canada         CAN           170
 ##  7 China          CHN            53
 ##  8 Croatia        HRV            11
-##  9 Czech Republic &lt;NA&gt;           49
+##  9 Czech Republic <NA>           49
 ## 10 Denmark        DNK             1
 ## # … with 29 more rows
 ```
 Lets see the top countries based on total number of medals
 ```r
-TotalMedalsPerCountry %&gt;%
+TotalMedalsPerCountry %>%
   arrange(desc(TotalMedals))
 ```
 ```
 ## # A tibble: 39 x 3
 ##    Country                  Code  TotalMedals
-##    &lt;chr&gt;                    &lt;chr&gt;       &lt;int&gt;
+##    <chr>                    <chr>       <int>
 ##  1 Germany                  DEU           377
 ##  2 Russian Federation       RUS           341
 ##  3 Norway                   NOR           329
@@ -336,11 +336,11 @@ Germany obtained the most number of medals (377) closely followed by Russia with
 Lets plot the above data on a map using leaflet.
 Loading shape file data set from [World Borders Dataset](http://thematicmapping.org/downloads/world_borders.php).
 ```r
-shape = readOGR(&quot;~/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp&quot;)
+shape = readOGR("~/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp")
 ```
 ```
 ## OGR data source with driver: ESRI Shapefile
-## Source: &quot;/Users/amangal/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp&quot;, layer: &quot;TM_WORLD_BORDERS_SIMPL-0.3&quot;
+## Source: "/Users/amangal/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SIMPL-0.3.shp", layer: "TM_WORLD_BORDERS_SIMPL-0.3"
 ## with 246 features
 ## It has 11 fields
 ## Integer64 fields read as strings:  POP2005
@@ -349,25 +349,25 @@ shape = readOGR(&quot;~/Downloads/TM_WORLD_BORDERS_SIMPL-0.3/TM_WORLD_BORDERS_SI
 names(shape)
 ```
 ```
-##  [1] &quot;FIPS&quot;      &quot;ISO2&quot;      &quot;ISO3&quot;      &quot;UN&quot;        &quot;NAME&quot;      &quot;AREA&quot;
-##  [7] &quot;POP2005&quot;   &quot;REGION&quot;    &quot;SUBREGION&quot; &quot;LON&quot;       &quot;LAT&quot;
+##  [1] "FIPS"      "ISO2"      "ISO3"      "UN"        "NAME"      "AREA"
+##  [7] "POP2005"   "REGION"    "SUBREGION" "LON"       "LAT"
 ```
 ```r
-TotalMedalsPerCountry = TotalMedalsPerCountry %&gt;%
-  left_join(tbl_df(shape@data), by = c(&quot;Code&quot;=&quot;ISO3&quot;)) %&gt;%
+TotalMedalsPerCountry = TotalMedalsPerCountry %>%
+  left_join(tbl_df(shape@data), by = c("Code"="ISO3")) %>%
   na.omit()
 
-TotalMedalsPerCountry = TotalMedalsPerCountry %&gt;%
-  mutate(label = str_c(sep = &quot; - &quot;, NAME, &quot;TotalMedals&quot;, TotalMedals))
+TotalMedalsPerCountry = TotalMedalsPerCountry %>%
+  mutate(label = str_c(sep = " - ", NAME, "TotalMedals", TotalMedals))
 ```
 ```r
 bins = c(0, 10, 20, 30, 50, 100, 150, 200, 300, Inf)
-pal = colorBin(&quot;RdYlGn&quot;, domain = TotalMedalsPerCountry$TotalMedals, bins = bins)
+pal = colorBin("RdYlGn", domain = TotalMedalsPerCountry$TotalMedals, bins = bins)
 
-TotalMedalsPerCountry %&gt;%
-  leaflet() %&gt;%
-  addTiles() %&gt;%
-  setView(53.019815, 1.369002, zoom = 1) %&gt;%
+TotalMedalsPerCountry %>%
+  leaflet() %>%
+  addTiles() %>%
+  setView(53.019815, 1.369002, zoom = 1) %>%
   addCircles(~LON, ~LAT, label = ~label, color = ~pal(TotalMedals), weight = 10)
 ```
 

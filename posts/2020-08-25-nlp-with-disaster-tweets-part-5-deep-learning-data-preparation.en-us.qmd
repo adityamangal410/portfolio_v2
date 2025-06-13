@@ -51,21 +51,21 @@ class Vocabulary:
 
     def lookup_index(self, index):
         if index not in self._idx_to_token:
-            raise KeyError(&#39;the index {} is not in the vocab&#39;.format(index))
+            raise KeyError('the index {} is not in the vocab'.format(index))
         return self._idx_to_token[index]
 ```
 For any text vectorization task, along with transforming individual tokens into numerical indices, we will also need a few other things -
 
-- Begin Token - A special token (<code>&lt;BEGIN&gt;</code>) that signifies the beginning of a new tweet.
-- End Token - A special token (<code>&lt;END&gt;</code>) that signifies the end of a new tweet.
-- Unknown Token - A special token (<code>&lt;UNK&gt;</code>) that signifies out-of-vocabulary words.
-- Mask Token - A special token (<code>&lt;MASK&gt;</code>) that is used to make all the tweet vectors of same length by appending the mask token in the end.
+- Begin Token - A special token (<code><BEGIN></code>) that signifies the beginning of a new tweet.
+- End Token - A special token (<code><END></code>) that signifies the end of a new tweet.
+- Unknown Token - A special token (<code><UNK></code>) that signifies out-of-vocabulary words.
+- Mask Token - A special token (<code><MASK></code>) that is used to make all the tweet vectors of same length by appending the mask token in the end.
 
 Let’s create a sequence vocabulary object which has these 4 special tokens by default in our vocabulary -
 ```python
 class SequenceVocabulary(Vocabulary):
-    def __init__(self, unk_token=&quot;&lt;UNK&gt;&quot;, mask_token=&quot;&lt;MASK&gt;&quot;,
-                 begin_seq_token=&quot;&lt;BEGIN&gt;&quot;, end_seq_token=&quot;&lt;END&gt;&quot;):
+    def __init__(self, unk_token="<UNK>", mask_token="<MASK>",
+                 begin_seq_token="<BEGIN>", end_seq_token="<END>"):
         super(SequenceVocabulary, self).__init__()
         self._mask_token = mask_token
         self._unk_token = unk_token
@@ -78,7 +78,7 @@ class SequenceVocabulary(Vocabulary):
         self.end_seq_index = self.add_token(self._end_seq_token)
 
     def lookup_token(self, token):
-        if self.unk_index &gt;= 0:
+        if self.unk_index >= 0:
             return self._token_to_idx.get(token, self.unk_index)
         else:
             return self._token_to_idx[token]
@@ -92,10 +92,10 @@ class TweetsVectorizer:
 
     def vectorize(self, text, vector_length=-1):
         indices = [self.text_vocab.begin_seq_index]
-        indices.extend(self.text_vocab.lookup_token(token) for token in text.split(&quot; &quot;))
+        indices.extend(self.text_vocab.lookup_token(token) for token in text.split(" "))
         indices.append(self.text_vocab.end_seq_index)
 
-        if vector_length &lt; 0:
+        if vector_length < 0:
             vector_length = len(indices)
 
         out_vector = np.zeros(vector_length, dtype=np.int64)
@@ -108,13 +108,13 @@ class TweetsVectorizer:
     def from_dataframe(cls, tweets_df, cutoff=1):
         word_counts = Counter()
         for text in tweets_df.text:
-            for token in text.split(&quot; &quot;):
+            for token in text.split(" "):
                 if token not in string.punctuation:
                     word_counts[token] += 1
 
         text_vocab = SequenceVocabulary()
         for word, word_count in word_counts.items():
-            if word_count &gt; cutoff:
+            if word_count > cutoff:
                 text_vocab.add_token(word)
 
         return cls(text_vocab)
@@ -125,9 +125,9 @@ The TweetsVectorizer class above handles a couple of functionality -
 - Each tweet text is split into tokens (by space) and token counts are generated.
 - We add all the tokens with counts higher than the given cutoff to our text vocabulary.
 - The <code>vectorize</code> method is the main method of use, that will vectorize a given tweet text using the previously created text vocabulary.
-- First the <code>&lt;BEGIN&gt;</code> token index is added to the vector, then each of the word in the text is looked up using vocabulary and appended to the vector, and finally the <code>&lt;END&gt;</code> token index is appended.
-- This vector is then normalized to a fixed length by appending <code>&lt;MASK&gt;</code> token indices in the end.
-- Along with the final vector, we also return the actual length of the vector without any <code>&lt;MASK&gt;</code> token indices.
+- First the <code><BEGIN></code> token index is added to the vector, then each of the word in the text is looked up using vocabulary and appended to the vector, and finally the <code><END></code> token index is appended.
+- This vector is then normalized to a fixed length by appending <code><MASK></code> token indices in the end.
+- Along with the final vector, we also return the actual length of the vector without any <code><MASK></code> token indices.
 
 As, an example if our vocabulary looks like as follows -
 <table>
@@ -139,19 +139,19 @@ As, an example if our vocabulary looks like as follows -
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right"><code>&lt;MASK&gt;</code></td>
+<td align="right"><code><MASK></code></td>
 <td align="center">0</td>
 </tr>
 <tr class="even">
-<td align="right"><code>&lt;UNK&gt;</code></td>
+<td align="right"><code><UNK></code></td>
 <td align="center">1</td>
 </tr>
 <tr class="odd">
-<td align="right"><code>&lt;BEGIN&gt;</code></td>
+<td align="right"><code><BEGIN></code></td>
 <td align="center">2</td>
 </tr>
 <tr class="even">
-<td align="right"><code>&lt;END&gt;</code></td>
+<td align="right"><code><END></code></td>
 <td align="center">3</td>
 </tr>
 <tr class="odd">
@@ -203,8 +203,8 @@ class TweetsDataset(Dataset):
 
     @classmethod
     def load_dataset_and_make_vectorizer(cls, tweets_df):
-        train_tweets_df = tweets_df[tweets_df.split == &#39;train&#39;]
-        measure_len = lambda context: len(context.split(&quot; &quot;))
+        train_tweets_df = tweets_df[tweets_df.split == 'train']
+        measure_len = lambda context: len(context.split(" "))
         max_seq_length = max(map(measure_len, tweets_df.text)) + 2  # for begin and end tokens
         return cls(train_tweets_df, TweetsVectorizer.from_dataframe(train_tweets_df), max_seq_length)
 
@@ -212,10 +212,10 @@ class TweetsDataset(Dataset):
         row = self.tweets_df.iloc[idx]
 
         text_vector, vec_length = self._vectorizer.vectorize(row.text, self._max_seq_length)
-        return {&#39;x_data&#39;: torch.tensor(text_vector),
-                &#39;y_target&#39;: torch.tensor(row.target),
-                &#39;text&#39;: row.text,
-                &#39;x_length&#39;: vec_length}
+        return {'x_data': torch.tensor(text_vector),
+                'y_target': torch.tensor(row.target),
+                'text': row.text,
+                'x_length': vec_length}
 ```
 
 - <code>load_dataset_and_make_vectorizer</code> method creates the vectorizer and dataset objects
@@ -234,19 +234,19 @@ class DisasterTweetsDataModule(pl.LightningDataModule):
     def setup(self, stage: Optional[str] = None):
         tweets_df = pd.read_csv(self.tweets_data_path)
         self.train_ds = TweetsDataset.load_dataset_and_make_vectorizer(tweets_df)
-        self.val_ds = TweetsDataset(tweets_df[tweets_df.split == &#39;val&#39;],
+        self.val_ds = TweetsDataset(tweets_df[tweets_df.split == 'val'],
                                     self.train_ds.get_vectorizer(),
                                     self.train_ds.get_max_seq_length())
-        self.test_ds = TweetsDataset(tweets_df[tweets_df.split == &#39;test&#39;],
+        self.test_ds = TweetsDataset(tweets_df[tweets_df.split == 'test'],
                                      self.train_ds.get_vectorizer(),
                                      self.train_ds.get_max_seq_length())
 
         def load_glove_from_file(glove_filepath):
             word_to_index = {}
             embeddings = []
-            with open(glove_filepath, &quot;r&quot;) as fp:
+            with open(glove_filepath, "r") as fp:
                 for index, line in enumerate(fp):
-                    line = line.split(&quot; &quot;)
+                    line = line.split(" ")
                     word_to_index[line[0]] = index
                     embedding_i = np.array([float(val) for val in line[1:]])
                     embeddings.append(embedding_i)
