@@ -8,9 +8,9 @@ import subprocess
 import tempfile
 
 
-def run(cmd, check=False, allow=None):
+def run(cmd, check=False, allow=None, **kwargs):
     """Run *cmd* and optionally validate exit codes."""
-    res = subprocess.run(cmd, text=True)
+    res = subprocess.run(cmd, text=True, **kwargs)
     if res.returncode != 0:
         print(f"Command {' '.join(cmd)} exited with code {res.returncode}")
     if check:
@@ -55,6 +55,12 @@ def main():
         action="store_true",
         help="Only list which files differ instead of full context",
     )
+    p.add_argument(
+        "-o",
+        "--output",
+        default="site_diff.patch",
+        help="File to write the diff results to",
+    )
     args = p.parse_args()
 
     dirs = [tempfile.mkdtemp(), tempfile.mkdtemp()]
@@ -62,11 +68,11 @@ def main():
         download(args.site1, dirs[0])
         download(args.site2, dirs[1])
         link_diff = sanitize(dirs[0]) + sanitize(dirs[1])
-        diff_cmd = ["diff", "-r"]
-        if args.summary:
-            diff_cmd.insert(1, "-q")
-        diff_cmd += [dirs[0], dirs[1]]
-        run(diff_cmd, check=True, allow={0,1})
+        diff_flag = "-rq" if args.summary else "-ru"
+        diff_cmd = ["diff", diff_flag, dirs[0], dirs[1]]
+        with open(args.output, "w", encoding="utf-8") as fh:
+            run(diff_cmd, check=True, allow={0,1}, stdout=fh)
+        print(f"Diff written to {args.output}")
         if link_diff:
             print(f"Ignored {link_diff} URL link differences due to domain changes")
     finally:
