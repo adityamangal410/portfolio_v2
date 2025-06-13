@@ -55,12 +55,12 @@ class DisasterTweetsClassifierRNN(pl.LightningModule):
 
     def __init__(self, rnn_hidden_size, num_classes,
                  dropout_p, pretrained_embeddings, learning_rate,
-                 num_layers, bidirectional, aggregate_hiddens, aggregation_func=&#39;max&#39;):
+                 num_layers, bidirectional, aggregate_hiddens, aggregation_func='max'):
         super().__init__()
 
-        self.save_hyperparameters(&#39;num_classes&#39;, &#39;dropout_p&#39;, &#39;learning_rate&#39;,
-                                  &#39;rnn_hidden_size&#39;, &#39;num_layers&#39;, &#39;bidirectional&#39;,
-                                  &#39;aggregate_hiddens&#39;, &#39;aggregation_func&#39;
+        self.save_hyperparameters('num_classes', 'dropout_p', 'learning_rate',
+                                  'rnn_hidden_size', 'num_layers', 'bidirectional',
+                                  'aggregate_hiddens', 'aggregation_func'
                                   )
 
         embedding_dim = pretrained_embeddings.size(1)
@@ -79,7 +79,7 @@ class DisasterTweetsClassifierRNN(pl.LightningModule):
         self.fc1 = torch.nn.Linear(rnn_output_size, rnn_hidden_size)
         self.fc2 = torch.nn.Linear(rnn_hidden_size, num_classes)
 
-        self.loss = torch.nn.CrossEntropyLoss(reduction=&#39;none&#39;)
+        self.loss = torch.nn.CrossEntropyLoss(reduction='none')
 ```
 
 - We are logging the hyperparameters of our network and initializing our embedding layer with the pretrained embeddings.
@@ -100,7 +100,7 @@ import pytorch_lightning as pl
 class DisasterTweetsClassifierGRU(DisasterTweetsClassifierRNN):
     def __init__(self, rnn_hidden_size, num_classes,
                  dropout_p, pretrained_embeddings, learning_rate,
-                 num_layers, bidirectional, aggregate_hiddens, aggregation_func=&#39;max&#39;):
+                 num_layers, bidirectional, aggregate_hiddens, aggregation_func='max'):
         super().__init__(rnn_hidden_size, num_classes,
                          dropout_p, pretrained_embeddings, learning_rate,
                          num_layers, bidirectional, aggregate_hiddens, aggregation_func=aggregation_func)

@@ -27,7 +27,7 @@ With this project, I’ll apply and practice various NLP techniques, along with 
 I will use the [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle for its dataset and also evaluating model performance using submissions.
 # Project Goals
 
-- Apply and improve NLP skills in R &amp; Python.
+- Apply and improve NLP skills in R & Python.
 - Learn and apply tidymodels modelling framework to do reproducible and effective science.
 - Focus more on model explainability and relative comparison of different algorithms.
 - Improve skills in PyTorch deep learning framework for model training and prediction.

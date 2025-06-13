@@ -43,18 +43,18 @@ theme_set(theme_plex())
 ```
 ## Loading processed data from previous part
 ```r
-tweets &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_proc.rds&quot;)
-tweets_final &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/tweets_test_proc.rds&quot;)
+tweets <- readRDS("../data/nlp_with_disaster_tweets/tweets_proc.rds")
+tweets_final <- readRDS("../data/nlp_with_disaster_tweets/tweets_test_proc.rds")
 ```
 ```r
-tweets %&gt;%
+tweets %>%
   dim
 ```
 ```
 ## [1] 7613  830
 ```
 ```r
-tweets_final %&gt;%
+tweets_final %>%
   dim
 ```
 ```
@@ -63,32 +63,32 @@ tweets_final %&gt;%
 ## Feature preprocessing and engineering
 I will use the same steps of feature preprocessing and engineering from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/) here, in order to have an apples to apples comparison of all the models.
 ```r
-tweets %&gt;%
+tweets %>%
   mutate(target = as.factor(target),
-         id = as.character(id)) -&gt; tweets
+         id = as.character(id)) -> tweets
 
 set.seed(42)
-tweets_split &lt;- initial_split(tweets, prop = 0.1, strata = target)
+tweets_split <- initial_split(tweets, prop = 0.1, strata = target)
 
-tweets_test &lt;- training(tweets_split)
-tweets_train_cv &lt;- testing(tweets_split)
+tweets_test <- training(tweets_split)
+tweets_train_cv <- testing(tweets_split)
 
 set.seed(42)
-tweets_split &lt;- initial_split(tweets_train_cv, prop = 7/9, strata = target)
-tweets_train &lt;- training(tweets_split)
-tweets_cv &lt;- testing(tweets_split)
+tweets_split <- initial_split(tweets_train_cv, prop = 7/9, strata = target)
+tweets_train <- training(tweets_split)
+tweets_cv <- testing(tweets_split)
 
-recipe(target ~ ., data = tweets_train) %&gt;%
-  update_role(id, new_role = &quot;ID&quot;) %&gt;%
-  step_rm(location, keyword) %&gt;%
+recipe(target ~ ., data = tweets_train) %>%
+  update_role(id, new_role = "ID") %>%
+  step_rm(location, keyword) %>%
   step_mutate(len = str_length(text),
-              num_hashtags = str_count(text, &quot;#&quot;)) %&gt;%
-  step_rm(text) %&gt;%
-  step_zv(all_numeric(), -all_outcomes()) %&gt;%
-  step_normalize(all_numeric(), -all_outcomes())  %&gt;%
-  step_pca(all_predictors(), -len, -num_hashtags, threshold = 0.80)-&gt; tweets_recipe
+              num_hashtags = str_count(text, "#")) %>%
+  step_rm(text) %>%
+  step_zv(all_numeric(), -all_outcomes()) %>%
+  step_normalize(all_numeric(), -all_outcomes())  %>%
+  step_pca(all_predictors(), -len, -num_hashtags, threshold = 0.80)-> tweets_recipe
 
-tweets_prep &lt;- tweets_recipe %&gt;%
+tweets_prep <- tweets_recipe %>%
   prep(training = tweets_train,
        strings_as_factors = FALSE)
 ```
@@ -97,24 +97,24 @@ tweets_prep &lt;- tweets_recipe %&gt;%
 Let’s build a basic decision tree model with default values.
 #### Basic
 ```r
-dtree_spec &lt;- decision_tree() %&gt;%
-  set_engine(&quot;rpart&quot;) %&gt;%
-  set_mode(&quot;classification&quot;)
+dtree_spec <- decision_tree() %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
 
-wf &lt;- workflow() %&gt;%
+wf <- workflow() %>%
   add_recipe(tweets_recipe)
 ```
 ```r
-dtree_fit &lt;- wf %&gt;%
-  add_model(dtree_spec) %&gt;%
+dtree_fit <- wf %>%
+  add_model(dtree_spec) %>%
   fit(data = tweets_train)
 
-saveRDS(dtree_fit, &quot;../data/nlp_with_disaster_tweets/trees/dtree_basic_fit.rds&quot;)
+saveRDS(dtree_fit, "../data/nlp_with_disaster_tweets/trees/dtree_basic_fit.rds")
 ```
 ```r
-dtree_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/trees/dtree_basic_fit.rds&quot;)
+dtree_fit <- readRDS("../data/nlp_with_disaster_tweets/trees/dtree_basic_fit.rds")
 
-pull_workflow_fit(dtree_fit)$fit %&gt;%
+pull_workflow_fit(dtree_fit)$fit %>%
   rpart.plot()
 ```
 <img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-7-1.png" width="672" />
@@ -123,43 +123,43 @@ Above we see the familiar plot of rpart, showing PC009 to be the most important 
 Let’s build a basic boosted tree model with default values.
 #### Basic
 ```r
-gbtree_spec &lt;- boost_tree() %&gt;%
-  set_engine(&quot;xgboost&quot;) %&gt;%
-  set_mode(&quot;classification&quot;)
+gbtree_spec <- boost_tree() %>%
+  set_engine("xgboost") %>%
+  set_mode("classification")
 
-wf &lt;- workflow() %&gt;%
+wf <- workflow() %>%
   add_recipe(tweets_recipe)
 ```
 ```r
-gbtree_fit &lt;- wf %&gt;%
-  add_model(gbtree_spec) %&gt;%
+gbtree_fit <- wf %>%
+  add_model(gbtree_spec) %>%
   fit(data = tweets_train)
 
-saveRDS(gbtree_fit, &quot;../data/nlp_with_disaster_tweets/trees/gbtree_basic_fit.rds&quot;)
+saveRDS(gbtree_fit, "../data/nlp_with_disaster_tweets/trees/gbtree_basic_fit.rds")
 ```
 ```r
-gbtree_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/trees/gbtree_basic_fit.rds&quot;)
+gbtree_fit <- readRDS("../data/nlp_with_disaster_tweets/trees/gbtree_basic_fit.rds")
 ```
 #### Tuning boosted tree parameters
 Using 5-fold cross validation and a few different values of various parameters.
 ```r
 set.seed(1234)
-folds &lt;- vfold_cv(tweets_train, strata = target, v = 5, repeats = 1)
+folds <- vfold_cv(tweets_train, strata = target, v = 5, repeats = 1)
 
-tune_spec &lt;- boost_tree(trees = 500,
+tune_spec <- boost_tree(trees = 500,
                         tree_depth = tune(),
-                        learn_rate = 0.01) %&gt;%
-  set_mode(&quot;classification&quot;) %&gt;%
-  set_engine(&quot;xgboost&quot;)
+                        learn_rate = 0.01) %>%
+  set_mode("classification") %>%
+  set_engine("xgboost")
 
-param_grid &lt;- grid_regular(tree_depth(), levels = 50)
+param_grid <- grid_regular(tree_depth(), levels = 50)
 ```
 ```r
 doParallel::registerDoParallel(cores = parallel::detectCores(logical = FALSE))
 
 set.seed(1234)
-gbtree_grid &lt;- tune_grid(
-  wf %&gt;% add_model(tune_spec),
+gbtree_grid <- tune_grid(
+  wf %>% add_model(tune_spec),
   resamples = folds,
   grid = param_grid,
   metrics = metric_set(accuracy, roc_auc, f_meas),
@@ -167,18 +167,18 @@ gbtree_grid &lt;- tune_grid(
                            verbose = TRUE)
 )
 
-saveRDS(gbtree_grid, &quot;../data/nlp_with_disaster_tweets/trees/gbtree_grid.rds&quot;)
+saveRDS(gbtree_grid, "../data/nlp_with_disaster_tweets/trees/gbtree_grid.rds")
 ```
 ```r
-gbtree_grid &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/trees/gbtree_grid.rds&quot;)
+gbtree_grid <- readRDS("../data/nlp_with_disaster_tweets/trees/gbtree_grid.rds")
 
-gbtree_grid %&gt;%
+gbtree_grid %>%
   collect_metrics()
 ```
 ```
 ## # A tibble: 45 x 6
 ##    tree_depth .metric  .estimator  mean     n std_err
-##         &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+##         <int> <chr>    <chr>      <dbl> <int>   <dbl>
 ##  1          1 accuracy binary     0.724     5 0.00999
 ##  2          1 f_meas   binary     0.778     5 0.00826
 ##  3          1 roc_auc  binary     0.775     5 0.00754
@@ -192,134 +192,134 @@ gbtree_grid %&gt;%
 ## # … with 35 more rows
 ```
 ```r
-gbtree_grid %&gt;%
-  collect_metrics() %&gt;%
+gbtree_grid %>%
+  collect_metrics() %>%
   mutate(flexibility = tree_depth,
-         .metric = str_to_title(str_replace_all(.metric, &quot;_&quot;, &quot; &quot;))) %&gt;%
+         .metric = str_to_title(str_replace_all(.metric, "_", " "))) %>%
   ggplot(aes(flexibility, mean, color = .metric)) +
   geom_errorbar(aes(ymin = mean - std_err,
                     ymax = mean + std_err), alpha = 0.5) +
   geom_line(size = 1.5) +
-  facet_wrap(~.metric, scales = &quot;free&quot;, nrow = 3) +
-  theme(legend.position = &quot;none&quot;) +
-  labs(title = &quot;Model performance against model flexibility&quot;,
-       subtitle = &quot;F1-score peaks around lower flexibility values&quot;,
-       x = &quot;Model flexibility i.e. tree_depth&quot;,
-       y = &quot;Mean metric value&quot;)
+  facet_wrap(~.metric, scales = "free", nrow = 3) +
+  theme(legend.position = "none") +
+  labs(title = "Model performance against model flexibility",
+       subtitle = "F1-score peaks around lower flexibility values",
+       x = "Model flexibility i.e. tree_depth",
+       y = "Mean metric value")
 ```
 <img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 As we see in the plot above, the f1-score increases on the evaluation set until around tree_depth=5 and then starts falling down. We plot the flexibility (i.e. tree_depth) to visualize how the model performance varies as the model flexibility increases. The tree model with higher tree_depth will be more flexible as it will be able to train deeper trees that try and capture more patterns in the data and might suffer from higher variance. Correspondingly, lower tree_depth will lead to a much leaner model that might suffer from bias.
 Let’s pickout the best parameter tree_depth based on the highest f1-score and train our final model on the full training dataset and evaluate against cross validation dataset.
 ```r
-gbtree_grid %&gt;%
-  select_best(&quot;f_meas&quot;) -&gt; highest_f_meas
+gbtree_grid %>%
+  select_best("f_meas") -> highest_f_meas
 
-final_gbtree &lt;- finalize_workflow(
-  wf %&gt;% add_model(tune_spec),
+final_gbtree <- finalize_workflow(
+  wf %>% add_model(tune_spec),
   highest_f_meas
 )
 ```
 ```r
 last_fit(final_gbtree,
          tweets_split,
-         metrics = metric_set(accuracy, roc_auc, f_meas)) -&gt; gbtree_last_fit
+         metrics = metric_set(accuracy, roc_auc, f_meas)) -> gbtree_last_fit
 
-saveRDS(gbtree_last_fit, &quot;../data/nlp_with_disaster_tweets/trees/gbtree_last_fit.rds&quot;)
+saveRDS(gbtree_last_fit, "../data/nlp_with_disaster_tweets/trees/gbtree_last_fit.rds")
 ```
 ```r
-gbtree_last_fit &lt;- readRDS(&quot;../data/nlp_with_disaster_tweets/trees/gbtree_last_fit.rds&quot;)
-gbtree_last_fit %&gt;%
+gbtree_last_fit <- readRDS("../data/nlp_with_disaster_tweets/trees/gbtree_last_fit.rds")
+gbtree_last_fit %>%
   collect_metrics()
 ```
 ```
 ## # A tibble: 3 x 3
 ##   .metric  .estimator .estimate
-##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+##   <chr>    <chr>          <dbl>
 ## 1 accuracy binary         0.764
 ## 2 f_meas   binary         0.811
 ## 3 roc_auc  binary         0.820
 ```
 The f1-score metric on the validation set comes out to be 0.8107538 which is higher compared to all the previous models we have built in this series [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/). Lets try and visualize the variable importance for different features that we used to train our model.
 ```r
-gbtree_last_fit$.workflow[[1]] %&gt;%
-  pull_workflow_fit() %&gt;%
-  vi() %&gt;%
+gbtree_last_fit$.workflow[[1]] %>%
+  pull_workflow_fit() %>%
+  vi() %>%
   mutate(Importance = abs(Importance),
-         Variable = fct_reorder(Variable, Importance)) %&gt;%
-  top_n(10, Importance) %&gt;%
+         Variable = fct_reorder(Variable, Importance)) %>%
+  top_n(10, Importance) %>%
   ggplot(aes(x = Importance, y = Variable)) +
   geom_col() +
   scale_x_continuous(expand = c(0,0)) +
   labs(y = NULL,
-       x = &quot;Importance&quot;,
-       title = &quot;Variable Importance plot&quot;,
-       subtitle = &quot;PC009 remains to be the most important feature&quot;)
+       x = "Importance",
+       title = "Variable Importance plot",
+       subtitle = "PC009 remains to be the most important feature")
 ```
 <img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-18-1.png" width="672" />
 Since most of our features are the dimensionally reduced different dimensions coming out of the glove embeddings, we can not interpret them. However, one thing to note here, for gradient boosted trees, none of our custom features turn out to be of any significant importance.
 ## Model Calibration
 Another method to measure model performance is to see how well calibrated a model is on the validation dataset. Let’s compare our 3 models, gradient boosted trees here, lasso regression in [Part 3](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/) and the best k-nearest neighbor model from [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/), by plotting calibration plots for each of them.
 ```r
-readRDS(&quot;../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds&quot;) %&gt;%
-  collect_predictions() %&gt;%
-  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;%
-  group_by(pred_bucket) %&gt;%
+readRDS("../data/nlp_with_disaster_tweets/knn/knn_last_fit.rds") %>%
+  collect_predictions() %>%
+  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %>%
+  group_by(pred_bucket) %>%
   summarise(mean_truth = mean(as.numeric(as.character(target)))*100,
-            mean_pred = mean(`.pred_1`)*100) %&gt;%
-  ungroup() %&gt;%
+            mean_pred = mean(`.pred_1`)*100) %>%
+  ungroup() %>%
   ggplot(aes(x = mean_pred, y = mean_truth)) +
-  geom_point(color = &quot;#F8766D&quot;, size = 3) +
-  geom_line(color = &quot;#F8766D&quot;) +
+  geom_point(color = "#F8766D", size = 3) +
+  geom_line(color = "#F8766D") +
   scale_x_continuous(limits = c(0, 100)) +
   scale_y_continuous(limits = c(0, 100)) +
   geom_abline(slope = 1, intercept = 0, linetype = 2,
-            color = &#39;grey50&#39;) +
-  labs(x = &quot;Mean True Prediction&quot;,
-       y = &quot;Mean Truth&quot;,
-       title = &quot;Calibration Plot for K-nearest neighbors model&quot;,
-       subtitle = &quot;Above the diagonal signifies under-forecast&quot;)
+            color = 'grey50') +
+  labs(x = "Mean True Prediction",
+       y = "Mean Truth",
+       title = "Calibration Plot for K-nearest neighbors model",
+       subtitle = "Above the diagonal signifies under-forecast")
 ```
 <img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-19-1.png" width="672" />
 ```r
-readRDS(&quot;../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds&quot;) %&gt;%
-  collect_predictions() %&gt;%
-  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;%
-  group_by(pred_bucket) %&gt;%
+readRDS("../data/nlp_with_disaster_tweets/glmnet/lasso_last_fit.rds") %>%
+  collect_predictions() %>%
+  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %>%
+  group_by(pred_bucket) %>%
   summarise(mean_truth = mean(as.numeric(as.character(target)))*100,
-            mean_pred = mean(`.pred_1`)*100) %&gt;%
-  ungroup() %&gt;%
+            mean_pred = mean(`.pred_1`)*100) %>%
+  ungroup() %>%
   ggplot(aes(x = mean_pred, y = mean_truth)) +
-  geom_point(color = &quot;#F8766D&quot;, size = 3) +
-  geom_line(color = &quot;#F8766D&quot;) +
+  geom_point(color = "#F8766D", size = 3) +
+  geom_line(color = "#F8766D") +
   scale_x_continuous(limits = c(0, 100)) +
   scale_y_continuous(limits = c(0, 100)) +
   geom_abline(slope = 1, intercept = 0, linetype = 2,
-            color = &#39;grey50&#39;) +
-  labs(x = &quot;Mean True Prediction&quot;,
-       y = &quot;Mean Truth&quot;,
-       title = &quot;Calibration Plot for Lasso Regression model&quot;,
-       subtitle = &quot;Close to the diagonal signifies well calibrated model&quot;)
+            color = 'grey50') +
+  labs(x = "Mean True Prediction",
+       y = "Mean Truth",
+       title = "Calibration Plot for Lasso Regression model",
+       subtitle = "Close to the diagonal signifies well calibrated model")
 ```
 <img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-20-1.png" width="672" />
 ```r
-gbtree_last_fit %&gt;%
-  collect_predictions() %&gt;%
-  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %&gt;%
-  group_by(pred_bucket) %&gt;%
+gbtree_last_fit %>%
+  collect_predictions() %>%
+  mutate(pred_bucket = as.integer(`.pred_1`/(1/11))) %>%
+  group_by(pred_bucket) %>%
   summarise(mean_truth = mean(as.numeric(as.character(target)))*100,
-            mean_pred = mean(`.pred_1`)*100) %&gt;%
-  ungroup() %&gt;%
+            mean_pred = mean(`.pred_1`)*100) %>%
+  ungroup() %>%
   ggplot(aes(x = mean_pred, y = mean_truth)) +
-  geom_point(color = &quot;#F8766D&quot;, size = 3) +
-  geom_line(color = &quot;#F8766D&quot;) +
+  geom_point(color = "#F8766D", size = 3) +
+  geom_line(color = "#F8766D") +
   scale_x_continuous(limits = c(0, 100)) +
   scale_y_continuous(limits = c(0, 100)) +
   geom_abline(slope = 1, intercept = 0, linetype = 2,
-            color = &#39;grey50&#39;) +
-  labs(x = &quot;Mean True Prediction&quot;,
-       y = &quot;Mean Truth&quot;,
-       title = &quot;Calibration Plot for Gradient Boosted Tree model&quot;,
-       subtitle = &quot;Close to the diagonal signifies well calibrated model&quot;)
+            color = 'grey50') +
+  labs(x = "Mean True Prediction",
+       y = "Mean Truth",
+       title = "Calibration Plot for Gradient Boosted Tree model",
+       subtitle = "Close to the diagonal signifies well calibrated model")
 ```
 <img src="/post/2020-04-19-nlp-with-disaster-tweets-part-4-tree-based-models.en-us_files/figure-html/unnamed-chunk-21-1.png" width="672" />
 In general, closer the calibration curve to the diagonal, the better. When a model is well calibrated, the mean prediction probability will be equal to mean truth. Meaning the model is predicting the target in the same ratios as the actual truth values.

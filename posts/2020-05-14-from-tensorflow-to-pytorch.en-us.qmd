@@ -42,7 +42,7 @@ I will use the same above blueprint and build model in both these frameworks. No
 rm(list = ls())
 library(reticulate)
 
-use_condaenv(&quot;stanford-nlp&quot;)
+use_condaenv("stanford-nlp")
 ```
 ```python
 import tensorflow as tf
@@ -64,23 +64,23 @@ mnist = tf.keras.datasets.mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
-print(&#39;X_TRAIN: {0} Y_TRAIN: {1} \n X_TEST: {2} Y_TEST: {3}&#39;.format(x_train.shape, y_train.shape, x_test.shape, y_test.shape))
+print('X_TRAIN: {0} Y_TRAIN: {1} \n X_TEST: {2} Y_TEST: {3}'.format(x_train.shape, y_train.shape, x_test.shape, y_test.shape))
 ```
 Using the classic MNIST dataset to predict the handwritten digit.
 ### Network Architecture
 ```python
 model = tf.keras.models.Sequential([
   tf.keras.layers.Flatten(input_shape=(28, 28)),
-  tf.keras.layers.Dense(128, activation=&#39;relu&#39;),
+  tf.keras.layers.Dense(128, activation='relu'),
   tf.keras.layers.Dropout(0.2),
   tf.keras.layers.Dense(10)
 ])
 
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
-model.compile(optimizer=&#39;adam&#39;,
+model.compile(optimizer='adam',
               loss=loss_fn,
-              metrics=[&#39;accuracy&#39;])
+              metrics=['accuracy'])
 ```
 In the above simple network, we first flatten the 2d image of the handwritten digits from 28x28 pixel values to single vector of 784 values. Next, we apply a fully connected dense layer with 128 hidden nodes and relu activation. Followed by a dropout layer with 20% dropout probability and then our final Dense layer that calculates the log-odds for each of the 10 digits.
 Next we define our loss function, the categorical cross entropy function (with parameters that uses logits to calculate the loss value) and the Adam Optimizer that will help train the network more efficiently as compared to using a simple gradient descent optimizer.
