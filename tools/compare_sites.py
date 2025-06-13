@@ -8,12 +8,23 @@ import subprocess
 import tempfile
 
 
-def run(cmd):
-    subprocess.run(cmd, check=True)
+def run(cmd, check=False, allow=None):
+    """Run *cmd* and optionally validate exit codes."""
+    res = subprocess.run(cmd, text=True)
+    if res.returncode != 0:
+        print(f"Command {' '.join(cmd)} exited with code {res.returncode}")
+    if check:
+        allowed = {0} if allow is None else set(allow)
+        if res.returncode not in allowed:
+            raise subprocess.CalledProcessError(res.returncode, cmd)
+    return res.returncode
 
 
 def download(url, out_dir):
-    run(["wget", "-mk", "-nH", url, "-P", out_dir])
+    """Mirror *url* into *out_dir* using wget."""
+    # Wget may return a non-zero code for missing pages. We ignore
+    # those so the comparison can continue even if some assets fail.
+    run(["wget", "-mk", "-nH", url, "-P", out_dir], allow=range(0, 9))
 
 
 def sanitize(directory):
@@ -45,7 +56,7 @@ def main():
         download(args.site1, dirs[0])
         download(args.site2, dirs[1])
         link_diff = sanitize(dirs[0]) + sanitize(dirs[1])
-        run(["diff", "-r", dirs[0], dirs[1]])
+        run(["diff", "-r", dirs[0], dirs[1]], check=True, allow={0,1})
         if link_diff:
             print(f"Ignored {link_diff} URL link differences due to domain changes")
     finally:
