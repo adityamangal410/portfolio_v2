@@ -143,3 +143,13 @@ The **Quarto Publish** workflow in `.github/workflows/quarto.yml` installs
 dependencies from `requirements.txt` before running `quarto render`. Keep this
 file updated whenever you modify the Python packages so the CI environment
 matches your local setup.
+
+## Comparing live sites
+
+Use `tools/compare_sites.py` to mirror two websites and diff the results. The
+script rewrites absolute URLs so domain differences are ignored but reports how
+many links changed.
+
+```bash
+python tools/compare_sites.py https://www.adityamangal.com https://example.netlify.app
+```
