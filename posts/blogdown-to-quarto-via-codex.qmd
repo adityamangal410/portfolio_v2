@@ -1,5 +1,5 @@
 ---
-title: "I Got Codex to Migrate My Blog While I Slept \U0001F4A4"
+title: "I Got Codex to Migrate My Blog While I Slept 💤"
 author: Aditya Mangal
 date: '2025-06-11'
 categories:
@@ -8,8 +8,7 @@ keywords:
 - ChatGPT
 - AI
 - ML
-summary: "How ChatGPT\_Codex rewrote ~30,000 lines to move this site from Blogdown\
-  \ to Quarto with almost no babysitting."
+summary: "How ChatGPT Codex rewrote ~30,000 lines to move this site from Blogdown to Quarto with almost no babysitting."
 format:
   html:
     theme: distill
