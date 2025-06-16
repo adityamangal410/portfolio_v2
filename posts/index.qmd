@@ -26,6 +26,9 @@ for f in glob.glob('*.qmd'):
             if in_yaml:
                 head_lines.append(line)
     head = ''.join(head_lines)
+    # skip drafts
+    if re.search(r'^draft:\s*true', head, re.MULTILINE):
+        continue
     title_match = re.search(r'^title:\s*(.*)', head, re.MULTILINE)
     date_match = re.search(r"^date:\s*'?([^'\n]+)'?", head, re.MULTILINE)
     title = title_match.group(1).strip() if title_match else f
