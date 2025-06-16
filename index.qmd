@@ -1,5 +1,6 @@
 ---
-title: "Blog Posts"
+title: ""
+title-block-style: none
 jupyter: python3
 page-layout: full
 execute:
