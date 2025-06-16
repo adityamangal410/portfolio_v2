@@ -9,11 +9,12 @@ project:
     - static/**
 
 website:
-  title: "Aditya Mangal's Blog"
+  title: "Aditya Mangal"
   site-url: https://www.adityamangal.com/
   google-analytics: UA-78062737-2
   comments: false
   navbar:
+    logo: static/profile.jpg
     left:
       - href: index.qmd
         text: Home

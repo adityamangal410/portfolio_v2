@@ -9,7 +9,7 @@ summary: While millions of public dollars are going for bike lanes in Seattle, t
   Given they're the best the public can get, here's what those numbers can tell us
   about who's riding where.
 readingtime: '10'
-draft: true
+draft: false
 format:
   html:
     theme: distill
