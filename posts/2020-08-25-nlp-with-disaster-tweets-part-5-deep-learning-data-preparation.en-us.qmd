@@ -27,8 +27,10 @@ output-file: nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-u
 # Introduction
 In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
 In this part 5 for Deep Learning data preparation, I will use the raw data with the splits generated in [Part 2](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/) to create a single class of Data Module that holds all the preprocessing, vectorization and PyTorch DataLoaders implementation as preparation for use in future deep learning models using PyTorch. Following up from the previous [Part 4](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/) about tree-based models, I will move to creating Neural Networks to classify these tweets in upcoming posts.
+
 # Vocabulary, Vectorizer and More
 I will be using the [pytorch-lightning](https://github.com/PyTorchLightning/pytorch-lightning#pytorch-lightning-masterclass) framework to build a consistent DataModule class which will hold the logic of generating train, val and test datasets and creating corresponding data loaders that manage in-built batching and shuffling functionality. First things first, let’s start with the Vocabulary class.
+
 ## Vocabulary
 The vocabulary class will be responsible for converting the individual tokens (i.e. words) in our tweets to numerical indices. It is basically a simple dictionary with some sugar.
 ```python
@@ -83,6 +85,7 @@ class SequenceVocabulary(Vocabulary):
         else:
             return self._token_to_idx[token]
 ```
+
 ## Vectorizer
 Now that we have our vocabulary in place, we will need a vectorizer class that will, given a dataframe, create the exact vocabulary for the given dataset and also provide functionality to transform a single tweet text into a numerical vector representation.
 ```python
@@ -190,6 +193,7 @@ to -
 [2, 4, 5, 6, 7, 8, 3, 0, 0, 0, 0, 0, 0, ….. 0]
 </blockquote>
 with 0s appended in the end uptil the length of the longest tweet.
+
 ## Dataset
 Now we are ready to create the Dataset object for our data which is the abstraction provided by PyTorch for easy data transport and loading.
 ```python
@@ -225,6 +229,7 @@ class TweetsDataset(Dataset):
 - It runs the vectorization and returns all the relevant fields.
 
 We will create 3 instances of the TweetsDataset class, one for each train, val and test splits. These will be used in the Data Module accordingly to load data via Data Loaders.
+
 ## Data Module
 PyTorch Lightning provides a fantastic [LightningDataModule](https://pytorch-lightning.readthedocs.io/en/latest/datamodules.html?highlight=datamodule) class that helps create a shareable, reusable object that encapsulates all the steps needed to process data.
 ```python
@@ -292,6 +297,7 @@ The above code shows the most important components of the LightningDataModule cl
 
 # Summary
 In this part of the series, we have done our ground work for data preparation which we can use to jumpstart our Deep Learning modelling process. The full code for this class can be viewed on my github [here](https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/disaster_tweets_data_module.py). In the next part, I will start building a simple multi-layer perceptron using PyTorch Lightning and the DataModule class that we discussed in this part. See you there!
+
 # References
 
 - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)

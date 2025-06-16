@@ -27,6 +27,7 @@ keywords:
 ## Introduction
 From the article on [Seattle Times](https://www.seattletimes.com/seattle-news/transportation/what-we-can-learn-from-seattles-bike-counter-data/) -
 “While millions of public dollars are going for bike lanes in Seattle, the city’s data collection on actual bike-lane ridership is scattered and incomplete. Given they’re the best the public can get, here’s what those numbers can tell us about who’s riding where.”
+
 ## Analysis
 Following along the [screencast](https://www.youtube.com/watch?v=sBho2GJE5lc) from [David Robinson](https://twitter.com/drob)
 ```r
@@ -97,6 +98,7 @@ bike_traffic %>%
   facet_grid(crossing ~ direction)
 ```
 <img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+
 ### When in the day do we see bikers?
 ```r
 bike_traffic %>%
@@ -221,6 +223,7 @@ bike_traffic %>%
        x = "")
 ```
 <img src="/post/2019-04-13-what-we-can-learn-from-seattle-s-bike-counter-data-tidytuesday-apr-02-2019_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+
 ### What directions do people commute by bike?
 ```r
 bike_traffic %>%

@@ -27,7 +27,9 @@ output-file: nlp-with-disaster-tweets-part-2-nearest-neighbor-models.html
 # Introduction
 In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
 In this part 2 for Nearest Neighbor Modelling, I will use the processed data generated in [Part 1](/2020/02/nlp-with-disaster-tweets-part-1/) to train nearest neighbor models in order to predict if a tweet is about a real disaster or not using the tidymodels framework.
+
 # Analysis
+
 ## Load Libraries
 ```r
 rm(list = ls())
@@ -38,6 +40,7 @@ library(silgelib)
 
 theme_set(theme_plex())
 ```
+
 ## Loading processed data from previous part
 ```r
 tweets <- readRDS("../data/nlp_with_disaster_tweets/tweets_proc.rds")
@@ -57,6 +60,7 @@ tweets_final %>%
 ```
 ## [1] 3263  829
 ```
+
 ## Feature preprocessing and engineering
 ```r
 tweets %>%
@@ -74,6 +78,7 @@ tweets %>%
 ## 1 0       4342
 ## 2 1       3271
 ```
+
 ### Split data
 Splitting the data into 3 sets. A test set of 10% data, a cross validation set of 20% data and a training set of 70% data. Training and validation sets will be used for training, tuning and validating performance of models and comparing among them. Test set will only be used for final estimation of the model performance on unknown data.
 ```r
@@ -106,6 +111,7 @@ dim(tweets_test)
 ```
 ## [1] 763 830
 ```
+
 ### Preparation Recipe
 I will use the recipe package from tidymodels to generate a recipe for data preprocessing and feature engineering.
 ```r
@@ -142,7 +148,9 @@ tweets_prep <- tweets_recipe %>%
   prep(training = tweets_train,
        strings_as_factors = FALSE)
 ```
+
 ## Modelling
+
 ### Baseline model
 I will first create a baseline model to beat. In this case, we can predict randomly in the ratio of target counts and evaluate the model performance accordingly.
 ```r
@@ -224,8 +232,10 @@ tweets_prep %>%
   select(id, target) %>%
   write_csv("../data/nlp_with_disaster_tweets/submissions/baseline_cvf_57_testf_57.csv")
 ```
+
 ### K-Nearest Neighbor model
 Let’s build a basic KNN model with some default number of neighbors to see how the modelling is done in this framework and checkout how the modelling output looks like.
+
 #### Basic
 ```r
 knn_spec <- nearest_neighbor(neighbors = 3) %>%
@@ -255,6 +265,7 @@ wf_fit$fit$MISCLASS
 ```
 The above shows a simple K-nearest neighbors model using the “kknn” engine. Gives about 0.3521021 of minimal misclassification.
 Let’s try and tune the number of neighbors (k) and see if we can interpret the underlying problem space.
+
 #### Tuning number of neighbors
 Using 5-fold cross validation and values of K going from 1 to 100.
 ```r
@@ -355,9 +366,11 @@ knn_last_fit %>%
 ## 3 roc_auc  binary         0.687
 ```
 Our final fit knn model with K=25 gives an f1-score of 0.7560538, which is much higher than our baseline model on the same CV dataset.
+
 # Summary
 We can hence learn quite a few things about our underlying problem space by using this basic modelling algorithm K-nearest neighbors and use our learning in further model selection and tuning and also generate a fairly robust model that predicts quite effectively as compared to the baseline model.
 Also, this tidymodels framework provides a good modelling structure which can be easily reproduced and used to train a variety of models. In the next part of this series, I will work on another classic modelling algorithm, Lasso Regression, where we will also see if we can identify if there any of these features are much more important than the others and if our 2 custom features are useful.
+
 # References
 
 - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)

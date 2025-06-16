@@ -21,7 +21,9 @@ output-file: music-artist-recommendation-system-surprise.html
 
 # Introduction
 Music Artist Recommendation System using the [Last.fm Dataset](https://grouplens.org/datasets/hetrec-2011/). Recommenders using Python’s Surprise Library.
+
 # Modelling
+
 ## Load Libraries
 ```r
 rm(list = ls())
@@ -36,6 +38,7 @@ theme_set(theme_light())
 # use_condaenv("py-portfolioV2")
 use_condaenv("stanford-nlp")
 ```
+
 ## Obtain Data
 ```r
 ratings <- read_csv("../data/hetrec2011-lastfm-2k/ratings_clean.csv")
@@ -127,6 +130,7 @@ metadata %>%
 ## 10 55            173
 ## # … with 12,513 more rows
 ```
+
 # Python Surprise
 ```python
 import surprise

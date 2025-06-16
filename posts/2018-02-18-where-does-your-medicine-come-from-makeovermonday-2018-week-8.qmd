@@ -29,7 +29,9 @@ output-file: where-does-your-medicine-come-from-makeovermonday-2018-week-8.html
 # Introduction
 Goal of this Visualization task is to create a visualization for the [Drug and Medicine Exports data for different countries.](https://www.trademap.org/Country_SelProduct_TS.aspx?nvpm=1|||||3004|||4|1|1|2|2|1|2|1|1)
 In this blog post, I’m trying to find the leading countries in Export across these 5 years.
+
 # Analysis
+
 ## Cleaning up workspace and loading required libraries
 ```r
 rm(list = ls())
@@ -40,6 +42,7 @@ library("httr")
 library(readxl) #Data Ingestion
 library(ggplot2) #Data Visualization
 ```
+
 ## Obtaining Data
 Reading and viewing the dataset
 ```r
@@ -93,6 +96,7 @@ drugs %>%
 ##                     Max.   :2017   Max.   :3.405e+11
 ##                                    NA's   :266
 ```
+
 ## Scrubbing data
 Removing rows with NA for the purposes of this visualization
 ```r
@@ -122,6 +126,7 @@ drugs %>%
 ## 10 Netherlands                59659401000
 ## # … with 210 more rows
 ```
+
 ## Exploring Data
 Lets plot the countries which were among the top 5 exporters each year and each of their performance over these 5 years.
 ```r
