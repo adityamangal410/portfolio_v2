@@ -1,6 +1,7 @@
 ---
 title: "Blog Posts"
 jupyter: python3
+page-layout: full
 execute:
   echo: false
 ---
