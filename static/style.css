@@ -90,3 +90,11 @@ img {
 main.content {
   max-width: 1000px;
 }
+
+/* Make navbar logo circular */
+.navbar-brand img {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+}
