@@ -28,6 +28,7 @@ output-file: nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us.html
 # Introduction
 In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
 In this part 6 for building Multi Layer Perceptron, I will use the data module generated in [Part 5](/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/) to create a Multi Layer Perceptron model to predict if the tweet is about a real disaster. Following up from the previous [Part 4](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/) about tree-based models, I will generate the prediction output of this model on the validation set and compare results.
+
 # Classifier Class
 
 <img src="https://lh3.googleusercontent.com/UjkRMf-8bTQjE3bFfik8N4no1aH7m7J0PgZEmjuUh4uSLXpLsvSRy_lgOHsRkbPnLQ1CYLPjX6WwEZQpeAuikZi_hfSqKoYw6afUzPYuteoVf9wGmeVXJE7snQMi5oiG1sAuvNwYRJbyy7CuqdOhQSplrfMjJBwNT8xPanGEHwqdaHOiBuVyWr5yYNkJpwcbNbvlI542gq0ZBE5rYe1o4kiTmTwTpi8HaEJ8qjEbXamTDQQtEYiFcmsqBcCOl2uBLhbCtSAXJvz6WV2fN04x6QoGUaVz4ohQDYSYnkdSVWY4FcCAWMl7IrQJnhkZNTF33DWr9MXEtVEFVEVp6qOqMb0qwwPGwP08HMOrK2wPLVjhXRd_flitm3a3qhqMDp0kyjycW5ZAdELWoBycSpdWHIAmev2AP3iDOkmfYUsJTTjK2nHazbEw1pIXKgnkdV4-SS-0xpW04iTtXaTPLaG9IVYOH92cR1LitfmZTJVnF4MxzDveqGQQWcTmZSfuvuNzAImvagx6KTTaQ_peIzsRzeo_LcDZHC2xrDLXoinEknvrNt4VhahVMD5C7Mq4fpVePqROTvfiB1jNbIXmovZPetmjESLt0egU-vPYq4gZbJvTmRrSOV2v4SH1kCKZQOnIkD72JnA-BDcSNGyuB_kmFUqSSEx9gcSyZPTa1VYdBy9rSauEPnWl08BY5cnreQ=w600-h331-no" alt="" />
@@ -44,6 +45,7 @@ In a deep learning training pipeline we need to configure the following 5 essent
 - **Training Step / Val Step / Test Step** - We configure specific to each phase (train/val/test) how exactly we will compute and report the loss.
 
 That’s it! Rest everything related to epoch loop, checkpointing, logging, book-keeping are handled by PyTorch Lightning so we do not need to implement that specifically (as we would have if we were to use vanilla PyTorch. example [here](/2020/05/from-tensorflow-to-pytorch.en-us)). In the rest of the post I will mainly discuss the above 5 components specific to building a Multi Layer Perceptron for our Disaster Tweets usecase.
+
 ## Network Architecture and Loss Function
 A multi layer perceptron is a simple neural network where neurons in each layer are fully connected to all the neurons in the next layer. Weights are applied to each input feature by a linear transform along with a bias and non-linearity is introduced via the activation function. Let’s see how our network architecture and loss function look.
 ```python
@@ -106,6 +108,7 @@ class DisasterTweetsClassifierMLP(pl.LightningModule):
                                 weight_decay=self.hparams.weight_decay)
 ```
 We are using the **Adam** optimizer for optimizer our network parameters which is a good default optimizer as it combines advantages of 2 other well known optimizers AdaGrad and RMSProp. [Here](https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/) is a gentle introduction on Adam optimizer. We pass in all our network parameters, the provided learning rate and weight decay hyper parameters to <code>torch.optim.Adam</code>.
+
 ## Forward Method
 ```python
 class DisasterTweetsClassifierMLP(pl.LightningModule):
@@ -117,6 +120,7 @@ class DisasterTweetsClassifierMLP(pl.LightningModule):
 ```
 In the forward pass through the network, we first generate the embeddings for our batch and also flatten it. For example, if we had batch size as 8 and each of the 8 samples were of normalized length 70, then the <code>self.emb</code> embedding layer will transform it to a tensor <code>8 x 70 x 25</code> (if we were to use 25 dimensional glove embeddings). i.e. it’ll extract the 25-dimensional embedding for each of 70 words in our 8 samples. Then the <code>view(batch.size(0), -1)</code> will flatten it such that the tensor will transform from <code>8 x 70 x 25</code> to <code>8 x 1750</code> (i.e. it’ll append the embedding vectors of all 70 words in the sample for all 8 samples).
 This flattened vector then gets passed through our <code>fc</code> fully connected layer and generates the output which gets returned.
+
 ## Training Step / Val Step / Test Step
 ```python
 class DisasterTweetsClassifierMLP(pl.LightningModule):
@@ -198,6 +202,7 @@ We can use the above method to run the trained model on new incoming text and ge
 
 # Summary
 In this part of the series, we built a multi-layer perceptron neural network architecture to predict if a tweet is about a real disaster using the PyTorch Lightning framework. We built this on top of the Lightning Data Module that we discussed in the previous post of this series. We can see that we get a good solid baseline performance from this network and can hopefully with further hyperparameter tuning improve it. The full code for this post can be viewed on my github [here](https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/3.2-am-pl-mlp-glove-disaster-tweets.py). In the next part, I will build a Recurrent Neural Network for this task using our same underlying data module. Hope to see you there.
+
 # References
 
 - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)

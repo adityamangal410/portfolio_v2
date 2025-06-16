@@ -28,6 +28,7 @@ output-file: nlp-with-disaster-tweets-part-7-vanilla-rnn-and-gru.en-us.html
 # Introduction
 In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
 In this part 7 for building RNNs, I will use the data module generated in [Part 5](/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/) to create a RNN models to predict if the tweet is about a real disaster. Following up from the previous [Part 6](/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/) about multi-layer perceptron model, I will generate the prediction output of this model on the validation set and compare results.
+
 # Classifier
 I will be using the [pytorch-lightning](https://github.com/PyTorchLightning/pytorch-lightning) framework to build a classifier class.
 Let’s follow the same overall flow of modelling that we had in [Part 6](/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/). The training pipeline will have the following components -
@@ -40,11 +41,13 @@ Let’s follow the same overall flow of modelling that we had in [Part 6](/2020/
 - **Training Step / Val Step / Test Step**
 
 Note that the Loss Function, the Optimizer and the training/val/test steps remains the same as our Multilayer Perceptron from [Part 6](/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/), so I will only discuss the remaining 2 components in this part.
+
 ## Network Architecture
 The essential idea of a Recurrent Neural Network is to process the words (tokens) in an input sentence sequentially, by applying the same weights W repeatedly to the output of previous word. The output at each processed word is called the hidden state. It looks like the following pictorial representation.
 
 <img src="https://lh3.googleusercontent.com/pw/ACtC-3eaiycpvplnp4dqTjPVk3La1j605Lx0oqD3kbX_zgljdIqRAVKi_lvs1XQq9ET_PHfHEVpwrNMcx0YbWYy3KTTKkZnnECkoYtSud6OqrOQVjk-hLOxHOH3liJvkyiLhxLfjn0jCU6sVHRCEBGViLON5ew=w1423-h670-no?authuser=1" alt="" style="max-width:100%" />
 <p class="caption">Recurrent Neural Network Pictorial representation from [https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf](https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1194/slides/cs224n-2019-lecture06-rnnlm.pdf)
+
 ### Vanilla RNNs for Sentence Classification
 In our usecase, we will use the above vanilla RNN to create a “Sentence Encoding” i.e. a vector of values that represent the given sentence and then pass that vector through another linear layer to make our final binary prediction of whether the given tweets is about a real disaster or not.
 The network architecture looks as follows.
@@ -150,6 +153,7 @@ This final vector then gets passed through our <code>fc</code> fully connected l
 
 # The Training Routine
 The training routine for these networks remains almost exactly the same as the one in [Part 6](/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/). Instead of instantiating an object of class <code>DisasterTweetsClassifierMLP</code>, we create objects of class <code>DisasterTweetsClassifierRNN</code> or <code>DisasterTweetsClassifierGRU</code>.
+
 # Results
 <table style="width:100%;">
 <colgroup>
@@ -246,6 +250,7 @@ The above table shows the results for the model’s performance on our validatio
 
 # Summary
 In this part of the series, we built a few Recurrent Neural Networks to predict if a tweet is about a real disaster using the PyTorch Lightning framework. We built this on top of the Lightning Data Module that we discussed in the previous post of this series. We can see that we get a good performance from this network and can hopefully with further hyperparameter tuning improve it. The full code for this post can be viewed on my github [here](https://github.com/adityamangal410/nlp_with_pytorch/blob/master/scripts/3.3-am-pl-rnn-glove-disaster-tweets.py). In the next part, I will use the Transformer Architecture based pre-trained models like BERT to generate predictions for our usecase.
+
 # References
 
 - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)

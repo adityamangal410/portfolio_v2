@@ -34,7 +34,9 @@ output-file: india-elections-2019-bjp-congress-manifestos-analysis-part2-economi
 # Introduction
 With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.
 In this part 2, I’ll explore the Economic Growth discussions in both manifestos.
+
 # Analysis
+
 ## Load libraries
 ```r
 rm(list = ls())
@@ -54,11 +56,13 @@ library(ggraph)
 theme_set(theme_light())
 use_condaenv("stanford-nlp")
 ```
+
 ## Read cleaned data
 ```r
 bjp_content <- read_csv("../data/indian_election_2019/bjp_manifesto_clean.csv")
 congress_content <- read_csv("../data/indian_election_2019/congress_manifesto_clean.csv")
 ```
+
 ## Economic Growth
 This topic is covered in congress’ manifesto from Pages 9 to 13 of the pdf and in that of bjp’s from pages 13 to 20.
 ```r
@@ -70,6 +74,7 @@ congress_content %>%
   filter(page >=9,
          page <= 13) -> congress_content
 ```
+
 ## Most Popular Words
 ```r
 plot_most_popular_words <- function(df,
@@ -122,6 +127,7 @@ congress_content %>%
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
 ```
 <img src="/post/2019-05-09-india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth_files/figure-html/unnamed-chunk-6-1.png" width="1344" />
+
 ## Common correlated words
 ```r
 plot_common_correlated_words <- function(df,
@@ -170,6 +176,7 @@ congress_content %>%
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
 ```
 <img src="/post/2019-05-09-india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth_files/figure-html/unnamed-chunk-8-1.png" width="1152" />
+
 ## Basic Search Engine
 Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
 Using python’s scikit-learn for this.
@@ -199,6 +206,7 @@ def get_related_lines(query, party="bjp"):
 ```r
 get_related_lines <- py_to_r(py$get_related_lines)
 ```
+
 ### Common Popular Words with both BJP & Congress
 As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto for economy growth is “farmers”. Lets see, what each of them have planned for our farmers. First, BJP.
 ```r
@@ -250,6 +258,7 @@ One of the full excerpts from page 9 related to above results -
 <blockquote>
 Congress promises to establish a permanent National Commission on Agricultural Devel- opment and Planning consisting of farmers, agricultural scientists and agricultural economists to examine and advise the government on how to make agriculture viable, competitive and remuner- ative. The recommendations of the Commission shall be ordinarily binding on the government. The Commission will subsume the existing Commission for Agricultural Costs and Prices and recommend appropriate minimum support prices.
 </blockquote>
+
 ### Unique popular words with BJP & Congress
 One of the popular words that seems curious from BJP’s manifesto is “technology”. Let’s see what BJP has planned for the use of technology for economic growth.
 ```r
@@ -305,6 +314,7 @@ MSMEs account for 90 per cent of all employment outside agriculture. The definit
 </blockquote>
 With all the above analysis, we have developed some idea about the economic growth plans of the 2 parties. In the next post, I’ll do a similar analysis for employment and opportunites proposals of them.
 Stay Tuned!
+
 # References
 
 - [Part 1 - Data Collection and Cleaning](/2019/05/india-elections-2019-bjp-vs-congress-manifestos-analysis/)

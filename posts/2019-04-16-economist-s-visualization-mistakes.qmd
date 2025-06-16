@@ -29,7 +29,9 @@ From the article on [Mistakes, we’ve drawn a few](https://medium.economist.com
 “At The Economist, we take data visualisation seriously. Every week we publish around 40 charts across print, the website and our apps. With every single one, we try our best to visualise the numbers accurately and in a way that best supports the story. But sometimes we get it wrong. We can do better in future if we learn from our mistakes — and other people may be able to learn from them, too.”
 Here I will try and draw the improved plots as suggested by the article on economist or make a version I think is best.
 All this done towards the weekly social data project [Tidy Tuesday](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-04-16).
+
 # Analysis
+
 ## Load libraries
 ```r
 rm(list = ls())
@@ -40,6 +42,7 @@ library(gridExtra)
 library(scales)
 theme_set(theme_light())
 ```
+
 ## Analyzing Britain’s Political Left
 ```r
 corbyn <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/corbyn.csv")
@@ -70,6 +73,7 @@ corbyn %>%
        caption = "Based on data from The Economist about political left in Britain")
 ```
 <img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+
 ## Analyzing decline of dog weights
 ```r
 dogs <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/dogs.csv")
@@ -104,6 +108,7 @@ dogs %>%
        caption = "Based on data from The Economist")
 ```
 <img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+
 ## Analyzing Brexit data
 ```r
 brexit <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/brexit.csv")
@@ -143,6 +148,7 @@ brexit %>%
        color = "Response")
 ```
 <img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+
 ## Analyzing US trade deficit
 ```r
 trade <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/trade.csv")
@@ -193,6 +199,7 @@ trade %>%
 grid.arrange(p1, p2, nrow = 1)
 ```
 <img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+
 ## Analyzing pension benefits
 ```r
 pensions <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/pensions.csv")
@@ -228,6 +235,7 @@ pensions %>%
        caption = "Based on data from The Economist")
 ```
 <img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+
 ## Analyzing EU balance
 ```r
 eu_balance <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/eu_balance.csv")
@@ -269,6 +277,7 @@ eu_balance %>%
        caption = "Based on data from The Economist")
 ```
 <img src="/post/2019-04-16-economist-s-visualization-mistakes_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+
 ## Analyzing papers published
 ```r
 women_research <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/women_research.csv")

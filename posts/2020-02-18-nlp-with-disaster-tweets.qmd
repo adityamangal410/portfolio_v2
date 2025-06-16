@@ -25,6 +25,7 @@ output-file: nlp-with-disaster-tweets.html
 # Project Summary
 With this project, I’ll apply and practice various NLP techniques, along with trying my hands on the [tidymodels framework](https://github.com/tidymodels/tidymodels).
 I will use the [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle for its dataset and also evaluating model performance using submissions.
+
 # Project Goals
 
 - Apply and improve NLP skills in R & Python.

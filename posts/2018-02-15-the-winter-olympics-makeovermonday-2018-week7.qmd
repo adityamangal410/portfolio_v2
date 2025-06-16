@@ -29,7 +29,9 @@ output-file: the-winter-olympics-makeovermonday-2018-week7.html
 # Introduction
 Goal of this Visualization task is to create an alternative visualization to the [Tableau’s visualization for Winter Olympics data for different countries](https://public.tableau.com/views/TheWinterOlympics/TheWinterOlympics?:embed=y&:showVizHome=no)
 In this blog post, I’m trying to generate a World Choropleth Map showing the total counts of medals for each country.
+
 # Analysis
+
 ## Cleaning up workspace and loading required libraries
 ```r
 rm(list = ls())
@@ -44,6 +46,7 @@ library(rgeos)
 library(rgdal)
 library(stringr)
 ```
+
 ## Obtaining Data
 Reading and viewing the dataset
 ```r
@@ -119,6 +122,7 @@ olympics %>%
 ##  Max.   :42.00
 ##  NA's   :692
 ```
+
 ## Scrubbing data
 As per the dataset requirement, East and West Germany are to be grouped with Germany and Soviet Union and the 1992 Unified Team needs to be combined with Russia
 ```r
@@ -332,6 +336,7 @@ TotalMedalsPerCountry %>%
 ## # … with 29 more rows
 ```
 Germany obtained the most number of medals (377) closely followed by Russia with (341)
+
 ## Exploring Data
 Lets plot the above data on a map using leaflet.
 Loading shape file data set from [World Borders Dataset](http://thematicmapping.org/downloads/world_borders.php).

@@ -30,7 +30,9 @@ output-file: the-mueller-report.html
 
 # Introduction
 Analyzing the Special Counsel’s “Report On The Investigation Into Russian Interference In The 2016 Presidential Election” from - [justice.gov](https://www.justice.gov/storage/report.pdf).
+
 # Analysis
+
 ## Load libraries
 ```r
 rm(list = ls())
@@ -50,6 +52,7 @@ library(ggraph)
 theme_set(theme_light())
 use_condaenv("stanford-nlp")
 ```
+
 ## Downloading Report
 If we want to download and parse the report ourselves we can do so as follows -
 ```r
@@ -70,19 +73,23 @@ report %>%
 ## $ line <dbl> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 1, 2, 3, 4, 5, 6…
 ## $ text <chr> "U.S. Department of Justice", "AttarAe:,c\\\\'erlc Predtiet // M…
 ```
+
 ## Cleaning
+
 ### Page range
 As we see from the pdf, first few pages contain Title and Index of the report, and the actual report text starts from page 9. Filtering out all the other pages for exploration
 ```r
 report %>%
   filter(page >= 9) -> content
 ```
+
 ### Text NA
 There are about 386 rows with NA as text, these maybe because of parsing failures over redactions, among other things. Dropping them for now.
 ```r
 content %>%
   filter(!is.na(text)) -> content
 ```
+
 ### Misspelled Words
 ```r
 content %>%
@@ -97,11 +104,13 @@ Dropping all rows (around 400 rows) where percentage of misspelled words is more
 content %>%
   filter(perc_misspelled <= 0.5) -> content
 ```
+
 ### Normalize
 ```r
 content %>%
   unnest_tokens(text, text, token = "lines") -> content
 ```
+
 ## Most popular words
 ```r
 tidy_content <- content %>%
@@ -130,6 +139,7 @@ tidy_content %>%
        caption = "Based on data from the Mueller Report")
 ```
 <img src="/post/2019-04-22-the-mueller-report_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+
 ## Most dramatic pages
 Using python’s NLTK’s Vader Lexicon to generate sentiments for each line.
 ```python
@@ -200,6 +210,7 @@ content %>%
 ##  9 "guilty, pursuant to a single-count information , to identity fraud , …   183
 ## 10 "difficult to argue that hacked emails in electronic form, which are t…   184
 ```
+
 ## Most Common Correlated Words
 ```r
 word_cors <- tidy_content %>%
@@ -228,6 +239,7 @@ word_cors %>%
 ```
 <img src="/post/2019-04-22-the-mueller-report_files/figure-html/unnamed-chunk-16-1.png" width="672" />
 Words like “mcgahn” and “comey” show up as centers of correlation network.
+
 ## Search Engine
 Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make this document more easily searchable and gain context using most related lines in the report for a given query.
 Using python’s scikit-learn for this.
@@ -247,6 +259,7 @@ def get_related_lines(query):
 ```r
 get_related_lines <- py_to_r(py$get_related_lines)
 ```
+
 ### Search Query - Michael Cohen
 ```r
 content %>%
@@ -269,6 +282,7 @@ content %>%
 ```
 One of the interesting results from above (page 357) -
 “Toll records show that Cohen was connected to a White House phone number for approximately five minutes on January 19, 2018, and for approximately seven minutes on January 30, 2018, and that Cohen called Melania Trump’s cell phone several times between January 26, 2018, and January 30, 2018. Call Records of Michael Cohen.”
+
 ### Search Query - Vladimir Putin
 ```r
 content %>%
@@ -291,8 +305,10 @@ content %>%
 ```
 One of the interesting results from above (page 92) -
 “On March 24, 2016, Papadopoulos met with Mifsud in London. Mifsud was accompanied by a russian female named olga polonskaya. Mifsud introduced Polonskaya as a former student of his who had connections to Vladimir Putin”
+
 ## Late Night Hosts’ Jokes
 Lets see if we can catch (or fact check, if you will), any of the late night hosts’ jokes about the Mueller Report.
+
 ### Trevor Noah
 {{< video https://www.youtube.com/embed/pVbwZg8rM2c >}}
 ```r
@@ -317,6 +333,7 @@ content %>%
 ## 10 "difficult to argue that hacked emails in electronic form, which…   184    27
 ```
 The joke at around 34secs into the video can be clearly seen above as the 2nd highest polarized line in the report (page 290, line 20).
+
 ### Stephen Colbert
 {{< video https://www.youtube.com/embed/7MursWMNONo >}}
 ```r
@@ -340,6 +357,7 @@ content %>%
 ```
 The discussion about OLC from the video above at around 9min48secs can be seen in multiple instances as per our search engine, notably here (page 390) -
 “Impeachment is also a drastic and rarely invoked remedy, and Congress is not restricted to relying only on impeachment, rather than making criminal law applicable to a former President, as OLC has recognized.”
+
 ### Jimmy Fallon
 {{< video https://www.youtube.com/embed/TJZf0JIdqqU >}}
 ```r
@@ -366,6 +384,7 @@ The joke in the video around 3mins can be seen by the search query which leads t
 resign. McGahn recalled that, after speaking with his attorney and given the nature of the
 President’s request, he decided not to share details of the President’s request with other White
 House staff.”
+
 ### Jimmy Kimmel
 {{< video https://www.youtube.com/embed/NB7ZMczCXEM >}}
 ```r
@@ -389,8 +408,10 @@ content %>%
 ```
 The discussion at around 50secs into the video can be obtained from the above search query, from page 13 -
 “Although the investigation established that the Russian government perceived it would benefit from a Trump presidency and worked to secure that outcome, and that the Campaign expected it would benefit electorally from information stolen and released through Russian efforts, the investigation did not establish that members of the Trump Campaign conspired or coordinated with the Russian government in its election interference activities.”
+
 # Summary
 Looks like all the above tools can be pretty handy in doing a quick and thorough investigation of a large document in a very small amount of time (and its pretty fun too!)
+
 # References
 
 - [Kaggle data reference](https://www.kaggle.com/paultimothymooney/mueller-report)

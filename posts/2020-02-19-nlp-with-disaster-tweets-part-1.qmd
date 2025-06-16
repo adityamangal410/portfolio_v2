@@ -27,7 +27,9 @@ output-file: nlp-with-disaster-tweets-part-1.html
 # Introduction
 In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
 In this part 1 for data preparation, I will do some basic exploration and vectorize the given tweet text into [glove](https://nlp.stanford.edu/projects/glove/) embedding vectors.
+
 # Analysis
+
 ## Load Libraries
 ```r
 rm(list = ls())
@@ -41,6 +43,7 @@ library(janitor)
 
 theme_set(theme_light())
 ```
+
 ## Read Data
 ```r
 tweets <- read_csv("../data/nlp_with_disaster_tweets/train.csv")
@@ -181,6 +184,7 @@ skim(tweets)
 </tr>
 </tbody>
 </table>
+
 ## Getting glove embedding for tweet text and adding as features
 The simple workflow for vectorizing tweet text into glove embeddings is as follows -
 
@@ -234,6 +238,7 @@ str(padded_sequences)
 ##  int [1:7613, 1:33] 0 0 0 0 0 0 0 0 0 0 ...
 ```
 Like we see above, for all the 7,613 tweets in the training data we have created a tokenized sequence of 33 elements each.
+
 ### Download and parse glove embeddings into an embedding matrix for the tokenized words
 Downloaded the pre-trained glove embeddings trained on 2 billion tweets from Stanford’s NLP projects page on [Glove](https://nlp.stanford.edu/projects/glove/) and borrowing the code for parsing and generating glove embedding matrix from my [deepSentimentR](https://adityamangal410.github.io/deepSentimentR/reference/index.html) package.
 ```r
@@ -286,6 +291,7 @@ str(embedding_matrix)
 ##  num [1:22701, 1:25] 0 0.7864 0.4186 0.7086 -0.0102 ...
 ```
 Using only 25 dimensional embedding in order to keep the computations fast, we have created an embedding matrix which holds the 25 dimension values for the most popular 22700 words in our tweets text data.
+
 ### Generate embeddings vector for tweets text in training data
 Using the keras modelling framework to generate embeddings for the given training data. We basically create a simple sequential model with one embedding layer whose weights we will freeze based on our embedding matrix created above, and a flattening layer that will flatten the output into a 2D matrix of dimensions (7613, 33x25).
 ```r
@@ -308,6 +314,7 @@ str(tweets_embeddings)
 ##  num [1:7613, 1:825] 0 0 0 0 0 0 0 0 0 0 ...
 ```
 For each of the 7,613 padded tweet sequences of upto max length 33, we use the keras model to “predict” and populate the embedding for each of those 33 words in the sequence and susequently flatten those to create a single feature vector of 33x25=825 dimensions.
+
 ### Generate embeddings vector for tweets text in test data
 Using the similar approach as above (i.e. tokenize, pad and vectorize using glove embeddings) on the test data, to generate similar embedding vector for text in the tweets test data. Note that, we use the previously fit text tokenizer on the train data to tokenize the test data.
 ```r
@@ -325,6 +332,7 @@ str(tweets_embeddings_test)
 ##  num [1:3263, 1:825] 0 0 0 0 0 0 0 0 0 0 ...
 ```
 We similarly get 825 embedding dimensions for 3,263 tweets in the test data.
+
 ### Append to given tweets features and export
 ```r
 tweets %>%
@@ -340,6 +348,7 @@ saveRDS(tweets_proc, "../data/nlp_with_disaster_tweets/tweets_proc.rds")
 saveRDS(tweets_test_proc, "../data/nlp_with_disaster_tweets/tweets_test_proc.rds")
 ```
 Exporting the appended feature set will help us work on this dataset for modelling. I will cover the modelling using the tidymodels framework in my upcoming posts.
+
 # References
 
 - Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)

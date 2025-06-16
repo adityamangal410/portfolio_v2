@@ -28,7 +28,9 @@ output-file: christmas-bird-counts-tidytuesday.html
 # Introduction
 Visualizing bird watching data as collected in Hamilton area of Ontario during Christmas time since 1921.
 Working on the weekly social data project [Tidy Tuesday](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-18).
+
 # Analysis
+
 ## Load libraries
 ```r
 rm(list = ls())
@@ -83,6 +85,7 @@ bird_counts %>%
 ##  Max.   :251.0   Max.   :439.024
 ##  NA's   :3781    NA's   :3781
 ```
+
 ## Which are the 5 most common birds over years?
 ```r
 bird_counts %>%

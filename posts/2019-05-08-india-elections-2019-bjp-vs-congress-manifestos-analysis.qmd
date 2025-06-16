@@ -33,7 +33,9 @@ output-file: india-elections-2019-bjp-vs-congress-manifestos-analysis.html
 # Introduction
 With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.
 In this part 1, I’ll collect and clean data and setup the ground work for the project.
+
 # Analysis
+
 ## Load libraries
 ```r
 rm(list = ls())
@@ -53,6 +55,7 @@ library(ggraph)
 theme_set(theme_light())
 use_python("~/anaconda3/bin/python")
 ```
+
 ## Downloading Manifestos
 BJP’s Manifesto available at their website - [bjp.org](https://www.bjp.org/manifestoPDF/BJP-Election-english-2019.pdf)
 ```r
@@ -104,7 +107,9 @@ congress %>%
 ## $ line <int> 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1…
 ## $ text <chr> "CONGRESS", "WILL", "DELIVER", "      MANIFESTO", "      LOK SAB…
 ```
+
 ## Cleaning
+
 ### Page range
 As we see from the 2 documents, first few pages contain Title and Index of the manifestos, and then moves on to the notes from the Party Leaders. The actual plans for development and work starts from page 11 in BJP’s manifesto and page 7 in Congress’. Filtering out all the other pages for exploration
 ```r
@@ -115,6 +120,7 @@ bjp %>%
 congress %>%
   filter(page >= 7) -> congress_content
 ```
+
 ### Text NA
 Dropping all the rows where we dont have any text.
 ```r
@@ -123,6 +129,7 @@ bjp_content %>%
 congress_content %>%
   filter(!is.na(text)) -> congress_content
 ```
+
 ### Normalize
 Normalizing text lines.
 ```r
@@ -132,6 +139,7 @@ congress_content %>%
   unnest_tokens(text, text, token = "lines") -> congress_content
 ```
 I’ll take a deep dive into individual topics of the manifestos in separate blog posts. For now, I will export our cleaned and normalized data for future analysis.
+
 ## Export Data
 ```r
 bjp_content %>%
@@ -140,6 +148,7 @@ congress_content %>%
   write_csv("../data/indian_election_2019/congress_manifesto_clean.csv")
 ```
 Stay Tuned!
+
 # References
 
 - [Part 2 Economic Growth](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part2-economic-growth/)

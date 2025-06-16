@@ -26,7 +26,9 @@ output-file: music-recommendation-system.html
 
 # Introduction
 Music Artist Recommendation System using the [Last.fm Dataset](https://grouplens.org/datasets/hetrec-2011/). Exploratory data analysis.
+
 # Analysis
+
 ## Load Libraries
 ```r
 rm(list = ls())
@@ -41,6 +43,7 @@ library(htmlwidgets)
 
 theme_set(theme_light())
 ```
+
 ## Obtain Data
 ```r
 artists <- read_tsv("../data/hetrec2011-lastfm-2k/artists.dat")
@@ -98,7 +101,9 @@ ratings %>%
 ## $ artistID <dbl> 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, …
 ## $ weight   <dbl> 13883, 11690, 11351, 10300, 8983, 6152, 5955, 4616, 4337, 41…
 ```
+
 ## Scrub and Explore
+
 ### Ratings
 ```r
 ratings %>%
@@ -234,6 +239,7 @@ ratings %>%
 ## 10 498        399
 ## # … with 17,622 more rows
 ```
+
 ### Friends
 ```r
 friends %>%
@@ -278,6 +284,7 @@ friends %>%
 ## 10 390       88
 ## # … with 1,882 more rows
 ```
+
 ### Metadata
 ```r
 metadata %>%
@@ -426,7 +433,9 @@ snb <- htmlwidgets::prependContent(snb, htmltools::h2("Sunburst of most popular 
 snb <- htmlwidgets::prependContent(snb, htmltools::h5("Hover over to the see the artists and tags"))
 snb
 ```
+
 ## Sunburst of most popular artists in 5 most popular tags
+
 ##### Hover over to the see the artists and tags
 
 <input type="checkbox" class="sunburst-togglelegend" style="visibility:hidden;">Legend</input>
@@ -449,6 +458,7 @@ friends %>%
 metadata %>%
   write_csv("../data/hetrec2011-lastfm-2k/metadata_clean.csv")
 ```
+
 # References
 
 - [Data reference](https://grouplens.org/datasets/hetrec-2011/)

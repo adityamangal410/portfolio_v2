@@ -25,6 +25,7 @@ output-file: india-general-elections-2019-analysis.html
 
 # Project Summary
 With a whole lot of buzz in India (and world) about the 2019 General Elections in India, I thought it would be a good idea to do some election analysis of these pivotal elections in India’s history. I’ll start with analyzing the 2019 Election Manifestos of the 2 biggest political parties in India, the [Bhartiya Janta Party](https://www.bjp.org) and the [Indian National Congress](https://www.inc.in).
+
 # Project Goals
 
 - Data collection and cleaning for the election manifestos of the 2 parties.

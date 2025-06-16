@@ -36,7 +36,9 @@ Any neural network model training workflow follows the following basic steps -
 - Repeat step 2 above for another epoch.
 
 I will use the same above blueprint and build model in both these frameworks. Note that I am using Tensorflow’s [quickstart tutorial](https://www.tensorflow.org/tutorials/quickstart/beginner) as the toy model and will build corresponding model in PyTorch.
+
 # Modelling
+
 ## Load Libraries
 ```r
 rm(list = ls())
@@ -57,7 +59,9 @@ import numpy as np
 
 torch.__version__
 ```
+
 ## Tensorflow
+
 ### Prep Data
 ```python
 mnist = tf.keras.datasets.mnist
@@ -67,6 +71,7 @@ x_train, x_test = x_train / 255.0, x_test / 255.0
 print('X_TRAIN: {0} Y_TRAIN: {1} \n X_TEST: {2} Y_TEST: {3}'.format(x_train.shape, y_train.shape, x_test.shape, y_test.shape))
 ```
 Using the classic MNIST dataset to predict the handwritten digit.
+
 ### Network Architecture
 ```python
 model = tf.keras.models.Sequential([
@@ -84,6 +89,7 @@ model.compile(optimizer='adam',
 ```
 In the above simple network, we first flatten the 2d image of the handwritten digits from 28x28 pixel values to single vector of 784 values. Next, we apply a fully connected dense layer with 128 hidden nodes and relu activation. Followed by a dropout layer with 20% dropout probability and then our final Dense layer that calculates the log-odds for each of the 10 digits.
 Next we define our loss function, the categorical cross entropy function (with parameters that uses logits to calculate the loss value) and the Adam Optimizer that will help train the network more efficiently as compared to using a simple gradient descent optimizer.
+
 ### Fit and evaluate
 ```python
 model.fit(x_train, y_train, epochs=5)
@@ -101,7 +107,9 @@ probability_model(x_test[:3]).numpy()
 ```
 In order to calculate predicted probability for each digit (instead of log-odds), we run our model output through a simple softmax function and display the predicted probabilities for the first 3 samples in the test data.
 Now moving on to PyTorch!
+
 ## PyTorch
+
 ### Prep data
 ```python
 x_train_torch = torch.from_numpy(x_train)
@@ -116,6 +124,7 @@ y_train_torch = y_train_torch.long()
 y_test_torch = y_test_torch.long()
 ```
 We are using the same MNIST dataset we used for building our Tensorflow example but converting it to PyTorch tensors and making sure they have the correct datatypes.
+
 ### Network Architecture
 ```python
 class Net(nn.Module):
@@ -139,6 +148,7 @@ optimizer = optim.Adam(torch_model.parameters(), lr = 0.001)
 ```
 With PyTorch, we get to build the network architecture in a more object oriented fashion where we define each layer in the class constructor and a forward function that defines how the input data will pass forward through the network. Note that, we do not need to have a separate “Flatten” layer in PyTorch like we did in Tensorflow, we can just restructure the tensor using the “view” function to achieve the same effect.
 We define the same loss function (CrossEntropyLoss), note however PyTorch’s CrossEntropyLoss function applies Softmax internally. We also initialize our Adam optimizer object.
+
 ### Fit and evaluate
 ```python
 torch_model.train()
@@ -165,6 +175,7 @@ preds = np.argmax(preds, axis=1)
 np.mean(y_test_torch.numpy() == preds)
 ```
 I also wanted to run this network through a simple gradient descent instead of a pre-built optimizer just out of curiosity to see how well it performs.
+
 ### Simple Gradient Descent
 ```python
 torch_model = Net()
@@ -193,8 +204,10 @@ preds = np.argmax(preds, axis=1)
 np.mean(y_test_torch.numpy() == preds)
 ```
 So intead of using the adam optimizer, we manually use the learning rate and the computed gradient for each parameter and update the value for each param during an epoch. As we see the model doesn’t perform quite as well, but nevertheless we now know how we can use PyTorch’s cool API to fully control every aspect of training the neural network.
+
 # Summary
 In summary, I think both Tensorflow and PyTorch provide solid frameworks for training neural networks. If you prefer more intuitive, easy-to-use API Tensorflow should be the way to go and if you like a neat object-oriented, more fine-grained control API then PyTorch serves that purpose well.
+
 # References
 
 - Tensorflow’s [quickstart tutorial](https://www.tensorflow.org/tutorials/quickstart/beginner)

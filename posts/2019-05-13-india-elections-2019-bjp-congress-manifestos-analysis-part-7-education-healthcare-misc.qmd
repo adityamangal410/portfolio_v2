@@ -35,7 +35,9 @@ output-file: india-elections-2019-bjp-congress-manifestos-analysis-part-7-educat
 # Introduction
 With India’s 2019 General Elections around the corner, I thought it’d be a good idea to analyse the election manifestos of its 2 biggest political parties, BJP and Congress. Let’s use text mining to understand what each party promises and prioritizes.
 In this part 7, I’ll explore the Education, Health Care and other miscellaneous discussions in both manifestos.
+
 # Analysis
+
 ## Load libraries
 ```r
 rm(list = ls())
@@ -55,11 +57,13 @@ library(ggraph)
 theme_set(theme_light())
 use_condaenv("stanford-nlp")
 ```
+
 ## Read cleaned data
 ```r
 bjp_content <- read_csv("../data/indian_election_2019/bjp_manifesto_clean.csv")
 congress_content <- read_csv("../data/indian_election_2019/congress_manifesto_clean.csv")
 ```
+
 ## Education, Health Care and Miscellaneous
 This topic is covered congress’ manifesto from Pages 24 to 27 of the pdf and in that of bjp’s from pages 23 and 29 to 30 and 36 to 37.
 ```r
@@ -69,6 +73,7 @@ bjp_content %>%
 congress_content %>%
   filter(between(page, 24, 27)) -> congress_content
 ```
+
 ## Most Popular Words
 ```r
 plot_most_popular_words <- function(df,
@@ -121,6 +126,7 @@ congress_content %>%
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(10,10))
 ```
 <img src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc_files/figure-html/unnamed-chunk-6-1.png" width="1344" />
+
 ## Common correlated words
 ```r
 plot_common_correlated_words <- function(df,
@@ -169,6 +175,7 @@ congress_content %>%
 grid.arrange(p_bjp, p_congress, ncol = 2, widths = c(12,12))
 ```
 <img src="/post/2019-05-13-india-elections-2019-bjp-congress-manifestos-analysis-part-7-education-healthcare-misc_files/figure-html/unnamed-chunk-8-1.png" width="1152" />
+
 ## Basic Search Engine
 Lets build a cosine-similarity based simple search engine (instead of the basic keyword-based search that comes with the pdf document), in order to make these documents more easily searchable and gain context using most related lines in the manifestos for a given query.
 Using python’s scikit-learn for this.
@@ -198,6 +205,7 @@ def get_related_lines(query, party="bjp"):
 ```r
 get_related_lines <- py_to_r(py$get_related_lines)
 ```
+
 ### Common Popular Words with both BJP & Congress
 As we see from the plot above, one of the most popular words in both BJP and Congress’ manifesto is “children”. Lets see, what each of them have planned for the children of our country. First, BJP.
 ```r
@@ -247,6 +255,7 @@ One of the excerpts from page 25 related to above results -
 <blockquote>
 Congress promises that school education from Class I to Class XII in public schools shall be compulsory and free. Suitable amendments will be made in the Right to Education Act, 2009. We will end the practice of charging special fees for different purposes in public schools.
 </blockquote>
+
 ### Unique popular words with BJP & Congress
 One of the popular words that seems curious from BJP’s manifesto is “yoga”.
 ```r
@@ -298,6 +307,7 @@ Congress will take suitable measures to ensure that the Constitution of each spo
 With all the above analysis, we have developed some idea about the Education, Healthcare and other miscellaneous plans of the 2 parties.
 With this I conclude my analysis of the manifestos of BJP and Congress for 2019 general elections. I highly encourage all my readers to make their choice carefully in these pivotal elections and even though these analyses give you a high level idea about each party, maybe try and go through the entire manifestos to make a much informed decision about your choice and ensure accountability from our governments.
 Let’s hope for and build a better India. All the best!
+
 # References
 
 - [Part 6 - National Security](/2019/05/india-elections-2019-bjp-congress-manifestos-analysis-part-6-national-security/)
