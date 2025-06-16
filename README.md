@@ -58,6 +58,19 @@ Older posts also used a `tags` list. Those values have been merged into
 `keywords` so everything appears in one place. New posts should only specify
 `keywords`.
 
+### Header images
+
+Specify a banner or preview image using Quarto's `image` field:
+
+```yaml
+image: path/to/image.png
+image-alt: Description of the image
+```
+
+During rendering a helper script first searches your post for a local image.
+If none is found, the value of `image` becomes the thumbnail shown on the
+homepage and category pages.
+
 ### Jupyter Notebook (`.ipynb`)
 
 1. Create a new notebook under `posts/` with a descriptive name, e.g.

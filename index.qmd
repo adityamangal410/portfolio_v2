@@ -74,7 +74,7 @@ for f in glob.glob('posts/*.qmd'):
     url = f'posts/{output_file}'
     image = extract_first_local_image(f)
     if not image:
-        image = meta.get('coverImage') or meta.get('thumbnailImage', '')
+        image = meta.get('image', '')
     posts.append(
         (
             meta.get('date', ''),

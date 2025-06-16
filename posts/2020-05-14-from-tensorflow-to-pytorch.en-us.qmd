@@ -12,15 +12,13 @@ keywords:
 summary: Quickstart guide to help move from Tensorflow to PyTorch
 readingtime: '5'
 draft: false
-coverImage: https://lh3.googleusercontent.com/pw/ACtC-3eh0Oi-KV1LxCS3p2NRcDCkd1dl0DJHZwxSwnuXJI9Y5mNN1ZIHZ0rKXvxEWVqAbn90NY1FXB79jh7cbgml2kOs_9ycgShYRlkRZNM3Tr2Bd6G90aK7sxyFZSA2J7RJNM7YnBpP3Vh0Kgdmhc__zPKtVQ=w1720-h1147-no?authuser=0
-thumbnailImage: https://lh3.googleusercontent.com/pw/ACtC-3dwnOpV--O4-kDgkU_S8f5vXGiCUMYaNch19FxdGiE3azE35_5-nlA1JL9kfo6OhOZ68_WVCtPlO7a4SgI30eNLJ0fJhTaJBXBNw_Jugw2s1U1WQyv7qmUIfF1Iiz8u1tsCCZi3moq-3BS04HpO089t5A=w750-h500-no?authuser=0
-thumbnailImagePosition: left
-coverCaption: Photo by Road Trip with Raj on Unsplash
 format:
   html:
     theme: distill
 freeze: true
 output-file: from-tensorflow-to-pytorch.en-us.html
+image: https://lh3.googleusercontent.com/pw/ACtC-3eh0Oi-KV1LxCS3p2NRcDCkd1dl0DJHZwxSwnuXJI9Y5mNN1ZIHZ0rKXvxEWVqAbn90NY1FXB79jh7cbgml2kOs_9ycgShYRlkRZNM3Tr2Bd6G90aK7sxyFZSA2J7RJNM7YnBpP3Vh0Kgdmhc__zPKtVQ=w1720-h1147-no?authuser=0
+image-alt: Photo by Road Trip with Raj on Unsplash
 ---
 
 # Introduction
