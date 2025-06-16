@@ -1,6 +1,5 @@
 ---
-title: "What we can learn from Seattle\u2019s bike-counter data: TidyTuesday Apr 02\
-  \ 2019"
+title: "What we can learn from Seattle's bike-counter data: TidyTuesday Apr 02 2019"
 author: Aditya Mangal
 date: '2019-04-13'
 categories:
