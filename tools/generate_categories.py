@@ -35,8 +35,9 @@ def parse_front_matter(path):
             val = val.strip()
             if val == '':
                 values: List[str] = []
-                while i < len(lines) and lines[i].startswith('  -'):
-                    values.append(lines[i].strip()[2:].strip())
+                while i < len(lines) and lines[i].lstrip().startswith('- '):
+                    item = lines[i].lstrip()[2:].strip()
+                    values.append(item)
                     i += 1
                 yaml[key] = values
             else:
@@ -134,8 +135,9 @@ def parse_post_front_matter(path):
             val = val.strip()
             if val == '':
                 values = []
-                while i < len(lines) and lines[i].startswith('  -'):
-                    values.append(lines[i].strip()[2:].strip())
+                while i < len(lines) and lines[i].lstrip().startswith('- '):
+                    item = lines[i].lstrip()[2:].strip()
+                    values.append(item)
                     i += 1
                 yaml[key] = values
             else:
