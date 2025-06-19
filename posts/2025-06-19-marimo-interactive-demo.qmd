@@ -1,0 +1,38 @@
+---
+title: "Interactive marimo Demo"
+author: Aditya Mangal
+date: '2025-06-19'
+categories:
+- Tutorials
+keywords:
+- marimo
+- interactive
+- python
+summary: "Demo of an interactive marimo notebook embedded in a Quarto post."
+format:
+  html:
+    theme: distill
+freeze: true
+output-file: marimo-interactive-demo.html
+---
+
+marimo lets you create reactive notebooks that run entirely in the browser using WebAssembly. Below is a simple example built with [`marimo`](https://github.com/marimo-team/marimo) and [`plotly`](https://plotly.com/).
+
+```python
+{# Setup}
+!include-tools "tools/marimo_demo.py"
+```
+
+You can export this notebook to a single self-contained HTML file with:
+
+```bash
+marimo export tools/marimo_demo.py --output marimo-demo.html
+```
+
+Then embed `marimo-demo.html` in your Quarto post via an `<iframe>`:
+
+```{=html}
+<iframe src="marimo-demo.html" width="100%" height="400"></iframe>
+```
+
+Give it a try! Use the slider to update the plotted squares interactively—all executed right in your browser via Pyodide.
