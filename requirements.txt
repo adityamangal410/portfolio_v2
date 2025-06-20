@@ -3,3 +3,4 @@ ipykernel
 pyyaml
 nbformat
 nbclient
+marimo
