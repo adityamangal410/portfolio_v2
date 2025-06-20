@@ -1,6 +1,8 @@
 project:
   type: website
-  pre-render: "python tools/generate_categories.py"
+  pre-render:
+    - "python tools/export_marimo.py"
+    - "python tools/generate_categories.py"
   resources:
     # copy legacy HTML posts and their assets
     - post/*.html
@@ -36,3 +38,5 @@ format:
     include-after-body:
       - static/categories.html
       - static/disqus.html
+filters:
+  - marimo-team/marimo
