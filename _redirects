@@ -2,3 +2,5 @@
 
 # Redirect default Netlify subdomain to primary domain
 https://upbeat-knuth-c15bbd.netlify.com/* https://www.adityamangal.com/:splat 301!
+# Redirect legacy posts to their new location
+/post/:slug.html /posts/:slug.html 301

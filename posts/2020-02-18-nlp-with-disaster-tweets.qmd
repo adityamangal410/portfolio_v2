@@ -1,0 +1,45 @@
+---
+title: 'NLP with Disaster Tweets: Summary'
+author: Aditya Mangal
+date: '2020-02-18'
+categories:
+- Projects
+keywords:
+- tech
+- DataScience
+- NLP
+- Summary
+summary: NLP and TidyModelling in R
+readingtime: '1'
+format:
+  html:
+    theme: distill
+freeze: true
+output-file: nlp-with-disaster-tweets.html
+image: https://lh3.googleusercontent.com/NhQQ6_tTtlSd0SOqdTjXXaaFxEC186pYF68dyx8BJcdeqWUns0kas6nKS7jNUjTorlWCOvYDSXvgTbJSMgHLvc-ViHQkvKe_cGiU4gMP92vb1QSO98BlROygzqVBRO_2pnbPPS3coQVCdbAGJP3PQi0J4hExUkwsxCyPZ7RSOu9kOsIFJ7i7Pi68Ewg8yzEUw7zSb5JyYoDRkunuYedzzrPvS1Z2LWx-T-bVnkedbv72e3fjIfHHpwDf2LM4Tz_orR0lSjyrLt29k8YP2vbGoqRJhOurgj8UxWRC8J1BmDZxaG4fMzF5VfY2QToUTEFUryIzihBzb82z9IBQB7KiBuoKZBvrM03uHBwi_ePO7lt138P5DSufFH3xANhUrY8UPbMIcEKOKaxNXGUhdZG1EDykY6KW5ufjuAgEFoOKUSVp_kHyHmk_qJonukh5zRL07tUhRyXwYNXoP1ixHX-bN8K4yLLobU-Q2kAlrXD89OzMySyD6sm8gu6LcrzwthgEWLwTgRgcpvx0hPncV477w6mZnu1yd8xi8EAE3IVVhWAlQF2oUphPtcWjOBfK-aIocc62MSEFfCPb6DLSBpCWCkFFxydl0KSrbvboXBVX-AM7eVyAnFV3SfSfdQMxtKuLtWbAINTcPhoN05LhQxiOOJtc4KCJFbUOWO29U-rjrunXEbRXPhki1DUCy_KX5phRnwO3hniDAwqubCEZkKU3s6T0yCVT4WARB7E5RcmoVPdLWSRK=w2372-h1832-no
+image-alt: Photo by Marcus Kauffman on Unsplash
+---
+
+# Project Summary
+With this project, I’ll apply and practice various NLP techniques, along with trying my hands on the [tidymodels framework](https://github.com/tidymodels/tidymodels).
+I will use the [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle for its dataset and also evaluating model performance using submissions.
+
+# Project Goals
+
+- Apply and improve NLP skills in R & Python.
+- Learn and apply tidymodels modelling framework to do reproducible and effective science.
+- Focus more on model explainability and relative comparison of different algorithms.
+- Improve skills in PyTorch deep learning framework for model training and prediction.
+
+# Series
+The following series of posts tackle the above project goals sequentially
+
+- Project Part 1 - [NLP with Disaster Tweets: Part 1 Data Preparation](/2020/02/nlp-with-disaster-tweets-part-1/)
+
+- Project Part 2 - [NLP with Disaster Tweets: Part 2 Nearest Neighbor Models](/2020/02/nlp-with-disaster-tweets-part-2-nearest-neighbor-models/)
+- Project Part 3 - [NLP with Disaster Tweets: Part 3 Linear Models](/2020/04/nlp-with-disaster-tweets-part-3-linear-models/)
+- Project Part 4 - [NLP with Disaster Tweets: Part 4 Tree-based Models](/2020/04/nlp-with-disaster-tweets-part-4-tree-based-models.en-us/)
+- Project Part 5 - [NLP with Disaster Tweets: Part 5 Deep Learning Data Preparation](/2020/08/nlp-with-disaster-tweets-part-5-deep-learning-data-preparation.en-us/)
+- Project Part 6 - [NLP with Disaster Tweets: Part 6 Multi Layer Perceptron](/2020/09/nlp-with-disaster-tweets-part-6-multi-layer-perceptron.en-us/)
+- Project Part 7 - [NLP with Disaster Tweets: Part 7 Vanilla RNN and GRU](/2020/09/nlp-with-disaster-tweets-part-7-vanilla-rnn-and-gru.en-us/)
+

@@ -1,0 +1,34 @@
+---
+title: India Transportation Accidents Exploration Project
+author: Aditya Mangal
+date: '2017-09-28'
+categories:
+- Projects
+keywords:
+- tech
+- DataScience
+- Summary
+- India
+- Transportation
+summary: With this project I will try to visualize and understand the traffic accident
+  data for India as publicly accessible  [here](https://data.gov.in/)
+readingtime: '1'
+format:
+  html:
+    theme: distill
+freeze: true
+output-file: india-transportation-accidents-exploration-project.html
+image: https://lh3.googleusercontent.com/YOA2jIn6CxdDxk0gqFJIC4hu4wiIDNLAhbZmP0853jfqatj0-Q78JFYEFiYlG_aYpfppvQz9jKEIVUE0RkDxkkr5_4m4BawaFs4Sf41UAI6O88Jv5TrjBBILRC2A3lYIeLMgIL7mP84e9PtirciRCwFWPjdyKgBqOMODGGkVdd6F3rLttdr7PC1EoCuQPccYO-sSJIV-P1ar2Ismm44szrS-WiuK1IinUC5nr6zPPYPA4GoQ6YE_V91iUa0qUf3InmOxP8UZO1zlyCF7urbuF6tdJ_VmMSbil4eNF0dLYmHKy3uXFi3nZfq7LXH1enbgzH7hTcai39dulerm3VmVEj6Lgij117G4VAw_TjPDFDmk3yvOWkp2D-1UNYV-qzhQSwrTBbFq4HDkdEvrXmv_jZBSECt4Bia_bjWA5gQOaNagL_ZxWTBLpbz_F3nuobFjNt_jmbWm584sfzPy5uHy3xkj0pdzYsQCpb5q9H30aBn6riYRtvhgjC3xruOVdfP8j7CnphccrPjuzReYDYEatO-JtUHS-dXEw7YaJBnQRJZF9XvbusTxWuUuLfZukGkq4yGaU9WdsNNUb6qZMSkw9RuOplce3r8Sb6Yy1s_b1ZN4reB78vsL3Zr0e593V417VjUtWS-pIu68vyXJZaXzGqAC95yOxf-f=w2500-h1662-no
+image-alt: Photo by arihant daga on Unsplash
+---
+
+# Project Summary
+With this project I will try to visualize and understand the traffic accident data for India as publicly accessible [here](https://data.gov.in/).
+
+# Project Goals
+
+- Visualize traffic information and find trends
+- Find outliers and see if any valuable info can be dugout for each state or overall.
+- Try to predict number of accidents or other useful information.
+
+I’ll put out notebooks related to the work as separate articles.

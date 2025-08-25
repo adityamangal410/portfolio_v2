@@ -6,3 +6,16 @@
 public
 blogdown
 content/data
+_site/
+
+/node_modules
+package-lock.json
+
+/.quarto/
+
+# Python virtual environment
+venv/
+.venv/
+*.pyc
+__pycache__/
+.python-version

@@ -1,0 +1,355 @@
+---
+title: 'NLP with Disaster Tweets: Part 1 Data Preparation'
+author: Aditya Mangal
+date: '2020-02-19'
+categories:
+- Projects
+keywords:
+- tech
+- DataAnalysis
+- DataScience
+- NLP
+- TextMining
+summary: NLP and TidyModelling in R
+readingtime: '10'
+draft: false
+format:
+  html:
+    theme: distill
+freeze: true
+output-file: nlp-with-disaster-tweets-part-1.html
+image: https://lh3.googleusercontent.com/NhQQ6_tTtlSd0SOqdTjXXaaFxEC186pYF68dyx8BJcdeqWUns0kas6nKS7jNUjTorlWCOvYDSXvgTbJSMgHLvc-ViHQkvKe_cGiU4gMP92vb1QSO98BlROygzqVBRO_2pnbPPS3coQVCdbAGJP3PQi0J4hExUkwsxCyPZ7RSOu9kOsIFJ7i7Pi68Ewg8yzEUw7zSb5JyYoDRkunuYedzzrPvS1Z2LWx-T-bVnkedbv72e3fjIfHHpwDf2LM4Tz_orR0lSjyrLt29k8YP2vbGoqRJhOurgj8UxWRC8J1BmDZxaG4fMzF5VfY2QToUTEFUryIzihBzb82z9IBQB7KiBuoKZBvrM03uHBwi_ePO7lt138P5DSufFH3xANhUrY8UPbMIcEKOKaxNXGUhdZG1EDykY6KW5ufjuAgEFoOKUSVp_kHyHmk_qJonukh5zRL07tUhRyXwYNXoP1ixHX-bN8K4yLLobU-Q2kAlrXD89OzMySyD6sm8gu6LcrzwthgEWLwTgRgcpvx0hPncV477w6mZnu1yd8xi8EAE3IVVhWAlQF2oUphPtcWjOBfK-aIocc62MSEFfCPb6DLSBpCWCkFFxydl0KSrbvboXBVX-AM7eVyAnFV3SfSfdQMxtKuLtWbAINTcPhoN05LhQxiOOJtc4KCJFbUOWO29U-rjrunXEbRXPhki1DUCy_KX5phRnwO3hniDAwqubCEZkKU3s6T0yCVT4WARB7E5RcmoVPdLWSRK=w2372-h1832-no
+image-alt: Photo by Marcus Kauffman on Unsplash
+---
+
+# Introduction
+In this [NLP getting started challenge](https://www.kaggle.com/c/nlp-getting-started) on kaggle, we are given tweets which are classified as 1 if they are about real disasters and 0 if not. The goal is to predict given the text of the tweets and some other metadata about the tweet, if its about a real disaster or not.
+In this part 1 for data preparation, I will do some basic exploration and vectorize the given tweet text into [glove](https://nlp.stanford.edu/projects/glove/) embedding vectors.
+
+# Analysis
+
+## Load Libraries
+```r
+rm(list = ls())
+library(tidyverse)
+library(ggplot2)
+library(GGally)
+library(skimr)
+library(tidymodels)
+library(keras)
+library(janitor)
+
+theme_set(theme_light())
+```
+
+## Read Data
+```r
+tweets <- read_csv("../data/nlp_with_disaster_tweets/train.csv")
+tweets_test <- read_csv("../data/nlp_with_disaster_tweets/test.csv")
+skim(tweets)
+```
+<table>
+<caption>Table 1: Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">tweets</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">7613</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">5</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+**Variable type: character**
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">keyword</td>
+<td align="right">61</td>
+<td align="right">0.99</td>
+<td align="right">4</td>
+<td align="right">21</td>
+<td align="right">0</td>
+<td align="right">221</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">location</td>
+<td align="right">2534</td>
+<td align="right">0.67</td>
+<td align="right">1</td>
+<td align="right">49</td>
+<td align="right">0</td>
+<td align="right">3279</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">text</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">7</td>
+<td align="right">157</td>
+<td align="right">0</td>
+<td align="right">7503</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+**Variable type: numeric**
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">id</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5441.93</td>
+<td align="right">3137.12</td>
+<td align="right">1</td>
+<td align="right">2734</td>
+<td align="right">5408</td>
+<td align="right">8146</td>
+<td align="right">10873</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">target</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.43</td>
+<td align="right">0.50</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">▇▁▁▁▆</td>
+</tr>
+</tbody>
+</table>
+
+## Getting glove embedding for tweet text and adding as features
+The simple workflow for vectorizing tweet text into glove embeddings is as follows -
+
+- Tokenize incoming tweet texts in the training data.
+
+- Download and parse glove embeddings into an embedding matrix for the tokenized words.
+
+- Generate embeddings vector for tweets text in training data.
+
+- Generate embeddings vector for tweets text in test data.
+
+- Append to given tweets features and export.
+
+### Tokenize incoming tweet texts in the training data
+Using keras’ text_tokenizer to tokenize the text in tweets dataset.
+```r
+text_tokenizer() %>%
+  fit_text_tokenizer(tweets$text) -> tokenizer
+
+num_words <- length(tokenizer$word_index) + 1
+print(length(tokenizer$word_index))
+```
+```
+## [1] 22700
+```
+A total of 22700 unique words were assigned an index in the tokenization.
+Using the above fit tokenizer, converting the text to actual sequences of indices.
+```r
+sequences <- texts_to_sequences(tokenizer, tweets$text)
+
+summary(map_int(sequences, length))
+```
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+##    1.00   13.00   17.00   16.84   21.00   33.00
+```
+```r
+maxlen <- max(map_int(sequences, length))
+print(maxlen)
+```
+```
+## [1] 33
+```
+Capping the maximum length of a tweets sequence to 33. This will translate all the tweets text sequences into a sequence of length 33. If the original sequence was longer, it will truncate from the beginning and if the original sequence is smaller, it will pad the sequence in the beginning to bring the final length to 33.
+```r
+pad_sequences(sequences, maxlen = maxlen) -> padded_sequences
+
+str(padded_sequences)
+```
+```
+##  int [1:7613, 1:33] 0 0 0 0 0 0 0 0 0 0 ...
+```
+Like we see above, for all the 7,613 tweets in the training data we have created a tokenized sequence of 33 elements each.
+
+### Download and parse glove embeddings into an embedding matrix for the tokenized words
+Downloaded the pre-trained glove embeddings trained on 2 billion tweets from Stanford’s NLP projects page on [Glove](https://nlp.stanford.edu/projects/glove/) and borrowing the code for parsing and generating glove embedding matrix from my [deepSentimentR](https://adityamangal410.github.io/deepSentimentR/reference/index.html) package.
+```r
+parse_glove_embeddings <- function(file_path) {
+  lines <- readLines(file_path)
+  embeddings_index <- new.env(hash = TRUE, parent = emptyenv())
+  for (i in 1:length(lines)) {
+    line <- lines[[i]]
+    values <- strsplit(line, " ")[[1]]
+    word <- values[[1]]
+    embeddings_index[[word]] <- as.double(values[-1])
+  }
+  cat("Found", length(embeddings_index), "word vectors.\n")
+  return(embeddings_index)
+}
+
+generate_embedding_matrix <- function(word_index, embedding_dim, max_words, glove_file_path) {
+  embeddings_index <- parse_glove_embeddings(glove_file_path)
+
+  embedding_matrix <- array(0, c(max_words, embedding_dim))
+  for (word in names(word_index)) {
+    index <- word_index[[word]]
+    if (index < max_words) {
+      embedding_vector <- embeddings_index[[word]]
+      if (!is.null(embedding_vector)) {
+        embedding_matrix[index+1,] <- embedding_vector
+      }
+    }
+  }
+
+  return(embedding_matrix)
+}
+```
+```r
+embedding_dim <- 25
+```
+```r
+embedding_matrix <- generate_embedding_matrix(tokenizer$word_index,
+                                              embedding_dim = embedding_dim,
+                                              max_words = num_words,
+"../../../nlp_with_disaster_tweets/data/glove.twitter.27B/glove.twitter.27B.25d.txt")
+
+saveRDS(embedding_matrix, "../data/nlp_with_disaster_tweets/embedding_matrix_25d.rds")
+```
+```r
+embedding_matrix <- readRDS("../data/nlp_with_disaster_tweets/embedding_matrix_25d.rds")
+str(embedding_matrix)
+```
+```
+##  num [1:22701, 1:25] 0 0.7864 0.4186 0.7086 -0.0102 ...
+```
+Using only 25 dimensional embedding in order to keep the computations fast, we have created an embedding matrix which holds the 25 dimension values for the most popular 22700 words in our tweets text data.
+
+### Generate embeddings vector for tweets text in training data
+Using the keras modelling framework to generate embeddings for the given training data. We basically create a simple sequential model with one embedding layer whose weights we will freeze based on our embedding matrix created above, and a flattening layer that will flatten the output into a 2D matrix of dimensions (7613, 33x25).
+```r
+keras_model_sequential() %>%
+  layer_embedding(input_dim = num_words, output_dim = embedding_dim,
+                  input_length = maxlen, name = "embedding") %>%
+  layer_flatten(name = "flatten") -> model_embedding
+
+model_embedding %>%
+  get_layer(name = "embedding") %>%
+  set_weights(list(embedding_matrix)) %>%
+  freeze_weights()
+
+model_embedding %>%
+  predict(padded_sequences) -> tweets_embeddings
+
+str(tweets_embeddings)
+```
+```
+##  num [1:7613, 1:825] 0 0 0 0 0 0 0 0 0 0 ...
+```
+For each of the 7,613 padded tweet sequences of upto max length 33, we use the keras model to “predict” and populate the embedding for each of those 33 words in the sequence and susequently flatten those to create a single feature vector of 33x25=825 dimensions.
+
+### Generate embeddings vector for tweets text in test data
+Using the similar approach as above (i.e. tokenize, pad and vectorize using glove embeddings) on the test data, to generate similar embedding vector for text in the tweets test data. Note that, we use the previously fit text tokenizer on the train data to tokenize the test data.
+```r
+sequences_test <- texts_to_sequences(tokenizer, tweets_test$text)
+```
+```r
+pad_sequences(sequences_test, maxlen = maxlen) -> padded_sequences_test
+
+model_embedding %>%
+  predict(padded_sequences_test) -> tweets_embeddings_test
+
+str(tweets_embeddings_test)
+```
+```
+##  num [1:3263, 1:825] 0 0 0 0 0 0 0 0 0 0 ...
+```
+We similarly get 825 embedding dimensions for 3,263 tweets in the test data.
+
+### Append to given tweets features and export
+```r
+tweets %>%
+  bind_cols(as_tibble(tweets_embeddings)) %>%
+  clean_names() -> tweets_proc
+
+tweets_test %>%
+  bind_cols(as_tibble(tweets_embeddings_test)) %>%
+  clean_names() -> tweets_test_proc
+```
+```r
+saveRDS(tweets_proc, "../data/nlp_with_disaster_tweets/tweets_proc.rds")
+saveRDS(tweets_test_proc, "../data/nlp_with_disaster_tweets/tweets_test_proc.rds")
+```
+Exporting the appended feature set will help us work on this dataset for modelling. I will cover the modelling using the tidymodels framework in my upcoming posts.
+
+# References
+
+- Project Summary Page - [NLP with disaster tweets: Summary](/2020/02/nlp-with-disaster-tweets/)
+- GloVe: Global Vectors for Word Representation - [Stanford NLP Glove Project](https://nlp.stanford.edu/projects/glove/)
+- DeepSentimentR package - [deepSentimentR](https://adityamangal410.github.io/deepSentimentR/index.html)
+
