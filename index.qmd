@@ -68,6 +68,8 @@ for f in glob.glob('posts/*.qmd'):
     if os.path.basename(f) == 'index.qmd':
         continue
     meta = parse_front_matter(f)
+    if str(meta.get('draft', 'false')).lower() == 'true':
+        continue
     output_file = meta.get('output-file')
     if output_file:
         slug = os.path.splitext(output_file)[0]
