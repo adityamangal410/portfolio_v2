@@ -67,6 +67,8 @@ for f in glob.glob('../posts/*.qmd'):
     if os.path.basename(f) == 'index.qmd':
         continue
     meta = parse_front_matter(f)
+    if str(meta.get('draft', 'false')).lower() == 'true':
+        continue
     cats = meta.get('categories', [])
     if isinstance(cats, str):
         cats = [cats]
@@ -152,6 +154,8 @@ def main():
         if os.path.basename(f) == 'index.qmd':
             continue
         meta = parse_post_front_matter(f)
+        if str(meta.get('draft', 'false')).lower() == 'true':
+            continue
         cats = meta.get('categories', [])
         if isinstance(cats, str):
             cats = [cats]
